@@ -26,8 +26,13 @@ export class UsuariosService {
    .map(data => data.json()).toPromise()
 }
 
-public obtener_usuario(user:Busqueda){
-  return this._http.post('/api/obtener_usuario',user)
+public detalle_usuario(user:Busqueda){
+  return this._http.post('/api/detalle_usuario',user)
+   .map(data => data.json()).toPromise()
+}
+
+public editar_usuario(user:Busqueda){
+  return this._http.post('/api/editar_usuario',user)
    .map(data => data.json()).toPromise()
 }
 

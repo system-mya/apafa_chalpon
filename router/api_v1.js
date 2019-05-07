@@ -33,8 +33,12 @@ app.get('/api/listar_perfiles', (req, res) => {
     user.listar_perfiles(res);
 });
 
-app.post('/api/obtener_usuario', (req, res) => {
-    user.obtener_usuario(req.body, res);
+app.post('/api/detalle_usuario', (req, res) => {
+    user.detalle_usuario(req.body, res);
+});
+
+app.post('/api/editar_usuario', (req, res) => {
+    user.editar_usuario(req.body, res);
 });
 
 }

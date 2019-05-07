@@ -128,16 +128,17 @@
                     </button>
                   </div>
                 </div> -->
-                  <button class="btn btn-info btn-xs distancia_btn_opciones"
+                <button class="btn btn-info btn-xs distancia_btn_opciones"
                       matTooltip="Detalle"
                       matTooltipClass="tooltip-mensaje"
                       [matTooltipPosition]="positionOptions[3]"
                       data-toggle="modal" (click)="btnDetalle_Usuario(element.idusuario)">
                     <span class="fa fa-address-card-o"></span></button>
-                  <button class="btn btn-success btn-xs distancia_btn_opciones"
+                <button class="btn btn-success btn-xs distancia_btn_opciones"
                     matTooltip="Editar"
                     matTooltipClass="tooltip-mensaje"
-                    [matTooltipPosition]="positionOptions[3]">
+                    [matTooltipPosition]="positionOptions[3]"
+                    data-toggle="modal" (click)="btnEdit_Usuario(element.idusuario)">
                   <span class="fa fa-edit"></span></button>
                   <button class="btn btn-warning btn-xs distancia_btn_opciones"
                   matTooltip="Resetear"
@@ -167,7 +168,7 @@
           <form name="form" class="formulario" (ngSubmit)="myForm.form.valid && onSubmit(myForm)" #myForm="ngForm" novalidate autocomplete="off">
         <div class="modal-header">
           <h4 class="modal-title">Nuevo Usuario</h4>
-          <button type="button" class="close" (click)="frmNuevoUsu_hide()" aria-label="Close">
+          <button type="button" class="close" (click)="frmUsu_hide('N')" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
@@ -312,7 +313,6 @@
                   <div *ngIf="fecha_usu.errors.required">Nombre Usuario campo requerido</div>
                 </div>
               </div>
-              {{fecha_usu}}
             </div><!--/.row-->
             <div class="row">
               <div class="form-group col-sm-12">
@@ -324,7 +324,7 @@
           
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-danger" (click)="frmNuevoUsu_hide()"><span class="fa fa-times-circle"></span> Close</button>
+          <button type="button" class="btn btn-danger" (click)="frmUsu_hide('N')"><span class="fa fa-times-circle"></span> Close</button>
           <button class="btn btn-primary"><span class="fa fa-save"></span> Guardar</button>
         </div>
       </form>
@@ -332,13 +332,13 @@
     </div><!-- /.modal-dialog -->
   </div>
   <!-- /.Fin Modal Nuevo Usuario-->
-  <!--Modal Registrar Nuevo Usuario-->
+  <!--Modal Detalle Usuario-->
   <div bsModal #DetUsuarioModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}">
     <div class="modal-dialog modal-lg modal-info" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title">Detalle Usuario</h4>
-          <button type="button" class="close" (click)="frmDetalleUsu_hide()" aria-label="Close">
+          <button type="button" class="close" (click)="frmUsu_hide('D')" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
@@ -390,5 +390,177 @@
       </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
   </div>
-  <!-- /.Fin Modal Nuevo Usuario-->
+  <!-- /.Fin Modal Detalle Usuario-->
+
+  <!--Modal Editar Usuario-->
+  <div bsModal #EditUsuarioModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}">
+    <div class="modal-dialog modal-lg modal-success" role="document">
+      <div class="modal-content">
+          <form name="form" class="formulario" (ngSubmit)="myForm.form.valid && onSubmit(myForm)" #myForm="ngForm" novalidate autocomplete="off">
+        <div class="modal-header">
+          <h4 class="modal-title">Nuevo Usuario</h4>
+          <button type="button" class="close" (click)="frmUsu_hide('E')" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div *ngFor="let alert of alerts">
+                <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)" [dismissible]="dismissible">{{ alert.msg }}</alert>
+              </div>
+           <div class="row">
+              <div class="form-group col-sm-6">
+                <label for="nombres_usu" style="font-weight: bold;">Nombres Completos <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                <input type="text" class="form-control" id="nombres_usu" name="nombres_usu"
+                 placeholder="Nombres Completos" [(ngModel)]="Editusuario.nombres_usu" #nombres_usu="ngModel" 
+                 onkeyup="verif(this)" maxlength="40" [ngClass]="{ 'is-invalid': myForm.submitted && nombres_usu.invalid }" required>
+                 <div *ngIf="myForm.submitted && nombres_usu.invalid" class="invalid-feedback">
+                  <div *ngIf="nombres_usu.errors.required">Nombres Completos campo requerido</div>
+                 </div>
+              </div>
+              <div class="form-group col-sm-6">
+                  <label for="apellidos_usu" style="font-weight: bold;">Apellidos Completos <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                  <input type="text" class="form-control" name="apellidos_usu" placeholder="Apellidos Completos" 
+                  [(ngModel)]="Editusuario.apellidos_usu" #apellidos_usu="ngModel" 
+                   onkeyup="verif(this)" maxlength="40" [ngClass]="{ 'is-invalid': myForm.submitted && apellidos_usu.invalid }" required>
+                  <div *ngIf="myForm.submitted && apellidos_usu.invalid" class="invalid-feedback">
+                    <div *ngIf="apellidos_usu.errors.required">Apellidos Completos campo requerido</div>
+                  </div>
+              </div>
+            </div><!--/.row-->
+            <div class="row">
+              <div class="form-group col-sm-4">
+                <label for="doc_identidad" style="font-weight: bold;">Doc. Identidad <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                <input type="text" class="form-control" id="doc_identidad" name="dni_usu"
+                placeholder="Doc Identidad"  [(ngModel)]="Editusuario.dni_usu" #dni_usu="ngModel"
+                pattern="[0-9]{8}" [ngClass]="{ 'is-invalid': myForm.submitted && dni_usu.invalid }" required onkeyup="verif(this)" onkeypress="return Num(event);" maxlength="8">
+                <div *ngIf="myForm.submitted && dni_usu.invalid" class="invalid-feedback">
+                    <div *ngIf="dni_usu.errors.required">Doc. Identidad campo requerido</div>
+                    <div *ngIf="dni_usu.errors.pattern">Debe Ingresar 8 Números</div>
+                </div>
+              </div>
+              <div class="form-group col-sm-4">
+                <label for="postal-code" style="font-weight: bold;">Sexo <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                <div class="radio" style="display: block !important;max-width: none !important;">
+                    <div class="form-check form-check-inline mr-1" id="inline-radios">
+                        <input class="form-check-input" type="radio" name="sexo_usu" id="inlineRadio1" [(ngModel)]="Editusuario.sexo_usu" value="M" #sexo_usu="ngModel" required >
+                        <label class="form-check-label" for="inlineRadio1">Masculino</label>
+                      </div>
+                      <div class="form-check form-check-inline mr-1">
+                        <input class="form-check-input" type="radio" name="sexo_usu" id="inlineRadio2" [(ngModel)]="Editusuario.sexo_usu" value="F" #sexo_usu="ngModel" required>
+                        <label class="form-check-label" for="inlineRadio2">Femenino</label>
+                      </div>
+                     
+                    </div>
+                    <div *ngIf="myForm.submitted && sexo_usu.errors?.required" style="
+                     width: 100%;
+                     margin-top: .25rem;
+                     font-size: 80%;
+                     color: #f86c6b;">
+                       Debe seleccionar una opción
+                      </div>
+              </div>
+              <div class="form-group col-sm-4">
+                <label for="celular_usu" style="font-weight: bold;">Celular <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                <input type="text" class="form-control" id="celular_usu" name="celular_usu"
+                placeholder="#########"  [(ngModel)]="Editusuario.celular_usu" #celular_usu="ngModel"
+                pattern="[0-9]{9}" [ngClass]="{ 'is-invalid': myForm.submitted && celular_usu.invalid }" required onkeyup="verif(this)" onkeypress="return Num(event);" maxlength="9">
+                <div *ngIf="myForm.submitted && celular_usu.invalid" class="invalid-feedback">
+                    <div *ngIf="celular_usu.errors.required">Num. Celular campo requerido</div>
+                    <div *ngIf="celular_usu.errors.pattern">Debe Ingresar 9 Números</div>
+                </div>
+              </div>
+            </div><!--/.row-->
+            <div class="row">
+              <div class="form-group col-sm-6">
+                <label for="direccion_usu" style="font-weight: bold;">Dirección <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                <input type="text" class="form-control" id="direccion_usu" name="direccion_usu"
+                placeholder="Dirección" [(ngModel)]="Editusuario.direccion_usu" #direccion_usu="ngModel" 
+                onkeyup="verif(this)" maxlength="80" [ngClass]="{ 'is-invalid': myForm.submitted && direccion_usu.invalid }" required>
+                <div *ngIf="myForm.submitted && direccion_usu.invalid" class="invalid-feedback">
+                    <div *ngIf="direccion_usu.errors.required">Dirección campo requerido</div>
+                  </div>
+              </div>
+              <div class="form-group col-sm-6">
+                <label for="correo_usu" style="font-weight: bold;">Correo Electronico:</label>
+                <input type="text" class="form-control" id="correo_usu" name="correo_usu"
+                placeholder="Correo Electronico" [(ngModel)]="Editusuario.correo_usu" #correo_usu="ngModel" 
+                onkeyup="verif(this)" maxlength="80" [ngClass]="{ 'is-invalid': myForm.submitted && correo_usu.invalid }" email>
+                <div *ngIf="myForm.submitted && correo_usu.invalid" class="invalid-feedback">
+                    <div *ngIf="correo_usu.errors.email">Formato de correo incorrecto</div>
+                </div>
+              </div>
+            </div><!--/.row-->
+            <div class="row">
+              <div class="form-group col-sm-4">
+                <label for="nom_usu" style="font-weight: bold;">Nombre Usuario <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                <input type="text" class="form-control" id="nom_usu" name="nom_usu"
+                placeholder="Nombre Usuario" [(ngModel)]="Editusuario.nom_usu" #nom_usu="ngModel" 
+                onkeyup="verif(this)" maxlength="20" [ngClass]="{ 'is-invalid': myForm.submitted && nom_usu.invalid }" required>
+                <div *ngIf="myForm.submitted && nom_usu.invalid" class="invalid-feedback">
+                  <div *ngIf="nom_usu.errors.required">Nombre Usuario campo requerido</div>
+                </div>
+              </div>
+              <!-- <div class="form-group col-sm-4">
+                <label for="clave_usu" style="font-weight: bold;">Password <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                <input type="password" class="form-control" id="clave_usu" name="clave_usu"
+                placeholder="Contraseña Usuario" [(ngModel)]="usuario.clave_usu" #clave_usu="ngModel" 
+                onkeyup="verif(this)" maxlength="15" [ngClass]="{ 'is-invalid': myForm.submitted && clave_usu.invalid }" required>
+                <div *ngIf="myForm.submitted && clave_usu.invalid" class="invalid-feedback">
+                  <div *ngIf="clave_usu.errors.required">Clave Usuario campo requerido</div>
+                </div>
+              </div> -->
+              <div class="form-group col-sm-4">
+                  <label for="perfil_usu" style="font-weight: bold;">Perfil <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                  <select class="form-control" id="perfil_usu" name="perfil_usu"
+                  placeholder="Selecionar Perfil" [(ngModel)]="Editusuario.perfil_usu" #perfil_usu="ngModel" required>
+                  <option value="0" selected disabled>-----Seleccionar Perfil------</option>
+                      <option *ngFor="let p of DataPerfiles" value="{{p.idperfil_usuario}}">{{p.nombre_perfil}}</option>
+                  </select>
+                  <div *ngIf="myForm.submitted && Editusuario.perfil_usu==0" style="
+                     width: 100%;
+                     margin-top: .25rem;
+                     font-size: 80%;
+                     color: #f86c6b;">
+                       Debe seleccionar una opción
+                      </div>
+                      
+                </div>
+              <div class="form-group col-sm-4">
+                <label for="fecha_usu" style="font-weight: bold;">Fecha Alta <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                <input class="form-control" id="fecha_usu" type='date' name="fecha_usu" placeholder="date"
+                [(ngModel)]="Editusuario.fecha_usu" #fecha_usu="ngModel"  readonly required>
+                <!-- <input matInput  [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" id="fecha_usu" name="fecha_usu" 
+                placeholder="Fecha de Vencimiento"  class="form-control" [min]='min'
+                [(ngModel)]="usuario.fecha_usu" #fecha_usu="ngModel" readonly disabled required>
+                <owl-date-time [pickerMode]="'dialog'" [pickerType]="'calendar'" #dt1></owl-date-time>
+                <div *ngIf="myForm.submitted && fecha_usu.errors?.required" style="
+                     width: 100%;
+                     margin-top: .25rem;
+                     font-size: 80%;
+                     color: #f86c6b;">
+                       Fecha de Vencimiento campo requerido
+                </div> -->
+                <div *ngIf="myForm.submitted && fecha_usu.invalid" class="invalid-feedback">
+                  <div *ngIf="fecha_usu.errors.required">Nombre Usuario campo requerido</div>
+                </div>
+              </div>
+            </div><!--/.row-->
+            <div class="row">
+              <div class="form-group col-sm-12">
+                <label for="obser_usu" style="font-weight: bold;">Observaciones:</label>
+                <textarea id="obser_usu" name="obser_usu" rows="3" [(ngModel)]="Editusuario.obser_usu" #obser_usu="ngModel"
+                class="form-control" maxlength="50" placeholder="Ingrese observaciones" onkeyup="verif(this)"></textarea>
+              </div>
+            </div><!--/.row-->
+          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" (click)="frmUsu_hide('E')"><span class="fa fa-times-circle"></span> Close</button>
+          <button class="btn btn-primary"><span class="fa fa-save"></span> Guardar</button>
+        </div>
+      </form>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div>
+  <!-- /.Fin Modal Editar Usuario-->
 </div>

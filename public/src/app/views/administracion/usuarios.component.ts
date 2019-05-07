@@ -21,6 +21,7 @@ import { AlertComponent } from 'ngx-bootstrap/alert/alert.component';
 export class UsuariosComponent implements OnInit {
   @ViewChild('NvoUsuarioModal') public NvoUsuarioModal: ModalDirective;
   @ViewChild('DetUsuarioModal') public DetUsuarioModal: ModalDirective;
+  @ViewChild('EditUsuarioModal') public EditUsuarioModal: ModalDirective;
   DataArray : any = [];
   // columnsToDisplay = ['idusuario', 'nom_usu', 'nombres_usu', 'apellidos_usu'];
   displayedColumns: string[] = ['num_usu', 'nom_ape_usu', 'nom_usu', 'contacto_usu','perfil_usu','estado_usu','opciones_usu'];
@@ -31,11 +32,25 @@ export class UsuariosComponent implements OnInit {
   public min = new Date().toISOString().substring(0, 10);
   public usuario : Usuario;
   public DatoBusqueda : Busqueda;
-  
+  public Editusuario : Usuario;
   public  chooseView : string;
   constructor(private spinner: NgxSpinnerService,private http: Http,private _UsuariosServicios:UsuariosService,private toastr: ToastrService) {
     this.LoadTableData();
     this.usuario = {
+      nom_usu:'',
+      clave_usu:'',
+      dni_usu:'',
+      nombres_usu:'',
+      apellidos_usu:'',
+      celular_usu:'',
+      correo_usu:'',
+      sexo_usu:'',
+      direccion_usu:'',
+      fecha_usu: this.min,
+      obser_usu:'',
+      perfil_usu:0
+    };
+    this.Editusuario = {
       nom_usu:'',
       clave_usu:'',
       dni_usu:'',
@@ -139,13 +154,22 @@ export class UsuariosComponent implements OnInit {
     }
   }
  
-  frmNuevoUsu_hide(){
-    this.NvoUsuarioModal.hide();
-    this.mytemplateForm.resetForm();
+  frmUsu_hide(opc){
+    if(opc=="N"){
+      this.NvoUsuarioModal.hide();
+      this.mytemplateForm.resetForm();
+    }else{
+      if(opc=="D"){
+        this.DetUsuarioModal.hide();
+      }else{
+        if(opc=="E"){
+          this.EditUsuarioModal.hide();
+        }
+      }
+    }
+    
   }
-  frmDetalleUsu_hide(){
-    this.DetUsuarioModal.hide();
-  }
+  
 
  LoadTableData (){
    this._UsuariosServicios.getListarUsiarios().subscribe(
@@ -182,7 +206,7 @@ btnDetalle_Usuario(idusuario){
   this.DatoBusqueda.idbusqueda=idusuario;
   console.log(this.DatoBusqueda.idbusqueda);
   this.DetUsuarioModal.show(); 
-    this._UsuariosServicios.obtener_usuario(this.DatoBusqueda)
+    this._UsuariosServicios.detalle_usuario(this.DatoBusqueda)
     .then(data => {
       if(data.status==1){
         this.toastr.success(data.message, 'Aviso!');
@@ -195,6 +219,28 @@ btnDetalle_Usuario(idusuario){
     .catch(err => console.log(err))
   }
 
+  fecha_usu : string;
+  btnEdit_Usuario(idusuario){
+     
+    this.DatoBusqueda.idbusqueda=idusuario;
+    console.log(this.DatoBusqueda.idbusqueda);
+    this.EditUsuarioModal.show(); 
+      this._UsuariosServicios.editar_usuario(this.DatoBusqueda)
+      .then(data => {
+        if(data.status==1){
+          this.ListarPerfiles();
+          this.toastr.success(data.message, 'Aviso!');
+          this.Editusuario = data.data[0];
+          this.Editusuario.perfil_usu = data.data[0].idperfil_usuario;
+          this.fecha_usu=data.data[0].fcreacion_usu.split("T",10);
+          this.Editusuario.fecha_usu = this.fecha_usu[0];
+          console.log('DATO' + this.Editusuario.fecha_usu);
+        }else{
+          this.toastr.error(data.message, 'Aviso!');
+         }
+      } )
+      .catch(err => console.log(err))
+    }
 //  displayedColumns: Array<string>;
 //  expandedElement: Array<string>;
 // toggleRow(element) {
