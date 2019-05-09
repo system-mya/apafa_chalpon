@@ -9,6 +9,7 @@ import {Usuario,Busqueda} from '../../app.datos';
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { AlertComponent } from 'ngx-bootstrap/alert/alert.component';
+declare var swal: any;
 
 
 @Component({
@@ -261,5 +262,28 @@ btnDetalle_Usuario(idusuario){
   //     }
   //   )
   // }
+ opc : string = 'ANDERsson'
+  showAlert() {
+    swal({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      console.log(result.value);
+      if (result.value) {
+        if(this.opc=='ANDER'){
+          swal(
+            'Deleted!',
+            'Your imaginary file has been deleted.',
+            'success'
+          )
+        }
+      }
+    })
+  }
 
 }

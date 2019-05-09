@@ -143,7 +143,8 @@
                   <button class="btn btn-warning btn-xs distancia_btn_opciones"
                   matTooltip="Resetear"
                   matTooltipClass="tooltip-mensaje"
-                  [matTooltipPosition]="positionOptions[3]">
+                  [matTooltipPosition]="positionOptions[3]"
+                  (click)="showAlert()">
                 <span class="fa fa-refresh"></span></button>
                  <button class="btn btn-danger btn-xs distancia_btn_opciones"
                       matTooltip="Eliminar"

@@ -37,7 +37,8 @@
               "node_modules/jquery/dist/jquery.js",
               "node_modules/datatables.net/js/jquery.dataTables.js",
               "src/assets/js/funciones.js",
-              "node_modules/crypto-js/crypto-js.js"
+              "node_modules/crypto-js/crypto-js.js",
+              "src/assets/js/sweetalert2.all.js"
             ]
           },
           "configurations": {
