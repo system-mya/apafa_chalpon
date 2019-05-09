@@ -397,7 +397,7 @@
   <div bsModal #EditUsuarioModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}">
     <div class="modal-dialog modal-lg modal-success" role="document">
       <div class="modal-content">
-          <form name="form" class="formulario" (ngSubmit)="myForm.form.valid && onSubmit(myForm)" #myForm="ngForm" novalidate autocomplete="off">
+          <form name="frmEdit" class="formulario" (ngSubmit)="FormEdit.frmEdit.valid && onSubmit(FormEdit)" #FormEdit="ngForm" novalidate autocomplete="off">
         <div class="modal-header">
           <h4 class="modal-title">Nuevo Usuario</h4>
           <button type="button" class="close" (click)="frmUsu_hide('E')" aria-label="Close">
@@ -410,49 +410,49 @@
               </div>
            <div class="row">
               <div class="form-group col-sm-6">
-                <label for="nombres_usu" style="font-weight: bold;">Nombres Completos <i class="fa fa-certificate" style="color:red !important"></i> :</label>
-                <input type="text" class="form-control" id="nombres_usu" name="nombres_usu"
-                 placeholder="Nombres Completos" [(ngModel)]="Editusuario.nombres_usu" #nombres_usu="ngModel" 
-                 onkeyup="verif(this)" maxlength="40" [ngClass]="{ 'is-invalid': myForm.submitted && nombres_usu.invalid }" required>
-                 <div *ngIf="myForm.submitted && nombres_usu.invalid" class="invalid-feedback">
-                  <div *ngIf="nombres_usu.errors.required">Nombres Completos campo requerido</div>
+                <label for="nombres_usu_edit" style="font-weight: bold;">Nombres Completos <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                <input type="text" class="form-control" id="nombres_usu_edit" name="nombres_usu_edit"
+                 placeholder="Nombres Completos" [(ngModel)]="Editusuario.nombres_usu" #nombres_usu_edit="ngModel" 
+                 onkeyup="verif(this)" maxlength="40" [ngClass]="{ 'is-invalid': FormEdit.submitted && nombres_usu_edit.invalid }" required>
+                 <div *ngIf="FormEdit.submitted && nombres_usu_edit.invalid" class="invalid-feedback">
+                  <div *ngIf="nombres_usu_edit.errors.required">Nombres Completos campo requerido</div>
                  </div>
               </div>
               <div class="form-group col-sm-6">
-                  <label for="apellidos_usu" style="font-weight: bold;">Apellidos Completos <i class="fa fa-certificate" style="color:red !important"></i> :</label>
-                  <input type="text" class="form-control" name="apellidos_usu" placeholder="Apellidos Completos" 
-                  [(ngModel)]="Editusuario.apellidos_usu" #apellidos_usu="ngModel" 
-                   onkeyup="verif(this)" maxlength="40" [ngClass]="{ 'is-invalid': myForm.submitted && apellidos_usu.invalid }" required>
-                  <div *ngIf="myForm.submitted && apellidos_usu.invalid" class="invalid-feedback">
-                    <div *ngIf="apellidos_usu.errors.required">Apellidos Completos campo requerido</div>
+                  <label for="apellidos_usu_edit" style="font-weight: bold;">Apellidos Completos <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                  <input type="text" class="form-control" name="apellidos_usu_edit" placeholder="Apellidos Completos" 
+                  [(ngModel)]="Editusuario.apellidos_usu" #apellidos_usu_edit="ngModel" 
+                   onkeyup="verif(this)" maxlength="40" [ngClass]="{ 'is-invalid': FormEdit.submitted && apellidos_usu_edit.invalid }" required>
+                  <div *ngIf="FormEdit.submitted && apellidos_usu_edit.invalid" class="invalid-feedback">
+                    <div *ngIf="apellidos_usu_edit.errors.required">Apellidos Completos campo requerido</div>
                   </div>
               </div>
             </div><!--/.row-->
             <div class="row">
               <div class="form-group col-sm-4">
-                <label for="doc_identidad" style="font-weight: bold;">Doc. Identidad <i class="fa fa-certificate" style="color:red !important"></i> :</label>
-                <input type="text" class="form-control" id="doc_identidad" name="dni_usu"
-                placeholder="Doc Identidad"  [(ngModel)]="Editusuario.dni_usu" #dni_usu="ngModel"
-                pattern="[0-9]{8}" [ngClass]="{ 'is-invalid': myForm.submitted && dni_usu.invalid }" required onkeyup="verif(this)" onkeypress="return Num(event);" maxlength="8">
-                <div *ngIf="myForm.submitted && dni_usu.invalid" class="invalid-feedback">
-                    <div *ngIf="dni_usu.errors.required">Doc. Identidad campo requerido</div>
-                    <div *ngIf="dni_usu.errors.pattern">Debe Ingresar 8 Números</div>
+                <label for="dni_usu_edit" style="font-weight: bold;">Doc. Identidad <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                <input type="text" class="form-control" id="dni_usu_edit" name="dni_usu_edit"
+                placeholder="Doc Identidad"  [(ngModel)]="Editusuario.dni_usu" #dni_usu_edit="ngModel"
+                pattern="[0-9]{8}" [ngClass]="{ 'is-invalid': FormEdit.submitted && dni_usu_edit.invalid }" required onkeyup="verif(this)" onkeypress="return Num(event);" maxlength="8">
+                <div *ngIf="FormEdit.submitted && dni_usu_edit.invalid" class="invalid-feedback">
+                    <div *ngIf="dni_usu_edit.errors.required">Doc. Identidad campo requerido</div>
+                    <div *ngIf="dni_usu_edit.errors.pattern">Debe Ingresar 8 Números</div>
                 </div>
               </div>
               <div class="form-group col-sm-4">
-                <label for="postal-code" style="font-weight: bold;">Sexo <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                <label for="sexo_usu_edit" style="font-weight: bold;">Sexo <i class="fa fa-certificate" style="color:red !important"></i> :</label>
                 <div class="radio" style="display: block !important;max-width: none !important;">
                     <div class="form-check form-check-inline mr-1" id="inline-radios">
-                        <input class="form-check-input" type="radio" name="sexo_usu" id="inlineRadio1" [(ngModel)]="Editusuario.sexo_usu" value="M" #sexo_usu="ngModel" required >
-                        <label class="form-check-label" for="inlineRadio1">Masculino</label>
+                        <input class="form-check-input" type="radio" name="sexo_usu_edit" id="masculino" [(ngModel)]="Editusuario.sexo_usu" value="M" #sexo_usu_edit="ngModel" required >
+                        <label class="form-check-label" for="masculino">Masculino</label>
                       </div>
                       <div class="form-check form-check-inline mr-1">
-                        <input class="form-check-input" type="radio" name="sexo_usu" id="inlineRadio2" [(ngModel)]="Editusuario.sexo_usu" value="F" #sexo_usu="ngModel" required>
-                        <label class="form-check-label" for="inlineRadio2">Femenino</label>
+                        <input class="form-check-input" type="radio" name="sexo_usu_edit" id="femenino" [(ngModel)]="Editusuario.sexo_usu" value="F" #sexo_usu_edit="ngModel" required>
+                        <label class="form-check-label" for="femenino">Femenino</label>
                       </div>
                      
                     </div>
-                    <div *ngIf="myForm.submitted && sexo_usu.errors?.required" style="
+                    <div *ngIf="FormEdit.submitted && sexo_usu_edit.errors?.required" style="
                      width: 100%;
                      margin-top: .25rem;
                      font-size: 80%;
@@ -461,44 +461,44 @@
                       </div>
               </div>
               <div class="form-group col-sm-4">
-                <label for="celular_usu" style="font-weight: bold;">Celular <i class="fa fa-certificate" style="color:red !important"></i> :</label>
-                <input type="text" class="form-control" id="celular_usu" name="celular_usu"
-                placeholder="#########"  [(ngModel)]="Editusuario.celular_usu" #celular_usu="ngModel"
-                pattern="[0-9]{9}" [ngClass]="{ 'is-invalid': myForm.submitted && celular_usu.invalid }" required onkeyup="verif(this)" onkeypress="return Num(event);" maxlength="9">
-                <div *ngIf="myForm.submitted && celular_usu.invalid" class="invalid-feedback">
-                    <div *ngIf="celular_usu.errors.required">Num. Celular campo requerido</div>
-                    <div *ngIf="celular_usu.errors.pattern">Debe Ingresar 9 Números</div>
+                <label for="celular_usu_edit" style="font-weight: bold;">Celular <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                <input type="text" class="form-control" id="celular_usu_edit" name="celular_usu_edit"
+                placeholder="#########"  [(ngModel)]="Editusuario.celular_usu" #celular_usu_edit="ngModel"
+                pattern="[0-9]{9}" [ngClass]="{ 'is-invalid': FormEdit.submitted && celular_usu_edit.invalid }" required onkeyup="verif(this)" onkeypress="return Num(event);" maxlength="9">
+                <div *ngIf="FormEdit.submitted && celular_usu_edit.invalid" class="invalid-feedback">
+                    <div *ngIf="celular_usu_edit.errors.required">Num. Celular campo requerido</div>
+                    <div *ngIf="celular_usu_edit.errors.pattern">Debe Ingresar 9 Números</div>
                 </div>
               </div>
             </div><!--/.row-->
             <div class="row">
               <div class="form-group col-sm-6">
-                <label for="direccion_usu" style="font-weight: bold;">Dirección <i class="fa fa-certificate" style="color:red !important"></i> :</label>
-                <input type="text" class="form-control" id="direccion_usu" name="direccion_usu"
-                placeholder="Dirección" [(ngModel)]="Editusuario.direccion_usu" #direccion_usu="ngModel" 
-                onkeyup="verif(this)" maxlength="80" [ngClass]="{ 'is-invalid': myForm.submitted && direccion_usu.invalid }" required>
-                <div *ngIf="myForm.submitted && direccion_usu.invalid" class="invalid-feedback">
-                    <div *ngIf="direccion_usu.errors.required">Dirección campo requerido</div>
+                <label for="direccion_usu_edit" style="font-weight: bold;">Dirección <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                <input type="text" class="form-control" id="direccion_usu_edit" name="direccion_usu_edit"
+                placeholder="Dirección" [(ngModel)]="Editusuario.direccion_usu" #direccion_usu_edit="ngModel" 
+                onkeyup="verif(this)" maxlength="80" [ngClass]="{ 'is-invalid': FormEdit.submitted && direccion_usu_edit.invalid }" required>
+                <div *ngIf="FormEdit.submitted && direccion_usu_edit.invalid" class="invalid-feedback">
+                    <div *ngIf="direccion_usu_edit.errors.required">Dirección campo requerido</div>
                   </div>
               </div>
               <div class="form-group col-sm-6">
-                <label for="correo_usu" style="font-weight: bold;">Correo Electronico:</label>
-                <input type="text" class="form-control" id="correo_usu" name="correo_usu"
-                placeholder="Correo Electronico" [(ngModel)]="Editusuario.correo_usu" #correo_usu="ngModel" 
-                onkeyup="verif(this)" maxlength="80" [ngClass]="{ 'is-invalid': myForm.submitted && correo_usu.invalid }" email>
-                <div *ngIf="myForm.submitted && correo_usu.invalid" class="invalid-feedback">
-                    <div *ngIf="correo_usu.errors.email">Formato de correo incorrecto</div>
+                <label for="correo_usu_edit" style="font-weight: bold;">Correo Electronico:</label>
+                <input type="text" class="form-control" id="correo_usu_edit" name="correo_usu_edit"
+                placeholder="Correo Electronico" [(ngModel)]="Editusuario.correo_usu" #correo_usu_edit="ngModel" 
+                onkeyup="verif(this)" maxlength="80" [ngClass]="{ 'is-invalid': FormEdit.submitted && correo_usu_edit.invalid }" email>
+                <div *ngIf="FormEdit.submitted && correo_usu_edit.invalid" class="invalid-feedback">
+                    <div *ngIf="correo_usu_edit.errors.email">Formato de correo incorrecto</div>
                 </div>
               </div>
             </div><!--/.row-->
             <div class="row">
               <div class="form-group col-sm-4">
-                <label for="nom_usu" style="font-weight: bold;">Nombre Usuario <i class="fa fa-certificate" style="color:red !important"></i> :</label>
-                <input type="text" class="form-control" id="nom_usu" name="nom_usu"
-                placeholder="Nombre Usuario" [(ngModel)]="Editusuario.nom_usu" #nom_usu="ngModel" 
-                onkeyup="verif(this)" maxlength="20" [ngClass]="{ 'is-invalid': myForm.submitted && nom_usu.invalid }" required>
-                <div *ngIf="myForm.submitted && nom_usu.invalid" class="invalid-feedback">
-                  <div *ngIf="nom_usu.errors.required">Nombre Usuario campo requerido</div>
+                <label for="nom_usu_edit" style="font-weight: bold;">Nombre Usuario <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                <input type="text" class="form-control" id="nom_usu_edit" name="nom_usu_edit"
+                placeholder="Nombre Usuario" [(ngModel)]="Editusuario.nom_usu" #nom_usu_edit="ngModel" 
+                onkeyup="verif(this)" maxlength="20" [ngClass]="{ 'is-invalid': FormEdit.submitted && nom_usu_edit.invalid }" required>
+                <div *ngIf="FormEdit.submitted && nom_usu_edit.invalid" class="invalid-feedback">
+                  <div *ngIf="nom_usu_edit.errors.required">Nombre Usuario campo requerido</div>
                 </div>
               </div>
               <!-- <div class="form-group col-sm-4">
@@ -511,13 +511,13 @@
                 </div>
               </div> -->
               <div class="form-group col-sm-4">
-                  <label for="perfil_usu" style="font-weight: bold;">Perfil <i class="fa fa-certificate" style="color:red !important"></i> :</label>
-                  <select class="form-control" id="perfil_usu" name="perfil_usu"
-                  placeholder="Selecionar Perfil" [(ngModel)]="Editusuario.perfil_usu" #perfil_usu="ngModel" required>
+                  <label for="perfil_usu_edit" style="font-weight: bold;">Perfil <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                  <select class="form-control" id="perfil_usu_edit" name="perfil_usu_edit"
+                  placeholder="Selecionar Perfil" [(ngModel)]="Editusuario.perfil_usu" #perfil_usu_edit="ngModel" required>
                   <option value="0" selected disabled>-----Seleccionar Perfil------</option>
                       <option *ngFor="let p of DataPerfiles" value="{{p.idperfil_usuario}}">{{p.nombre_perfil}}</option>
                   </select>
-                  <div *ngIf="myForm.submitted && Editusuario.perfil_usu==0" style="
+                  <div *ngIf="FormEdit.submitted && Editusuario.perfil_usu==0" style="
                      width: 100%;
                      margin-top: .25rem;
                      font-size: 80%;
@@ -527,9 +527,9 @@
                       
                 </div>
               <div class="form-group col-sm-4">
-                <label for="fecha_usu" style="font-weight: bold;">Fecha Alta <i class="fa fa-certificate" style="color:red !important"></i> :</label>
-                <input class="form-control" id="fecha_usu" type='date' name="fecha_usu" placeholder="date"
-                [(ngModel)]="Editusuario.fecha_usu" #fecha_usu="ngModel"  readonly required>
+                <label for="fecha_usu_edit" style="font-weight: bold;">Fecha Alta <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                <input class="form-control" id="fecha_usu_edit" type='date' name="fecha_usu_edit" placeholder="date"
+                [(ngModel)]="Editusuario.fecha_usu" #fecha_usu_edit="ngModel"  readonly required>
                 <!-- <input matInput  [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" id="fecha_usu" name="fecha_usu" 
                 placeholder="Fecha de Vencimiento"  class="form-control" [min]='min'
                 [(ngModel)]="usuario.fecha_usu" #fecha_usu="ngModel" readonly disabled required>
@@ -541,15 +541,15 @@
                      color: #f86c6b;">
                        Fecha de Vencimiento campo requerido
                 </div> -->
-                <div *ngIf="myForm.submitted && fecha_usu.invalid" class="invalid-feedback">
-                  <div *ngIf="fecha_usu.errors.required">Nombre Usuario campo requerido</div>
+                <div *ngIf="FormEdit.submitted && fecha_usu_edit.invalid" class="invalid-feedback">
+                  <div *ngIf="fecha_usu_edit.errors.required">Nombre Usuario campo requerido</div>
                 </div>
               </div>
             </div><!--/.row-->
             <div class="row">
               <div class="form-group col-sm-12">
-                <label for="obser_usu" style="font-weight: bold;">Observaciones:</label>
-                <textarea id="obser_usu" name="obser_usu" rows="3" [(ngModel)]="Editusuario.obser_usu" #obser_usu="ngModel"
+                <label for="obser_usu_edit" style="font-weight: bold;">Observaciones:</label>
+                <textarea id="obser_usu_edit" name="obser_usu_edit" rows="3" [(ngModel)]="Editusuario.obser_usu" #obser_usu_edit="ngModel"
                 class="form-control" maxlength="50" placeholder="Ingrese observaciones" onkeyup="verif(this)"></textarea>
               </div>
             </div><!--/.row-->

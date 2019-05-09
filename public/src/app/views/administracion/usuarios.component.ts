@@ -123,27 +123,59 @@ export class UsuariosComponent implements OnInit {
 
  
   onSubmit(form:NgForm){    
-      console.log("Login funcionando");
-      this._UsuariosServicios.nvo_usuario(form.value)
-      .then(data => {
-        if(data.status==1){
-          this.NvoUsuarioModal.hide();
-          this.toastr.success(data.message, 'Aviso!');
-          this.LoadTableData();
-          this.mytemplateForm.resetForm();
-        }else{
-          if(data.status==2){
-            this.toastr.error(data.message, 'Aviso!');
+    swal({
+      title: '¿Esta seguro que desea guardar?',
+      type: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, Guardar!',
+      closeOnConfirm: false, //It does close the popup when I click on close button
+      closeOnCancel: false,
+      allowOutsideClick: false,
+      allowEscapeKey:false,
+    }).then((result) => {
+      if (result.value==true) {
+        this._UsuariosServicios.nvo_usuario(form.value)
+        .then(data => {
+          if(data.status==1){
+            this.NvoUsuarioModal.hide();
+            swal({
+                title: 'Aviso!',
+                text: data.message,
+                type: 'success',
+                closeOnConfirm: false, //It does close the popup when I click on close button
+                closeOnCancel: false,
+                allowOutsideClick: false,
+                allowEscapeKey:false
+            })
+            this.LoadTableData();
+            this.mytemplateForm.resetForm();
           }else{
-            this.toastr.error("Registro sin Exito", 'Aviso!',{
-              positionClass: 'toast-top-right'
-            });
-            this.alert_msg_danger(data.message);
+            if(data.status==2){
+              this.toastr.error(data.message, 'Aviso!');
+            }else{
+              swal({
+                title: 'Aviso!',
+                html:
+                '<span style="color:red">' +
+                data.message +
+                '</span>',
+                type: 'error',
+                closeOnConfirm: false, //It does close the popup when I click on close button
+                closeOnCancel: false,
+                allowOutsideClick: false,
+                allowEscapeKey:false
+              })
+             
+            }
+            
           }
-          
-        }
-      } )
-      .catch(err => console.log(err))
+        } )
+        .catch(err => console.log(err))
+      }
+    })
+      
       
       }
   
