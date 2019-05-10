@@ -254,9 +254,7 @@ btnDetalle_Usuario(idusuario){
 
   fecha_usu : string;
   btnEdit_Usuario(idusuario){
-     
     this.DatoBusqueda.idbusqueda=idusuario;
-    console.log(this.DatoBusqueda.idbusqueda);
     this.EditUsuarioModal.show(); 
       this._UsuariosServicios.editar_usuario(this.DatoBusqueda)
       .then(data => {
@@ -295,15 +293,18 @@ btnDetalle_Usuario(idusuario){
   //   )
   // }
  opc : string = 'ANDERsson'
-  showAlert() {
+ btnReset_Usuario() {
     swal({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
-      type: 'warning',
+      title: '¿Esta seguro que desea resetear contraseña?',
+      type: 'question',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
+      confirmButtonText: 'Si, Resetear!',
+      closeOnConfirm: false, //It does close the popup when I click on close button
+      closeOnCancel: false,
+      allowOutsideClick: false,
+      allowEscapeKey:false,
     }).then((result) => {
       console.log(result.value);
       if (result.value) {

@@ -138,13 +138,15 @@
                     matTooltip="Editar"
                     matTooltipClass="tooltip-mensaje"
                     [matTooltipPosition]="positionOptions[3]"
-                    data-toggle="modal" (click)="btnEdit_Usuario(element.idusuario)">
+                    data-toggle="modal" (click)="btnEdit_Usuario(element.idusuario)"
+                    [disabled]="element.estado_usu=='INACTIVO'">
                   <span class="fa fa-edit"></span></button>
                   <button class="btn btn-warning btn-xs distancia_btn_opciones"
                   matTooltip="Resetear"
                   matTooltipClass="tooltip-mensaje"
                   [matTooltipPosition]="positionOptions[3]"
-                  (click)="showAlert()">
+                  (click)="btnReset_Usuario()"
+                  [disabled]="element.estado_usu=='INACTIVO'">
                 <span class="fa fa-refresh"></span></button>
                  <button class="btn btn-danger btn-xs distancia_btn_opciones"
                       matTooltip="Eliminar"
