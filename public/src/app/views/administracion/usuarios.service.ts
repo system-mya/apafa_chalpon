@@ -36,6 +36,10 @@ public editar_usuario(user:Busqueda){
    .map(data => data.json()).toPromise()
 }
 
+public nom_usuario(user:Busqueda){
+  return this._http.post('/api/nom_usuario',user)
+   .map(data => data.json()).toPromise()
+}
 
 
  

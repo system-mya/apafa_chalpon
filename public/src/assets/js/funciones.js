@@ -1,9 +1,9 @@
 //NO SE PUEDE INGRESAR ESPACIOS EN BLANCOS AL PRINCIPIO
 function verif(v){
 if (v.value==" "){
-alert("No se pueden ingresar espacios al principio")
-v.value="";
-}
+   alert("No se pueden ingresar espacios al principio")
+   v.value="";
+  }
 }
 
 //SOLO NUMEROS

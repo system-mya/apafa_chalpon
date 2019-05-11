@@ -41,5 +41,9 @@ app.post('/api/editar_usuario', (req, res) => {
     user.editar_usuario(req.body, res);
 });
 
+app.post('/api/nom_usuario', (req, res) => {
+    user.nom_usuario(req.body, res);
+});
+
 }
 }

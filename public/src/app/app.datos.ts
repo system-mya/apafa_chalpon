@@ -1,5 +1,6 @@
 export class Busqueda {
     idbusqueda : number;
+    datobusqueda ?: string;
 }
 export class Usuario {
     public idusuario ?: number

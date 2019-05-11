@@ -184,9 +184,11 @@
                 <label for="nombres_usu" style="font-weight: bold;">Nombres Completos <i class="fa fa-certificate" style="color:red !important"></i> :</label>
                 <input type="text" class="form-control" id="nombres_usu" name="nombres_usu"
                  placeholder="Nombres Completos" [(ngModel)]="usuario.nombres_usu" #nombres_usu="ngModel" 
-                 onkeyup="verif(this)" maxlength="40" [ngClass]="{ 'is-invalid': myForm.submitted && nombres_usu.invalid }" required>
+                 onkeyup="verif(this)" maxlength="40" [ngClass]="{ 'is-invalid': myForm.submitted && nombres_usu.invalid }" 
+                 pattern="[A-Za-z]{1,100}" required>
                  <div *ngIf="myForm.submitted && nombres_usu.invalid" class="invalid-feedback">
                   <div *ngIf="nombres_usu.errors.required">Nombres Completos campo requerido</div>
+                  <div *ngIf="nombres_usu.errors.pattern">Nombres Completos campo requerido</div>
                  </div>
               </div>
               <div class="form-group col-sm-6">
@@ -266,8 +268,8 @@
               <div class="form-group col-sm-4">
                 <label for="nom_usu" style="font-weight: bold;">Nombre Usuario <i class="fa fa-certificate" style="color:red !important"></i> :</label>
                 <input type="text" class="form-control" id="nom_usu" name="nom_usu"
-                placeholder="Nombre Usuario" [(ngModel)]="usuario.nom_usu" #nom_usu="ngModel" 
-                onkeyup="verif(this)" maxlength="20" [ngClass]="{ 'is-invalid': myForm.submitted && nom_usu.invalid }" required>
+                placeholder="Nombre Usuario" [(ngModel)]="usuario.nom_usu" #nom_usu="ngModel" (ngModelChange)="changeNomUsu(usuario.nom_usu)"
+                onkeyup="verif(this)" maxlength="20" [ngClass]="{ 'is-invalid': myForm.submitted && nom_usu.invalid,'is-valid':nom_usu.valid,'': nom_usu.untouched}" required>
                 <div *ngIf="myForm.submitted && nom_usu.invalid" class="invalid-feedback">
                   <div *ngIf="nom_usu.errors.required">Nombre Usuario campo requerido</div>
                 </div>

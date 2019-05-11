@@ -318,5 +318,26 @@ btnDetalle_Usuario(idusuario){
       }
     })
   }
+ 
+  usu_valid : boolean = true;
+  changeNomUsu(dato){
+    if(dato!=null){
+      this.DatoBusqueda.datobusqueda=dato;
+    console.log(this.DatoBusqueda.datobusqueda);
+      this._UsuariosServicios.nom_usuario(this.DatoBusqueda)
+      .then(data => {
+        if(data.status==1){
+          this.usu_valid=true;
+          this.toastr.success(data.message, 'Aviso!');
+          this.DataUsuario = data.data[0];
+          console.log(this.DataUsuario);
+        }else{
+          this.toastr.error(data.message, 'Aviso!');
+          this.usu_valid=false;
+         }
+      } )
+      .catch(err => console.log(err))
+    }
+    }
 
 }
