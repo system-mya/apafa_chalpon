@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 17-05-2019 a las 00:11:37
+-- Tiempo de generación: 17-05-2019 a las 23:35:18
 -- Versión del servidor: 5.7.14
 -- Versión de PHP: 5.6.25
 
@@ -131,7 +131,7 @@ CREATE TABLE `usuario` (
   `direccion_usu` varchar(80) NOT NULL,
   `fcreacion_usu` date NOT NULL,
   `fbaja_usu` date DEFAULT NULL,
-  `obser_usu` varchar(50) DEFAULT NULL,
+  `obser_usu` varchar(200) DEFAULT NULL,
   `estado_usu` bit(1) NOT NULL DEFAULT b'1',
   `idperfil_usuario` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
