@@ -337,7 +337,7 @@
               <div class="form-group col-sm-12">
                 <label for="obser_usu" style="font-weight: bold;">Observaciones:</label>
                 <textarea id="obser_usu" name="obser_usu" rows="3" [(ngModel)]="usuario.obser_usu" #obser_usu="ngModel"
-                class="form-control" maxlength="50" placeholder="Ingrese observaciones" onkeyup="verif(this)"></textarea>
+                class="form-control" maxlength="200" placeholder="Ingrese observaciones" onkeyup="verif(this)"></textarea>
               </div>
             </div><!--/.row-->
           
@@ -415,9 +415,9 @@
   <div bsModal #EditUsuarioModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}">
     <div class="modal-dialog modal-lg modal-success" role="document">
       <div class="modal-content">
-          <form name="frmEdit" class="formulario" (ngSubmit)="FormEdit.frmEdit.valid && onSubmit(FormEdit)" #FormEdit="ngForm" novalidate autocomplete="off">
+          <form name="form" class="formulario" (ngSubmit)="FormEdit.form.valid && updateUsuario(FormEdit)" #FormEdit="ngForm" novalidate autocomplete="off">
         <div class="modal-header">
-          <h4 class="modal-title">Nuevo Usuario</h4>
+          <h4 class="modal-title">Editar Usuario</h4>
           <button type="button" class="close" (click)="frmUsu_hide('E')" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -431,18 +431,24 @@
                 <label for="nombres_usu_edit" style="font-weight: bold;">Nombres Completos <i class="fa fa-certificate" style="color:red !important"></i> :</label>
                 <input type="text" class="form-control" id="nombres_usu_edit" name="nombres_usu_edit"
                  placeholder="Nombres Completos" [(ngModel)]="Editusuario.nombres_usu" #nombres_usu_edit="ngModel" 
-                 onkeyup="verif(this)" maxlength="40" [ngClass]="{ 'is-invalid': FormEdit.submitted && nombres_usu_edit.invalid }" required>
+                 onkeyup="verif(this)" maxlength="50" [ngClass]="{ 'is-invalid': FormEdit.submitted && nombres_usu_edit.invalid }" 
+                 pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,25}[\s]*)+$" required>
                  <div *ngIf="FormEdit.submitted && nombres_usu_edit.invalid" class="invalid-feedback">
                   <div *ngIf="nombres_usu_edit.errors.required">Nombres Completos campo requerido</div>
+                  <div *ngIf="nombres_usu_edit.errors.pattern">Formato de Nombres Completos incorrectos</div>
                  </div>
+                 <!-- pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]{2,48}"
+                 tbn pattern de combres compuestos -->
               </div>
               <div class="form-group col-sm-6">
                   <label for="apellidos_usu_edit" style="font-weight: bold;">Apellidos Completos <i class="fa fa-certificate" style="color:red !important"></i> :</label>
                   <input type="text" class="form-control" name="apellidos_usu_edit" placeholder="Apellidos Completos" 
                   [(ngModel)]="Editusuario.apellidos_usu" #apellidos_usu_edit="ngModel" 
-                   onkeyup="verif(this)" maxlength="40" [ngClass]="{ 'is-invalid': FormEdit.submitted && apellidos_usu_edit.invalid }" required>
+                  onkeyup="verif(this)" maxlength="60" [ngClass]="{ 'is-invalid': FormEdit.submitted && apellidos_usu_edit.invalid }" 
+                  pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,30}[\s]*)+$" required>
                   <div *ngIf="FormEdit.submitted && apellidos_usu_edit.invalid" class="invalid-feedback">
                     <div *ngIf="apellidos_usu_edit.errors.required">Apellidos Completos campo requerido</div>
+                    <div *ngIf="apellidos_usu_edit.errors.pattern">Formato de Apellidos Completos incorrectos</div>
                   </div>
               </div>
             </div><!--/.row-->
@@ -494,9 +500,11 @@
                 <label for="direccion_usu_edit" style="font-weight: bold;">Dirección <i class="fa fa-certificate" style="color:red !important"></i> :</label>
                 <input type="text" class="form-control" id="direccion_usu_edit" name="direccion_usu_edit"
                 placeholder="Dirección" [(ngModel)]="Editusuario.direccion_usu" #direccion_usu_edit="ngModel" 
-                onkeyup="verif(this)" maxlength="80" [ngClass]="{ 'is-invalid': FormEdit.submitted && direccion_usu_edit.invalid }" required>
+                onkeyup="verif(this)" maxlength="80" [ngClass]="{ 'is-invalid': FormEdit.submitted && direccion_usu_edit.invalid }" 
+                pattern="^([A-Za-z0-9#]{1,80}[\s]*)+$" required>
                 <div *ngIf="FormEdit.submitted && direccion_usu_edit.invalid" class="invalid-feedback">
                     <div *ngIf="direccion_usu_edit.errors.required">Dirección campo requerido</div>
+                    <div *ngIf="direccion_usu_edit.errors.pattern">Formato de Dirección incorrectos</div>
                   </div>
               </div>
               <div class="form-group col-sm-6">
@@ -514,11 +522,18 @@
                 <label for="nom_usu_edit" style="font-weight: bold;">Nombre Usuario <i class="fa fa-certificate" style="color:red !important"></i> :</label>
                 <input type="text" class="form-control" id="nom_usu_edit" name="nom_usu_edit"
                 placeholder="Nombre Usuario" [(ngModel)]="Editusuario.nom_usu" #nom_usu_edit="ngModel" 
-                onkeyup="verif(this)" maxlength="20" [ngClass]="{ 'is-invalid': FormEdit.submitted && nom_usu_edit.invalid }" required>
+                onkeyup="verif(this)" maxlength="20" pattern="^([a-z]+[0-9]{0,2}){5,20}$" [ngClass]="{ 'is-invalid': FormEdit.submitted && nom_usu_edit.invalid }" required>
                 <div *ngIf="FormEdit.submitted && nom_usu_edit.invalid" class="invalid-feedback">
                   <div *ngIf="nom_usu_edit.errors.required">Nombre Usuario campo requerido</div>
+                  <div *ngIf="nom_usu_edit.errors.pattern">Error Formato campo</div>
                 </div>
               </div>
+              <!-- <input type="password" id="psw" name="psw" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" 
+              title="Must contain at least one number and one uppercase and lowercase letter, and at 
+              least 8 or more characters" required> -->
+              <!-- Usuario: Vamos a solicitar para el usuario de acceso al servicio una cadena de 
+              letras minúsculas, con un número opcionalmente de hasta dos dígitos al final. 
+              La cadena completa tendrá entre 5 y 12 caracteres. -->
               <!-- <div class="form-group col-sm-4">
                 <label for="clave_usu" style="font-weight: bold;">Password <i class="fa fa-certificate" style="color:red !important"></i> :</label>
                 <input type="password" class="form-control" id="clave_usu" name="clave_usu"
@@ -544,31 +559,24 @@
                       </div>
                       
                 </div>
-              <div class="form-group col-sm-4">
-                <label for="fecha_usu_edit" style="font-weight: bold;">Fecha Alta <i class="fa fa-certificate" style="color:red !important"></i> :</label>
-                <input class="form-control" id="fecha_usu_edit" type='date' name="fecha_usu_edit" placeholder="date"
-                [(ngModel)]="Editusuario.fecha_usu" #fecha_usu_edit="ngModel"  readonly required>
-                <!-- <input matInput  [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" id="fecha_usu" name="fecha_usu" 
-                placeholder="Fecha de Vencimiento"  class="form-control" [min]='min'
-                [(ngModel)]="usuario.fecha_usu" #fecha_usu="ngModel" readonly disabled required>
-                <owl-date-time [pickerMode]="'dialog'" [pickerType]="'calendar'" #dt1></owl-date-time>
-                <div *ngIf="myForm.submitted && fecha_usu.errors?.required" style="
-                     width: 100%;
-                     margin-top: .25rem;
-                     font-size: 80%;
-                     color: #f86c6b;">
-                       Fecha de Vencimiento campo requerido
-                </div> -->
-                <div *ngIf="FormEdit.submitted && fecha_usu_edit.invalid" class="invalid-feedback">
-                  <div *ngIf="fecha_usu_edit.errors.required">Nombre Usuario campo requerido</div>
+                <div class="form-group col-sm-4">
+                  <label for="baja_usu_edit" style="font-weight: bold;">Dar de Baja :</label>
+                  <div class="radio" style="display: block !important;max-width: none !important;">
+                      <div class="form-check form-check-inline mr-1" id="inline-radios">
+                          <input class="form-check-input" type="radio" name="baja_usu_edit" id="si" [(ngModel)]="Editusuario.baja_usu" value="SI" #baja_usu_edit="ngModel" (ngModelChange)="FechaBajaUsu(Editusuario.baja_usu)" >
+                          <label class="form-check-label" for="si">SI &nbsp;&nbsp; {{Editusuario.fecha_usu}}</label>&nbsp;&nbsp;&nbsp;
+                         
+                        </div>
+                        <input class="form-control" id="fecha_usu_edit" type='hidden' name="fecha_usu_edit"
+                        [(ngModel)]="Editusuario.fecha_usu" #fecha_usu_edit="ngModel" >
+                      </div>
                 </div>
-              </div>
             </div><!--/.row-->
             <div class="row">
               <div class="form-group col-sm-12">
                 <label for="obser_usu_edit" style="font-weight: bold;">Observaciones:</label>
                 <textarea id="obser_usu_edit" name="obser_usu_edit" rows="3" [(ngModel)]="Editusuario.obser_usu" #obser_usu_edit="ngModel"
-                class="form-control" maxlength="50" placeholder="Ingrese observaciones" onkeyup="verif(this)"></textarea>
+                class="form-control" maxlength="200" placeholder="Ingrese observaciones" onkeyup="verif(this)"></textarea>
               </div>
             </div><!--/.row-->
           

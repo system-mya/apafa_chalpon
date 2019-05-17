@@ -19,6 +19,7 @@ export class Usuario {
     public nombre_perfil ?: string;
     public fcreacion_usu ?: Date;
     public fbaja_usu ?: Date;
+    public baja_usu ?: string;
         
 }
 

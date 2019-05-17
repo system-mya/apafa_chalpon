@@ -247,9 +247,15 @@ btnDetalle_Usuario(idusuario){
     this._UsuariosServicios.detalle_usuario(this.DatoBusqueda)
     .then(data => {
       if(data.status==1){
-        this.toastr.success(data.message, 'Aviso!');
         this.DataUsuario = data.data[0];
-        console.log(this.DataUsuario);
+        swal({
+          toast: true,
+          position: 'top-right',
+          showConfirmButton: false,
+          timer: 2000,
+          type: 'success',
+          title: data.message
+        })
       }else{
         this.toastr.error(data.message, 'Aviso!');
        }
@@ -257,7 +263,7 @@ btnDetalle_Usuario(idusuario){
     .catch(err => console.log(err))
   }
 
-  fecha_usu : string;
+
   btnEdit_Usuario(idusuario){
     this.DatoBusqueda.idbusqueda=idusuario;
     this.EditUsuarioModal.show(); 
@@ -265,21 +271,11 @@ btnDetalle_Usuario(idusuario){
       .then(data => {
         if(data.status==1){
           this.ListarPerfiles();
-          swal({
-            toast: true,
-            position: 'top-right',
-            showConfirmButton: false,
-            timer: 2000,
-            type: 'success',
-            title: data.message
-          })
+          this.toastr.success(data.message, 'Aviso!',{positionClass: 'toast-top-right'});
           this.Editusuario = data.data[0];
           this.Editusuario.perfil_usu = data.data[0].idperfil_usuario;
-          this.fecha_usu=data.data[0].fcreacion_usu.split("T",10);
-          this.Editusuario.fecha_usu = this.fecha_usu[0];
-          console.log('DATO' + this.Editusuario.fecha_usu);
         }else{
-          this.toastr.error(data.message, 'Aviso!');
+          this.toastr.error(data.message, 'Aviso!',{positionClass: 'toast-top-right'});
          }
       } )
       .catch(err => console.log(err))
@@ -357,5 +353,36 @@ btnDetalle_Usuario(idusuario){
       this.usu_invalido=false;
     }
     }
+
+    fecha_usu : string;
+    FechaBajaUsu(dato){
+      console.log(dato);
+      if(dato=='SI'){
+        this.fecha_usu=new Date().toISOString().substring(0, 10);
+        this.Editusuario.fecha_usu=this.fecha_usu;
+        console.log(this.Editusuario.fecha_usu);
+      }
+    }
+
+
+    updateUsuario(frmEdit:NgForm){    
+      swal({
+        title: '¿Esta seguro que desea guardar?',
+        type: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si, Guardar!',
+        allowOutsideClick: false,
+        allowEscapeKey:false,
+      }).then((result) => {
+        if (result.value==true) {
+          console.log(frmEdit.value);
+        }
+      })
+        
+        
+        }
+    
 
 }
