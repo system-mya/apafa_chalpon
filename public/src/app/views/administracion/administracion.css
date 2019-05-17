@@ -187,3 +187,18 @@ input[type="file"]#archivo {
       background: #FF4136;
       color: #fff;
       padding: 5px 15px; }
+
+
+.valid-usu{
+  width: 100%;
+  margin-top: .25rem;
+  font-size: 80%;
+  color: #28a745;
+}
+
+.invalid-usu{
+  width: 100%;
+  margin-top: .25rem;
+  font-size: 80%;
+  color: #a30d0d;
+}

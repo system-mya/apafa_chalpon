@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 07-05-2019 a las 01:38:06
+-- Tiempo de generación: 17-05-2019 a las 00:11:37
 -- Versión del servidor: 5.7.14
 -- Versión de PHP: 5.6.25
 
@@ -28,6 +28,12 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_buscar_dni_usuario` (IN `dni` CH
 SELECT * FROM usuario
 WHERE dni_usu=dni
 AND estado_usu=1$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_consultar_nomusuario` (IN `nom` VARCHAR(20))  NO SQL
+SELECT * FROM usuario
+WHERE nom_usu=nom
+AND estado_usu=1
+AND fbaja_usu IS NULL$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_detalle_usuario` (IN `usuario` INT)  NO SQL
 SELECT u.idusuario,u.apellidos_usu,u.nombres_usu,
@@ -73,7 +79,8 @@ WHEN u.fbaja_usu IS NULL THEN 'blue'
 ELSE 'red'
 END) as color_estado FROM usuario u
 INNER JOIN perfil_usuario pu ON pu.idperfil_usuario=u.idperfil_usuario
-WHERE u.estado_usu=1$$
+WHERE u.estado_usu=1
+ORDER BY u.apellidos_usu$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_obtener_usuario` (IN `cod` INT)  NO SQL
 SELECT * FROM usuario u
@@ -116,7 +123,7 @@ CREATE TABLE `usuario` (
   `nom_usu` varchar(20) NOT NULL,
   `clave_usu` varchar(100) NOT NULL,
   `dni_usu` char(8) NOT NULL,
-  `nombres_usu` varchar(45) NOT NULL,
+  `nombres_usu` varchar(50) NOT NULL,
   `apellidos_usu` varchar(60) NOT NULL,
   `sexo_usu` char(1) NOT NULL,
   `celular_usu` char(9) NOT NULL,
@@ -139,7 +146,12 @@ INSERT INTO `usuario` (`idusuario`, `nom_usu`, `clave_usu`, `dni_usu`, `nombres_
 (36, '6546456556654', 'a642a77abd7d4f51bf9226ceaf891fcbb5b299b8', '11111111', '564654', 'rtstert', 'M', '564654654', NULL, 'hgfhf66', '2019-04-27', '2019-04-27', NULL, b'1', 1),
 (37, 'jalexanderv', '8886dddebc767898396b273571507c4fb8f882bc', '97941603', 'Jose Alexander', 'Rubio Vasquez', 'M', '979416039', NULL, 'calle jose quiñones # 54', '2019-04-29', '2019-04-29', NULL, b'1', 1),
 (38, 'sadfasf', '2d9e88102467bf1ca7b38b4b8875c5d142f81e97', '54165465', 'Susana Esther ', 'Vásquez Delgado', 'F', '634346346', NULL, 'fasfsfasf', '2019-04-29', NULL, NULL, b'1', 2),
-(39, 'javierjz', '41987e359a4665fdbc9631c4b19624f871b80491', '16686223', 'Francisco Javier', 'Julca Zeña', 'M', '978989288', NULL, 'calle chiclayo #114', '2019-05-02', NULL, NULL, b'1', 1);
+(39, 'javierjz', '41987e359a4665fdbc9631c4b19624f871b80491', '16686223', 'Francisco Javier', 'Julca Zeña', 'M', '978989288', NULL, 'calle chiclayo #114', '2019-05-02', NULL, NULL, b'1', 1),
+(41, 'dfgdfgdfg', '7f2f68e83f1b2b48ac9b833aa4fdfcc73dbaf5fe', '35325325', 'dfgdsg', 'dsgdsg', 'M', '342523523', NULL, 'rgfdgfdgdfgdfgdfgdfgdfg', '2019-05-09', NULL, NULL, b'1', 1),
+(42, 'dfgdfgdfg', 'dc3a17f33f25c05c0effeda5238bb9c3cbec2997', '35235325', 'erewr', 'werewr', 'M', '532542353', NULL, 'rfgdfgdfgdfg', '2019-05-09', NULL, NULL, b'1', 2),
+(43, '346346346', '1dd0a7bc412df95de0b48bb73d30b81a87ed2e19', '43543543', 'hdfh', 'dfhdfh', 'M', '436346346', NULL, '6346346346', '2019-05-09', NULL, NULL, b'1', 2),
+(44, 'ghjghjghjghj', '426a0a1a058054bf62c65b8a4236cbea3b320741', '35754745', 'gfjngfj', 'fgjfgj', 'F', '745754745', NULL, 'hjhgjghj', '2019-05-09', NULL, NULL, b'1', 2),
+(45, 'fdhdfh', '22653ab29b7d6f06608336cefb329ba8fcfe0781', '54645645', 'dffdhfdh', 'fdhdfhfdh', 'F', '525325235', NULL, 'fdgfdhdfh', '2019-05-10', NULL, NULL, b'1', 2);
 
 --
 -- Índices para tablas volcadas
@@ -171,7 +183,7 @@ ALTER TABLE `perfil_usuario`
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `idusuario` smallint(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `idusuario` smallint(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 --
 -- Restricciones para tablas volcadas
 --

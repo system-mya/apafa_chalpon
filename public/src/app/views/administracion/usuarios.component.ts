@@ -25,7 +25,7 @@ export class UsuariosComponent implements OnInit {
   @ViewChild('EditUsuarioModal') public EditUsuarioModal: ModalDirective;
   DataArray : any = [];
   // columnsToDisplay = ['idusuario', 'nom_usu', 'nombres_usu', 'apellidos_usu'];
-  displayedColumns: string[] = ['num_usu', 'nom_ape_usu', 'nom_usu', 'contacto_usu','perfil_usu','estado_usu','opciones_usu'];
+  displayedColumns: string[] = ['num_usu', 'nom_ape_usu', 'nombre_usu', 'contacto_usu','perfil_usu','estado_usu','opciones_usu'];
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -34,6 +34,8 @@ export class UsuariosComponent implements OnInit {
   public usuario : Usuario;
   public DatoBusqueda : Busqueda;
   public Editusuario : Usuario;
+  public usu_valid : boolean = false;
+  public usu_invalido : boolean = false;
   public  chooseView : string;
   constructor(private spinner: NgxSpinnerService,private http: Http,private _UsuariosServicios:UsuariosService,private toastr: ToastrService) {
     this.LoadTableData();
@@ -64,17 +66,19 @@ export class UsuariosComponent implements OnInit {
       fecha_usu: this.min,
       obser_usu:'',
       perfil_usu:0
-    };
+   };
     this.DatoBusqueda = {
       idbusqueda:0
     }
+
+    
   }
   alerts: any[] = [];
   positionOptions: TooltipPosition[] = ['after', 'before', 'above', 'below', 'left', 'right'];
   
 
   ngOnInit() {
-
+    
     
   }
   dismissible = true;
@@ -118,7 +122,8 @@ export class UsuariosComponent implements OnInit {
       perfil_usu:0
     };
     this.ListarPerfiles();
-
+    this.usu_valid  = false;
+    this.usu_invalido   = false;
   }
 
  
@@ -260,7 +265,14 @@ btnDetalle_Usuario(idusuario){
       .then(data => {
         if(data.status==1){
           this.ListarPerfiles();
-          this.toastr.success(data.message, 'Aviso!');
+          swal({
+            toast: true,
+            position: 'top-right',
+            showConfirmButton: false,
+            timer: 2000,
+            type: 'success',
+            title: data.message
+          })
           this.Editusuario = data.data[0];
           this.Editusuario.perfil_usu = data.data[0].idperfil_usuario;
           this.fecha_usu=data.data[0].fcreacion_usu.split("T",10);
@@ -319,24 +331,30 @@ btnDetalle_Usuario(idusuario){
     })
   }
  
-  usu_valid : boolean = true;
+  
   changeNomUsu(dato){
     if(dato!=null){
-      this.DatoBusqueda.datobusqueda=dato;
-    console.log(this.DatoBusqueda.datobusqueda);
-      this._UsuariosServicios.nom_usuario(this.DatoBusqueda)
-      .then(data => {
-        if(data.status==1){
-          this.usu_valid=true;
-          this.toastr.success(data.message, 'Aviso!');
-          this.DataUsuario = data.data[0];
-          console.log(this.DataUsuario);
-        }else{
-          this.toastr.error(data.message, 'Aviso!');
-          this.usu_valid=false;
-         }
-      } )
-      .catch(err => console.log(err))
+      if(dato!=' '){
+        this.DatoBusqueda.datobusqueda=dato;
+      console.log(this.DatoBusqueda.datobusqueda);
+        this._UsuariosServicios.nom_usuario(this.DatoBusqueda)
+        .then(data => {
+          if(data.status==1){
+            this.usu_valid=false;
+            this.usu_invalido=true;
+          }else{
+            this.usu_valid=true;
+            this.usu_invalido=false;
+           }
+        } )
+        .catch(err => console.log(err))
+      }else{
+        this.usu_valid=false;
+        this.usu_invalido=false;
+      }
+    }else{
+      this.usu_valid=false;
+      this.usu_invalido=false;
     }
     }
 
