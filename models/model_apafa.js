@@ -205,6 +205,51 @@ nom_usuario(user, res) {
 	});
 };
 
+
+update_usuario(user, res) {
+	connection.acquire((err, con) => {
+		if(err){
+			res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+		}else{
+        if ([user.obser_usu]==''){
+            var obser_usu="NULL";
+        }else{
+            obser_usu="'"+[user.obser_usu]+"'";
+        }
+
+        if ([user.correo_usu]==''){
+            var correo_usu="NULL";
+        }else{
+            correo_usu="'"+[user.obser_usu]+"'";
+		}
+		
+		if ([user.baja_usu]==''){
+            var baja_usu="NULL";
+        }else{
+            baja_usu="'"+[user.fecha_usu]+"'";
+        }
+					var query = "CALL pa_update_usuario("+ [user.idusuario] +",'"+ [user.nom_usu] 
+                    + "','" +[user.nombres_usu] + "','"+ [user.apellidos_usu]
+                    + "','"+ [user.sexo_usu] + "','"+ [user.celular_usu] + "',"+ correo_usu
+                    + ",'"+ [user.direccion_usu] + "',"+ baja_usu
+                    + ","+ obser_usu +","+ [user.perfil_usu] +")";
+                    con.query(query,(err, result) => {
+                        if(err){
+                            res.send({status: 0, message: 'ERROR EN LA BASE DE DATOSs'});
+                        }else{
+                            if (result.affectedRows == 1) {
+                                res.send({status: 1, message: 'Usuario Actualizado'});
+                            } else {
+                                res.send({status: 2, message: 'Usuario No Actualizado'});
+                            }
+                        }
+                    });
+
+        
+		}
+	});
+};
+
 //http://raquellorente.esy.es/nodejs/subir-y-bajar-archivos-del-servidor-con-express-y-node-js/
 agregar(user, res) {
 //El modulo 'fs' (File System) que provee Nodejs nos permite manejar los archivos

@@ -45,5 +45,10 @@ app.post('/api/nom_usuario', (req, res) => {
     user.nom_usuario(req.body, res);
 });
 
+app.post('/api/update_usuario', (req, res) => {
+    user.update_usuario(req.body, res);
+});
+
+
 }
 }

@@ -25,7 +25,7 @@ export class UsuariosComponent implements OnInit {
   @ViewChild('EditUsuarioModal') public EditUsuarioModal: ModalDirective;
   DataArray : any = [];
   // columnsToDisplay = ['idusuario', 'nom_usu', 'nombres_usu', 'apellidos_usu'];
-  displayedColumns: string[] = ['num_usu', 'nom_ape_usu', 'nombre_usu', 'contacto_usu','perfil_usu','estado_usu','opciones_usu'];
+  displayedColumns: string[] = ['nom_ape_usu', 'nombre_usu', 'contacto_usu','perfil_usu','estado_usu','opciones_usu'];
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -37,6 +37,7 @@ export class UsuariosComponent implements OnInit {
   public usu_valid : boolean = false;
   public usu_invalido : boolean = false;
   public  chooseView : string;
+  public loading : boolean;
   constructor(private spinner: NgxSpinnerService,private http: Http,private _UsuariosServicios:UsuariosService,private toastr: ToastrService) {
     this.LoadTableData();
     this.usuario = {
@@ -65,11 +66,13 @@ export class UsuariosComponent implements OnInit {
       direccion_usu:'',
       fecha_usu: this.min,
       obser_usu:'',
-      perfil_usu:0
+      perfil_usu:0,
+      baja_usu:''
    };
     this.DatoBusqueda = {
       idbusqueda:0
     }
+    this.loading=true;
 
     
   }
@@ -216,6 +219,7 @@ export class UsuariosComponent implements OnInit {
        this.dataSource = new MatTableDataSource(this.DataArray);
        this.dataSource.paginator = this.paginator;
        this.dataSource.sort = this.sort;
+       this.loading=false;
      }
    )
  }
@@ -248,14 +252,7 @@ btnDetalle_Usuario(idusuario){
     .then(data => {
       if(data.status==1){
         this.DataUsuario = data.data[0];
-        swal({
-          toast: true,
-          position: 'top-right',
-          showConfirmButton: false,
-          timer: 2000,
-          type: 'success',
-          title: data.message
-        })
+        this.toastr.success(data.message, 'Aviso!',{positionClass: 'toast-top-right',timeOut: 500});
       }else{
         this.toastr.error(data.message, 'Aviso!');
        }
@@ -263,7 +260,7 @@ btnDetalle_Usuario(idusuario){
     .catch(err => console.log(err))
   }
 
-
+  nomusu_original : string;
   btnEdit_Usuario(idusuario){
     this.DatoBusqueda.idbusqueda=idusuario;
     this.EditUsuarioModal.show(); 
@@ -271,9 +268,11 @@ btnDetalle_Usuario(idusuario){
       .then(data => {
         if(data.status==1){
           this.ListarPerfiles();
-          this.toastr.success(data.message, 'Aviso!',{positionClass: 'toast-top-right'});
+          this.toastr.success(data.message, 'Aviso!',{positionClass: 'toast-top-right',timeOut: 500});
           this.Editusuario = data.data[0];
           this.Editusuario.perfil_usu = data.data[0].idperfil_usuario;
+          this.nomusu_original = data.data[0].nom_usu;
+          this.Editusuario.baja_usu=null;
         }else{
           this.toastr.error(data.message, 'Aviso!',{positionClass: 'toast-top-right'});
          }
@@ -328,22 +327,41 @@ btnDetalle_Usuario(idusuario){
   }
  
   
-  changeNomUsu(dato){
+  changeNomUsu(opc,dato){
     if(dato!=null){
       if(dato!=' '){
-        this.DatoBusqueda.datobusqueda=dato;
-      console.log(this.DatoBusqueda.datobusqueda);
-        this._UsuariosServicios.nom_usuario(this.DatoBusqueda)
-        .then(data => {
-          if(data.status==1){
+        if(opc=='E'){
+          if(dato==this.nomusu_original){
             this.usu_valid=false;
-            this.usu_invalido=true;
-          }else{
-            this.usu_valid=true;
             this.usu_invalido=false;
-           }
-        } )
-        .catch(err => console.log(err))
+          }else{
+            this.DatoBusqueda.datobusqueda=dato;
+            this._UsuariosServicios.nom_usuario(this.DatoBusqueda)
+            .then(data => {
+              if(data.status==1){
+                this.usu_valid=false;
+                this.usu_invalido=true;
+              }else{
+                this.usu_valid=true;
+                this.usu_invalido=false;
+              }
+            } )
+            .catch(err => console.log(err))
+          }
+        }else{
+          this.DatoBusqueda.datobusqueda=dato;
+          this._UsuariosServicios.nom_usuario(this.DatoBusqueda)
+          .then(data => {
+            if(data.status==1){
+              this.usu_valid=false;
+              this.usu_invalido=true;
+            }else{
+              this.usu_valid=true;
+              this.usu_invalido=false;
+            }
+          } )
+          .catch(err => console.log(err))
+        }
       }else{
         this.usu_valid=false;
         this.usu_invalido=false;
@@ -377,7 +395,39 @@ btnDetalle_Usuario(idusuario){
         allowEscapeKey:false,
       }).then((result) => {
         if (result.value==true) {
-          console.log(frmEdit.value);
+          this._UsuariosServicios.update_usuario(frmEdit.value)
+          .then(data => {
+            if(data.status==1){
+              this.EditUsuarioModal.hide();
+              swal({
+                  title: 'Aviso!',
+                  text: data.message,
+                  type: 'success',
+                  allowOutsideClick: false,
+                  allowEscapeKey:false
+              })
+              this.LoadTableData();
+              this.mytemplateForm.resetForm();
+            }else{
+              if(data.status==2){
+                this.toastr.error(data.message, 'Aviso!');
+              }else{
+                swal({
+                  title: 'Aviso!',
+                  html:
+                  '<span style="color:red">' +
+                  data.message +
+                  '</span>',
+                  type: 'error',
+                  allowOutsideClick: false,
+                  allowEscapeKey:false
+                })
+               
+              }
+              
+            }
+          } )
+          .catch(err => console.log(err))
         }
       })
         

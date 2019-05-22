@@ -41,6 +41,9 @@ public nom_usuario(user:Busqueda){
    .map(data => data.json()).toPromise()
 }
 
-
+public update_usuario(user:Usuario){
+  return this._http.post('/api/update_usuario',user)
+   .map(data => data.json()).toPromise()
+}
  
 }
