@@ -255,7 +255,7 @@
                 <input type="text" class="form-control" id="direccion_usu" name="direccion_usu"
                 placeholder="Dirección" [(ngModel)]="usuario.direccion_usu" #direccion_usu="ngModel" 
                 onkeyup="verif(this)" maxlength="80" [ngClass]="{ 'is-invalid': myForm.submitted && direccion_usu.invalid }" 
-                pattern="^([A-Za-z0-9]{1,80}[\s]*)+$" required>
+                pattern="^([A-Za-z0-9#]{1,80}[\s]*)+$" required>
                 <div *ngIf="myForm.submitted && direccion_usu.invalid" class="invalid-feedback">
                     <div *ngIf="direccion_usu.errors.required">Dirección campo requerido</div>
                     <div *ngIf="direccion_usu.errors.pattern">Formato de Dirección incorrectos</div>
@@ -276,7 +276,7 @@
                 <label for="nom_usu" style="font-weight: bold;">Nombre Usuario <i class="fa fa-certificate" style="color:red !important"></i> :</label>
                 <input type="text" class="form-control" id="nom_usu" name="nom_usu"
                 placeholder="Nombre Usuario" [(ngModel)]="usuario.nom_usu" #nom_usu="ngModel" (ngModelChange)="changeNomUsu(usuario.nom_usu)"
-                onkeyup="verif(this)" maxlength="20" pattern="[A-Za-z0-9]{1,20}" [ngClass]="{ 'is-invalid': myForm.submitted && nom_usu.invalid}" required>
+                onkeyup="verif(this)" maxlength="20" pattern="^([a-z]+[0-9]{0,2}){5,20}$" [ngClass]="{ 'is-invalid': myForm.submitted && nom_usu.invalid}" required>
                 <div *ngIf="myForm.submitted && nom_usu.invalid" class="invalid-feedback">
                   <div *ngIf="nom_usu.errors.required">Nombre Usuario campo requerido</div>
                   <div *ngIf="nom_usu.errors.pattern">Error Formato campo</div>
