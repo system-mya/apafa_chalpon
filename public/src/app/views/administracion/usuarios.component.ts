@@ -25,7 +25,7 @@ export class UsuariosComponent implements OnInit {
   @ViewChild('EditUsuarioModal') public EditUsuarioModal: ModalDirective;
   DataArray : any = [];
   // columnsToDisplay = ['idusuario', 'nom_usu', 'nombres_usu', 'apellidos_usu'];
-  displayedColumns: string[] = ['nom_ape_usu', 'nombre_usu', 'contacto_usu','perfil_usu','estado_usu','opciones_usu'];
+  displayedColumns: string[] = ['num_usu','apellidos_usu', 'nom_usu', 'contacto_usu','perfil_usu','estado_usu','opciones_usu'];
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
