@@ -307,7 +307,7 @@ btnDetalle_Usuario(idusuario){
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Si, Resetear!',
+      confirmButtonText: 'Si, Guardar!',
       closeOnConfirm: false, //It does close the popup when I click on close button
       closeOnCancel: false,
       allowOutsideClick: false,
