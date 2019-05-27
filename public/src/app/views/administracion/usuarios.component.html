@@ -152,7 +152,8 @@
                  <button class="btn btn-danger btn-xs distancia_btn_opciones"
                       matTooltip="Eliminar"
                       matTooltipClass="tooltip-mensaje"
-                      [matTooltipPosition]="positionOptions[3]">
+                      [matTooltipPosition]="positionOptions[3]"
+                      (click)="btnEliminar_Usuario(element.idusuario)">
                  <span class="fa fa-trash-o btn-xs"></span>
                  </button>
               </td>
