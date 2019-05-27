@@ -54,5 +54,10 @@ app.post('/api/resetear_usuario', (req, res) => {
     user.resetear_usuario(req.body, res);
 });
 
+// LLAMADO AL MODELO ELIMINAR USUARIO
+app.post('/api/eliminar_usuario', (req, res) => {
+    user.eliminar_usuario(req.body, res);
+});
+
 }
 }
