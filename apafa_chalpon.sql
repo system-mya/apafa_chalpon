@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: localhost
--- Tiempo de generación: 27-05-2019 a las 23:05:45
+-- Tiempo de generación: 27-05-2019 a las 23:34:10
 -- Versión del servidor: 5.5.24-log
 -- Versión de PHP: 5.4.3
 
@@ -50,6 +50,10 @@ u.obser_usu FROM usuario u
 INNER JOIN perfil_usuario pu ON pu.idperfil_usuario=u.idperfil_usuario
 WHERE u.idusuario=usuario
 AND u.estado_usu=1$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_anhio`(IN `anhio` SMALLINT)
+    NO SQL
+UPDATE anhio_lectivo SET estado_anhio=0 WHERE idanhio=anhio$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_usuario`(IN `id_usu` SMALLINT)
     NO SQL
@@ -152,7 +156,7 @@ CREATE TABLE IF NOT EXISTS `anhio_lectivo` (
 --
 
 INSERT INTO `anhio_lectivo` (`idanhio`, `anhio`, `finicio_anhio`, `ffin_anhio`, `descripcion_anhio`, `condicion_anhio`, `estado_anhio`) VALUES
-(1, '2018', '2018-01-31', '2018-12-31', NULL, 'C', b'1');
+(1, '2018', '2018-01-31', '2018-12-31', NULL, 'C', b'0');
 
 -- --------------------------------------------------------
 
