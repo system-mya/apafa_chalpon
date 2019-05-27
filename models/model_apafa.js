@@ -266,7 +266,7 @@ resetear_usuario(user, res) {
 				if (result.affectedRows == 0) {
 					res.send({status: 2, message: 'CAMBIOS NO REALIZADOS'});
 				} else {
-					res.send({status: 1, message: 'CLAVE RESETEADA'});
+					res.send({status: 1, message: 'CLAVE RESETEADAss'});
 				}
 			}
 		});
