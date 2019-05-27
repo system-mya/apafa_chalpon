@@ -49,6 +49,10 @@ app.post('/api/update_usuario', (req, res) => {
     user.update_usuario(req.body, res);
 });
 
+// LLAMADO AL MODELO RESETEAR CLAVE
+app.post('/api/resetear_usuario', (req, res) => {
+    user.resetear_usuario(req.body, res);
+});
 
 }
 }

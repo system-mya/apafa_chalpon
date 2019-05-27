@@ -299,8 +299,8 @@ btnDetalle_Usuario(idusuario){
   //     }
   //   )
   // }
- opc : string = 'ANDERsson'
- btnReset_Usuario() {
+
+ btnReset_Usuario(idusuario) {
     swal({
       title: '¿Esta seguro que desea resetear contraseña?',
       type: 'question',
@@ -308,20 +308,30 @@ btnDetalle_Usuario(idusuario){
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Si, Guardar!',
-      closeOnConfirm: false, //It does close the popup when I click on close button
-      closeOnCancel: false,
       allowOutsideClick: false,
       allowEscapeKey:false,
     }).then((result) => {
-      console.log(result.value);
-      if (result.value) {
-        if(this.opc=='ANDER'){
-          swal(
-            'Deleted!',
-            'Your imaginary file has been deleted.',
-            'success'
-          )
-        }
+      //console.log(result.value);
+      if (result.value==true) {
+        this.DatoBusqueda.idbusqueda=idusuario;
+          //console.log(this.DatoBusqueda.idbusqueda);
+          //this.DetUsuarioModal.show(); 
+            this._UsuariosServicios.resetear_usuario(this.DatoBusqueda)
+            .then(data => {
+              if(data.status==1){
+                swal({
+                  title: 'Aviso!',
+                  text: data.message,
+                  type: 'success',
+                  allowOutsideClick: false,
+                  allowEscapeKey:false
+              })
+              this.LoadTableData();
+              }else{
+                this.toastr.error(data.message, 'Aviso!');
+               }
+            } )
+            .catch(err => console.log(err))
       }
     })
   }
@@ -434,5 +444,5 @@ btnDetalle_Usuario(idusuario){
         
         }
     
-
+  
 }

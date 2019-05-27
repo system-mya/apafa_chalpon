@@ -45,5 +45,10 @@ public update_usuario(user:Usuario){
   return this._http.post('/api/update_usuario',user)
    .map(data => data.json()).toPromise()
 }
- 
+
+// llamando al api resetear usuario
+public resetear_usuario(user:Busqueda){
+  return this._http.post('/api/resetear_usuario',user)
+   .map(data => data.json()).toPromise()
+}
 }

@@ -146,7 +146,7 @@
                   matTooltip="Resetear"
                   matTooltipClass="tooltip-mensaje"
                   [matTooltipPosition]="positionOptions[3]"
-                  (click)="btnReset_Usuario()"
+                  (click)="btnReset_Usuario(element.idusuario)"
                   [disabled]="element.estado_usu=='INACTIVO'">
                 <span class="fa fa-refresh"></span></button>
                  <button class="btn btn-danger btn-xs distancia_btn_opciones"

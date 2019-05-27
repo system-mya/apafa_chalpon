@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 17-05-2019 a las 23:35:18
+-- Tiempo de generación: 27-05-2019 a las 17:44:11
 -- Versión del servidor: 5.7.14
 -- Versión de PHP: 5.6.25
 
@@ -35,7 +35,7 @@ WHERE nom_usu=nom
 AND estado_usu=1
 AND fbaja_usu IS NULL$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_detalle_usuario` (IN `usuario` INT)  NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_detalle_usuario` (IN `usuario` SMALLINT)  NO SQL
 SELECT u.idusuario,u.apellidos_usu,u.nombres_usu,
 u.dni_usu,u.celular_usu,
 (CASE 
@@ -79,8 +79,7 @@ WHEN u.fbaja_usu IS NULL THEN 'blue'
 ELSE 'red'
 END) as color_estado FROM usuario u
 INNER JOIN perfil_usuario pu ON pu.idperfil_usuario=u.idperfil_usuario
-WHERE u.estado_usu=1
-ORDER BY u.apellidos_usu$$
+WHERE u.estado_usu=1$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_obtener_usuario` (IN `cod` INT)  NO SQL
 SELECT * FROM usuario u
@@ -88,6 +87,13 @@ INNER JOIN perfil_usuario pu ON pu.idperfil_usuario=u.idperfil_usuario
 WHERE u.idusuario=cod
 AND u.estado_usu=1
 AND u.fbaja_usu IS NULL$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_resetear_clave` (IN `id_usu` SMALLINT)  NO SQL
+UPDATE usuario SET clave_usu=SHA('1A2B3C4D')
+WHERE idusuario=id_usu$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_usuario` (IN `idusu` INT, IN `nom_usu` VARCHAR(20), IN `nombres` VARCHAR(45), IN `apellidos` VARCHAR(60), IN `sexo` CHAR(1), IN `celular` CHAR(9), IN `correo` VARCHAR(80), IN `direccion` VARCHAR(80), IN `fbaja` DATE, IN `obser` VARCHAR(50), IN `perfil` INT)  UPDATE usuario SET nom_usu=nom_usu,nombres_usu=nombres,apellidos_usu=apellidos,sexo_usu=sexo,celular_usu=celular,correo_usu=correo,direccion_usu=direccion,fbaja_usu=fbaja,obser_usu=obser,idperfil_usuario=perfil
+WHERE idusuario=idusu$$
 
 DELIMITER ;
 
@@ -141,17 +147,9 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`idusuario`, `nom_usu`, `clave_usu`, `dni_usu`, `nombres_usu`, `apellidos_usu`, `sexo_usu`, `celular_usu`, `correo_usu`, `direccion_usu`, `fcreacion_usu`, `fbaja_usu`, `obser_usu`, `estado_usu`, `idperfil_usuario`) VALUES
-(1, 'jjulcav', '0ab991f17474ae5db835f57e1f758b6fc3642239', '71919582', 'Jose Andersson', 'Julca Vasquez', 'M', '978902579', 'piscis16931@hotmail.com', 'calle chiclayo #114', '2019-04-12', '2019-12-31', '', b'1', 1),
-(2, 'mvsanchezv', '7c222fb2927d828af22f592134e8932480637c0d', '73258572', 'Marita Vanessa', 'Sanchez Velasquez', 'F', '979241872', '', 'VISTA ALEGRE CRUZ DE LA ESPERANZA', '2019-04-25', '2019-04-25', 'asfasf', b'1', 1),
-(36, '6546456556654', 'a642a77abd7d4f51bf9226ceaf891fcbb5b299b8', '11111111', '564654', 'rtstert', 'M', '564654654', NULL, 'hgfhf66', '2019-04-27', '2019-04-27', NULL, b'1', 1),
-(37, 'jalexanderv', '8886dddebc767898396b273571507c4fb8f882bc', '97941603', 'Jose Alexander', 'Rubio Vasquez', 'M', '979416039', NULL, 'calle jose quiñones # 54', '2019-04-29', '2019-04-29', NULL, b'1', 1),
-(38, 'sadfasf', '2d9e88102467bf1ca7b38b4b8875c5d142f81e97', '54165465', 'Susana Esther ', 'Vásquez Delgado', 'F', '634346346', NULL, 'fasfsfasf', '2019-04-29', NULL, NULL, b'1', 2),
-(39, 'javierjz', '41987e359a4665fdbc9631c4b19624f871b80491', '16686223', 'Francisco Javier', 'Julca Zeña', 'M', '978989288', NULL, 'calle chiclayo #114', '2019-05-02', NULL, NULL, b'1', 1),
-(41, 'dfgdfgdfg', '7f2f68e83f1b2b48ac9b833aa4fdfcc73dbaf5fe', '35325325', 'dfgdsg', 'dsgdsg', 'M', '342523523', NULL, 'rgfdgfdgdfgdfgdfgdfgdfg', '2019-05-09', NULL, NULL, b'1', 1),
-(42, 'dfgdfgdfg', 'dc3a17f33f25c05c0effeda5238bb9c3cbec2997', '35235325', 'erewr', 'werewr', 'M', '532542353', NULL, 'rfgdfgdfgdfg', '2019-05-09', NULL, NULL, b'1', 2),
-(43, '346346346', '1dd0a7bc412df95de0b48bb73d30b81a87ed2e19', '43543543', 'hdfh', 'dfhdfh', 'M', '436346346', NULL, '6346346346', '2019-05-09', NULL, NULL, b'1', 2),
-(44, 'ghjghjghjghj', '426a0a1a058054bf62c65b8a4236cbea3b320741', '35754745', 'gfjngfj', 'fgjfgj', 'F', '745754745', NULL, 'hjhgjghj', '2019-05-09', NULL, NULL, b'1', 2),
-(45, 'fdhdfh', '22653ab29b7d6f06608336cefb329ba8fcfe0781', '54645645', 'dffdhfdh', 'fdhdfhfdh', 'F', '525325235', NULL, 'fdgfdhdfh', '2019-05-10', NULL, NULL, b'1', 2);
+(46, 'jjulcav', 'ea8d414fe25b078a9b8e1516862bddf210e686bd', '71919582', 'Jose Andersson', 'Julca Vasquez', 'M', '978902579', NULL, 'calle chiclayo # 114', '2019-05-24', NULL, NULL, b'1', 1),
+(47, 'maritasv', 'a6b7354b8ec74b0550233c5cbf8773c6d28ceef4', '73258572', 'Marita Vanessa ', 'Sanchez Velasquez', 'F', '979241872', NULL, 'CP VISTA ALEGE MZ H LT 22', '2019-05-24', NULL, NULL, b'1', 2),
+(48, 'ryeryeryer', '21af3f2067e4c9cbd160a7c3cda809416ef1f849', '85678678', 'Karina', 'Lopez Vilela', 'F', '456786786', NULL, 'dhdhdfhdfh', '2019-05-24', NULL, NULL, b'1', 1);
 
 --
 -- Índices para tablas volcadas
@@ -183,7 +181,7 @@ ALTER TABLE `perfil_usuario`
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `idusuario` smallint(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+  MODIFY `idusuario` smallint(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 --
 -- Restricciones para tablas volcadas
 --
