@@ -443,6 +443,43 @@ btnDetalle_Usuario(idusuario){
         
         
         }
+
+    
+   btnEliminar_Usuario(idusuario) {
+          swal({
+            title: '¿Esta seguro que desea eliminar usuario?',
+            type: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, Guardar!',
+            allowOutsideClick: false,
+            allowEscapeKey:false,
+          }).then((result) => {
+            //console.log(result.value);
+            if (result.value==true) {
+              this.DatoBusqueda.idbusqueda=idusuario;
+                //console.log(this.DatoBusqueda.idbusqueda);
+                //this.DetUsuarioModal.show(); 
+                  this._UsuariosServicios.eliminar_usuario(this.DatoBusqueda)
+                  .then(data => {
+                    if(data.status==1){
+                      swal({
+                        title: 'Aviso!',
+                        text: data.message,
+                        type: 'success',
+                        allowOutsideClick: false,
+                        allowEscapeKey:false
+                    })
+                    this.LoadTableData();
+                    }else{
+                      this.toastr.error(data.message, 'Aviso!');
+                     }
+                  } )
+                  .catch(err => console.log(err))
+            }
+          })
+        }
     
   
 }
