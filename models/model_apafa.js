@@ -42,6 +42,9 @@ class User {
 
 listar_perfiles(res) {
     connection.acquire((err, con) => {
+		if(err){
+			res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+		}else{
         con.query('CALL pa_listar_perfil_usuario()', (err, result) => {
             con.release();
             if(err){
@@ -54,7 +57,8 @@ listar_perfiles(res) {
                 }
 			}
            
-        });
+		});
+	}
     });
 };
 
@@ -295,6 +299,74 @@ eliminar_usuario(user, res) {
 		});
 		}
 	});
+};
+
+nvo_anhio(anhio, res) {
+	connection.acquire((err, con) => {
+		if(err){
+			res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+		}else{
+        if ([anhio.descripcion]==''){
+            var descripcion="NULL";
+        }else{
+            descripcion="'"+[anhio.descripcion]+"'";
+        }
+
+        var query_anhio = "SELECT * FROM anhio_lectivo" +
+		"WHERE anhio='"+[anhio.anhio]+"'" +
+		"AND estado_anhio=1";
+        
+        con.query(query_anhio,(err, result) => {
+            con.release();
+			if(err){
+                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+			}else{
+				if (result[0].length == 0) {
+					var query = "CALL pa_insertar_anhio('"+ [anhio.anhio] +
+					"','"+[anhio.finicio]+"','"+[anhio.ffin]+"',"+descripcion+")";
+		
+                    con.query(query,(err, result) => {
+                        if(err){
+                            res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                        }else{
+                            if (result.affectedRows == 1) {
+                                res.send({status: 1, message: 'Año Registrado'});
+                            } else {
+                                res.send({status: 2, message: 'Año No Registrado'});
+                            }
+                        }
+                    });
+				} else {
+					res.send({status: 3, message: 'AÑO YA REGISTRADO'});
+				}
+			}
+		});
+
+        
+		}
+	});
+};
+
+listar_anhio(res) {
+    connection.acquire((err, con) => {
+		if(err){
+			res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+		}else{
+          con.query('CALL pa_listar_anhio()', (err, result) => {
+            con.release();
+            if(err){
+                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+			}else{
+				if (result[0].length == 0) {
+					res.send({status: 2, message: 'NO HAY DATOS EN LA TABLA AÑO'});
+				} else {
+                    res.send({status: 1, message: 'CONSULTA EXITOSA',data:result[0]});
+                }
+			}
+           
+		});
+	}
+    });
 };
 
 //http://raquellorente.esy.es/nodejs/subir-y-bajar-archivos-del-servidor-con-express-y-node-js/
