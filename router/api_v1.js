@@ -59,5 +59,16 @@ app.post('/api/eliminar_usuario', (req, res) => {
     user.eliminar_usuario(req.body, res);
 });
 
+// LLAMADO AL MODELO INSERTAR AÑO
+app.post('/api/insertar_anhio', (req, res) => {
+    user.nvo_anhio(req.body, res);
+});
+
+// LLAMADO AL MODELO LISTAR AÑO
+app.get('/api/listar_anhio', (req, res) => {
+    user.listar_anhio(res);
+});
+
+
 }
 }

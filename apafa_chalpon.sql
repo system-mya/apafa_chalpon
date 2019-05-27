@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: localhost
--- Tiempo de generación: 27-05-2019 a las 21:23:22
+-- Tiempo de generación: 27-05-2019 a las 23:05:45
 -- Versión del servidor: 5.5.24-log
 -- Versión de PHP: 5.4.3
 
@@ -64,6 +64,12 @@ WHERE u.nom_usu=nom
 AND u.clave_usu=SHA(clave)
 AND u.estado_usu=1$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_anhio`(IN `anhio` CHAR(4), IN `finicio` DATE, IN `ffin` INT, IN `descripcion` INT)
+    NO SQL
+INSERT INTO anhio_lectivo(anhio, finicio_anhio,
+ffin_anhio, descripcion_anhio) 
+VALUES (anhio,finicio,ffin,descripcion)$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_usuario`(IN `nom_usu` VARCHAR(20), IN `clave` VARCHAR(15), IN `dni` CHAR(8), IN `nombres` VARCHAR(45), IN `apellidos` VARCHAR(60), IN `sexo` CHAR(1), IN `celular` CHAR(9), IN `correo` VARCHAR(80), IN `direccion` VARCHAR(80), IN `fcreacion` DATE, IN `obser` VARCHAR(50), IN `perfil` INT)
 INSERT INTO usuario(nom_usu, 
 clave_usu,dni_usu,nombres_usu,apellidos_usu, 
@@ -72,6 +78,18 @@ direccion_usu,fcreacion_usu,
 obser_usu,idperfil_usuario)
 VALUES (nom_usu,SHA(clave),dni,nombres,apellidos,sexo,
 celular,correo,direccion,fcreacion,obser,perfil)$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_anhio`()
+    NO SQL
+SELECT idanhio,anhio,finicio_anhio,ffin_anhio,descripcion_anhio,
+(CASE
+  WHEN condicion_anhio='N' THEN 'NUEVO'
+  WHEN condicion_anhio='A' THEN 'APERTURADO'
+  WHEN condicion_anhio='R' THEN 'REAPERTURADO'
+  ELSE 'CERRADO'
+ END) as condicion
+  FROM anhio_lectivo
+WHERE estado_anhio=1$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_perfil_usuario`()
     NO SQL
@@ -111,6 +129,30 @@ UPDATE usuario SET nom_usu=nom_usu,nombres_usu=nombres,apellidos_usu=apellidos,s
 WHERE idusuario=idusu$$
 
 DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `anhio_lectivo`
+--
+
+CREATE TABLE IF NOT EXISTS `anhio_lectivo` (
+  `idanhio` smallint(6) NOT NULL AUTO_INCREMENT,
+  `anhio` char(4) NOT NULL,
+  `finicio_anhio` date NOT NULL,
+  `ffin_anhio` date NOT NULL,
+  `descripcion_anhio` varchar(150) DEFAULT NULL,
+  `condicion_anhio` char(1) NOT NULL DEFAULT 'N',
+  `estado_anhio` bit(1) NOT NULL DEFAULT b'1',
+  PRIMARY KEY (`idanhio`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+
+--
+-- Volcado de datos para la tabla `anhio_lectivo`
+--
+
+INSERT INTO `anhio_lectivo` (`idanhio`, `anhio`, `finicio_anhio`, `ffin_anhio`, `descripcion_anhio`, `condicion_anhio`, `estado_anhio`) VALUES
+(1, '2018', '2018-01-31', '2018-12-31', NULL, 'C', b'1');
 
 -- --------------------------------------------------------
 
