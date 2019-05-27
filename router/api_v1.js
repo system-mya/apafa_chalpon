@@ -69,6 +69,11 @@ app.get('/api/listar_anhio', (req, res) => {
     user.listar_anhio(res);
 });
 
+// LLAMADO AL MODELO ELIMINAR AÑO
+app.post('/api/eliminar_anhio', (req, res) => {
+    user.eliminar_anhio(req.body, res);
+});
+
 
 }
 }
