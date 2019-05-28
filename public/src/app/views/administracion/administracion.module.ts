@@ -11,7 +11,7 @@ import { BrandButtonsComponent } from './brand-buttons.component';
 
 // Dropdowns Component
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-import { DropdownsComponent } from './dropdowns.component';
+import { AnhiosComponent } from './anhios.component';
 
 // Buttons Routing
 import { AdministracionRoutingModule } from './administracion-routing.module';
@@ -112,7 +112,7 @@ import { MatAutocompleteModule,
   ],
   declarations: [
     UsuariosComponent,
-    DropdownsComponent,
+    AnhiosComponent,
     BrandButtonsComponent
   ],
   providers: [

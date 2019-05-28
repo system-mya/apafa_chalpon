@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { UsuariosComponent } from './usuarios.component';
-import { DropdownsComponent } from './dropdowns.component';
+import { AnhiosComponent } from './anhios.component';
 import { BrandButtonsComponent } from './brand-buttons.component';
 
 const routes: Routes = [
@@ -24,10 +24,10 @@ const routes: Routes = [
         }
       },
       {
-        path: 'dropdowns',
-        component: DropdownsComponent,
+        path: 'anhios',
+        component: AnhiosComponent,
         data: {
-          title: 'Dropdowns'
+          title: 'Años'
         }
       },
       {

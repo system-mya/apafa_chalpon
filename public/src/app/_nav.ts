@@ -149,8 +149,8 @@ export const navAD: NavData[] = [
         icon: 'icon-user'
       },
       {
-        name: 'Periodos',
-        url: '/administracion/periodos',
+        name: 'Años Lectivos',
+        url: '/administracion/anhios',
         icon: 'icon-calendar'
       }
     ]

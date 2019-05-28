@@ -38,7 +38,7 @@ export class UsuariosComponent implements OnInit {
   public usu_invalido : boolean = false;
   public  chooseView : string;
   public loading : boolean;
-  constructor(private spinner: NgxSpinnerService,private http: Http,private _UsuariosServicios:UsuariosService,private toastr: ToastrService) {
+  constructor(private http: Http,private _UsuariosServicios:UsuariosService,private toastr: ToastrService) {
     this.LoadTableData();
     this.usuario = {
       nom_usu:'',
