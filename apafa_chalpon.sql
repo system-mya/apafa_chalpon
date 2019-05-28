@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: localhost
--- Tiempo de generación: 27-05-2019 a las 23:34:10
+-- Tiempo de generación: 28-05-2019 a las 05:25:52
 -- Versión del servidor: 5.5.24-log
 -- Versión de PHP: 5.4.3
 
@@ -85,13 +85,20 @@ celular,correo,direccion,fcreacion,obser,perfil)$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_anhio`()
     NO SQL
-SELECT idanhio,anhio,finicio_anhio,ffin_anhio,descripcion_anhio,
+SELECT idanhio,anhio,finicio_anhio,ffin_anhio,
+LEFT(descripcion_anhio,20) as descripcion_anhio,
 (CASE
   WHEN condicion_anhio='N' THEN 'NUEVO'
   WHEN condicion_anhio='A' THEN 'APERTURADO'
   WHEN condicion_anhio='R' THEN 'REAPERTURADO'
   ELSE 'CERRADO'
- END) as condicion
+ END) as condicion,
+ (CASE
+  WHEN condicion_anhio='N' THEN '#0d28e8'
+  WHEN condicion_anhio='A' THEN '#2a7703'
+  WHEN condicion_anhio='R' THEN '#ff7600'
+  ELSE '#e4040e'
+ END) as color_condicion
   FROM anhio_lectivo
 WHERE estado_anhio=1$$
 
@@ -156,7 +163,7 @@ CREATE TABLE IF NOT EXISTS `anhio_lectivo` (
 --
 
 INSERT INTO `anhio_lectivo` (`idanhio`, `anhio`, `finicio_anhio`, `ffin_anhio`, `descripcion_anhio`, `condicion_anhio`, `estado_anhio`) VALUES
-(1, '2018', '2018-01-31', '2018-12-31', NULL, 'C', b'0');
+(1, '2018', '2018-01-31', '2018-12-31', 'fasfsaf sa fsa fas ffas fas fasf asfasf asf asfasf asf asfasfasf asf ', 'C', b'1');
 
 -- --------------------------------------------------------
 

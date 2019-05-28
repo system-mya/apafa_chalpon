@@ -9,7 +9,7 @@ import { ToastrService } from 'ngx-toastr';
   encapsulation: ViewEncapsulation.None,
 })
 export class AnhiosComponent implements OnInit {
-
+  positionOptions: TooltipPosition[] = ['after', 'before', 'above', 'below', 'left', 'right'];
   displayedColumns: string[] = ['num_anhio','anhio','f_inicio','f_fin','descripcion','condicion','opciones'];
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;

@@ -7,7 +7,10 @@
     <div class="card-header">
      <strong>Años Lectivos</strong>
      <span class="float-right">
-       <button class="btn btn-success btn-xs" >
+       <button class="btn btn-success btn-xs" 
+       matTooltip="Agregar Año Lectivo"
+       matTooltipClass="tooltip-mensaje"
+       data-toggle="modal">
          <span class="fa fa-plus-square"></span>
        </button>
      </span>
@@ -28,34 +31,53 @@
        
          <ng-container matColumnDef="anhio">
            <th mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" nowrap > Año </th>
-           <td mat-cell *matCellDef="let element" nowrap> {{element.anhio}}</td>
+           <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.anhio}}</td>
          </ng-container>
      
      
          <ng-container matColumnDef="f_inicio">
-           <th mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" nowrap> Fecha Inicio </th>
-           <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.finicio_anhio}} </td>
+           <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Fecha Inicio </th>
+           <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.finicio_anhio | date:'dd/MM/yyyy'}} </td>
          </ng-container>
      
         
          <ng-container matColumnDef="f_fin">
            <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Fecha Fin </th>
-           <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.ffin_anhio}} </td>
+           <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.ffin_anhio | date:'dd/MM/yyyy'}} </td>
          </ng-container>
 
          <ng-container matColumnDef="descripcion">
              <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Descripcion </th>
-             <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.descripcion_anhio}} </td>
+             <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.descripcion_anhio}} .....</td>
          </ng-container>
 
          <ng-container matColumnDef="condicion">
            <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Condicion </th>
-           <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap><b>{{element.condicion}}</b></td>
+           <td mat-cell *matCellDef="let element" style="text-align: center !important" [ngStyle]="{'color':element.color_condicion}" nowrap><b>{{element.condicion}}</b></td>
          </ng-container>
            <ng-container matColumnDef="opciones">
              <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Opciones </th>
              <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> 
-             
+              <button class="btn btn-info btn-xs distancia_btn_opciones"
+              matTooltip="Detalle"
+              matTooltipClass="tooltip-mensaje"
+              [matTooltipPosition]="positionOptions[3]"
+              data-toggle="modal" (click)="btnDetalle_Usuario(element.idusuario)">
+            <span class="fa fa-address-card-o"></span></button>
+              <button class="btn btn-success btn-xs distancia_btn_opciones"
+            matTooltip="Editar"
+            matTooltipClass="tooltip-mensaje"
+            [matTooltipPosition]="positionOptions[3]"
+            data-toggle="modal" (click)="btnEdit_Usuario(element.idusuario)"
+            [disabled]="element.estado_usu=='INACTIVO'">
+          <span class="fa fa-edit"></span></button>
+         <button class="btn btn-danger btn-xs distancia_btn_opciones"
+              matTooltip="Eliminar"
+              matTooltipClass="tooltip-mensaje"
+              [matTooltipPosition]="positionOptions[3]"
+              (click)="btnEliminar_Usuario(element.idusuario)">
+         <span class="fa fa-trash-o btn-xs"></span>
+         </button>
               
              </td>
            </ng-container>
