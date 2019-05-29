@@ -2,13 +2,13 @@
 <app-header
   [navbarBrandRouterLink]="['/dashboard']"
   [fixed]="true"
-  [navbarBrandFull]="{src: 'assets/img/brand/logo.png', width: 89, height: 25, alt: 'CoreUI Logo'}"
-  [navbarBrandMinimized]="{src: 'assets/img/brand/sygnet.svg', width: 30, height: 30, alt: 'CoreUI Logo'}"
+  [navbarBrandFull]="{src: 'assets/img/brand/logo.png', width: 89, height: 25}"
+  [navbarBrandMinimized]="{src: 'assets/img/brand/sygnet.png', width: 30, height: 30}"
   [sidebarToggler]="'lg'"
   [asideMenuToggler]="'lg'">
   <ul class="nav navbar-nav d-md-down-none">
     <li class="nav-item px-3">
-      <i class="icon-calendar"></i><span class=""> Periodo: {{username}}</span>
+      <i class="icon-calendar"></i><span class=""> Año Lectivo: {{username}}</span>
     </li>
     <li class="nav-item px-3">
       <i class="icon-folder-alt"></i><span class=""> Perfil: {{username}}</span>

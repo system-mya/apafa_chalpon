@@ -1,5 +1,3 @@
-//llamamos al paquete mysql que hemos instalado
-const mysql = require('mysql'),
 //creamos la conexion a nuestra base de datos con los datos de acceso de cada uno
 connection = require('../conexion');
 function addZero(i) {
@@ -21,7 +19,7 @@ function hoyFecha(){
         return yyyy+'-'+mm+'-'+dd;
 }
 //creamos un objeto para ir almacenando todo lo que necesitemos
-class User {
+class Administracion {
   get(res) {
         connection.acquire((err, con) => {
             con.query('CALL LISTAR_DEPARTAMENTOS()', (err, result) => {
@@ -306,16 +304,14 @@ nvo_anhio(anhio, res) {
 		if(err){
 			res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
 		}else{
-        if ([anhio.descripcion]==''){
+        if ([anhio.descripcion_anhio]==''){
             var descripcion="NULL";
         }else{
-            descripcion="'"+[anhio.descripcion]+"'";
+            descripcion="'"+[anhio.descripcion_anhio]+"'";
         }
 
-        var query_anhio = "SELECT * FROM anhio_lectivo" +
-		"WHERE anhio='"+[anhio.anhio]+"'" +
-		"AND estado_anhio=1";
-        
+        var query_anhio = "CALL pa_verificar_anhio('"+ [anhio.anhio] +"')";
+
         con.query(query_anhio,(err, result) => {
             con.release();
 			if(err){
@@ -323,8 +319,8 @@ nvo_anhio(anhio, res) {
 			}else{
 				if (result[0].length == 0) {
 					var query = "CALL pa_insertar_anhio('"+ [anhio.anhio] +
-					"','"+[anhio.finicio]+"','"+[anhio.ffin]+"',"+descripcion+")";
-		
+					"','"+[anhio.finicio_anhio]+"','"+[anhio.ffin_anhio]+"',"+descripcion+")";
+		         
                     con.query(query,(err, result) => {
                         if(err){
                             res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
@@ -337,7 +333,7 @@ nvo_anhio(anhio, res) {
                         }
                     });
 				} else {
-					res.send({status: 3, message: 'AÑO YA REGISTRADO'});
+					res.send({status: 3, message:'AÑO YA REGISTRADO',data:result[0]});
 				}
 			}
 		});
@@ -416,4 +412,4 @@ res.send('¡archivo subido!');
 
 }
 
-module.exports = new User();
+module.exports = new Administracion();

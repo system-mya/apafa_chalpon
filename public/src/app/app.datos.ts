@@ -32,10 +32,14 @@ export class Perfiles {
     
 }
 
-export class CHARACTERS
+export class Anhio_Lectivo
 {
     
-    public idusuario : number;
-    public apellidos_usu : string;
-    public celular_usu:string;
+    public idanhio ?: number;
+    public anhio ?: string;
+    public finicio_anhio ?:string;
+    public ffin_anhio ?:string;
+    public descripcion_anhio ?:string;
+    public condicion_anhio ?:string;
+    public estado_anhio ?:boolean;
 }

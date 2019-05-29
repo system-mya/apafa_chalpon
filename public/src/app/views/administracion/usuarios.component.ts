@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild,ViewEncapsulation } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Http, Response } from '@angular/http';
 import {MatPaginator, MatSort, MatTableDataSource,TooltipPosition} from '@angular/material';
-import {ModalDirective,BsModalService} from 'ngx-bootstrap/modal';
+import {ModalDirective} from 'ngx-bootstrap/modal';
 import 'rxjs/add/operator/map';
 import { UsuariosService } from './usuarios.service';
 import {Usuario,Busqueda} from '../../app.datos';
@@ -183,9 +183,7 @@ export class UsuariosComponent implements OnInit {
         .catch(err => console.log(err))
       }
     })
-      
-      
-      }
+  }
   
   applyFilter(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
