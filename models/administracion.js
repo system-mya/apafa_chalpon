@@ -6,7 +6,7 @@ function addZero(i) {
     }
     return i;
 }
-
+//FUNCION PARA OBTENER FECHA DE ACTUAL
 function hoyFecha(){
     var hoy = new Date();
         var dd = hoy.getDate();
@@ -66,7 +66,7 @@ listar_perfiles(res) {
 		if(err){
 			res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
 		}else{
-		var query = "CALL pa_iniciar_sesion('"+ [user.username] +"','"+ [user.password] +"','"+ hoyFecha()+ "')";
+		var query = "CALL pa_iniciar_sesion('"+ [user.username] +"','"+ [user.password] +"')";
 		//res.send("CALL INICIAR_SESION('"+ [user.username] +"','"+ [user.password] +"','"+ hoyFecha()+ "')");
 		con.query(query,(err, result) => {
 			con.release();

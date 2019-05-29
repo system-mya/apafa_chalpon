@@ -29,12 +29,16 @@ export class LoginComponent implements OnInit {
         if(data.status==1){
           this.toastr.success('Bienvenido ' + data.data[0].nom_usu, 'Aviso!');
           localStorage.setItem('username',data.data[0].nom_usu);
-          localStorage.setItem('perfil',data.data[0].abrev_perfil);
+          localStorage.setItem('id_perfil',data.data[0].abrev_perfil);
+          localStorage.setItem('perfil',data.data[0].nombre_perfil);
+          if(data.data[0].anhio_lectivo!=null){
+            localStorage.setItem('_anhio',data.data[0].anhio_lectivo);
+          }else{
+            localStorage.setItem('_anhio','SIN APERTURAR');
+          }
           var encrypted = this._userServices.set('123456$#@$^@1ERF',data.data[0].idusuario);
           localStorage.setItem('ID',encrypted);
           var decrypted = this._userServices.get('123456$#@$^@1ERF', encrypted);
-          console.log('Encrypted :' + encrypted);
-          console.log('Encrypted :' + decrypted);
           this.router.navigate(['/dashboard']);
         }else{
           this.toastr.error(data.message, 'Aviso!');

@@ -11,6 +11,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 export class DefaultLayoutComponent implements OnInit {
   public username:string;
   public perfil:string;
+  public anhio_lectivo:string;
   public navItems:any;
   public sidebarMinimized = true;
   private changes: MutationObserver;
@@ -30,9 +31,10 @@ export class DefaultLayoutComponent implements OnInit {
   }
 
   ngOnInit() {
-    
     this.username=localStorage.getItem('username');
-    if(localStorage.getItem('perfil')=='AD'){
+    this.perfil=localStorage.getItem('perfil');
+    this.anhio_lectivo=localStorage.getItem('_anhio');
+    if(localStorage.getItem('id_perfil')=='AD'){
       this.navItems=navAD;
     }else{
       this.navItems=navSE;
@@ -41,6 +43,7 @@ export class DefaultLayoutComponent implements OnInit {
 
   logout(){
     localStorage.removeItem('username');
+    localStorage.removeItem('id_perfil');
     localStorage.removeItem('perfil');
     location.reload();
   }
