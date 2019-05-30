@@ -2,6 +2,7 @@ export class Busqueda {
     idbusqueda : number;
     datobusqueda ?: string;
 }
+
 export class Usuario {
     public idusuario ?: number
     public nom_usu : string;
@@ -29,12 +30,10 @@ export class Perfiles {
     public abrev_perfil : string;
     public estado_perfil : boolean;
     
-    
 }
 
 export class Anhio_Lectivo
-{
-    
+{    
     public idanhio ?: number;
     public anhio ?: string;
     public finicio_anhio ?:string;
@@ -42,4 +41,13 @@ export class Anhio_Lectivo
     public descripcion_anhio ?:string;
     public condicion_anhio ?:string;
     public estado_anhio ?:boolean;
+}
+
+export class Grados
+{
+  public id_grado ?: number;
+  public descripcion_grado ?: string;
+  public nivel_grado ?: string;
+  public estado ?: string;
+  public estado_grado ?: boolean;
 }

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 29-05-2019 a las 00:43:27
+-- Tiempo de generación: 30-05-2019 a las 01:43:07
 -- Versión del servidor: 5.7.14
 -- Versión de PHP: 5.6.25
 
@@ -55,8 +55,9 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_usuario` (IN `id_usu` S
 UPDATE usuario SET estado_usu=0
 WHERE idusuario=id_usu$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_iniciar_sesion` (IN `nom` VARCHAR(20), IN `clave` VARCHAR(15), IN `fecha` DATE)  NO SQL
-SELECT * FROM usuario u
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_iniciar_sesion` (IN `nom` VARCHAR(20), IN `clave` VARCHAR(15))  NO SQL
+SELECT u.idusuario,u.nom_usu,pu.abrev_perfil,pu.nombre_perfil,
+(SELECT anhio from anhio_lectivo WHERE condicion_anhio='A') AS anhio_lectivo FROM usuario u
 INNER JOIN perfil_usuario pu ON u.idperfil_usuario=pu.idperfil_usuario
 WHERE u.nom_usu=nom
 AND u.clave_usu=SHA(clave)
@@ -91,6 +92,14 @@ LEFT(descripcion_anhio,20) as descripcion_anhio,
  END) as color_condicion
   FROM anhio_lectivo
 WHERE estado_anhio=1$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_grados` (IN `nivel` CHAR(1))  NO SQL
+SELECT id_grado,descripcion_grado,nivel_grado,
+(CASE 
+     WHEN estado_grado=1 THEN 'ACTIVO'
+     ELSE 'INACTIVO'
+END) as estado, estado_grado FROM grados 
+WHERE nivel_grado=nivel$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_perfil_usuario` ()  NO SQL
 SELECT * FROM perfil_usuario
@@ -164,6 +173,30 @@ INSERT INTO `anhio_lectivo` (`idanhio`, `anhio`, `finicio_anhio`, `ffin_anhio`, 
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `grados`
+--
+
+CREATE TABLE `grados` (
+  `id_grado` int(11) NOT NULL,
+  `descripcion_grado` varchar(40) NOT NULL,
+  `nivel_grado` char(1) NOT NULL,
+  `estado_grado` bit(1) NOT NULL DEFAULT b'1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `grados`
+--
+
+INSERT INTO `grados` (`id_grado`, `descripcion_grado`, `nivel_grado`, `estado_grado`) VALUES
+(1, 'PRIMER GRADO SECUNDARIA', 'S', b'1'),
+(2, 'SEGUNDO GRADO SECUNDARIA', 'S', b'1'),
+(3, 'TERCER GRADO SECUNDARIA', 'S', b'1'),
+(4, 'CUARTO GRADO SECUNDARIA', 'S', b'1'),
+(5, 'QUINTO GRADO SECUNDARIA', 'S', b'0');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `perfil_usuario`
 --
 
@@ -226,6 +259,12 @@ ALTER TABLE `anhio_lectivo`
   ADD PRIMARY KEY (`idanhio`);
 
 --
+-- Indices de la tabla `grados`
+--
+ALTER TABLE `grados`
+  ADD PRIMARY KEY (`id_grado`);
+
+--
 -- Indices de la tabla `perfil_usuario`
 --
 ALTER TABLE `perfil_usuario`
@@ -247,6 +286,11 @@ ALTER TABLE `usuario`
 --
 ALTER TABLE `anhio_lectivo`
   MODIFY `idanhio` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+--
+-- AUTO_INCREMENT de la tabla `grados`
+--
+ALTER TABLE `grados`
+  MODIFY `id_grado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 --
 -- AUTO_INCREMENT de la tabla `perfil_usuario`
 --

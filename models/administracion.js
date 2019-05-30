@@ -183,7 +183,6 @@ editar_usuario(user, res) {
 	});
 };
 
-
 nom_usuario(user, res) {
 	connection.acquire((err, con) => {
 		if(err){
@@ -206,7 +205,6 @@ nom_usuario(user, res) {
 		}
 	});
 };
-
 
 update_usuario(user, res) {
 	connection.acquire((err, con) => {
@@ -386,6 +384,28 @@ eliminar_anhio(user, res) {
 		});
 		}
 	});
+};
+
+listar_grados(res) {
+    connection.acquire((err, con) => {
+		if(err){
+			res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+		}else{
+        con.query("CALL pa_listar_grados('S')", (err, result) => {
+            con.release();
+            if(err){
+                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+			}else{
+				if (result[0].length == 0) {
+					res.send({status: 2, message: 'NO HAY DATOS EN LA TABLA GRADOS'});
+				} else {
+                    res.send({status: 1, message: 'CONSULTA EXITOSA',data:result[0]});
+                }
+			}
+           
+		});
+	}
+    });
 };
 
 //http://raquellorente.esy.es/nodejs/subir-y-bajar-archivos-del-servidor-con-express-y-node-js/

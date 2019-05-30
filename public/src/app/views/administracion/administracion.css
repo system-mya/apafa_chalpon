@@ -202,3 +202,16 @@ input[type="file"]#archivo {
   font-size: 80%;
   color: #a30d0d;
 }
+
+.switch-success .switch-input:checked + .switch-slider::before{
+margin-left: 25px !important;
+}
+
+.switch-success .switch-input:not(:checked) + .switch-slider::before{
+background-color: #a30d0d !important;
+color: #a30d0d !important;
+}
+ 
+.switch-label .switch-slider::after{
+  width: 70% !important;
+}

@@ -73,6 +73,9 @@ app.post('/api/eliminar_anhio', (req, res) => {
     admin.eliminar_anhio(req.body, res);
 });
 
+app.get('/api/listar_grados', (req, res) => {
+    admin.listar_grados(res);
+});
 
 }
 }

@@ -152,6 +152,11 @@ export const navAD: NavData[] = [
         name: 'Años Lectivos',
         url: '/administracion/anhios',
         icon: 'icon-calendar'
+      },
+      {
+        name: 'Grados y Secciones',
+        url: '/administracion/grado_seccion',
+        icon: 'icon-grid'
       }
     ]
   },  
