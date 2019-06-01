@@ -50,4 +50,14 @@ export class Grados
   public nivel_grado ?: string;
   public estado ?: string;
   public estado_grado ?: boolean;
+  public total ?: number;
+}
+
+export class Secciones
+{
+    public id_seccion ?: number;
+    public nombre_seccion ?: string;
+    public id_grado ?: number;
+    public id_turno ?: string;
+    public estado_seccion ?: boolean;
 }

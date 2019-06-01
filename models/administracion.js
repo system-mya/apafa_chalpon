@@ -408,6 +408,50 @@ listar_grados(res) {
     });
 };
 
+cambiar_estado_grado(grado, res) {
+	connection.acquire((err, con) => {
+		if(err){
+			res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+		}else{
+		var query = "CALL pa_cambiar_estado_grado("+ [grado.idbusqueda] +","+ [grado.datobusqueda] +")"; 
+		con.query(query,(err, result) => {
+			con.release();
+			if(err){
+                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+			}else{
+				if (result.affectedRows == 0) {
+					res.send({status: 2, message: 'CAMBIOS NO REALIZADOS'});
+				} else {
+					res.send({status: 1, message: 'CAMBIO REALIZADO'});
+				}
+			}
+		});
+		}
+	});
+};
+
+listar_secciones_xgrados(grado,res) {
+    connection.acquire((err, con) => {
+		if(err){
+			res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+		}else{
+        con.query("CALL pa_listar_secciones_xgrado("+ [grado.idbusqueda] +")", (err, result) => {
+            con.release();
+            if(err){
+                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+			}else{
+				if (result[0].length == 0) {
+					res.send({status: 2, message: 'NO HAY DATOS EN LA TABLA SECCIONES'});
+				} else {
+                    res.send({status: 1, message: 'CONSULTA EXITOSA',data:result[0]});
+                }
+			}
+           
+		});
+	}
+    });
+};
+
 //http://raquellorente.esy.es/nodejs/subir-y-bajar-archivos-del-servidor-con-express-y-node-js/
 agregar(user, res) {
 //El modulo 'fs' (File System) que provee Nodejs nos permite manejar los archivos

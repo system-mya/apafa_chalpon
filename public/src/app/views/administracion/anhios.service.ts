@@ -22,6 +22,6 @@ export class AnhiosService {
   return this._http.post('/api/insertar_anhio',anhio)
    .map(data => data.json()).toPromise()
 }
- 
-  
+
+
 }

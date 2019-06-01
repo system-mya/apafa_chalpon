@@ -77,5 +77,15 @@ app.get('/api/listar_grados', (req, res) => {
     admin.listar_grados(res);
 });
 
+// CAMBIAR EL ESTADO DE GRADO
+app.post('/api/cambiar_estado_grado', (req, res) => {
+    admin.cambiar_estado_grado(req.body, res);
+});
+
+// LISTAR SECCIONES POR GRADO
+app.post('/api/listar_secciones_xgrados', (req, res) => {
+    admin.listar_secciones_xgrados(req.body, res);
+});
+
 }
 }

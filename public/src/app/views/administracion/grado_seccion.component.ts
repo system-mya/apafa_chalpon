@@ -1,9 +1,12 @@
 import { Component, OnInit, ViewChild,ViewEncapsulation } from '@angular/core';
 import { GradoSeccionService } from './grado-seccion.service';
 import { ToastrService } from 'ngx-toastr';
-import { Grados } from '../../app.datos';
+import { Grados,Busqueda,Secciones } from '../../app.datos';
 import {TooltipPosition} from '@angular/material';
 import 'rxjs/add/operator/map';
+declare var swal: any;
+import { LoadingBarService } from '@ngx-loading-bar/core';
+
 @Component({
   templateUrl: 'grado_seccion.component.html',
   styleUrls: ['administracion.css'],
@@ -11,9 +14,15 @@ import 'rxjs/add/operator/map';
 })
 export class GradoSeccionComponent implements OnInit {
   positionOptions: TooltipPosition[] = ['after', 'before', 'above', 'below', 'left', 'right'];
-  constructor(private _GradoServicios:GradoSeccionService,private toastr: ToastrService) {
+  public DatoBusqueda : Busqueda;
+  public loading : boolean;
+  constructor(private loadingBar: LoadingBarService,private _GradoServicios:GradoSeccionService,private toastr: ToastrService) {
     this.ListarGrados();
-    
+    this.DatoBusqueda = {
+      idbusqueda:0,
+      datobusqueda:''
+    }
+    this.loading=true;
    }
 
   ngOnInit() {
@@ -27,7 +36,7 @@ export class GradoSeccionComponent implements OnInit {
      data => {
        if(data.status==1){
          this.DataGrado = data.data;
-         console.log(this.DataGrado);
+         this.loading=false;
        }else{
          this.toastr.error("Consulta Sin Exito", 'Aviso!',{
            positionClass: 'toast-top-right'
@@ -37,4 +46,62 @@ export class GradoSeccionComponent implements OnInit {
      }
    )
  }
+
+ Cambiar_Estado(id,dato){
+  this.loadingBar.start();
+   if(dato[0]==1){
+    this.DatoBusqueda.datobusqueda='0';
+   }else{
+    this.DatoBusqueda.datobusqueda='1';
+   }
+      this.DatoBusqueda.idbusqueda=id;
+        //console.log(this.DatoBusqueda.idbusqueda);
+        //this.DetUsuarioModal.show(); 
+          this._GradoServicios.cambiar_estado(this.DatoBusqueda)
+          .then(data => {
+            if(data.status==1){
+              this.toastr.success(data.message, 'Aviso!',{
+                positionClass: 'toast-top-right',
+                timeOut: 500
+              });
+            this.ListarGrados();
+            this.loadingBar.complete();
+            }else{
+              this.toastr.error(data.message, 'Aviso!',{
+                positionClass: 'toast-top-right',
+                timeOut: 500
+              });
+              this.ListarGrados();
+              this.loadingBar.complete();
+             }
+          } )
+          .catch(err => console.log(err))
+ }
+
+ DataSecciones : Secciones;
+ Listar_Secciones_xGrado(id){
+  this.loadingBar.start();
+      this.DatoBusqueda.idbusqueda=id;
+       //console.log(this.DatoBusqueda.idbusqueda);
+       //this.DetUsuarioModal.show(); 
+         this._GradoServicios.listar_secciones_xgrado(this.DatoBusqueda)
+         .then(data => {
+           if(data.status==1){
+            this.DataSecciones = data.data;
+            this.loadingBar.complete();
+             this.toastr.success(data.message, 'Aviso!',{
+               positionClass: 'toast-top-right',
+               timeOut: 500
+             });
+           }else{
+             this.toastr.error(data.message, 'Aviso!',{
+               positionClass: 'toast-top-right',
+               timeOut: 500
+             });
+             this.DataSecciones=null;
+             this.loadingBar.complete();
+            }
+         } )
+         .catch(err => console.log(err))
+}
 }

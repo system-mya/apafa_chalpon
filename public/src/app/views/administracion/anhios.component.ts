@@ -54,6 +54,7 @@ export class AnhiosComponent implements OnInit {
 
   DataAnhios : any = [];
   ListarAnhios (){
+    
     this._AnhiosServicios.getListarAnhios().subscribe(
       data => {
         this.DataAnhios = data.data;
@@ -61,6 +62,7 @@ export class AnhiosComponent implements OnInit {
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
         this.loading=false;
+        
       }
     )
  }

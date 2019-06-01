@@ -1,10 +1,13 @@
+<div class="cargando" *ngIf="loading">
+  <img src="../../../assets/img/30.gif" width="5%" img-responsive>
+</div>
 <div class="animated fadeIn">
   <div class="row">
-    <div class="col-sm-6">
+    <div class="col-sm-5">
       <div class="card">
         <div class="card-header">
           <strong>
-            <h5><i class="fa fa-align-justify"></i>  Grados</h5>
+            <h5><i class="fa fa-align-justify"></i>&nbsp;&nbsp; Grados</h5>
           </strong>
         </div>
         <div class="card-body">
@@ -19,12 +22,14 @@
               <tr *ngFor="let item of DataGrado;let indice=index">
                   <td>
                     {{item.descripcion_grado}}
-                    <span class="badge badge-info badge-pill" style="position: static;cursor: pointer;color: #ffffff !important;">9</span>
+                    <span class="badge badge-info badge-pill" 
+                    (click)="Listar_Secciones_xGrado(item.id_grado)" style="position: static;cursor: pointer;color: #ffffff !important;">{{item.total}}</span>
                   </td>
                   <td>
                     <!-- <span class="badge badge-success" [ngStyle]="{'background-color':item.estado === 'ACTIVO' ? 'green' : 'red' }">{{item.estado}}</span> -->
                     <label class="switch switch-label switch-success" style="width: 78px;">
-                        <input checked="" [checked]="item.estado_grado.data==1" class="switch-input" type="checkbox" id="myCheck">
+                        <input checked="" [checked]="item.estado_grado.data==1" class="switch-input" type="checkbox" 
+                        (click)="Cambiar_Estado(item.id_grado,item.estado_grado.data)">
                         <span class="switch-slider" data-checked="ACTIVO" data-unchecked="INACTIVO"></span>
                       </label>
                   </td>
@@ -34,39 +39,46 @@
         </div>
       </div>
     </div><!--/.col-->
-    <div class="col-sm-6">
+    <div class="col-sm-7">
       <div class="card">
         <div class="card-header">
-          <strong>Company</strong>
-          <small>Form</small>
+          <strong>
+            <h5><i class="fa fa-align-justify"></i>&nbsp;&nbsp;Secciones</h5>
+          </strong>
         </div>
         <div class="card-body">
-          <div class="form-group">
-            <label for="company">Company</label>
-            <input type="text" class="form-control" id="company" placeholder="Enter your company name">
-          </div>
-          <div class="form-group">
-            <label for="vat">VAT</label>
-            <input type="text" class="form-control" id="vat" placeholder="PL1234567890">
-          </div>
-          <div class="form-group">
-            <label for="street">Street</label>
-            <input type="text" class="form-control" id="street" placeholder="Enter street name">
-          </div>
-          <div class="row">
-            <div class="form-group col-sm-8">
-              <label for="city">City</label>
-              <input type="text" class="form-control" id="city" placeholder="Enter your city">
-            </div>
-            <div class="form-group col-sm-4">
-              <label for="postal-code">Postal Code</label>
-              <input type="text" class="form-control" id="postal-code" placeholder="Postal Code">
-            </div>
-          </div><!--/.row-->
-          <div class="form-group">
-            <label for="country">Country</label>
-            <input type="text" class="form-control" id="country" placeholder="Country name">
-          </div>
+          <table class="table secciones-container">
+            <thead>
+              <tr>
+                <th>Nombre Sección</th>
+                <th>Grado</th>
+                <th>Turno</th>
+                <th>Opciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of DataSecciones;let indice=index">
+                  <td>
+                    {{item.nombre_seccion}}
+                  </td>
+                  <td>
+                    {{item.descripcion_grado}}
+                  </td>
+                  <td>
+                    {{item.turno}}
+                  </td>
+                  <td>
+                    <button class="btn btn-danger btn-xs distancia_btn_opciones"
+                          matTooltip="Eliminar"
+                          matTooltipClass="tooltip-mensaje"
+                          [matTooltipPosition]="positionOptions[3]"
+                          (click)="btnEliminar_Usuario(element.idusuario)">
+                    <span class="fa fa-trash-o btn-xs"></span>
+                    </button>
+                  </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div><!--/.col-->

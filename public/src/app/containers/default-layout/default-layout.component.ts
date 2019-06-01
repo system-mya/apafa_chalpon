@@ -4,6 +4,7 @@ import { navSE,navAD } from '../../_nav';
 import {Router} from '@angular/router';
 import { Location } from '@angular/common';
 import { NgxSpinnerService } from 'ngx-spinner';
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './default-layout.component.html'
@@ -31,6 +32,7 @@ export class DefaultLayoutComponent implements OnInit {
   }
 
   ngOnInit() {
+    
     this.username=localStorage.getItem('username');
     this.perfil=localStorage.getItem('perfil');
     this.anhio_lectivo=localStorage.getItem('_anhio');

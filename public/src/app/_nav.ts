@@ -157,6 +157,7 @@ export const navAD: NavData[] = [
         name: 'Grados y Secciones',
         url: '/administracion/grado_seccion',
         icon: 'icon-grid'
+        
       }
     ]
   },  

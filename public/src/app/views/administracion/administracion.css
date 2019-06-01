@@ -207,11 +207,16 @@ input[type="file"]#archivo {
 margin-left: 25px !important;
 }
 
-.switch-success .switch-input:not(:checked) + .switch-slider::before{
+.switch-success .switch-input:not(:checked) + .switch-slider{
 background-color: #a30d0d !important;
-color: #a30d0d !important;
+border: 1px solid #e2f10a;
 }
  
 .switch-label .switch-slider::after{
   width: 70% !important;
+}
+
+.secciones-container {
+  height: 100px;
+  overflow: auto;
 }
