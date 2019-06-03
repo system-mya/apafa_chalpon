@@ -48,58 +48,23 @@ export const navAD: NavData[] = [
     icon: 'icon-people',
     children: [
       {
-        name: 'Cards',
+        name: 'Alumnos',
         url: '/base/cards',
-        icon: 'icon-puzzle'
+        icon: 'fa fa-group'
       },
       {
-        name: 'Carousels',
+        name: 'Padres',
         url: '/base/carousels',
-        icon: 'icon-puzzle'
+        icon: 'fa fa-user-circle'
       },
       {
-        name: 'Collapses',
+        name: 'Matricula',
         url: '/base/collapses',
-        icon: 'icon-puzzle'
+        icon: 'fa fa-vcard-o'
       },
       {
         name: 'Forms',
         url: '/base/forms',
-        icon: 'icon-puzzle'
-      },
-      {
-        name: 'Pagination',
-        url: '/base/paginations',
-        icon: 'icon-puzzle'
-      },
-      {
-        name: 'Popovers',
-        url: '/base/popovers',
-        icon: 'icon-puzzle'
-      },
-      {
-        name: 'Progress',
-        url: '/base/progress',
-        icon: 'icon-puzzle'
-      },
-      {
-        name: 'Switches',
-        url: '/base/switches',
-        icon: 'icon-puzzle'
-      },
-      {
-        name: 'Tables',
-        url: '/base/tables',
-        icon: 'icon-puzzle'
-      },
-      {
-        name: 'Tabs',
-        url: '/base/tabs',
-        icon: 'icon-puzzle'
-      },
-      {
-        name: 'Tooltips',
-        url: '/base/tooltips',
         icon: 'icon-puzzle'
       }
     ]
@@ -111,24 +76,30 @@ export const navAD: NavData[] = [
     divider: true
   },
   {
-    name: 'Caja',
+    name: 'Tesoreria',
     url: '/notifications',
     icon: 'icon-screen-tablet',
     children: [
       {
-        name: 'Alerts',
+        name: 'Ingresos',
         url: '/notifications/alerts',
-        icon: 'icon-bell'
+        icon: 'cui-note'
       },
       {
-        name: 'Badges',
+        name: 'Compras',
         url: '/notifications/badges',
-        icon: 'icon-bell'
+        icon: 'icon-basket'
       },
       {
-        name: 'Modals',
+        name: 'Reuniones',
         url: '/notifications/modals',
-        icon: 'icon-bell'
+        icon: 'fa fa-bell-o'
+      },
+      
+      {
+        name: 'Conceptos',
+        url: '/notifications/modals',
+        icon: 'cui-bookmark'
       }
     ]
   },  
