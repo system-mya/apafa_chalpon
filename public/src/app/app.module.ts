@@ -48,6 +48,8 @@ import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DataTablesModule } from 'angular-datatables';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
+
 @NgModule({
   imports: [
     BrowserModule,
@@ -71,7 +73,8 @@ import { NgxSpinnerModule } from 'ngx-spinner';
       positionClass: 'toast-bottom-right',
       preventDuplicates: true,
     }), // ToastrModule added
-    NgxSpinnerModule
+    NgxSpinnerModule,
+    LoadingBarRouterModule
   ],
   declarations: [
     AppComponent,

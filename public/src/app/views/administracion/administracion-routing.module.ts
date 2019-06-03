@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { UsuariosComponent } from './usuarios.component';
 import { AnhiosComponent } from './anhios.component';
-import { BrandButtonsComponent } from './brand-buttons.component';
+import { GradoSeccionComponent } from './grado_seccion.component';
 
 const routes: Routes = [
   {
@@ -31,10 +31,10 @@ const routes: Routes = [
         }
       },
       {
-        path: 'brand-buttons',
-        component: BrandButtonsComponent,
+        path: 'grado_seccion',
+        component: GradoSeccionComponent,
         data: {
-          title: 'Brand buttons'
+          title: 'Grado y Secciones'
         }
       }
     ]

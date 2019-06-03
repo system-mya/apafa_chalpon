@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild,ViewEncapsulation } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Http, Response } from '@angular/http';
 import {MatPaginator, MatSort, MatTableDataSource,TooltipPosition} from '@angular/material';
-import {ModalDirective,BsModalService} from 'ngx-bootstrap/modal';
+import {ModalDirective} from 'ngx-bootstrap/modal';
 import 'rxjs/add/operator/map';
 import { UsuariosService } from './usuarios.service';
 import {Usuario,Busqueda} from '../../app.datos';
@@ -37,7 +37,6 @@ export class UsuariosComponent implements OnInit {
   public usu_valid : boolean = false;
   public usu_invalido : boolean = false;
   public  chooseView : string;
-  public loading : boolean;
   constructor(private http: Http,private _UsuariosServicios:UsuariosService,private toastr: ToastrService) {
     this.LoadTableData();
     this.usuario = {
@@ -72,7 +71,6 @@ export class UsuariosComponent implements OnInit {
     this.DatoBusqueda = {
       idbusqueda:0
     }
-    this.loading=true;
 
     
   }
@@ -131,61 +129,55 @@ export class UsuariosComponent implements OnInit {
 
  
   onSubmit(form:NgForm){    
-    swal({
-      title: '¿Esta seguro que desea guardar?',
-      type: 'question',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Si, Guardar!',
-      closeOnConfirm: false, //It does close the popup when I click on close button
-      closeOnCancel: false,
-      allowOutsideClick: false,
-      allowEscapeKey:false,
-    }).then((result) => {
-      if (result.value==true) {
-        this._UsuariosServicios.nvo_usuario(form.value)
-        .then(data => {
-          if(data.status==1){
-            this.NvoUsuarioModal.hide();
-            swal({
-                title: 'Aviso!',
-                text: data.message,
-                type: 'success',
-                closeOnConfirm: false, //It does close the popup when I click on close button
-                closeOnCancel: false,
-                allowOutsideClick: false,
-                allowEscapeKey:false
-            })
-            this.LoadTableData();
-            this.mytemplateForm.resetForm();
-          }else{
-            if(data.status==2){
-              this.toastr.error(data.message, 'Aviso!');
-            }else{
+    if(form.value['perfil_usu']!=0){
+      swal({
+        title: '¿Esta seguro que desea guardar?',
+        type: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si, Guardar!',
+        allowOutsideClick: false,
+        allowEscapeKey:false,
+      }).then((result) => {
+        if (result.value==true) {
+          this._UsuariosServicios.nvo_usuario(form.value)
+          .then(data => {
+            if(data.status==1){
+              this.NvoUsuarioModal.hide();
               swal({
-                title: 'Aviso!',
-                html:
-                '<span style="color:red">' +
-                data.message +
-                '</span>',
-                type: 'error',
-                closeOnConfirm: false, //It does close the popup when I click on close button
-                closeOnCancel: false,
-                allowOutsideClick: false,
-                allowEscapeKey:false
+                  title: 'Aviso!',
+                  text: data.message,
+                  type: 'success',
+                  allowOutsideClick: false,
+                  allowEscapeKey:false
               })
-             
+              this.LoadTableData();
+              this.mytemplateForm.resetForm();
+            }else{
+              if(data.status==2){
+                this.toastr.error(data.message, 'Aviso!');
+              }else{
+                swal({
+                  title: 'Aviso!',
+                  html:
+                  '<span style="color:red">' +
+                  data.message +
+                  '</span>',
+                  type: 'error',
+                  allowOutsideClick: false,
+                  allowEscapeKey:false
+                })
+               
+              }
+              
             }
-            
-          }
-        } )
-        .catch(err => console.log(err))
-      }
-    })
-      
-      
-      }
+          } )
+          .catch(err => console.log(err))
+        }
+      })
+    }
+  }
   
   applyFilter(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
@@ -219,7 +211,6 @@ export class UsuariosComponent implements OnInit {
        this.dataSource = new MatTableDataSource(this.DataArray);
        this.dataSource.paginator = this.paginator;
        this.dataSource.sort = this.sort;
-       this.loading=false;
      }
    )
  }
