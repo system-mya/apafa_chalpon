@@ -217,6 +217,14 @@ border: 1px solid #e2f10a;
 }
 
 .secciones-container {
-  height: 100px;
+  height: 420px !important;
   overflow: auto;
+}
+
+.secciones-container th {
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+  background: white;
+  z-index: 10;
 }

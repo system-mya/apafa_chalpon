@@ -3,7 +3,7 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/delay';
 import { Http } from '@angular/http';
 import "rxjs/add/operator/map";
-import { Busqueda } from '../../app.datos';
+import { Busqueda,Secciones } from '../../app.datos';
 
 
 @Injectable({
@@ -27,4 +27,10 @@ export class GradoSeccionService {
     return this._http.post('/api/listar_secciones_xgrados',grado)
      .map(data => data.json()).toPromise()
   }
+
+  public nva_seccion(seccion:Secciones){
+    return this._http.post('/api/insertar_seccion',seccion)
+     .map(data => data.json()).toPromise()
+  }
+
 }

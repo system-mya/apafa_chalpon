@@ -87,5 +87,10 @@ app.post('/api/listar_secciones_xgrados', (req, res) => {
     admin.listar_secciones_xgrados(req.body, res);
 });
 
+// LLAMADO AL MODELO INSERTAR SECCION
+app.post('/api/insertar_seccion', (req, res) => {
+    admin.nva_seccion(req.body, res);
+});
+
 }
 }

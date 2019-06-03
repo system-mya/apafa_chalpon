@@ -452,6 +452,46 @@ listar_secciones_xgrados(grado,res) {
     });
 };
 
+nva_seccion(seccion, res) {
+	connection.acquire((err, con) => {
+		if(err){
+			res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+		}else{
+
+		var query_seccion = "CALL pa_verificar_seccion('"+ [seccion.nombre_seccion] +"','"
+	                       + [seccion.id_turno] +"',"+ [seccion.id_grado] +")";
+        
+        con.query(query_seccion,(err, result) => {
+            con.release();
+			if(err){
+                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+			}else{
+				if (result[0].length == 0) {
+					var query = "CALL pa_insertar_seccion('"+ [seccion.nombre_seccion] 
+                    +"',"+ [seccion.id_grado] + ",'"+ [seccion.id_turno] +"')";
+		
+                    con.query(query,(err, result) => {
+                        if(err){
+                            res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                        }else{
+                            if (result.affectedRows == 1) {
+                                res.send({status: 1, message: 'Sección Registrada'});
+                            } else {
+                                res.send({status: 2, message: 'Sección No Registrada'});
+                            }
+                        }
+                    });
+				} else {
+					res.send({status: 3, message: 'NOMBRE DE SECCION YA REGISTRADA'});
+				}
+			}
+		});
+
+        
+		}
+	});
+};
+
 //http://raquellorente.esy.es/nodejs/subir-y-bajar-archivos-del-servidor-con-express-y-node-js/
 agregar(user, res) {
 //El modulo 'fs' (File System) que provee Nodejs nos permite manejar los archivos

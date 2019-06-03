@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 30-05-2019 a las 01:43:07
+-- Tiempo de generación: 03-06-2019 a las 00:48:12
 -- Versión del servidor: 5.7.14
 -- Versión de PHP: 5.6.25
 
@@ -28,6 +28,10 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_buscar_dni_usuario` (IN `dni` CH
 SELECT * FROM usuario
 WHERE dni_usu=dni
 AND estado_usu=1$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_cambiar_estado_grado` (IN `grado` INT, IN `estado` BIT)  NO SQL
+UPDATE grados SET estado_grado=estado 
+WHERE id_grado=grado$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_consultar_nomusuario` (IN `nom` VARCHAR(20))  NO SQL
 SELECT * FROM usuario
@@ -67,6 +71,10 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_anhio` (IN `anhio` CHAR
 ffin_anhio, descripcion_anhio) 
 VALUES (anhio,finicio,ffin,descripcion)$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_seccion` (IN `nombre` VARCHAR(20), IN `grado` INT, IN `turno` CHAR(1))  NO SQL
+INSERT INTO secciones(nombre_seccion,id_grado,id_turno) 
+VALUES (nombre,grado,turno)$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_usuario` (IN `nom_usu` VARCHAR(20), IN `clave` VARCHAR(15), IN `dni` CHAR(8), IN `nombres` VARCHAR(45), IN `apellidos` VARCHAR(60), IN `sexo` CHAR(1), IN `celular` CHAR(9), IN `correo` VARCHAR(80), IN `direccion` VARCHAR(80), IN `fcreacion` DATE, IN `obser` VARCHAR(50), IN `perfil` INT)  INSERT INTO usuario(nom_usu, 
 clave_usu,dni_usu,nombres_usu,apellidos_usu, 
 sexo_usu,celular_usu,correo_usu,
@@ -94,16 +102,33 @@ LEFT(descripcion_anhio,20) as descripcion_anhio,
 WHERE estado_anhio=1$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_grados` (IN `nivel` CHAR(1))  NO SQL
-SELECT id_grado,descripcion_grado,nivel_grado,
+SELECT g.id_grado,g.descripcion_grado,g.nivel_grado,
 (CASE 
      WHEN estado_grado=1 THEN 'ACTIVO'
      ELSE 'INACTIVO'
-END) as estado, estado_grado FROM grados 
-WHERE nivel_grado=nivel$$
+END) as estado, g.estado_grado,
+(CASE
+     WHEN s.total!=0 THEN s.total
+    ELSE 0
+END) as total FROM grados g
+ LEFT JOIN
+  (SELECT id_grado, COUNT(*) total FROM secciones GROUP BY id_grado) s
+   ON g.id_grado = s.id_grado
+ WHERE g.nivel_grado=nivel$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_perfil_usuario` ()  NO SQL
 SELECT * FROM perfil_usuario
 WHERE estado_perfil=1$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_secciones_xgrado` (IN `grado` INT)  NO SQL
+SELECT s.id_seccion,s.nombre_seccion,g.descripcion_grado,g.id_grado,
+(CASE 
+     WHEN s.id_turno='M' THEN 'MAÑANA'
+     ELSE 'TARDE'
+END) as turno FROM secciones s 
+INNER JOIN grados g ON g.id_grado=s.id_grado 
+WHERE s.estado_seccion=1
+AND g.id_grado=grado$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_usuarios` ()  NO SQL
 SELECT u.idusuario,u.apellidos_usu,u.nombres_usu,
@@ -113,7 +138,7 @@ WHEN u.fbaja_usu IS NULL THEN 'ACTIVO'
 ELSE 'INACTIVO'
 END ) AS estado_usu,
 (CASE 
-WHEN u.fbaja_usu IS NULL THEN 'blue'
+WHEN u.fbaja_usu IS NULL THEN '#2a7703'
 ELSE 'red'
 END) as color_estado FROM usuario u
 INNER JOIN perfil_usuario pu ON pu.idperfil_usuario=u.idperfil_usuario
@@ -143,6 +168,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_verificar_anhio` (IN `dato` CHAR
     ( SELECT idanhio
     FROM anhio_lectivo
     WHERE condicion_anhio='A' AND estado_anhio=1)$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_verificar_seccion` (IN `nombre` VARCHAR(20), IN `turno` CHAR(1), IN `grado` INT)  NO SQL
+SELECT * FROM secciones
+WHERE nombre_seccion=nombre
+AND id_turno=turno
+AND id_grado=grado
+AND estado_seccion=1$$
 
 DELIMITER ;
 
@@ -192,7 +224,7 @@ INSERT INTO `grados` (`id_grado`, `descripcion_grado`, `nivel_grado`, `estado_gr
 (2, 'SEGUNDO GRADO SECUNDARIA', 'S', b'1'),
 (3, 'TERCER GRADO SECUNDARIA', 'S', b'1'),
 (4, 'CUARTO GRADO SECUNDARIA', 'S', b'1'),
-(5, 'QUINTO GRADO SECUNDARIA', 'S', b'0');
+(5, 'QUINTO GRADO SECUNDARIA', 'S', b'1');
 
 -- --------------------------------------------------------
 
@@ -214,6 +246,40 @@ CREATE TABLE `perfil_usuario` (
 INSERT INTO `perfil_usuario` (`idperfil_usuario`, `nombre_perfil`, `abrev_perfil`, `estado_perfil`) VALUES
 (1, 'ADMINISTRADOR', 'AD', b'1'),
 (2, 'SECRETARIA', 'SE', b'1');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `secciones`
+--
+
+CREATE TABLE `secciones` (
+  `id_seccion` smallint(11) NOT NULL,
+  `nombre_seccion` varchar(20) NOT NULL,
+  `id_grado` int(11) NOT NULL,
+  `id_turno` char(1) NOT NULL,
+  `estado_seccion` bit(1) NOT NULL DEFAULT b'1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `secciones`
+--
+
+INSERT INTO `secciones` (`id_seccion`, `nombre_seccion`, `id_grado`, `id_turno`, `estado_seccion`) VALUES
+(1, 'A', 1, 'M', b'1'),
+(2, 'B', 1, 'M', b'1'),
+(5, 'A', 2, 'M', b'1'),
+(6, 'A', 3, 'M', b'1'),
+(7, 'A', 4, 'M', b'1'),
+(8, 'A', 5, 'M', b'1'),
+(10, 'C', 1, 'M', b'1'),
+(11, 'B', 2, 'M', b'1'),
+(12, 'B', 3, 'M', b'1'),
+(13, 'D', 1, 'T', b'1'),
+(14, 'E', 1, 'T', b'1'),
+(15, 'C', 2, 'M', b'1'),
+(16, 'B', 4, 'M', b'1'),
+(17, 'F', 1, 'T', b'1');
 
 -- --------------------------------------------------------
 
@@ -271,6 +337,13 @@ ALTER TABLE `perfil_usuario`
   ADD PRIMARY KEY (`idperfil_usuario`);
 
 --
+-- Indices de la tabla `secciones`
+--
+ALTER TABLE `secciones`
+  ADD PRIMARY KEY (`id_seccion`),
+  ADD KEY `id_grado` (`id_grado`);
+
+--
 -- Indices de la tabla `usuario`
 --
 ALTER TABLE `usuario`
@@ -290,20 +363,31 @@ ALTER TABLE `anhio_lectivo`
 -- AUTO_INCREMENT de la tabla `grados`
 --
 ALTER TABLE `grados`
-  MODIFY `id_grado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id_grado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT de la tabla `perfil_usuario`
 --
 ALTER TABLE `perfil_usuario`
   MODIFY `idperfil_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
+-- AUTO_INCREMENT de la tabla `secciones`
+--
+ALTER TABLE `secciones`
+  MODIFY `id_seccion` smallint(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+--
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `idusuario` smallint(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
+  MODIFY `idusuario` smallint(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 --
 -- Restricciones para tablas volcadas
 --
+
+--
+-- Filtros para la tabla `secciones`
+--
+ALTER TABLE `secciones`
+  ADD CONSTRAINT `grado_secciones` FOREIGN KEY (`id_grado`) REFERENCES `grados` (`id_grado`);
 
 --
 -- Filtros para la tabla `usuario`

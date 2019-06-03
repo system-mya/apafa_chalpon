@@ -1,7 +1,4 @@
 
-<div class="cargando" *ngIf="loading">
-   <img src="../../../assets/img/30.gif" width="5%" img-responsive>
-</div>
 <div class="animated fadeIn">
   <div class="card">
      <div class="card-header">
@@ -94,7 +91,8 @@
 
           <ng-container matColumnDef="estado_usu">
             <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Estado </th>
-            <td mat-cell *matCellDef="let element" style="text-align: center !important" [ngStyle]="{'color':element.color_estado}" nowrap><b>{{element.estado_usu}}</b></td>
+            <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap>
+                <h5><span class="badge badge-success" [ngStyle]="{'background-color':element.color_estado}">{{element.estado_usu}}</span></h5></td>
           </ng-container>
             <ng-container matColumnDef="opciones_usu">
               <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Opciones </th>
@@ -302,8 +300,8 @@
               <div class="form-group col-sm-4">
                   <label for="perfil_usu" style="font-weight: bold;">Perfil <i class="fa fa-certificate" style="color:red !important"></i> :</label>
                   <select class="form-control" id="perfil_usu" name="perfil_usu"
-                  placeholder="Selecionar Perfil" [(ngModel)]="usuario.perfil_usu" #regperfil="ngModel" required>
-                  <option value="0" selected disabled>-----Seleccionar Perfil------</option>
+                  placeholder="Selecionar Perfil" [(ngModel)]="usuario.perfil_usu" #regperfil="ngModel" ng-required="usuario.perfil_usu!=0">
+                  <option value='0' selected disabled>-----Seleccionar Perfil------</option>
                       <option *ngFor="let p of DataPerfiles" value="{{p.idperfil_usuario}}">{{p.nombre_perfil}}</option>
                   </select>
                   <div *ngIf="myForm.submitted && usuario.perfil_usu==0" style="
