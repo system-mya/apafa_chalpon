@@ -1,13 +1,11 @@
 import { Component, OnInit, ViewChild,ViewEncapsulation } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { Http, Response } from '@angular/http';
 import {MatPaginator, MatSort, MatTableDataSource,TooltipPosition} from '@angular/material';
 import {ModalDirective} from 'ngx-bootstrap/modal';
 import 'rxjs/add/operator/map';
 import { UsuariosService } from './usuarios.service';
 import {Usuario,Busqueda} from '../../app.datos';
 import { ToastrService } from 'ngx-toastr';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { AlertComponent } from 'ngx-bootstrap/alert/alert.component';
 declare var swal: any;
 
@@ -37,7 +35,7 @@ export class UsuariosComponent implements OnInit {
   public usu_valid : boolean = false;
   public usu_invalido : boolean = false;
   public  chooseView : string;
-  constructor(private http: Http,private _UsuariosServicios:UsuariosService,private toastr: ToastrService) {
+  constructor(private _UsuariosServicios:UsuariosService,private toastr: ToastrService) {
     this.LoadTableData();
     this.usuario = {
       nom_usu:'',

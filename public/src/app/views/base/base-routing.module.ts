@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { CardsComponent } from './cards.component';
+import { AlumnosComponent } from './alumnos.component';
 import { FormsComponent } from './forms.component';
 import { SwitchesComponent } from './switches.component';
 import { TablesComponent } from './tables.component';
@@ -26,7 +26,7 @@ const routes: Routes = [
       },
       {
         path: 'cards',
-        component: CardsComponent,
+        component: AlumnosComponent,
         data: {
           title: 'Cards'
         }

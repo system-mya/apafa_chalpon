@@ -1,6 +1,6 @@
 //obtenemos el modelo UserModel con toda la funcionalidad
 var admin = require('../models/administracion');
- 
+var alumno = require('../models/apafa');
 //creamos el ruteo de la aplicación
 module.exports = {
    configure: (app) => {
@@ -90,6 +90,11 @@ app.post('/api/listar_secciones_xgrados', (req, res) => {
 // LLAMADO AL MODELO INSERTAR SECCION
 app.post('/api/insertar_seccion', (req, res) => {
     admin.nva_seccion(req.body, res);
+});
+
+// LISTAR ALUMNOS
+app.get('/api/listaralumnos', (req, res) => {
+    alumno.listar_alumnos(res);
 });
 
 }
