@@ -53,7 +53,7 @@ export const navAD: NavData[] = [
         icon: 'fa fa-group'
       },
       {
-        name: 'Padres',
+        name: 'Padre',
         url: '/base/carousels',
         icon: 'fa fa-user-circle'
       },
