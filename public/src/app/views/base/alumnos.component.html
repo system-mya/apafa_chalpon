@@ -1,0 +1,50 @@
+<div class="animated fadeIn">
+  <div class="example-header">
+    <mat-form-field>
+      <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+    </mat-form-field>
+  </div>
+  
+  <div class="example-container mat-elevation-z8">
+    <mat-table #table [dataSource]="dataSource" matSort>
+  
+      <!--- Note that these columns can be defined in any order.
+            The actual rendered columns are set as a property on the row definition" -->
+  
+      <!-- Position Column -->
+      <ng-container matColumnDef="id_alumno">
+        <mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" nowrap> No. </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.id_alumno}} </mat-cell>
+      </ng-container>
+  
+      <!-- Name Column -->
+      <ng-container matColumnDef="tdoc_alumno">
+        <mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" nowrap> Name </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.tdoc_alumno}} </mat-cell>
+      </ng-container>
+  
+      <!-- Weight Column -->
+      <ng-container matColumnDef="doc_alumno">
+        <mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" nowrap> Weight </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.doc_alumno}} </mat-cell>
+      </ng-container>
+  
+      <!-- Symbol Column -->
+      <ng-container matColumnDef="apepaterno_alumno">
+        <mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" nowrap> Symbol </mat-header-cell>
+        <mat-cell *matCellDef="let element" class="element-row"> {{element.apepaterno_alumno}} </mat-cell>
+      </ng-container>
+  
+      <mat-header-row *matHeaderRowDef="displayedColumns" style="background-color: #b6b9d0 !important;"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;" matRipple class="element-row" [cdkDetailRow]="row" [cdkDetailRowTpl]="tpl">
+      </mat-row>
+    </mat-table>
+    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+  </div>
+  
+  <ng-template #tpl let-element>
+    <div class="mat-row detail-row" [@detailExpand] style="overflow: hidden">
+      The symbol for {{element.name}} is {{element.symbol}}
+    </div>
+  </ng-template>
+</div>
