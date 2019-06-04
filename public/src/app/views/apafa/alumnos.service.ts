@@ -3,7 +3,7 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/delay';
 import { Http } from '@angular/http';
 import "rxjs/add/operator/map";
-import { Usuario,Busqueda } from '../../app.datos';
+import { Alumno,Busqueda } from '../../app.datos';
 
 @Injectable({
   providedIn: 'root'
@@ -16,4 +16,10 @@ export class AlumnosService {
     return this._http.get('/api/listaralumnos')
      .map(res => res.json())
   }
+
+  public nvo_alumno(alumno:Alumno){
+    return this._http.post('/api/apafa/insertar_alumno',alumno)
+     .map(data => data.json()).toPromise()
+  }
+  
 }

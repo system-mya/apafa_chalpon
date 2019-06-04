@@ -119,16 +119,11 @@
        </div>
      </div>
      <div class="card" *ngIf="panel_registro">
-        <form name="form" class="formulario" (ngSubmit)="myForm.form.valid && onSubmit(myForm)" #myForm="ngForm" novalidate autocomplete="off">
+        <form name="form" class="formulario" (ngSubmit)="myForm.form.valid && onSubmit(alumno)" #myForm="ngForm" novalidate autocomplete="off">
             <div class="card-header">
-                <div>
-                   <button type="submit" class="btn btn-success">
-                      <span class="fa fa-save"></span>
-                    Grabar</button>
-                    <button class="btn btn-danger" (click)="btnCancelar_RegAlumno()">
-                        <span class="fa fa-times-circle"></span>
-                    Cancelar</button>
-                </div>
+              <h5><strong>
+                <i class="fa fa-edit"></i>&nbsp;&nbsp;Registrar Nuevo Alumno
+              </strong></h5>
               </div>
               <div class="car-body">
                   <div class="card-header estilo-cabecera">DATOS DEL ALUMNO</div>
@@ -388,6 +383,15 @@
                              </div>
                       </div>
                     </div>
+                    <div class="card-footer" style="text-align: right;">
+                     <button type="submit" class="btn btn-success" style="margin: 0px 20px;">
+                        <span class="fa fa-save"></span>
+                      Grabar</button>
+                      <button class="btn btn-danger" (click)="btnCancelar_RegAlumno()">
+                          <span class="fa fa-times-circle"></span>
+                      Cancelar</button>
+                    </div>
+                    
               </div>
               <div class="card-footer text-center" style="background:#019dd6; color:#fff">
                 <h4>Todos los campos con <font class="cascade2">(*)</font> son obligatorios</h4>

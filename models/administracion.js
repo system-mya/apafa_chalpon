@@ -98,7 +98,7 @@ nvo_usuario(user, res) {
         if ([user.correo_usu]==''){
             var correo_usu="NULL";
         }else{
-            correo_usu="'"+[user.obser_usu]+"'";
+            correo_usu="'"+[user.correo_usu]+"'";
         }
 
         var query_dni = "CALL pa_buscar_dni_usuario('"+ [user.dni_usu] +"')";

@@ -97,5 +97,11 @@ app.get('/api/listaralumnos', (req, res) => {
     alumno.listar_alumnos(res);
 });
 
+//INSERTAR NUEVO ALUMNO
+app.post('/api/apafa/insertar_alumno', (req, res) => {
+    alumno.nvo_alumno(req.body, res);
+});
+
+
 }
 }

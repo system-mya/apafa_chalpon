@@ -70,7 +70,14 @@ export class AlumnosComponent implements OnInit {
     this.panel_tabla=false;
     this.panel_registro=true;
     this.alumno = {
-      tdoc_alumno:''
+      tdoc_alumno:'',
+      telefono_alumno:'',
+      correo_alumno:'',
+      procedencia_alumno:'',
+      celular_padre:'',
+      correo_padre:'',
+      celular_madre:'',
+      correo_madre:''
 
     }
   }
@@ -78,6 +85,54 @@ export class AlumnosComponent implements OnInit {
   btnCancelar_RegAlumno(){
     this.panel_tabla=true;
     this.panel_registro=false;
+  }
+
+  onSubmit(form:Alumno){    
+    swal({
+      title: '¿Esta seguro que desea guardar?',
+      type: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, Guardar!',
+      allowOutsideClick: false,
+      allowEscapeKey:false,
+    }).then((result) => {
+      if (result.value==true) {
+        this._AlumnosServicios.nvo_alumno(form)
+        .then(data => {
+          if(data.status==1){
+            swal({
+                title: 'Aviso!',
+                text: data.message,
+                type: 'success',
+                allowOutsideClick: false,
+                allowEscapeKey:false
+            })            
+            this.LoadTableData();
+            this.panel_registro=false;
+            this.panel_tabla=true;
+          }else{
+            if(data.status==2){
+              this.toastr.error(data.message, 'Aviso!');
+            }else{
+              swal({
+                title: 'Aviso!',
+                html:
+                '<span style="color:red">' +
+                data.message +
+                '</span>',
+                type: 'error',
+                allowOutsideClick: false,
+                allowEscapeKey:false
+              })
+             
+            }
+          }
+        } )
+        .catch(err => console.log(err))
+      }
+    })
   }
 
 }
