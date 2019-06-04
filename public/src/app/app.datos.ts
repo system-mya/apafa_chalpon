@@ -61,3 +61,28 @@ export class Secciones
     public id_turno ?: string;
     public estado_seccion ?: boolean;
 }
+
+export class Alumno
+{
+    id_alumno ?: number;
+    tdoc_alumno ?: string;
+    doc_alumno ?: string;
+    apellidos_alumno ?: string;
+    nombres_alumno ?: string;
+    sexo_alumno ?: string;
+    telefono_alumno ?: string;
+    celular_alumno ?: string;
+    direccion_alumno ?: string;
+    correo_alumno ?: string;
+    procedencia_alumno ?: string;
+    apellidos_padre ?: string;
+    nombres_padre ?: string;
+    celular_padre ?: string;
+    correo_padre ?: string;
+    apellidos_madre ?: string;
+    nombres_madre ?: string;
+    celular_madre ?: string;
+    correo_madre ?: string;
+    estado_alumno ?: boolean;
+
+}

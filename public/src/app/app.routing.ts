@@ -55,8 +55,8 @@ export const routes: Routes = [
     },
     children: [
       {
-        path: 'base',
-        loadChildren: './views/base/base.module#BaseModule',
+        path: 'apafa',
+        loadChildren: './views/apafa/apafa.module#ApafaModule',
         canActivate:[LoginGuard]
       },
       {

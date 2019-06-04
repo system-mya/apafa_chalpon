@@ -44,7 +44,7 @@ import { TooltipsComponent } from './tooltips.component';
 
 
 // Components Routing
-import { BaseRoutingModule } from './base-routing.module';
+import { ApafaRoutingModule } from './apafa-routing.module';
 import { DataTablesModule } from 'angular-datatables';
 import {CdkDetailRowDirective} from './cdk-detalle-row.directive';
 // Angular
@@ -89,7 +89,7 @@ import { MatAutocompleteModule,
   imports: [
     CommonModule,
     FormsModule,
-    BaseRoutingModule,
+    ApafaRoutingModule,
     BsDropdownModule.forRoot(),
     TabsModule,
     CarouselModule.forRoot(),
@@ -153,4 +153,4 @@ import { MatAutocompleteModule,
    CdkDetailRowDirective,
   ]
 })
-export class BaseModule { }
+export class ApafaModule { }

@@ -44,27 +44,27 @@ export const navAD: NavData[] = [
   },
   {
     name: 'Apafa',
-    url: '/base',
+    url: '/apafa',
     icon: 'icon-people',
     children: [
       {
         name: 'Alumnos',
-        url: '/base/cards',
+        url: '/apafa/alumnos',
         icon: 'fa fa-group'
       },
       {
-        name: 'Padre',
-        url: '/base/carousels',
+        name: 'Apoderado',
+        url: '/apafa/carousels',
         icon: 'fa fa-user-circle'
       },
       {
         name: 'Matricula',
-        url: '/base/collapses',
+        url: '/apafa/collapses',
         icon: 'fa fa-vcard-o'
       },
       {
         name: 'Forms',
-        url: '/base/forms',
+        url: '/apafa/forms',
         icon: 'icon-puzzle'
       }
     ]

@@ -1,0 +1,398 @@
+<div class="animated fadeIn">
+    <div class="card" *ngIf="panel_tabla">
+        <div class="card-header">
+            <h5><strong>
+                <i class="fa fa-align-justify"></i>&nbsp;&nbsp;Lista de Alumnos
+              </strong>
+              <span class="float-right">
+                <button class="btn btn-success btn-xs" 
+                matTooltip="Agregar Alumno"
+                matTooltipClass="tooltip-mensaje"
+                data-toggle="modal" (click)="btnNuevo_Alumno()">
+                  <span class="fa fa-plus-square"></span>
+                </button>
+              </span></h5>
+       </div>
+       <div class="card-body">
+          <div class="mat-elevation-z8 table-responsive">
+              <mat-form-field class="example-full-width" style="margin-left: 15px;">
+                <span matPrefix>Buscar Alumno: &nbsp;</span>
+                <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Ingrese Dato">
+              </mat-form-field>  
+              <table mat-table [dataSource]="dataSource" matSort id="tabla">
+                <!-- <ng-container matColumnDef="id_alumno">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla"> N°. </th>
+                  <td mat-cell *matCellDef="let element let i = index" style="text-align: center !important" > {{i+1}} </td>
+                </ng-container> -->
+                 
+              
+                <ng-container matColumnDef="doc_alumno">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" nowrap > Doc. Identidad </th>
+                  <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.doc_alumno}} </td>
+                </ng-container>
+            
+            
+                <ng-container matColumnDef="apellidos_alumno">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" nowrap> Apellidos y Nombres </th>
+                  <td mat-cell *matCellDef="let element" nowrap> {{element.apellidos_alumno}} {{element.nombres_alumno}}</td>
+                </ng-container>
+                
+                <ng-container matColumnDef="sexo_alumno">
+                    <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Sexo </th>
+                    <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.sexo_alumno}} </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="num_contacto">
+                      <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Num. Contacto </th>
+                      <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.celular_alumno}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="opciones_alumno">
+                        <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Opciones </th>
+                        <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> 
+                          <!-- <div class="row align-items-center" style="margin-left: 25px !important;">
+                            <div class="col-xs-3 col-sm-3 col-md-3 text-center">
+                              <button type="button" class="btn btn-primary btn-success"
+                                  matTooltip="Editar"
+                                  matTooltipClass="tooltip-success">
+                                  <i class="fa fa-edit"></i>
+                              </button>
+                            </div>
+                            <div class="col-xs-3 col-sm-3 col-md-3 text-center">
+                              <button type="button" class="btn btn-primary btn-warning"
+                                  matTooltip="Resetear"
+                                  matTooltipClass="tooltip-warning">
+                                  <i class="fa fa-retweet"></i>
+                              </button>
+                            </div>
+                            <div class="col-xs-3 col-sm-3 col-md-3 text-center">
+                              <button type="button" class="btn btn-primary btn-danger"
+                                  matTooltip="Eliminar"
+                                  matTooltipClass="tooltip-danger">
+                                  <i class="fa fa-trash-o"></i>
+                              </button>
+                            </div>
+                            <div class="col-xs-3 col-sm-3 col-md-3 text-center">
+                              <button type="button" class="btn btn-block btn-outline-dark active"
+                                  matTooltip="Eliminar"
+                                  matTooltipClass="tooltip-default">
+                                  <i class="fa fa-vcard-o"></i>
+                              </button>
+                            </div>
+                          </div> -->
+                          <button class="btn btn-info btn-xs distancia_btn_opciones"
+                                matTooltip="Detalle"
+                                matTooltipClass="tooltip-mensaje"
+                                [matTooltipPosition]="positionOptions[3]"
+                                data-toggle="modal" (click)="btnDetalle_Usuario(element.idusuario)">
+                              <span class="fa fa-address-card-o"></span></button>
+                          <button class="btn btn-success btn-xs distancia_btn_opciones"
+                              matTooltip="Editar"
+                              matTooltipClass="tooltip-mensaje"
+                              [matTooltipPosition]="positionOptions[3]"
+                              data-toggle="modal" (click)="btnEdit_Usuario(element.idusuario)"
+                              [disabled]="element.estado_usu=='INACTIVO'">
+                            <span class="fa fa-edit"></span></button>
+                            <button class="btn btn-warning btn-xs distancia_btn_opciones"
+                            matTooltip="Resetear"
+                            matTooltipClass="tooltip-mensaje"
+                            [matTooltipPosition]="positionOptions[3]"
+                            (click)="btnReset_Usuario(element.idusuario)"
+                            [disabled]="element.estado_usu=='INACTIVO'">
+                          <span class="fa fa-refresh"></span></button>
+                           <button class="btn btn-danger btn-xs distancia_btn_opciones"
+                                matTooltip="Eliminar"
+                                matTooltipClass="tooltip-mensaje"
+                                [matTooltipPosition]="positionOptions[3]"
+                                (click)="btnEliminar_Usuario(element.idusuario)">
+                           <span class="fa fa-trash-o btn-xs"></span>
+                           </button>
+                        </td>
+                      </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns" style="background-color: #b6b9d0 !important;"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+              </table>
+            
+              <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+              
+            </div>
+
+       </div>
+     </div>
+     <div class="card" *ngIf="panel_registro">
+        <form name="form" class="formulario" (ngSubmit)="myForm.form.valid && onSubmit(myForm)" #myForm="ngForm" novalidate autocomplete="off">
+            <div class="card-header">
+                <div>
+                   <button type="submit" class="btn btn-success">
+                      <span class="fa fa-save"></span>
+                    Grabar</button>
+                    <button class="btn btn-danger" (click)="btnCancelar_RegAlumno()">
+                        <span class="fa fa-times-circle"></span>
+                    Cancelar</button>
+                </div>
+              </div>
+              <div class="car-body">
+                  <div class="card-header estilo-cabecera">DATOS DEL ALUMNO</div>
+                  <div class="card-body">
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6 col-lg-6" style="border:0px;">
+                           <div class="row">
+                              <div class="form-group col-xs-12 col-sm-12 col-md-11 col-lg-6">
+                                  <label for="tdoc_alumno" style="font-weight: bold;">Turno <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                                  <select class="form-control" id="tdoc_alumno" name="tdoc_alumno"
+                                  placeholder="Selecionar Perfil" [(ngModel)]="alumno.tdoc_alumno" #regalumno="ngModel" required>
+                                      <option value="" selected disabled>-----Tipo Documento------</option>
+                                      <option value="DNI">DNI</option>
+                                      <option value="OTR">OTROS</option>
+                                  </select>
+                                  <div *ngIf="myForm.submitted && alumno.tdoc_alumno==''" style="
+                                     width: 100%;
+                                     margin-top: .25rem;
+                                     font-size: 80%;
+                                     color: #f86c6b;">
+                                       Debe seleccionar una opción
+                                      </div>
+                                 </div>
+                              <div class="form-group col-xs-12 col-sm-12 col-md-11 col-lg-6" *ngIf="alumno.tdoc_alumno=='DNI'">
+                                  <label for="doc_alumno" style="font-weight: bold;">Doc. DNI <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                                  <input type="text" class="form-control" id="doc_alumno" name="doc_alumno"
+                                  placeholder="Doc Identidad"  [(ngModel)]="alumno.doc_alumno" #regdni="ngModel"
+                                  pattern="[0-9]{8}" [ngClass]="{ 'is-invalid': myForm.submitted && regdni.invalid }" required onkeyup="verif(this)" onkeypress="return Num(event);" maxlength="8">
+                                  <div *ngIf="myForm.submitted && regdni.invalid" class="invalid-feedback">
+                                      <div *ngIf="regdni.errors.required">Doc. Identidad campo requerido</div>
+                                      <div *ngIf="regdni.errors.pattern">Debe Ingresar 8 Números</div>
+                                  </div>
+                                </div>
+                                <div class="form-group col-xs-12 col-sm-12 col-md-11 col-lg-6" *ngIf="alumno.tdoc_alumno=='OTR'">
+                                    <label for="doc_alumno" style="font-weight: bold;">Doc. OTROS <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                                    <input type="text" class="form-control" id="doc_alumno" name="doc_alumno"
+                                    placeholder="Doc Identidad"  [(ngModel)]="alumno.doc_alumno" #regotro="ngModel"
+                                    pattern="[0-9A-Z]{12,15}" [ngClass]="{ 'is-invalid': myForm.submitted && regotro.invalid }" required onkeyup="verif(this)" maxlength="15">
+                                    <div *ngIf="myForm.submitted && regotro.invalid" class="invalid-feedback">
+                                        <div *ngIf="regotro.errors.required">Doc. Identidad campo requerido</div>
+                                        <div *ngIf="regotro.errors.pattern">Debe Ingresar al menos 12 Carácteres</div>
+                                    </div>
+                                  </div>
+                           </div>
+                            <div class="row">
+                                <div class="form-group col-sm-6">
+                                    <label for="apellidos_alumno" style="font-weight: bold;">Apellidos Completos <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                                    <input type="text" class="form-control" id="apellidos_alumno" name="apellidos_alumno" 
+                                    placeholder="Apellidos Completos" [(ngModel)]="alumno.apellidos_alumno" #regapellidos="ngModel" 
+                                    onkeyup="verif(this)" maxlength="60" [ngClass]="{ 'is-invalid': myForm.submitted && regapellidos.invalid }" 
+                                    pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,30}[\s]*)+$" required>
+                                    <div *ngIf="myForm.submitted && regapellidos.invalid" class="invalid-feedback">
+                                      <div *ngIf="regapellidos.errors.required">Apellidos Completos campo requerido</div>
+                                      <div *ngIf="regapellidos.errors.pattern">Formato de Apellidos Completos incorrectos</div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-6">
+                                    <label for="nombres_alumno" style="font-weight: bold;">Nombres Completos <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                                    <input type="text" class="form-control" id="nombres_alumno" name="nombres_alumno"
+                                     placeholder="Nombres Completos" [(ngModel)]="alumno.nombres_alumno" #regnombres="ngModel" 
+                                     onkeyup="verif(this)" maxlength="50" [ngClass]="{ 'is-invalid': myForm.submitted && regnombres.invalid }" 
+                                     pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,25}[\s]*)+$" required>
+                                     <div *ngIf="myForm.submitted && regnombres.invalid" class="invalid-feedback">
+                                      <div *ngIf="regnombres.errors.required">Nombres Completos campo requerido</div>
+                                      <div *ngIf="regnombres.errors.pattern">Formato de Nombres Completos incorrectos</div>
+                                     </div>
+                                  </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-sm-12">
+                                    <label for="postal-code" style="font-weight: bold;">Sexo <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                                    <div class="radio" style="display: block !important;max-width: none !important;">
+                                        <div class="form-check form-check-inline mr-1" id="inline-radios">
+                                            <input class="form-check-input" type="radio" name="sexo_alumno" id="inlineRadio1" [(ngModel)]="alumno.sexo_alumno" value="M" #regsexo="ngModel" required >
+                                            <label class="form-check-label" for="inlineRadio1">Masculino</label>
+                                          </div>
+                                          <div class="form-check form-check-inline mr-1">
+                                            <input class="form-check-input" type="radio" name="sexo_alumno" id="inlineRadio2" [(ngModel)]="alumno.sexo_alumno" value="F" #regsexo="ngModel" required>
+                                            <label class="form-check-label" for="inlineRadio2">Femenino</label>
+                                          </div>
+                                         
+                                        </div>
+                                        <div *ngIf="myForm.submitted && regsexo.errors?.required" style="
+                                         width: 100%;
+                                         margin-top: .25rem;
+                                         font-size: 80%;
+                                         color: #f86c6b;">
+                                           Debe seleccionar una opción
+                                          </div>
+                                  </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-sm-12">
+                                    <label for="direccion_alumno" style="font-weight: bold;">Dirección <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                                    <input type="text" class="form-control" id="direccion_alumno" name="direccion_alumno"
+                                    placeholder="Dirección del Alumno" [(ngModel)]="alumno.direccion_alumno" #regdireccion="ngModel" 
+                                    onkeyup="verif(this)" maxlength="80" [ngClass]="{ 'is-invalid': myForm.submitted && regdireccion.invalid }" 
+                                    pattern="^([A-Za-z0-9#]{1,80}[\s]*)+$" required>
+                                    <div *ngIf="myForm.submitted && regdireccion.invalid" class="invalid-feedback">
+                                        <div *ngIf="regdireccion.errors.required">Dirección campo requerido</div>
+                                        <div *ngIf="regdireccion.errors.pattern">Formato de Dirección incorrectos</div>
+                                      </div>
+                                  </div>
+                            </div>
+                          </div>
+            <div class="col-xs-12 col-md-6 col-lg-6" style="border:0px;">
+                          <div class="row">
+                              <div class="form-group col-xs-12 col-sm-12 col-md-11 col-lg-6">
+                                  <label for="telefono_alumno" style="font-weight: bold;">Teléfono :</label>
+                                  <input type="text" class="form-control" id="telefono_alumno" name="telefono_alumno"
+                                  placeholder="Num. Teléfonico"  [(ngModel)]="alumno.telefono_alumno" #regtelefono="ngModel"
+                                  pattern="[0-9]{6}" [ngClass]="{ 'is-invalid': myForm.submitted && regtelefono.invalid }" onkeyup="verif(this)" onkeypress="return Num(event);" maxlength="6">
+                                  <div *ngIf="myForm.submitted && regtelefono.invalid" class="invalid-feedback">
+                                      <div *ngIf="regtelefono.errors.pattern">Debe Ingresar 6 Números</div>
+                                  </div>
+                                </div>
+                                <div class="form-group col-xs-12 col-sm-12 col-md-11 col-lg-6">
+                                    <label for="celular_alumno" style="font-weight: bold;">Celular <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                                    <input type="text" class="form-control" id="celular_alumno" name="celular_alumno"
+                                    placeholder="Num. Celular"  [(ngModel)]="alumno.celular_alumno" #regcelular="ngModel"
+                                    pattern="[0-9]{9}" [ngClass]="{ 'is-invalid': myForm.submitted && regcelular.invalid }" onkeyup="verif(this)" onkeypress="return Num(event);" maxlength="9" required>
+                                    <div *ngIf="myForm.submitted && regcelular.invalid" class="invalid-feedback">
+                                      <div *ngIf="regcelular.errors.required">Celular campo requerido</div>
+                                      <div *ngIf="regcelular.errors.pattern">Debe Ingresar 9 Números</div>
+                                    </div>
+                                  </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-sm-12">
+                                    <label for="correo_alumno" style="font-weight: bold;">Correo Electrónico:</label>
+                                    <input type="text" class="form-control" id="correo_alumno" name="correo_alumno"
+                                    placeholder="Correo Electrónico" [(ngModel)]="alumno.correo_alumno" #regcorreo="ngModel" 
+                                    maxlength="80" [ngClass]="{ 'is-invalid': myForm.submitted && regcorreo.invalid }" email>
+                                    <div *ngIf="myForm.submitted && regcorreo.invalid" class="invalid-feedback">
+                                        <div *ngIf="regcorreo.errors.email">Debe Ingresar Correo Válido</div>
+                                    </div>
+                                  </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-sm-12">
+                                    <label for="procedencia_alumno" style="font-weight: bold;">Colegio de Procedencia :</label>
+                                    <input type="text" class="form-control" id="procedencia_alumno" name="procedencia_alumno"
+                                    placeholder="Colegio de Procedencia" [(ngModel)]="alumno.procedencia_alumno" #regprocedencia="ngModel" 
+                                    onkeyup="verif(this)" maxlength="100" [ngClass]="{ 'is-invalid': myForm.submitted && regprocedencia.invalid }" 
+                                    pattern="^([A-Za-z0-9]{0,100}[\s]*)+$">
+                                    <div *ngIf="myForm.submitted && regprocedencia.invalid" class="invalid-feedback">
+                                        <div *ngIf="regprocedencia.errors.pattern">Formato de Procedencia incorrectos</div>
+                                      </div>
+                                  </div>
+                            </div>
+                          </div>
+                    </div>
+                  </div>
+                  <div class="card-header estilo-cabecera">DATOS DEL PADRE</div>
+                  <div class="card-body">
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6 col-lg-6" style="border:0px;">
+                            <div class="row">
+                                <div class="form-group col-xs-12 col-sm-12 col-md-11 col-lg-6">
+                                    <label for="apellidos_padre" style="font-weight: bold;">Apellidos Completos <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                                    <input type="text" class="form-control" id="apellidos_padre" name="apellidos_padre" 
+                                    placeholder="Apellidos Completos" [(ngModel)]="alumno.apellidos_padre" #regapellidos_padre="ngModel" 
+                                    onkeyup="verif(this)" maxlength="60" [ngClass]="{ 'is-invalid': myForm.submitted && regapellidos_padre.invalid }" 
+                                    pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,30}[\s]*)+$" required>
+                                    <div *ngIf="myForm.submitted && regapellidos_padre.invalid" class="invalid-feedback">
+                                      <div *ngIf="regapellidos_padre.errors.required">Apellidos Completos campo requerido</div>
+                                      <div *ngIf="regapellidos_padre.errors.pattern">Formato de Apellidos Completos incorrectos</div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-xs-12 col-sm-12 col-md-11 col-lg-6">
+                                    <label for="nombres_padre" style="font-weight: bold;">Nombres Completos <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                                    <input type="text" class="form-control" id="nombres_padre" name="nombres_padre"
+                                     placeholder="Nombres Completos" [(ngModel)]="alumno.nombres_padre" #regnombres_padre="ngModel" 
+                                     onkeyup="verif(this)" maxlength="50" [ngClass]="{ 'is-invalid': myForm.submitted && regnombres_padre.invalid }" 
+                                     pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,25}[\s]*)+$" required>
+                                     <div *ngIf="myForm.submitted && regnombres_padre.invalid" class="invalid-feedback">
+                                      <div *ngIf="regnombres_padre.errors.required">Nombres Completos campo requerido</div>
+                                      <div *ngIf="regnombres_padre.errors.pattern">Formato de Nombres Completos incorrectos</div>
+                                     </div>
+                                  </div>
+                            </div>
+                           </div>
+                           <div class="col-xs-12 col-md-6 col-lg-6" style="border:0px;">
+                              <div class="row">
+                                  <div class="form-group col-xs-12 col-sm-12 col-md-11 col-lg-4">
+                                      <label for="celular_padre" style="font-weight: bold;">Celular :</label>
+                                      <input type="text" class="form-control" id="celular_padre" name="celular_padre"
+                                      placeholder="Num. Celular"  [(ngModel)]="alumno.celular_padre" #regcelular_padre="ngModel"
+                                      pattern="[0-9]{9}" [ngClass]="{ 'is-invalid': myForm.submitted && regcelular_padre.invalid }" onkeyup="verif(this)" onkeypress="return Num(event);" maxlength="9">
+                                      <div *ngIf="myForm.submitted && regcelular_padre.invalid" class="invalid-feedback">
+                                        <div *ngIf="regcelular_padre.errors.pattern">Debe Ingresar 9 Números</div>
+                                      </div>
+                                    </div>
+                                    <div class="form-group col-xs-12 col-sm-12 col-md-11 col-lg-8">
+                                        <label for="correo_padre" style="font-weight: bold;">Correo Electrónico :</label>
+                                        <input type="text" class="form-control" id="correo_padre" name="correo_padre"
+                                        placeholder="Correo Electrónico" [(ngModel)]="alumno.correo_padre" #regcorreo_padre="ngModel" 
+                                        maxlength="80" [ngClass]="{ 'is-invalid': myForm.submitted && regcorreo_padre.invalid }" email>
+                                        <div *ngIf="myForm.submitted && regcorreo_padre.invalid" class="invalid-feedback">
+                                            <div *ngIf="regcorreo_padre.errors.email">Debe Ingresar Correo Válido</div>
+                                        </div>
+                                      </div>
+                              </div>
+                           </div>
+                    </div>
+                  </div>
+                  <div class="card-header estilo-cabecera">DATOS DE LA MADRE</div>
+                  <div class="card-body">
+                      <div class="row">
+                          <div class="col-xs-12 col-md-6 col-lg-6" style="border:0px;">
+                              <div class="row">
+                                  <div class="form-group col-xs-12 col-sm-12 col-md-11 col-lg-6">
+                                      <label for="apellidos_madre" style="font-weight: bold;">Apellidos Completos <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                                      <input type="text" class="form-control" id="apellidos_madre" name="apellidos_madre" 
+                                      placeholder="Apellidos Completos" [(ngModel)]="alumno.apellidos_madre" #regapellidos_madre="ngModel" 
+                                      onkeyup="verif(this)" maxlength="60" [ngClass]="{ 'is-invalid': myForm.submitted && regapellidos_madre.invalid }" 
+                                      pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,30}[\s]*)+$" required>
+                                      <div *ngIf="myForm.submitted && regapellidos_madre.invalid" class="invalid-feedback">
+                                        <div *ngIf="regapellidos_madre.errors.required">Apellidos Completos campo requerido</div>
+                                        <div *ngIf="regapellidos_madre.errors.pattern">Formato de Apellidos Completos incorrectos</div>
+                                      </div>
+                                  </div>
+                                  <div class="form-group col-xs-12 col-sm-12 col-md-11 col-lg-6">
+                                      <label for="nombres_madre" style="font-weight: bold;">Nombres Completos <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                                      <input type="text" class="form-control" id="nombres_madre" name="nombres_madre"
+                                       placeholder="Nombres Completos" [(ngModel)]="alumno.nombres_madre" #regnombres_madre="ngModel" 
+                                       onkeyup="verif(this)" maxlength="50" [ngClass]="{ 'is-invalid': myForm.submitted && regnombres_madre.invalid }" 
+                                       pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,25}[\s]*)+$" required>
+                                       <div *ngIf="myForm.submitted && regnombres_madre.invalid" class="invalid-feedback">
+                                        <div *ngIf="regnombres_madre.errors.required">Nombres Completos campo requerido</div>
+                                        <div *ngIf="regnombres_madre.errors.pattern">Formato de Nombres Completos incorrectos</div>
+                                       </div>
+                                    </div>
+                              </div>
+                             </div>
+                             <div class="col-xs-12 col-md-6 col-lg-6" style="border:0px;">
+                                <div class="row">
+                                    <div class="form-group col-xs-12 col-sm-12 col-md-11 col-lg-4">
+                                        <label for="celular_madre" style="font-weight: bold;">Celular :</label>
+                                        <input type="text" class="form-control" id="celular_madre" name="celular_madre"
+                                        placeholder="Num. Celular"  [(ngModel)]="alumno.celular_madre" #regcelular_madre="ngModel"
+                                        pattern="[0-9]{9}" [ngClass]="{ 'is-invalid': myForm.submitted && regcelular_madre.invalid }" onkeyup="verif(this)" onkeypress="return Num(event);" maxlength="9">
+                                        <div *ngIf="myForm.submitted && regcelular_madre.invalid" class="invalid-feedback">
+                                          <div *ngIf="regcelular_madre.errors.pattern">Debe Ingresar 9 Números</div>
+                                        </div>
+                                      </div>
+                                      <div class="form-group col-xs-12 col-sm-12 col-md-11 col-lg-8">
+                                          <label for="correo_madre" style="font-weight: bold;">Correo Electrónico :</label>
+                                          <input type="text" class="form-control" id="correo_madre" name="correo_madre"
+                                          placeholder="Correo Electrónico" [(ngModel)]="alumno.correo_madre" #regcorreo_madre="ngModel" 
+                                          maxlength="80" [ngClass]="{ 'is-invalid': myForm.submitted && regcorreo_madre.invalid }" email>
+                                          <div *ngIf="myForm.submitted && regcorreo_madre.invalid" class="invalid-feedback">
+                                              <div *ngIf="regcorreo_madre.errors.email">Debe Ingresar Correo Válido</div>
+                                          </div>
+                                        </div>
+                                </div>                                                      
+                             </div>
+                      </div>
+                    </div>
+              </div>
+              <div class="card-footer text-center" style="background:#019dd6; color:#fff">
+                <h4>Todos los campos con <font class="cascade2">(*)</font> son obligatorios</h4>
+              </div>
+            </form>
+        </div>
+    
+</div>

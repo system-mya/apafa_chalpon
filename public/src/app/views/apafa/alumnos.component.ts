@@ -4,7 +4,7 @@ import { NgForm } from '@angular/forms';
 import {MatPaginator, MatSort, MatTableDataSource,TooltipPosition} from '@angular/material';
 import {ModalDirective} from 'ngx-bootstrap/modal';
 import 'rxjs/add/operator/map';
-import {Usuario,Busqueda} from '../../app.datos';
+import {Alumno,Busqueda} from '../../app.datos';
 import { ToastrService } from 'ngx-toastr';
 import { AlertComponent } from 'ngx-bootstrap/alert/alert.component';
 import {animate, state, style, transition, trigger} from '@angular/animations';
@@ -13,29 +13,37 @@ declare var swal: any;
   templateUrl: 'alumnos.component.html',
   styleUrls: ['apafa.css'],
   encapsulation: ViewEncapsulation.None,
-  animations: [
-    trigger('detailExpand', [
-      state('void', style({ height: '0px', minHeight: '0', visibility: 'hidden' })),
-      state('*', style({ height: '*', visibility: 'visible' })),
-      transition('void <=> *', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-    ]),
-  ],
+  // animations: [
+  //   trigger('detailExpand', [
+  //     state('void', style({ height: '0px', minHeight: '0', visibility: 'hidden' })),
+  //     state('*', style({ height: '*', visibility: 'visible' })),
+  //     transition('void <=> *', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+  //   ]),
+  // ],
 })
 export class AlumnosComponent implements OnInit {
   DataArray : any = [];
   //columnsToDisplay = ['id_alumno', 'tdoc_alumno', 'doc_alumno', 'apepaterno_alumno'];
-  displayedColumns: string[] = ['id_alumno', 'tdoc_alumno', 'doc_alumno', 'apepaterno_alumno'];
+  displayedColumns: string[] = ['doc_alumno', 'apellidos_alumno','sexo_alumno','num_contacto','opciones_alumno'];
+  positionOptions: TooltipPosition[] = ['after', 'before', 'above', 'below', 'left', 'right'];
   dataSource: MatTableDataSource<any>;
   isExpansionDetailRow = (index, row) => row.hasOwnProperty('detailRow');
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   public  chooseView : string;
+  public panel_tabla : boolean
+  public panel_registro : boolean;
+  public alumno : Alumno;
   constructor(private _AlumnosServicios:AlumnosService,private toastr: ToastrService) {
     this.LoadTableData();
+    this.panel_tabla=true;
+    this.panel_registro=false;
    }
   
   ngOnInit() {
-    
+    this.LoadTableData();
+    this.panel_tabla=true;
+    this.panel_registro=false;
     
   }
 
@@ -58,14 +66,18 @@ export class AlumnosComponent implements OnInit {
     }
   }
 
-// displayedColumns: Array<string>;
-//  expandedElement: Array<string>;
-// toggleRow(element) {
-// if (this.expandedElement === element) {
-//   this.expandedElement = null;
-// } else {
-//    this.expandedElement = element;
-// }
-//  }
-  
+  btnNuevo_Alumno(){
+    this.panel_tabla=false;
+    this.panel_registro=true;
+    this.alumno = {
+      tdoc_alumno:''
+
+    }
+  }
+
+  btnCancelar_RegAlumno(){
+    this.panel_tabla=true;
+    this.panel_registro=false;
+  }
+
 }

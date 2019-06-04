@@ -17,18 +17,18 @@ const routes: Routes = [
   {
     path: '',
     data: {
-      title: 'Base'
+      title: 'Apafa'
     },
     children: [
       {
         path: '',
-        redirectTo: 'cards'
+        redirectTo: 'alumnos'
       },
       {
-        path: 'cards',
+        path: 'alumnos',
         component: AlumnosComponent,
         data: {
-          title: 'Cards'
+          title: 'Alumnos'
         }
       },
       {
@@ -109,4 +109,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class BaseRoutingModule {}
+export class ApafaRoutingModule {}

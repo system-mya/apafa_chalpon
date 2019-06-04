@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 03-06-2019 a las 00:48:12
+-- Tiempo de generación: 04-06-2019 a las 01:18:34
 -- Versión del servidor: 5.7.14
 -- Versión de PHP: 5.6.25
 
@@ -82,6 +82,10 @@ direccion_usu,fcreacion_usu,
 obser_usu,idperfil_usuario)
 VALUES (nom_usu,SHA(clave),dni,nombres,apellidos,sexo,
 celular,correo,direccion,fcreacion,obser,perfil)$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_alumnos` ()  NO SQL
+SELECT * FROM alumno
+WHERE estado_alumno=1$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_anhio` ()  NO SQL
 SELECT idanhio,anhio,finicio_anhio,ffin_anhio,
@@ -177,6 +181,42 @@ AND id_grado=grado
 AND estado_seccion=1$$
 
 DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `alumno`
+--
+
+CREATE TABLE `alumno` (
+  `id_alumno` smallint(6) NOT NULL,
+  `tdoc_alumno` char(3) NOT NULL,
+  `doc_alumno` varchar(15) NOT NULL,
+  `apellidos_alumno` varchar(60) NOT NULL,
+  `nombres_alumno` varchar(50) NOT NULL,
+  `sexo_alumno` char(1) NOT NULL,
+  `telefono_alumno` char(6) DEFAULT NULL,
+  `celular_alumno` char(9) NOT NULL,
+  `direccion_alumno` varchar(80) NOT NULL,
+  `correo_alumno` varchar(80) DEFAULT NULL,
+  `procedencia_alumno` varchar(100) DEFAULT NULL,
+  `apellidos_padre` varchar(60) NOT NULL,
+  `nombres_padre` varchar(50) NOT NULL,
+  `celular_padre` char(9) DEFAULT NULL,
+  `correo_padre` varchar(80) DEFAULT NULL,
+  `apellidos_madre` varchar(60) NOT NULL,
+  `nombres_madre` varchar(50) NOT NULL,
+  `celular_madre` char(9) DEFAULT NULL,
+  `correo_madre` varchar(80) DEFAULT NULL,
+  `estado_alumno` bit(1) NOT NULL DEFAULT b'1'
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `alumno`
+--
+
+INSERT INTO `alumno` (`id_alumno`, `tdoc_alumno`, `doc_alumno`, `apellidos_alumno`, `nombres_alumno`, `sexo_alumno`, `telefono_alumno`, `celular_alumno`, `direccion_alumno`, `correo_alumno`, `procedencia_alumno`, `apellidos_padre`, `nombres_padre`, `celular_padre`, `correo_padre`, `apellidos_madre`, `nombres_madre`, `celular_madre`, `correo_madre`, `estado_alumno`) VALUES
+(1, 'DNI', '71919582', 'Julca Vasquez', 'Jose Andersson', 'M', NULL, '978902579', 'Calle chiclayo # 114', NULL, 'O.C.O', 'Julca Zeña', 'Francisco Javier', NULL, NULL, 'Vasquez Delgado', 'Susana Esther', NULL, NULL, b'1');
 
 -- --------------------------------------------------------
 
@@ -319,6 +359,12 @@ INSERT INTO `usuario` (`idusuario`, `nom_usu`, `clave_usu`, `dni_usu`, `nombres_
 --
 
 --
+-- Indices de la tabla `alumno`
+--
+ALTER TABLE `alumno`
+  ADD PRIMARY KEY (`id_alumno`);
+
+--
 -- Indices de la tabla `anhio_lectivo`
 --
 ALTER TABLE `anhio_lectivo`
@@ -354,6 +400,11 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
+--
+-- AUTO_INCREMENT de la tabla `alumno`
+--
+ALTER TABLE `alumno`
+  MODIFY `id_alumno` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT de la tabla `anhio_lectivo`
 --
