@@ -21,5 +21,11 @@ export class AlumnosService {
     return this._http.post('/api/apafa/insertar_alumno',alumno)
      .map(data => data.json()).toPromise()
   }
+
+  public detalle_alumno(alumno:Busqueda){
+    return this._http.post('/api/apafa/detalle_alumno',alumno)
+     .map(data => data.json()).toPromise()
+  }
+  
   
 }

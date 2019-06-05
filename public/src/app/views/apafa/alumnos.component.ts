@@ -23,27 +23,42 @@ declare var swal: any;
 })
 export class AlumnosComponent implements OnInit {
   DataArray : any = [];
+  @ViewChild('DetAlumnoModal') public DetAlumnoModal: ModalDirective;
   //columnsToDisplay = ['id_alumno', 'tdoc_alumno', 'doc_alumno', 'apepaterno_alumno'];
   displayedColumns: string[] = ['doc_alumno', 'apellidos_alumno','sexo_alumno','num_contacto','opciones_alumno'];
   positionOptions: TooltipPosition[] = ['after', 'before', 'above', 'below', 'left', 'right'];
   dataSource: MatTableDataSource<any>;
-  isExpansionDetailRow = (index, row) => row.hasOwnProperty('detailRow');
+  //isExpansionDetailRow = (index, row) => row.hasOwnProperty('detailRow');
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   public  chooseView : string;
   public panel_tabla : boolean
   public panel_registro : boolean;
+  public panel_modificar : boolean;
   public alumno : Alumno;
+  public Editalumno : Alumno;
+  public DatoBusqueda : Busqueda;
   constructor(private _AlumnosServicios:AlumnosService,private toastr: ToastrService) {
     this.LoadTableData();
     this.panel_tabla=true;
     this.panel_registro=false;
+    this.DatoBusqueda = {
+      idbusqueda:0
+    }
+    this.Editalumno = {
+      tdoc_alumno:'',
+      telefono_alumno:'',
+      correo_alumno:'',
+      procedencia_alumno:'',
+      celular_padre:'',
+      correo_padre:'',
+      celular_madre:'',
+      correo_madre:''
+      
+    }
    }
   
   ngOnInit() {
-    this.LoadTableData();
-    this.panel_tabla=true;
-    this.panel_registro=false;
     
   }
 
@@ -78,13 +93,22 @@ export class AlumnosComponent implements OnInit {
       correo_padre:'',
       celular_madre:'',
       correo_madre:''
-
+      
     }
   }
 
-  btnCancelar_RegAlumno(){
-    this.panel_tabla=true;
-    this.panel_registro=false;
+  DetAlumno_hide(){
+      this.DetAlumnoModal.hide();
+      }
+
+  btnCancelar_Alumno(opt){
+    if(opt=='I'){
+      this.panel_tabla=true;
+      this.panel_registro=false;
+    }else{
+      this.panel_tabla=true;
+      this.panel_modificar=false;
+    }
   }
 
   onSubmit(form:Alumno){    
@@ -133,6 +157,42 @@ export class AlumnosComponent implements OnInit {
         .catch(err => console.log(err))
       }
     })
+  }
+
+
+DataAlumno : any = [];
+btnDetalle_Alumno(id){
+  this.DatoBusqueda.idbusqueda=id;
+  console.log(this.DatoBusqueda.idbusqueda);
+  this.DetAlumnoModal.show(); 
+    this._AlumnosServicios.detalle_alumno(this.DatoBusqueda)
+    .then(data => {
+      if(data.status==1){
+        this.DataAlumno = data.data[0];
+        //this.DataAlumno.sexo_alumno = data.data[0].sexo_alumno.charAt(0);
+        this.toastr.success(data.message, 'Aviso!',{positionClass: 'toast-top-right',timeOut: 500});
+      }else{
+        this.toastr.error(data.message, 'Aviso!');
+       }
+    } )
+    .catch(err => console.log(err))
+  }
+
+  btnEdit_Alumno(id){
+    this.panel_tabla=false;
+    this.panel_modificar=true;
+    this.DatoBusqueda.idbusqueda=id;
+    this._AlumnosServicios.detalle_alumno(this.DatoBusqueda)
+    .then(data => {
+      if(data.status==1){
+        this.Editalumno = data.data[0];
+        this.Editalumno.sexo_alumno = data.data[0].sexo_alumno.charAt(0);
+        this.toastr.success(data.message, 'Aviso!',{positionClass: 'toast-top-right',timeOut: 500});
+      }else{
+        this.toastr.error(data.message, 'Aviso!');
+       }
+    } )
+    .catch(err => console.log(err))
   }
 
 }
