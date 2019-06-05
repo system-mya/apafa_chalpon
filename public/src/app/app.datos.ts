@@ -84,5 +84,19 @@ export class Alumno
     celular_madre ?: string;
     correo_madre ?: string;
     estado_alumno ?: boolean;
+}
+
+export class Apoderado
+{
+    id_apoderado ?: number;
+    tdoc_apoderado ?: string;
+    doc_apoderado ?: string;
+    apellidos_apoderado ?: string;
+    nombres_apoderado ?: string;
+    sexo_apoderado ?: string;
+    celular_apoderado ?: string;
+    direccion_apoderado ?: string;
+    correo_apoderado ?: string;
+    estado_apoderado ?: boolean;
 
 }

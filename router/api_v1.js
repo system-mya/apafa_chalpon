@@ -104,12 +104,27 @@ app.post('/api/apafa/insertar_alumno', (req, res) => {
 
 // LLAMADO AL UPDATE ALUMNO
 app.post('/api/apafa/update_alumno', (req, res) => {
-    admin.update_alumno(req.body, res);
+    alumno.update_alumno(req.body, res);
 });
 
 // LLAMADO AL MODELO ELIMINAR ALUMNO
 app.post('/api/apafa/eliminar_alumno', (req, res) => {
-    admin.eliminar_alumno(req.body, res);
+    alumno.eliminar_alumno(req.body, res);
+});
+
+//INSERTAR NUEVO APODERADO
+app.post('/api/apafa/insertar_apoderado', (req, res) => {
+    alumno.nvo_apoderado(req.body, res);
+});
+
+// LLAMADO AL UPDATE APODERADO
+app.post('/api/apafa/update_alumno', (req, res) => {
+    alumno.update_apoderado(req.body, res);
+});
+
+// LLAMADO AL MODELO ELIMINAR APODERADO
+app.post('/api/apafa/eliminar_alumno', (req, res) => {
+    alumno.eliminar_apoderado(req.body, res);
 });
 
 }
