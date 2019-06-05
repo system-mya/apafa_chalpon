@@ -109,6 +109,132 @@ class Apafa {
         });
     };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     update_alumno(alumno, res) {
         connection.acquire((err, con) => {
             if(err){
@@ -159,7 +285,7 @@ class Apafa {
                         var query = "CALL pa_update_alumno("+ [alumno.id_alumno] 
                         + ",'" +[alumno.apellidos_alumno] + "','"+ [alumno.nombres_alumno]
                         + "','" + [alumno.sexo_alumno]
-                        + "','" + [alumno.telefono_alumno] + "','"+ [alumno.celular_alumno]
+                        + "'," + telefono_alumno + ",'"+ [alumno.celular_alumno]
                         + "','" + [alumno.direccion_alumno]
                         + "','" + [alumno.correo_alumno]
                         + "','" + [alumno.procedencia_alumno]
@@ -208,7 +334,113 @@ class Apafa {
         });
     };
     
+    nvo_apoderado(apoderado, res) {
+        connection.acquire((err, con) => {
+            if(err){
+                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+            }else{
+    
+            if ([apoderado.correo_apoderado]==''){
+                var correo_apoderado="NULL";
+            }else{
+                correo_apoderado="'"+[alumno.correo_apoderado]+"'";
+            }
+    
+            var query_doc = "CALL pa_buscar_doc_apoderdo('"+ [apoderado.doc_apoderado] +"')";
+            
+            con.query(query_doc,(err, result) => {
+                con.release();
+                if(err){
+                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                }else{
+                    if (result[0].length == 0) {
+                        var query = "CALL pa_insertar_apoderado('"+ [apoderado.tdoc_apoderado] +"','"+ [apoderado.doc_apoderado] 
+                        +"','"+ [apoderado.apellidos_apoderado] + "','"+ [apoderado.nombres_apoderado] 
+                        + "','"+ [apoderado.sexo_apoderado] + "','"+ [apoderado.celular_apoderdo]
+                        + "','"+ [apoderado.direccion_apoderado] + "',"+ correo_alumno + ")";
+                        
+                        con.query(query,(err, result) => {
+                            if(err){
+                                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                            }else{
+                                if (result.affectedRows == 1) {
+                                    res.send({status: 1, message: 'APODERADO REGISTRADO'});
+                                } else {
+                                    res.send({status: 2, message: 'APODERADO NO REGISTRADO'});
+                                }
+                            }
+                        });
+                    } else {
+                        res.send({status: 3, message: 'NUM. DOC. DEL APODERADO YA REGISTRADO'});
+                    }
+                }
+            });
+    
+            
+            }
+        });
+    };
+    
 
+    update_apoderado(apoderado, res) {
+        connection.acquire((err, con) => {
+            if(err){
+                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+            }else{
+            
+                if ([apoderado.correo_apoderado]==''){
+                    var correo_apoderado="NULL";
+                }else{
+                    correo_apoderado="'"+[apoderado.correo_apoderado]+"'";
+                }
+
+                        var query = "CALL pa_update_apoderado("+ [apoderado.id_apoderado]
+                        + ",'" +[apoderado.apellidos_apoderado] + "','"+ [apoderado.nombres_apoderado]
+                        + "','" + [apoderado.sexo_apoderado]
+                        + "','"+ [apoderado.celular_apoderdo]
+                        + "','" + [apoderado.direccion_apoderado]
+                        + "','" + [apoderado.correo_apoderado]
+                        + "')";
+                        con.query(query,(err, result) => {
+                            if(err){
+                                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOSs'});
+                            }else{
+                                if (result.affectedRows == 1) {
+                                    res.send({status: 1, message: 'APODERADO ACTUALIZADO'});
+                                } else {
+                                    res.send({status: 2, message: 'APODERADO NO ACTUALIZADO'});
+                                }
+                            }
+                        });
+    
+            
+            }
+        });
+    };
+    
+    eliminar_apoderado(apoderado, res) {
+        connection.acquire((err, con) => {
+            if(err){
+                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+            }else{
+            var query = "CALL pa_eliminar_apoderado("+ [apoderado.idbusqueda] +")"; 
+            /* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
+            con.query(query,(err, result) => {
+                con.release();
+                if(err){
+                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                }else{
+                    if (result.affectedRows == 0) {
+                        res.send({status: 2, message: 'CAMBIOS NO REALIZADOS'});
+                    } else {
+                        res.send({status: 1, message: 'APODERADO ELIMINADO'});
+                    }
+                }
+            });
+            }
+        });
+    };
+    
 }
 
 module.exports = new Apafa();
