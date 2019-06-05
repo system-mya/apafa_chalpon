@@ -102,6 +102,9 @@ app.post('/api/apafa/insertar_alumno', (req, res) => {
     alumno.nvo_alumno(req.body, res);
 });
 
+app.post('/api/apafa/detalle_alumno', (req, res) => {
+    alumno.obtener_alumno(req.body, res);
+});
 
 }
 }

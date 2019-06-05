@@ -41,7 +41,7 @@ import { ProgressComponent } from './progress.component';
 // Tooltip Component
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TooltipsComponent } from './tooltips.component';
-
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 // Components Routing
 import { ApafaRoutingModule } from './apafa-routing.module';
@@ -136,7 +136,8 @@ import { MatAutocompleteModule,
       MatTreeModule,
       MatFormFieldModule,
     ],
-    DataTablesModule
+    DataTablesModule,
+    ModalModule.forRoot(),
   ],
   declarations: [
     AlumnosComponent,
