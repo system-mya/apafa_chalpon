@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: localhost
--- Tiempo de generación: 05-06-2019 a las 17:57:14
+-- Tiempo de generación: 05-06-2019 a las 23:25:58
 -- Versión del servidor: 5.5.24-log
 -- Versión de PHP: 5.4.3
 
@@ -80,6 +80,10 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_anhio`(IN `anhio` SMALL
     NO SQL
 UPDATE anhio_lectivo SET estado_anhio=0 WHERE idanhio=anhio$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_apoderado`(IN `id_apo` SMALLINT)
+    NO SQL
+UPDATE apoderado SET estado_apoderado=0 WHERE id_apoderado=id_apo$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_usuario`(IN `id_usu` SMALLINT)
     NO SQL
 UPDATE usuario SET estado_usu=0
@@ -112,6 +116,14 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_anhio`(IN `anhio` CHAR(
 INSERT INTO anhio_lectivo(anhio, finicio_anhio,
 ffin_anhio, descripcion_anhio) 
 VALUES (anhio,finicio,ffin,descripcion)$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_apoderado`(IN `tdoc_apod` CHAR(3), IN `doc_apod` VARCHAR(15), IN `ape_apod` VARCHAR(60), IN `nom_apod` VARCHAR(50), IN `sex_apod` CHAR(1), IN `cel_apod` CHAR(9), IN `direc_apod` VARCHAR(80), IN `cor_apod` VARCHAR(80))
+    NO SQL
+INSERT INTO apoderado(tdoc_apoderado, 
+doc_apoderado, apellidos_apoderado, nombres_apoderado,
+sexo_apoderado, celular_apoderado, direccion_apoderado,
+correo_apoderado) VALUES (tdoc_apod,doc_apod,
+ape_apod,nom_apod,sex_apod,cel_apod,direc_apod,cor_apod)$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_seccion`(IN `nombre` VARCHAR(20), IN `grado` INT, IN `turno` CHAR(1))
     NO SQL
@@ -228,7 +240,15 @@ apellidos_padre=ape_padre,nombres_padre=nom_padre,
 celular_padre=cel_padre,correo_padre=cor_padre,
 apellidos_madre=ape_madre,nombres_madre=nom_madre,
 celular_madre=cel_madre,correo_madre=cor_madre
-WHERE id_alumno=id_alumno$$
+WHERE id_alumno=id$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_apoderado`(IN `id_apo` SMALLINT, IN `ap_apod` VARCHAR(60), IN `nom_apod` VARCHAR(50), IN `sex_apo` CHAR(1), IN `cel_apo` CHAR(9), IN `dir_apo` VARCHAR(80), IN `cor_apo` VARCHAR(80))
+    NO SQL
+UPDATE apoderado SET apellidos_apoderado=ape_apo,
+nombres_apoderado=nom_apo,sexo_apoderado=sex_apo,
+celular_apoderado=cel_apo,
+direccion_apoderado=dir_apo,correo_apoderado=cor_apo
+WHERE id_apoderado=id_apo$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_usuario`(IN `idusu` INT, IN `nom_usu` VARCHAR(20), IN `nombres` VARCHAR(45), IN `apellidos` VARCHAR(60), IN `sexo` CHAR(1), IN `celular` CHAR(9), IN `correo` VARCHAR(80), IN `direccion` VARCHAR(80), IN `fbaja` DATE, IN `obser` VARCHAR(50), IN `perfil` INT)
 UPDATE usuario SET nom_usu=nom_usu,nombres_usu=nombres,apellidos_usu=apellidos,sexo_usu=sexo,celular_usu=celular,correo_usu=correo,direccion_usu=direccion,fbaja_usu=fbaja,obser_usu=obser,idperfil_usuario=perfil
@@ -319,6 +339,26 @@ CREATE TABLE IF NOT EXISTS `anhio_lectivo` (
 INSERT INTO `anhio_lectivo` (`idanhio`, `anhio`, `finicio_anhio`, `ffin_anhio`, `descripcion_anhio`, `condicion_anhio`, `estado_anhio`) VALUES
 (1, '2018', '2018-01-31', '2018-12-31', 'fasfsaf sa fsa fas ffas fas fasf asfasf asf asfasf asf asfasfasf asf ', 'C', b'1'),
 (2, '2019', '2019-01-01', '2019-12-31', NULL, 'A', b'1');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `apoderado`
+--
+
+CREATE TABLE IF NOT EXISTS `apoderado` (
+  `id_apoderado` smallint(6) NOT NULL AUTO_INCREMENT,
+  `tdoc_apoderado` char(3) NOT NULL,
+  `doc_apoderado` varchar(15) NOT NULL,
+  `apellidos_apoderado` varchar(60) NOT NULL,
+  `nombres_apoderado` varchar(50) NOT NULL,
+  `sexo_apoderado` char(1) NOT NULL,
+  `celular_apoderado` char(9) NOT NULL,
+  `direccion_apoderado` varchar(80) NOT NULL,
+  `correo_apoderado` varchar(80) DEFAULT NULL,
+  `estado_apoderado` bit(1) NOT NULL DEFAULT b'1',
+  PRIMARY KEY (`id_apoderado`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -427,7 +467,7 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   `idperfil_usuario` int(11) NOT NULL,
   PRIMARY KEY (`idusuario`),
   KEY `fk_usuario_perfil_usuario` (`idperfil_usuario`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=50 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=49 ;
 
 --
 -- Volcado de datos para la tabla `usuario`
