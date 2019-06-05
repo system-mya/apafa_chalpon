@@ -28,6 +28,7 @@ class Apafa {
             if(err){
                 res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
             }else{
+
             if ([alumno.telefono_alumno]==''){
                 var telefono_alumno="NULL";
             }else{
@@ -108,11 +109,16 @@ class Apafa {
         });
     };
 
+<<<<<<< HEAD
     obtener_alumno(alumno, res) {
+=======
+    update_alumno(alumno, res) {
+>>>>>>> ad4dc8579363f3cbb7bca1166eea5a680a2267d4
         connection.acquire((err, con) => {
             if(err){
                 res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
             }else{
+<<<<<<< HEAD
             var query = "CALL pa_detalle_alumno("+ [alumno.idbusqueda] +")"; 
             /* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
             con.query(query,(err, result) => {
@@ -130,7 +136,103 @@ class Apafa {
             }
         });
     };
+=======
+            
+                if ([alumno.telefono_alumno]==''){
+                    var telefono_alumno="NULL";
+                }else{
+                    telefono_alumno="'"+[alumno.telefono_alumno]+"'";
+                }
+
+                if ([alumno.correo_alumno]==''){
+                    var correo_alumno="NULL";
+                }else{
+                    correo_alumno="'"+[alumno.correo_alumno]+"'";
+                }
+
+                if (([alumno.procedencia_alumno]).toLocaleString().trimLeft()==''){
+                    var procedencia_alumno="NULL";
+                }else{
+                    procedencia_alumno="'"+[alumno.procedencia_alumno]+"'";
+                }
+>>>>>>> ad4dc8579363f3cbb7bca1166eea5a680a2267d4
     
+                if ([alumno.celular_padre]==''){
+                    var celular_padre="NULL";
+                }else{
+                    celular_padre="'"+[alumno.celular_padre]+"'";
+                }
+    
+                if ([alumno.correo_padre]==''){
+                    var correo_padre="NULL";
+                }else{
+                    correo_padre="'"+[alumno.correo_padre]+"'";
+                }
+    
+                if ([alumno.celular_madre]==''){
+                    var celular_madre="NULL";
+                }else{
+                    celular_madre="'"+[alumno.celular_madre]+"'";
+                }
+    
+                if ([alumno.correo_madre]==''){
+                    var correo_madre="NULL";
+                }else{
+                    correo_madre="'"+[alumno.correo_madre]+"'";
+                }
+                        var query = "CALL pa_update_alumno("+ [alumno.id_alumno] 
+                        + ",'" +[alumno.apellidos_alumno] + "','"+ [alumno.nombres_alumno]
+                        + "','" + [alumno.sexo_alumno]
+                        + "','" + [alumno.telefono_alumno] + "','"+ [alumno.celular_alumno]
+                        + "','" + [alumno.direccion_alumno]
+                        + "','" + [alumno.correo_alumno]
+                        + "','" + [alumno.procedencia_alumno]
+                        + "','" + [alumno.apellidos_padre] +"','"+ [alumno.nombres_padre]
+                        + "','" + [alumno.celular_padre] + "','"+ [alumno.correo_padre] 
+                        + "','" + [alumno.apellidos_madre] + "','" [alumno.nombres_madre]
+                        + "','" + [alumno.celular_madre] + "','" [alumno.correo_madre]
+                        "')";
+                        con.query(query,(err, result) => {
+                            if(err){
+                                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOSs'});
+                            }else{
+                                if (result.affectedRows == 1) {
+                                    res.send({status: 1, message: 'ALUMNO ACTUALIZADO'});
+                                } else {
+                                    res.send({status: 2, message: 'ALUMNO NO ACTUALIZADO'});
+                                }
+                            }
+                        });
+    
+            
+            }
+        });
+    };
+    
+    eliminar_alumno(alumno, res) {
+        connection.acquire((err, con) => {
+            if(err){
+                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+            }else{
+            var query = "CALL pa_eliminar_alumno("+ [alumno.idbusqueda] +")"; 
+            /* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
+            con.query(query,(err, result) => {
+                con.release();
+                if(err){
+                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                }else{
+                    if (result.affectedRows == 0) {
+                        res.send({status: 2, message: 'CAMBIOS NO REALIZADOS'});
+                    } else {
+                        res.send({status: 1, message: 'ALUMNO ELIMINADO'});
+                    }
+                }
+            });
+            }
+        });
+    };
+    
+
 }
 
 module.exports = new Apafa();

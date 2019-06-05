@@ -102,8 +102,19 @@ app.post('/api/apafa/insertar_alumno', (req, res) => {
     alumno.nvo_alumno(req.body, res);
 });
 
+<<<<<<< HEAD
 app.post('/api/apafa/detalle_alumno', (req, res) => {
     alumno.obtener_alumno(req.body, res);
+=======
+// LLAMADO AL UPDATE ALUMNO
+app.post('/api/apafa/update_alumno', (req, res) => {
+    admin.update_alumno(req.body, res);
+});
+
+// LLAMADO AL MODELO ELIMINAR ALUMNO
+app.post('/api/apafa/eliminar_alumno', (req, res) => {
+    admin.eliminar_alumno(req.body, res);
+>>>>>>> ad4dc8579363f3cbb7bca1166eea5a680a2267d4
 });
 
 }
