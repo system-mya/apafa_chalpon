@@ -108,165 +108,11 @@ class Apafa {
             }
         });
     };
-
-<<<<<<< HEAD
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-=======
-<<<<<<< HEAD
-    obtener_alumno(alumno, res) {
-=======
->>>>>>> 722545c31f51d0495bb480ac5bd44c5f5cfe660e
-    update_alumno(alumno, res) {
->>>>>>> ad4dc8579363f3cbb7bca1166eea5a680a2267d4
-        connection.acquire((err, con) => {
-            if(err){
-                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
-            }else{
-<<<<<<< HEAD
-            var query = "CALL pa_detalle_alumno("+ [alumno.idbusqueda] +")"; 
-            /* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
-            con.query(query,(err, result) => {
-                con.release();
-                if(err){
-                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
-                }else{
-                    if (result[0].length == 0) {
-                        res.send({status: 2, message: 'Alumno No Existe'});
-                    } else {
-                        res.send({status: 1, message: 'Datos Alumno',data:result[0]});
-                    }
-                }
-            });
-            }
-        });
-    };
-=======
-            
+update_alumno(alumno, res) {
+    connection.acquire((err, con) => {
+        if(err){
+            res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+        }else{            
                 if ([alumno.telefono_alumno]==''){
                     var telefono_alumno="NULL";
                 }else{
@@ -284,7 +130,6 @@ class Apafa {
                 }else{
                     procedencia_alumno="'"+[alumno.procedencia_alumno]+"'";
                 }
->>>>>>> ad4dc8579363f3cbb7bca1166eea5a680a2267d4
     
                 if ([alumno.celular_padre]==''){
                     var celular_padre="NULL";
