@@ -26,6 +26,17 @@ export class AlumnosService {
     return this._http.post('/api/apafa/detalle_alumno',alumno)
      .map(data => data.json()).toPromise()
   }
+
+  // llamando al api ELIMINAR ALUMNO
+public eliminar_alumno(alumno:Busqueda){
+  return this._http.post('/api/apafa/eliminar_alumno',alumno)
+   .map(data => data.json()).toPromise()
+}
+
+public update_alumno(alumno:Alumno){
+  return this._http.post('/api/apafa/update_alumno',alumno)
+   .map(data => data.json()).toPromise()
+}
   
   
 }

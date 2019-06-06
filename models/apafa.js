@@ -80,7 +80,7 @@ class Apafa {
                 }else{
                     if (result[0].length == 0) {
                         var query = "CALL pa_insertar_alumno('"+ [alumno.tdoc_alumno] +"','"+ [alumno.doc_alumno] 
-                        +"','"+ [alumno.apellidos_alumno] + "','"+ [alumno.nombres_alumno] 
+                        +"','"+ [alumno.apellidos_alumno] + "','"+ [alumno.nombres_alumno] +"','" + [alumno.fnac_alumno]
                         + "','"+ [alumno.sexo_alumno] + "',"+ telefono_alumno + ",'"+ [alumno.celular_alumno]
                         + "','"+ [alumno.direccion_alumno] + "',"+ correo_alumno + "," + procedencia_alumno 
                         + ",'"+ [alumno.apellidos_padre] +"','"+ [alumno.nombres_padre] + "'," + celular_padre 
@@ -108,6 +108,30 @@ class Apafa {
             }
         });
     };
+
+    obtener_alumno(alumno, res) {
+        connection.acquire((err, con) => {
+            if(err){
+                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+            }else{
+            var query = "CALL pa_detalle_alumno("+ [alumno.idbusqueda] +")"; 
+            /* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
+            con.query(query,(err, result) => {
+                con.release();
+                if(err){
+                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                }else{
+                    if (result[0].length == 0) {
+                        res.send({status: 2, message: 'Alumno No Existe'});
+                    } else {
+                        res.send({status: 1, message: 'Datos Alumno',data:result[0]});
+                    }
+                }
+            });
+            }
+        });
+    };
+
 update_alumno(alumno, res) {
     connection.acquire((err, con) => {
         if(err){
@@ -156,19 +180,17 @@ update_alumno(alumno, res) {
                 }
                         var query = "CALL pa_update_alumno("+ [alumno.id_alumno] 
                         + ",'" +[alumno.apellidos_alumno] + "','"+ [alumno.nombres_alumno]
-                        + "','" + [alumno.sexo_alumno]
+                        + "','" + [alumno.fnac_alumno] + "','" + [alumno.sexo_alumno]
                         + "'," + telefono_alumno + ",'"+ [alumno.celular_alumno]
                         + "','" + [alumno.direccion_alumno]
-                        + "','" + [alumno.correo_alumno]
-                        + "','" + [alumno.procedencia_alumno]
-                        + "','" + [alumno.apellidos_padre] +"','"+ [alumno.nombres_padre]
-                        + "','" + [alumno.celular_padre] + "','"+ [alumno.correo_padre] 
-                        + "','" + [alumno.apellidos_madre] + "','" [alumno.nombres_madre]
-                        + "','" + [alumno.celular_madre] + "','" [alumno.correo_madre]
-                        "')";
+                        + "'," + correo_alumno + "," + procedencia_alumno
+                        + ",'" + [alumno.apellidos_padre] +"','"+ [alumno.nombres_padre]
+                        + "'," + celular_padre + ","+ correo_padre
+                        + ",'" + [alumno.apellidos_madre] + "','" + [alumno.nombres_madre]
+                        + "'," + celular_madre + "," + correo_madre + ")";
                         con.query(query,(err, result) => {
                             if(err){
-                                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOSs'});
+                                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
                             }else{
                                 if (result.affectedRows == 1) {
                                     res.send({status: 1, message: 'ALUMNO ACTUALIZADO'});

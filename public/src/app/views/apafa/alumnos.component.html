@@ -91,18 +91,11 @@
                               [matTooltipPosition]="positionOptions[3]"
                               data-toggle="modal" (click)="btnEdit_Alumno(element.id_alumno)">
                             <span class="fa fa-edit"></span></button>
-                            <button class="btn btn-warning btn-xs distancia_btn_opciones"
-                            matTooltip="Resetear"
-                            matTooltipClass="tooltip-mensaje"
-                            [matTooltipPosition]="positionOptions[3]"
-                            (click)="btnReset_Usuario(element.idusuario)"
-                            [disabled]="element.estado_usu=='INACTIVO'">
-                          <span class="fa fa-refresh"></span></button>
                            <button class="btn btn-danger btn-xs distancia_btn_opciones"
                                 matTooltip="Eliminar"
                                 matTooltipClass="tooltip-mensaje"
                                 [matTooltipPosition]="positionOptions[3]"
-                                (click)="btnEliminar_Usuario(element.idusuario)">
+                                (click)="btnEliminar_Alumno(element.id_alumno)">
                            <span class="fa fa-trash-o btn-xs"></span>
                            </button>
                         </td>
@@ -192,7 +185,19 @@
                                   </div>
                             </div>
                             <div class="row">
-                                <div class="form-group col-sm-12">
+                                <div class="form-group col-sm-6">
+                                    <label for="postal-code" style="font-weight: bold;">Fecha Nacimiento <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                                    <input class="form-control" id="fecha_nac" type='date' name="fecha_nac" placeholder="date"
+                                     [(ngModel)]="alumno.fnac_alumno" #regfecha="ngModel" required>
+                                        <div *ngIf="myForm.submitted && regfecha.errors?.required" style="
+                                         width: 100%;
+                                         margin-top: .25rem;
+                                         font-size: 80%;
+                                         color: #f86c6b;">
+                                           Debe ingresar una fecha valida
+                                          </div>
+                                  </div>
+                                  <div class="form-group col-sm-6">
                                     <label for="postal-code" style="font-weight: bold;">Sexo <i class="fa fa-certificate" style="color:red !important"></i> :</label>
                                     <div class="radio" style="display: block !important;max-width: none !important;">
                                         <div class="form-check form-check-inline mr-1" id="inline-radios">
@@ -220,7 +225,7 @@
                                     <input type="text" class="form-control" id="direccion_alumno" name="direccion_alumno"
                                     placeholder="Dirección del Alumno" [(ngModel)]="alumno.direccion_alumno" #regdireccion="ngModel" 
                                     onkeyup="verif(this)" maxlength="80" [ngClass]="{ 'is-invalid': myForm.submitted && regdireccion.invalid }" 
-                                    pattern="^([A-Za-z0-9#]{1,80}[\s]*)+$" required>
+                                    pattern="^([A-Za-z0-9#/]{1,80}[\s]*)+$" required>
                                     <div *ngIf="myForm.submitted && regdireccion.invalid" class="invalid-feedback">
                                         <div *ngIf="regdireccion.errors.required">Dirección campo requerido</div>
                                         <div *ngIf="regdireccion.errors.pattern">Formato de Dirección incorrectos</div>
@@ -410,11 +415,12 @@
         <div class="modal-body">
           <div class="bd-example">
             <dl class="row">
-              <dt class="col-sm-3">Apellidos Completos: </dt>
-              <dd class="col-sm-3 text-left"><em style="font-size: 16px;">{{DataAlumno.apellidos_alumno}}</em></dd>
-              <dt class="col-sm-3">Nombres Completos: </dt>
+              <dt class="col-sm-1">Alumno: </dt>
+              <dd class="col-sm-2 text-rigth"><em style="font-size: 16px;">{{DataAlumno.apellidos_alumno}}</em></dd>
               <dd class="col-sm-3 text-left"><em style="font-size: 16px;">{{DataAlumno.nombres_alumno}}</em></dd>
-            </dl>
+              <dt class="col-sm-2">Fecha Nac.: </dt>
+              <dd class="col-sm-1 text-left"><em style="font-size: 16px;">{{DataAlumno.fnac_alumno | date:'dd/MM/yyyy'}}</em></dd>
+            </dl> 
             <dl class="row">
               <dt class="col-sm-2">Tipo Doc.: </dt>
               <dd class="col-sm-2">{{DataAlumno.tdoc_alumno}}</dd>
@@ -476,7 +482,7 @@
   <!-- /.Fin Modal Detalle Alumno-->
   <!-- Formulario Actualizar Alumno -->
   <div class="card" *ngIf="panel_modificar">
-    <form name="form" class="formulario" (ngSubmit)="FormEdit.form.valid " #FormEdit="ngForm" novalidate autocomplete="off">
+    <form name="form" class="formulario" (ngSubmit)="FormEdit.form.valid && updateAlumno(Editalumno)" #FormEdit="ngForm" novalidate autocomplete="off">
         <div class="card-header">
           <h5><strong>
             <i class="fa fa-edit"></i>&nbsp;&nbsp;Modificar Datos Alumno
@@ -491,7 +497,8 @@
                           <div class="form-group col-xs-12 col-sm-12 col-md-11 col-lg-6">
                               <label for="tdoc_alumno" style="font-weight: bold;">Turno <i class="fa fa-certificate" style="color:red !important"></i> :</label>
                               <select class="form-control" id="tdoc_alumno" name="tdoc_alumno"
-                              placeholder="Selecionar Perfil" [(ngModel)]="Editalumno.tdoc_alumno" #edittdco="ngModel" required>
+                              placeholder="Selecionar Perfil" [(ngModel)]="Editalumno.tdoc_alumno" 
+                              #edittdco="ngModel" required readonly>
                                   <option value="" selected disabled>-----Tipo Documento------</option>
                                   <option value="DNI">DNI</option>
                                   <option value="OTR">OTROS</option>
@@ -508,7 +515,8 @@
                               <label for="doc_alumno" style="font-weight: bold;">Doc. DNI <i class="fa fa-certificate" style="color:red !important"></i> :</label>
                               <input type="text" class="form-control" id="doc_alumno" name="doc_alumno"
                               placeholder="Doc Identidad"  [(ngModel)]="Editalumno.doc_alumno" #editdni="ngModel"
-                              pattern="[0-9]{8}" [ngClass]="{ 'is-invalid': FormEdit.submitted && editdni.invalid }" required onkeyup="verif(this)" onkeypress="return Num(event);" maxlength="8">
+                              pattern="[0-9]{8}" [ngClass]="{ 'is-invalid': FormEdit.submitted && editdni.invalid }" 
+                              readonly required onkeyup="verif(this)" onkeypress="return Num(event);" maxlength="8">
                               <div *ngIf="FormEdit.submitted && editdni.invalid" class="invalid-feedback">
                                   <div *ngIf="editdni.errors.required">Doc. Identidad campo requerido</div>
                                   <div *ngIf="editdni.errors.pattern">Debe Ingresar 8 Números</div>
@@ -518,7 +526,8 @@
                                 <label for="doc_alumno" style="font-weight: bold;">Doc. OTROS <i class="fa fa-certificate" style="color:red !important"></i> :</label>
                                 <input type="text" class="form-control" id="doc_alumno" name="doc_alumno"
                                 placeholder="Doc Identidad"  [(ngModel)]="Editalumno.doc_alumno" #editotro="ngModel"
-                                pattern="[0-9A-Z]{12,15}" [ngClass]="{ 'is-invalid': FormEdit.submitted && editotro.invalid }" required onkeyup="verif(this)" maxlength="15">
+                                pattern="[0-9A-Z]{12,15}" [ngClass]="{ 'is-invalid': FormEdit.submitted && editotro.invalid }" 
+                                required readonly onkeyup="verif(this)" maxlength="15">
                                 <div *ngIf="FormEdit.submitted && editotro.invalid" class="invalid-feedback">
                                     <div *ngIf="editotro.errors.required">Doc. Identidad campo requerido</div>
                                     <div *ngIf="editotro.errors.pattern">Debe Ingresar al menos 12 Carácteres</div>
@@ -550,7 +559,19 @@
                               </div>
                         </div>
                         <div class="row">
-                            <div class="form-group col-sm-12">
+                            <div class="form-group col-sm-6">
+                                <label for="postal-code" style="font-weight: bold;">Fecha Nacimiento <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                                <input class="form-control" id="fecha_nac" type='date' name="fecha_nac" placeholder="date"
+                                 [(ngModel)]="Editalumno.fnac_alumno" #editfecha="ngModel" required>
+                                    <div *ngIf="FormEdit.submitted && editfecha.errors?.required" style="
+                                     width: 100%;
+                                     margin-top: .25rem;
+                                     font-size: 80%;
+                                     color: #f86c6b;">
+                                       Debe ingresar una fecha valida
+                                      </div>
+                              </div>
+                            <div class="form-group col-sm-6">
                                 <label for="postal-code" style="font-weight: bold;">Sexo <i class="fa fa-certificate" style="color:red !important"></i> :</label>
                                 <div class="radio" style="display: block !important;max-width: none !important;">
                                     <div class="form-check form-check-inline mr-1" id="inline-radios">
@@ -578,7 +599,7 @@
                                 <input type="text" class="form-control" id="direccion_alumno" name="direccion_alumno"
                                 placeholder="Dirección del Alumno" [(ngModel)]="Editalumno.direccion_alumno" #editdireccion="ngModel" 
                                 onkeyup="verif(this)" maxlength="80" [ngClass]="{ 'is-invalid': FormEdit.submitted && editdireccion.invalid }" 
-                                pattern="^([A-Za-z0-9#]{1,80}[\s]*)+$" required>
+                                pattern="^([A-Za-z0-9#/]{1,80}[\s]*)+$" required>
                                 <div *ngIf="FormEdit.submitted && editdireccion.invalid" class="invalid-feedback">
                                     <div *ngIf="editdireccion.errors.required">Dirección campo requerido</div>
                                     <div *ngIf="editdireccion.errors.pattern">Formato de Dirección incorrectos</div>

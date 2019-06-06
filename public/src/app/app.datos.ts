@@ -70,6 +70,7 @@ export class Alumno
     apellidos_alumno ?: string;
     nombres_alumno ?: string;
     sexo_alumno ?: string;
+    fnac_alumno ?: string;
     telefono_alumno ?: string;
     celular_alumno ?: string;
     direccion_alumno ?: string;

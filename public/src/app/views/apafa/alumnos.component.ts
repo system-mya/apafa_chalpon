@@ -65,7 +65,6 @@ export class AlumnosComponent implements OnInit {
   LoadTableData (){
     this._AlumnosServicios.getListarAlumnos().subscribe(
       data => {
-        console.log(data.data[0]);
         this.DataArray = data.data;
         this.dataSource = new MatTableDataSource(this.DataArray);
         this.dataSource.paginator = this.paginator;
@@ -105,9 +104,11 @@ export class AlumnosComponent implements OnInit {
     if(opt=='I'){
       this.panel_tabla=true;
       this.panel_registro=false;
+      this.LoadTableData();
     }else{
       this.panel_tabla=true;
       this.panel_modificar=false;
+      this.LoadTableData();
     }
   }
 
@@ -186,13 +187,95 @@ btnDetalle_Alumno(id){
     .then(data => {
       if(data.status==1){
         this.Editalumno = data.data[0];
+        this.Editalumno.id_alumno = data.data[0].id_alumno;
         this.Editalumno.sexo_alumno = data.data[0].sexo_alumno.charAt(0);
+        this.Editalumno.tdoc_alumno = data.data[0].tdoc_alumno.substr(0,3);
+        this.Editalumno.fnac_alumno = data.data[0].fnac_alumno.toString().slice(0,10);
         this.toastr.success(data.message, 'Aviso!',{positionClass: 'toast-top-right',timeOut: 500});
       }else{
         this.toastr.error(data.message, 'Aviso!');
        }
     } )
     .catch(err => console.log(err))
+  }
+
+  updateAlumno(form:Alumno){    
+    swal({
+      title: '¿Esta seguro que desea guardar?',
+      type: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, Guardar!',
+      allowOutsideClick: false,
+      allowEscapeKey:false,
+    }).then((result) => {
+      if (result.value==true) {
+        this._AlumnosServicios.update_alumno(form)
+        .then(data => {
+          if(data.status==1){
+            swal({
+                title: 'Aviso!',
+                text: data.message,
+                type: 'success',
+                allowOutsideClick: false,
+                allowEscapeKey:false
+            })            
+            this.LoadTableData();
+            this.panel_modificar=false;
+            this.panel_tabla=true;
+          }else{
+              swal({
+                title: 'Aviso!',
+                html:
+                '<span style="color:red">' +
+                data.message +
+                '</span>',
+                type: 'error',
+                allowOutsideClick: false,
+                allowEscapeKey:false
+              })
+          }
+        } )
+        .catch(err => console.log(err))
+      }
+    })
+  }
+
+  btnEliminar_Alumno(idalumno:number) {
+    swal({
+      title: '¿Esta seguro que desea eliminar alumno?',
+      type: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, Guardar!',
+      allowOutsideClick: false,
+      allowEscapeKey:false,
+    }).then((result) => {
+      //console.log(result.value);
+      if (result.value==true) {
+        this.DatoBusqueda.idbusqueda=idalumno;
+          //console.log(this.DatoBusqueda.idbusqueda);
+          //this.DetUsuarioModal.show(); 
+            this._AlumnosServicios.eliminar_alumno(this.DatoBusqueda)
+            .then(data => {
+              if(data.status==1){
+                swal({
+                  title: 'Aviso!',
+                  text: data.message,
+                  type: 'success',
+                  allowOutsideClick: false,
+                  allowEscapeKey:false
+              })
+              this.LoadTableData();
+              }else{
+                this.toastr.error(data.message, 'Aviso!');
+               }
+            } )
+            .catch(err => console.log(err))
+      }
+    })
   }
 
 }

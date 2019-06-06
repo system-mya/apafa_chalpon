@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: localhost
--- Tiempo de generación: 05-06-2019 a las 23:25:58
+-- Tiempo de generación: 06-06-2019 a las 05:15:46
 -- Versión del servidor: 5.5.24-log
 -- Versión de PHP: 5.4.3
 
@@ -50,8 +50,8 @@ AND fbaja_usu IS NULL$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_detalle_alumno`(IN `id` SMALLINT)
     NO SQL
-SELECT (CASE WHEN tdoc_alumno='OTR' THEN 'OTROS' ELSE 'DNI' END) AS tdoc_alumno,doc_alumno,apellidos_alumno,
-nombres_alumno,(CASE WHEN sexo_alumno='M' THEN 'MASCULINO' ELSE 'FEMENINO' END) AS sexo_alumno,
+SELECT id_alumno,(CASE WHEN tdoc_alumno='OTR' THEN 'OTROS' ELSE 'DNI' END) AS tdoc_alumno,doc_alumno,apellidos_alumno,
+nombres_alumno,fnac_alumno,(CASE WHEN sexo_alumno='M' THEN 'MASCULINO' ELSE 'FEMENINO' END) AS sexo_alumno,
 telefono_alumno,celular_alumno,direccion_alumno,correo_alumno,procedencia_alumno,apellidos_padre,
 nombres_padre,celular_padre,correo_padre,apellidos_madre,nombres_madre,celular_madre,correo_madre FROM alumno
 WHERE id_alumno=id
@@ -98,16 +98,16 @@ WHERE u.nom_usu=nom
 AND u.clave_usu=SHA(clave)
 AND u.estado_usu=1$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_alumno`(IN `tdoc` CHAR(3), IN `doc` VARCHAR(15), IN `ape_alum` VARCHAR(60), IN `nom_alum` VARCHAR(50), IN `sexo` CHAR(1), IN `tel_alum` CHAR(6), IN `cel_alum` CHAR(9), IN `dire_alum` VARCHAR(80), IN `correo_alum` VARCHAR(80), IN `proc_alum` VARCHAR(100), IN `ape_padre` VARCHAR(60), IN `nom_padre` VARCHAR(50), IN `cel_padre` CHAR(9), IN `correo_pa` VARCHAR(80), IN `ape_madre` VARCHAR(60), IN `nom_madre` VARCHAR(50), IN `cel_madre` CHAR(9), IN `correo_ma` VARCHAR(80))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_alumno`(IN `tdoc` CHAR(3), IN `doc` VARCHAR(15), IN `ape_alum` VARCHAR(60), IN `nom_alum` VARCHAR(50), IN `fnac` DATE,IN `sexo` CHAR(1), IN `tel_alum` CHAR(6), IN `cel_alum` CHAR(9), IN `dire_alum` VARCHAR(80), IN `correo_alum` VARCHAR(80), IN `proc_alum` VARCHAR(100), IN `ape_padre` VARCHAR(60), IN `nom_padre` VARCHAR(50), IN `cel_padre` CHAR(9), IN `correo_pa` VARCHAR(80), IN `ape_madre` VARCHAR(60), IN `nom_madre` VARCHAR(50), IN `cel_madre` CHAR(9), IN `correo_ma` VARCHAR(80))
     NO SQL
 INSERT INTO alumno(tdoc_alumno, 
-doc_alumno, apellidos_alumno,nombres_alumno, 
+doc_alumno, apellidos_alumno,nombres_alumno,fnac_alumno, 
 sexo_alumno,telefono_alumno,celular_alumno, 
 direccion_alumno,correo_alumno, 
 procedencia_alumno,apellidos_padre, 
 nombres_padre,celular_padre,correo_padre, 
 apellidos_madre,nombres_madre,celular_madre, 
-correo_madre) VALUES (tdoc,doc,ape_alum,nom_alum,
+correo_madre) VALUES (tdoc,doc,ape_alum,nom_alum,fnac,
 sexo,tel_alum,cel_alum,dire_alum,correo_alum,proc_alum,ape_padre,
 nom_padre,cel_padre,correo_pa,ape_madre,nom_madre,cel_madre,
 correo_ma)$$
@@ -147,7 +147,8 @@ nombres_alumno,tdoc_alumno,doc_alumno,
    WHEN sexo_alumno='M' THEN 'MASCULINO'
    ELSE 'FEMENINO'
  END) as sexo_alumno,celular_alumno FROM alumno
-WHERE estado_alumno=1$$
+WHERE estado_alumno=1
+ORDER BY apellidos_alumno$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_anhio`()
     NO SQL
@@ -228,11 +229,11 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_resetear_clave`(IN `id_usu` SMAL
 UPDATE usuario SET clave_usu=SHA('1A2B3C4D')
 WHERE idusuario=id_usu$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_alumno`(IN `id` SMALLINT, IN `ape_alum` VARCHAR(60), IN `nom_alum` VARCHAR(50), IN `sex_alum` CHAR, IN `tel_alum` CHAR, IN `cel_alum` CHAR(9), IN `direc_alumno` VARCHAR(80), IN `cor_alum` VARCHAR(80), IN `pproc_alum` VARCHAR(100), IN `ape_padre` VARCHAR(60), IN `nom_padre` VARCHAR(50), IN `cel_padre` CHAR(9), IN `cor_padre` VARCHAR(80), IN `ape_madre` VARCHAR(60), IN `nom_madre` VARCHAR(50), IN `cel_madre` CHAR(9), IN `cor_madre` VARCHAR(80))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_alumno`(IN `id` SMALLINT, IN `ape_alum` VARCHAR(60), IN `nom_alum` VARCHAR(50), IN `fnac` DATE,IN `sex_alum` CHAR(1), IN `tel_alum` CHAR(6), IN `cel_alum` CHAR(9), IN `direc_alum` VARCHAR(80), IN `cor_alum` VARCHAR(80), IN `proc_alum` VARCHAR(100), IN `ape_padre` VARCHAR(60), IN `nom_padre` VARCHAR(50), IN `cel_padre` CHAR(9), IN `cor_padre` VARCHAR(80), IN `ape_madre` VARCHAR(60), IN `nom_madre` VARCHAR(50), IN `cel_madre` CHAR(9), IN `cor_madre` VARCHAR(80))
     NO SQL
 UPDATE alumno SET apellidos_alumno=ape_alum,
-nombres_alumno=nom_alum,
-sexo_alumn=sex_alum,telefono_alumno=tel_alum,
+nombres_alumno=nom_alum,fnac_alumno=fnac,
+sexo_alumno=sex_alum,telefono_alumno=tel_alum,
 celular_alumno=cel_alum,direccion_alumno=direc_alum,
 correo_alumno=cor_alum,
 procedencia_alumno=proc_alum,
@@ -288,6 +289,7 @@ CREATE TABLE IF NOT EXISTS `alumno` (
   `doc_alumno` varchar(15) NOT NULL,
   `apellidos_alumno` varchar(60) NOT NULL,
   `nombres_alumno` varchar(50) NOT NULL,
+  `fnac_alumno` date NOT NULL,
   `sexo_alumno` char(1) NOT NULL,
   `telefono_alumno` char(6) DEFAULT NULL,
   `celular_alumno` char(9) NOT NULL,
@@ -304,16 +306,22 @@ CREATE TABLE IF NOT EXISTS `alumno` (
   `correo_madre` varchar(80) DEFAULT NULL,
   `estado_alumno` bit(1) NOT NULL DEFAULT b'1',
   PRIMARY KEY (`id_alumno`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
 
 --
 -- Volcado de datos para la tabla `alumno`
 --
 
-INSERT INTO `alumno` (`id_alumno`, `tdoc_alumno`, `doc_alumno`, `apellidos_alumno`, `nombres_alumno`, `sexo_alumno`, `telefono_alumno`, `celular_alumno`, `direccion_alumno`, `correo_alumno`, `procedencia_alumno`, `apellidos_padre`, `nombres_padre`, `celular_padre`, `correo_padre`, `apellidos_madre`, `nombres_madre`, `celular_madre`, `correo_madre`, `estado_alumno`) VALUES
-(1, 'DNI', '71919582', 'Julca Vasquez', 'Jose Andersson', 'M', NULL, '978902579', 'Calle chiclayo # 114', NULL, 'O.C.O', 'Julca Zeña', 'Francisco Javier', NULL, NULL, 'Vasquez Delgado', 'Susana Esther', NULL, NULL, b'1'),
-(2, 'DNI', '16686223', 'Julca Zeña', 'Francisco Javier', 'M', NULL, '978989288', 'calle chiclayo # 114', NULL, NULL, 'Julca Venegas', 'Segundo', NULL, NULL, 'Zeña Orreaga', 'Alejandrina', NULL, NULL, b'1'),
-(3, 'OTR', '751654654M65484', 'Flores Aguilar', 'Diego', 'M', NULL, '312113313', 'La Posada SN', NULL, NULL, 'Fadad', 'Rqewwf', NULL, NULL, 'Fasdfasf', 'Radafasff', NULL, NULL, b'1');
+INSERT INTO `alumno` (`id_alumno`, `tdoc_alumno`, `doc_alumno`, `apellidos_alumno`, `nombres_alumno`, `fnac_alumno`, `sexo_alumno`, `telefono_alumno`, `celular_alumno`, `direccion_alumno`, `correo_alumno`, `procedencia_alumno`, `apellidos_padre`, `nombres_padre`, `celular_padre`, `correo_padre`, `apellidos_madre`, `nombres_madre`, `celular_madre`, `correo_madre`, `estado_alumno`) VALUES
+(1, 'DNI', '71919582', 'Julca Vasquez', 'Jose Andersson', '0000-00-00', 'M', NULL, '978902579', 'Calle chiclayo # 114', NULL, NULL, 'Julca Zeña', 'Francisco Javier', NULL, NULL, 'Vasquez Delgado', 'Susana Esther', NULL, NULL, b'1'),
+(2, 'DNI', '16686223', 'Julca Zeña', 'Francisco Javier', '0000-00-00', 'M', NULL, '978989288', 'calle chiclayo # 114', NULL, NULL, 'Julca Venegas', 'Segundo', NULL, NULL, 'Zeña Orreaga', 'Alejandrina', NULL, NULL, b'1'),
+(3, 'OTR', '751654654M65484', 'Flores Aguilar', 'Diego', '0000-00-00', 'M', NULL, '312113313', 'La Posada SN', NULL, NULL, 'Fadad', 'Rqewwf', NULL, NULL, 'Fasdfasf', 'Radafasff', NULL, NULL, b'1'),
+(4, 'DNI', '73258572', 'Sanchez Velasquez', 'Marita Vanessa', '0000-00-00', 'F', NULL, '979241872', 'VISTA ALEGRE MZ H LT 22', NULL, NULL, 'Sanchez Granados', 'Luis', NULL, NULL, 'Velasquez Torres', 'Lila', NULL, NULL, b'1'),
+(5, 'DNI', '16729503', 'Julca Vasquez', 'Alejandra Sayuri', '0000-00-00', 'F', NULL, '979013530', 'CALLE CHICALYO # 114', NULL, NULL, 'Julca Zeña', 'Francisco Javier', NULL, NULL, 'Vasquez Delgado', 'Susana', NULL, NULL, b'1'),
+(6, 'DNI', '21654684', 'Rubio Vasquez', 'Jose Alexander', '0000-00-00', 'M', NULL, '979416039', 'calle jose quinones # 54', NULL, NULL, 'Rubio Marin', 'Alex', NULL, NULL, 'Vasquez Delgado', 'Luz', NULL, NULL, b'1'),
+(7, 'DNI', '12412412', 'Dadad', 'Dadad', '2007-01-30', 'M', NULL, '325325325', 'sfasfasfsaf', NULL, NULL, 'Aadad', 'Aasad', NULL, NULL, 'Aad', 'Dadad', NULL, NULL, b'1'),
+(8, 'DNI', '13415315', 'Aasadad', 'Fadadad', '2019-06-06', 'M', NULL, '325326236', 'ADADAD', NULL, NULL, 'Aadada', 'Dadadad', NULL, NULL, 'Fadad', 'Aaadad', NULL, NULL, b'1'),
+(9, 'DNI', '34532532', 'Aadad', 'Fadad', '2019-06-14', 'M', NULL, '325325325', 'fasfsafsaf', NULL, NULL, 'Adadad', 'Fadad', NULL, NULL, 'Dadad', 'Fadad', NULL, NULL, b'1');
 
 -- --------------------------------------------------------
 
