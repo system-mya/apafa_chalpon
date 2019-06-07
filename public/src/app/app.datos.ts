@@ -101,3 +101,20 @@ export class Apoderado
     estado_apoderado ?: boolean;
 
 }
+
+export class Matricula 
+{
+    id_matricula ?: number;
+    fecha_matricula ?: string;
+    id_apoderado ?: number;
+    id_alumno ?: number;
+    id_anhio ?: number;
+    id_grado ?: number;
+    id_seccion ?: number;
+    id_tipo_relacion ?: number;
+    estado_matricula ?: boolean;
+    doc_alumno ?: string;
+    datos_alumno ?: string;
+    sexo_alumno ?: string;
+    
+}

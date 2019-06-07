@@ -18,6 +18,11 @@ export class GradoSeccionService {
       .map(res => res.json())
   }
 
+  public ListarGradosActivos(){
+    return this._http.get('/api/listar_grados_activos')
+     .map(res => res.json())
+ }
+
   public cambiar_estado(grado:Busqueda){
     return this._http.post('/api/cambiar_estado_grado',grado)
      .map(data => data.json()).toPromise()

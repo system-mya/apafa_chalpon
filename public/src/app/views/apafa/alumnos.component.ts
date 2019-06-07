@@ -1,4 +1,5 @@
-import { Component,OnInit,ViewChild,ViewEncapsulation } from '@angular/core';
+import { Component,OnInit,ViewChild,ViewEncapsulation,Inject } from '@angular/core';
+import { DOCUMENT } from '@angular/platform-browser';
 import { AlumnosService } from './alumnos.service';
 import { NgForm } from '@angular/forms';
 import {MatPaginator, MatSort, MatTableDataSource,TooltipPosition} from '@angular/material';
@@ -9,6 +10,8 @@ import { ToastrService } from 'ngx-toastr';
 import { AlertComponent } from 'ngx-bootstrap/alert/alert.component';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 declare var swal: any;
+import { LoadingBarService } from '@ngx-loading-bar/core';
+
 @Component({
   templateUrl: 'alumnos.component.html',
   styleUrls: ['apafa.css'],
@@ -21,7 +24,7 @@ declare var swal: any;
   //   ]),
   // ],
 })
-export class AlumnosComponent implements OnInit {
+export class AlumnosComponent implements OnInit {  
   DataArray : any = [];
   @ViewChild('DetAlumnoModal') public DetAlumnoModal: ModalDirective;
   //columnsToDisplay = ['id_alumno', 'tdoc_alumno', 'doc_alumno', 'apepaterno_alumno'];
@@ -38,7 +41,7 @@ export class AlumnosComponent implements OnInit {
   public alumno : Alumno;
   public Editalumno : Alumno;
   public DatoBusqueda : Busqueda;
-  constructor(private _AlumnosServicios:AlumnosService,private toastr: ToastrService) {
+  constructor(private _AlumnosServicios:AlumnosService,private toastr: ToastrService,@Inject(DOCUMENT) private document: Document,private loadingBar: LoadingBarService) {
     this.LoadTableData();
     this.panel_tabla=true;
     this.panel_registro=false;
@@ -63,8 +66,10 @@ export class AlumnosComponent implements OnInit {
   }
 
   LoadTableData (){
+    this.loadingBar.start();
     this._AlumnosServicios.getListarAlumnos().subscribe(
       data => {
+        this.loadingBar.complete();
         this.DataArray = data.data;
         this.dataSource = new MatTableDataSource(this.DataArray);
         this.dataSource.paginator = this.paginator;
@@ -101,6 +106,7 @@ export class AlumnosComponent implements OnInit {
       }
 
   btnCancelar_Alumno(opt){
+    this.document.documentElement.scrollTop = 0;
     if(opt=='I'){
       this.panel_tabla=true;
       this.panel_registro=false;
@@ -108,8 +114,9 @@ export class AlumnosComponent implements OnInit {
     }else{
       this.panel_tabla=true;
       this.panel_modificar=false;
-      this.LoadTableData();
+      this.LoadTableData();      
     }
+    
   }
 
   onSubmit(form:Alumno){    
@@ -180,12 +187,15 @@ btnDetalle_Alumno(id){
   }
 
   btnEdit_Alumno(id){
+    this.loadingBar.start();
     this.panel_tabla=false;
     this.panel_modificar=true;
     this.DatoBusqueda.idbusqueda=id;
+    this.document.documentElement.scrollTop = 0;
     this._AlumnosServicios.detalle_alumno(this.DatoBusqueda)
     .then(data => {
       if(data.status==1){
+        this.loadingBar.complete();
         this.Editalumno = data.data[0];
         this.Editalumno.id_alumno = data.data[0].id_alumno;
         this.Editalumno.sexo_alumno = data.data[0].sexo_alumno.charAt(0);

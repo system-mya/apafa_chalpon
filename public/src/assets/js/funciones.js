@@ -40,3 +40,7 @@ function soloLetras(e){
             return false;
         }
     }
+
+    function mayus(e) {
+        e.value = e.value.toUpperCase();
+    }

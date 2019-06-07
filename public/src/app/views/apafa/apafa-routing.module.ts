@@ -6,8 +6,8 @@ import { FormsComponent } from './forms.component';
 import { SwitchesComponent } from './switches.component';
 import { TablesComponent } from './tables.component';
 import { TabsComponent } from './tabs.component';
-import { CarouselsComponent } from './carousels.component';
-import { CollapsesComponent } from './collapses.component';
+import { ApoderdoComponent } from './apoderado.component';
+import { MatriculaComponent } from './matricula.component';
 import { PaginationsComponent } from './paginations.component';
 import {PopoversComponent} from './popovers.component';
 import {ProgressComponent} from './progress.component';
@@ -60,17 +60,17 @@ const routes: Routes = [
         }
       },
       {
-        path: 'carousels',
-        component: CarouselsComponent,
+        path: 'apoderado',
+        component: ApoderdoComponent,
         data: {
-          title: 'Carousels'
+          title: 'Apoderados'
         }
       },
       {
-        path: 'collapses',
-        component: CollapsesComponent,
+        path: 'matricula',
+        component: MatriculaComponent,
         data: {
-          title: 'Collapses'
+          title: 'Matricula'
         }
       },
       {

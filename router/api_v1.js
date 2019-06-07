@@ -1,6 +1,6 @@
 //obtenemos el modelo UserModel con toda la funcionalidad
 var admin = require('../models/administracion');
-var alumno = require('../models/apafa');
+var apafa = require('../models/apafa');
 //creamos el ruteo de la aplicación
 module.exports = {
    configure: (app) => {
@@ -77,6 +77,11 @@ app.get('/api/listar_grados', (req, res) => {
     admin.listar_grados(res);
 });
 
+//LISTAR GRADOS ACTIVOS
+app.get('/api/listar_grados_activos', (req, res) => {
+    admin.listar_grados_activos(res);
+});
+
 // CAMBIAR EL ESTADO DE GRADO
 app.post('/api/cambiar_estado_grado', (req, res) => {
     admin.cambiar_estado_grado(req.body, res);
@@ -94,41 +99,63 @@ app.post('/api/insertar_seccion', (req, res) => {
 
 // LISTAR ALUMNOS
 app.get('/api/listaralumnos', (req, res) => {
-    alumno.listar_alumnos(res);
+    apafa.listar_alumnos(res);
 });
 
 //INSERTAR NUEVO ALUMNO
 app.post('/api/apafa/insertar_alumno', (req, res) => {
-    alumno.nvo_alumno(req.body, res);
+    apafa.nvo_alumno(req.body, res);
 });
 
 
 app.post('/api/apafa/detalle_alumno', (req, res) => {
-    alumno.obtener_alumno(req.body, res);
+    apafa.obtener_alumno(req.body, res);
 });
+
 // LLAMADO AL UPDATE ALUMNO
 app.post('/api/apafa/update_alumno', (req, res) => {
-    alumno.update_alumno(req.body, res);
+    apafa.update_alumno(req.body, res);
 });
 
 // LLAMADO AL MODELO ELIMINAR ALUMNO
 app.post('/api/apafa/eliminar_alumno', (req, res) => {
-    alumno.eliminar_alumno(req.body, res);
+    apafa.eliminar_alumno(req.body, res);
 });
+
+// LISTAR APODERADOS
+app.get('/api/apafa/listar_apoderados', (req, res) => {
+    apafa.listar_apoderados(res);
+});
+
 
 //INSERTAR NUEVO APODERADO
 app.post('/api/apafa/insertar_apoderado', (req, res) => {
-    alumno.nvo_apoderado(req.body, res);
+    apafa.nvo_apoderado(req.body, res);
+});
+
+//LLAMADO OBTENER DETALLE APODERADO
+app.post('/api/apafa/detalle_apoderado', (req, res) => {
+    apafa.obtener_apoderado(req.body, res);
 });
 
 // LLAMADO AL UPDATE APODERADO
-app.post('/api/apafa/update_alumno', (req, res) => {
-    alumno.update_apoderado(req.body, res);
+app.post('/api/apafa/update_apoderado', (req, res) => {
+    apafa.update_apoderado(req.body, res);
 });
 
 // LLAMADO AL MODELO ELIMINAR APODERADO
-app.post('/api/apafa/eliminar_alumno', (req, res) => {
-    alumno.eliminar_apoderado(req.body, res);
+app.post('/api/apafa/eliminar_apoderado', (req, res) => {
+    apafa.eliminar_apoderado(req.body, res);
+});
+
+//LLAMADO A LISTAR MATRICULADOS
+app.get('/api/apafa/listar_matriculados', (req, res) => {
+    apafa.listar_matriculados(res);
+});
+
+//LLAMADA A BUSCAR X NUM DOCUMENTO DE IDENTIDAD
+app.post('/api/apafa/datos_alumno_apoderado', (req, res) => {
+    apafa.obtener_datos_xdoc(req.body, res);
 });
 
 }

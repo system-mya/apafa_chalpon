@@ -1,0 +1,255 @@
+<div class="animated fadeIn">
+    <div class="card">
+        <div class="card-header">
+            <h5><strong>
+                <i class="fa fa-align-justify"></i>&nbsp;&nbsp;Lista de Matriculados
+              </strong>
+              <span class="float-right">
+                <button class="btn btn-success btn-xs" 
+                matTooltip="Agregar Matricula"
+                matTooltipClass="tooltip-mensaje"
+                data-toggle="modal" (click)="btnNueva_Matricula()">
+                  <span class="fa fa-plus-square"></span>
+                </button>
+              </span></h5>
+       </div>
+       <div class="card-body">
+          <div class="mat-elevation-z8 table-responsive">
+              <mat-form-field class="example-full-width" style="margin-left: 15px;">
+                <span matPrefix>Buscar Alumno: &nbsp;</span>
+                <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Ingrese Dato">
+              </mat-form-field>  
+              <table mat-table [dataSource]="dataSource" matSort id="tabla">              
+                <ng-container matColumnDef="doc_alumno">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" nowrap > Doc. Identidad </th>
+                  <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.doc_alumno}} </td>
+                </ng-container>
+               
+                <ng-container matColumnDef="apellidos_alumno">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" nowrap> Datos Alumno </th>
+                  <td mat-cell *matCellDef="let element" nowrap> {{element.apellidos_alumno}} {{element.nombres_alumno}}</td>
+                </ng-container>
+                
+                <ng-container matColumnDef="sexo_alumno">
+                    <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Grado </th>
+                    <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.sexo_alumno}} </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="num_contacto">
+                      <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Sección </th>
+                      <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.celular_alumno}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="opciones_alumno">
+                        <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Opciones </th>
+                        <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> 
+                          <button class="btn btn-info btn-xs distancia_btn_opciones"
+                                matTooltip="Detalle"
+                                matTooltipClass="tooltip-mensaje"
+                                [matTooltipPosition]="positionOptions[3]"
+                                data-toggle="modal" (click)="btnDetalle_Alumno(element.id_alumno)">
+                              <span class="fa fa-address-card-o"></span></button>
+                          <button class="btn btn-success btn-xs distancia_btn_opciones"
+                              matTooltip="Editar"
+                              matTooltipClass="tooltip-mensaje"
+                              [matTooltipPosition]="positionOptions[3]"
+                              data-toggle="modal" (click)="btnEdit_Alumno(element.id_alumno)">
+                            <span class="fa fa-edit"></span></button>
+                           <button class="btn btn-danger btn-xs distancia_btn_opciones"
+                                matTooltip="Eliminar"
+                                matTooltipClass="tooltip-mensaje"
+                                [matTooltipPosition]="positionOptions[3]"
+                                (click)="btnEliminar_Alumno(element.id_alumno)">
+                           <span class="fa fa-trash-o btn-xs"></span>
+                           </button>
+                        </td>
+                      </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns" style="background-color: #b6b9d0 !important;"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+              </table>
+            
+              <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+              
+            </div>
+
+       </div>
+     </div>
+     <!--Modal Registrar Nuevo Apoderado-->
+ <div bsModal #NvaMatriculaModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}" >
+    <div class="modal-dialog modal-lg modal-success" role="document">
+      <div class="modal-content">
+          <form name="form" class="formulario" (ngSubmit)="myForm.form.valid && onSubmit(apoderado)" #myForm="ngForm" novalidate autocomplete="off">
+        <div class="modal-header">
+          <h4 class="modal-title">Nueva Matricula</h4>
+          <button type="button" class="close" (click)="frmMat_hide('N')" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="car-body">
+                <div class="card-header estilo-cabecera">DATOS DEL ALUMNO</div>
+                <div class="card-body" style="padding: 0.8rem !important">
+                    <div class="row">
+                        <div class="form-group frm-matricula col-sm-12 col-md-5 col-lg-4">
+                            <div class="form-group frm-matricula row">
+                                <div class="col-md-12">
+                                    <label for="doc_alumno" style="font-weight: bold;">Num. Documento <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                                  <div class="input-group">
+                                      <input type="text" id="doc_alumno" name="doc_alumno" class="form-control"
+                                      placeholder="Doc Identidad"  [(ngModel)]="matricula.doc_alumno" #regdocalumno="ngModel"
+                                      pattern="[0-9a-zA-Z]{8,15}" onkeyup="verif(this);mayus(this);" maxlength="15" required>
+                                    <span class="input-group-append">
+                                      <button type="button" class="btn btn-primary" (click)="btnBuscar_xDoc(0,matricula.doc_alumno)">
+                                          <span class="fa fa-search"></span>
+                                      </button>
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group frm-matricula col-sm-12 col-md-5 col-lg-5">
+                                <div class="form-group frm-matricula row">
+                                    <div class="col-md-12">
+                                        <label for="datos_alumno" style="font-weight: bold;">Datos Alumno <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                                      <div class="input-group">
+                                          <input type="text" class="form-control" id="datos_alumno" name="datos_alumno" 
+                                          placeholder="Datos Alumno" [(ngModel)]="matricula.datos_alumno" #regdatos_alumno="ngModel" 
+                                          maxlength="60" [ngClass]="{'is-invalid': myForm.submitted && regdatos_alumno.invalid }" readonly required>
+                                          <div *ngIf="myForm.submitted && regdatos_alumno.invalid" class="invalid-feedback">
+                                              <div *ngIf="regdatos_alumno.errors.required">Datos Alumno campo requerido</div>
+                                          </div>
+                                        </div>
+                                     </div>
+                                  </div>
+                                </div>
+                                <div class="form-group frm-matricula col-sm-12 col-md-5 col-lg-3">
+                                    <div class="form-group frm-matricula row">
+                                        <div class="col-md-12">
+                                            <label for="sexo_alumno" style="font-weight: bold;">Sexo <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                                          <div class="input-group">
+                                              <input type="text" class="form-control" id="sexo_alumno" name="sexo_alumno" 
+                                              placeholder="Sexo Alumno" [(ngModel)]="matricula.sexo_alumno" #regsexo_alumno="ngModel" 
+                                              maxlength="60" [ngClass]="{'is-invalid': myForm.submitted && regsexo_alumno.invalid }" readonly required>
+                                              <div *ngIf="myForm.submitted && regsexo_alumno.invalid" class="invalid-feedback">
+                                                  <div *ngIf="regsexo_alumno.errors.required">Sexo Alumno campo requerido</div>
+                                              </div>
+                                        </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                          </div><!--/.row-->
+                </div>
+            </div>
+            <div class="car-body">
+                <div class="card-header estilo-cabecera">DATOS DEL APODERADO</div>
+                <div class="card-body" style="padding: 0.8rem !important">
+                    <div class="row">
+                        <div class="form-group frm-matricula col-sm-12 col-md-6 col-lg-4">
+                            <div class="form-group frm-matricula row">
+                                <div class="col-md-12">
+                                    <label for="doc_apoderado" style="font-weight: bold;">Num. Documento <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                                  <div class="input-group">
+                                      <input type="text" id="doc_apoderado" name="doc_apoderado" class="form-control"
+                                      placeholder="Doc Identidad"  [(ngModel)]="matricula.doc_apoderado" #regdocalumno="ngModel"
+                                      pattern="[0-9a-zA-Z]{8,15}" onkeyup="verif(this);mayus(this);" maxlength="15">
+                                    <span class="input-group-append">
+                                      <button type="button" class="btn btn-primary">
+                                          <span class="fa fa-search"></span>
+                                      </button>
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group frm-matricula col-sm-12 col-md-6 col-lg-5">
+                                <div class="form-group frm-matricula row">
+                                    <div class="col-md-12">
+                                        <label for="datos_apoderado" style="font-weight: bold;">Datos Apoderado <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                                      <div class="input-group">
+                                          <input type="text" class="form-control" id="datos_apoderado" name="datos_apoderado" 
+                                          placeholder="Datos Apoderado" [(ngModel)]="matricula.datos_apoderado" #regdatos_apoderado="ngModel" 
+                                          maxlength="60" [ngClass]="{'is-invalid': myForm.submitted && regdatos_apoderado.invalid }" readonly required>
+                                          <div *ngIf="myForm.submitted && regdatos_apoderado.invalid" class="invalid-feedback">
+                                              <div *ngIf="regdatos_apoderado.errors.required">Sexo Alumno campo requerido</div>
+                                          </div>
+                                        </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="form-group frm-matricula col-sm-12 col-md-6 col-lg-3">
+                                    <div class="form-group frm-matricula row">
+                                        <div class="col-md-12">
+                                            <label for="tipo_relacion" style="font-weight: bold;">Tipo Relación <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                                          <div class="input-group">
+                                              <input type="text" class="form-control" id="tipo_relacion" name="tipo_relacion" 
+                                              placeholder="Apellidos Completos" [(ngModel)]="matricula.tipo_relacion" #regrelacion="ngModel" 
+                                              maxlength="60" readonly>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                          </div><!--/.row-->
+                </div>
+            </div>
+            <div class="car-body">
+                <div class="card-header estilo-cabecera">DATOS DE LA MATRICULA</div>
+                <div class="card-body" style="padding: 0.8rem !important">
+                    <div class="row">
+                        <div class="form-group frm-matricula col-sm-12 col-md-1 col-lg-1">
+                        </div>
+                            <div class="form-group frm-matricula col-sm-12 col-md-5 col-lg-5">
+                                <div class="form-group frm-matricula row">
+                                    <div class="col-md-12">
+                                        <label for="grado_matricula" style="font-weight: bold;">Grado <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                                      <div class="input-group">
+                                          <select class="form-control" id="grado_matricula" name="grado_matricula"
+                                            [(ngModel)]="matricula.id_grado" #regid_grado="ngModel" 
+                                            (change)="Listar_Secciones_xGrado(matricula.id_grado)" required>
+                                            <option value="0" selected disabled>-----Seleccionar Grado------</option>
+                                                <option *ngFor="let g of DataGrado" value="{{g.id_grado}}">{{g.descripcion_grado}}</option>
+                                            </select>
+                                            <div *ngIf="myForm.submitted && matricula.id_grado==0" style="
+                                              width: 100%;
+                                              margin-top: .25rem;
+                                              font-size: 80%;
+                                              color: #f86c6b;">
+                                                Debe seleccionar una opción
+                                          </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="form-group frm-matricula col-sm-12 col-md-5 col-lg-4">
+                                    <div class="form-group frm-matricula row">
+                                        <div class="col-md-12">
+                                            <label for="id_seccion" style="font-weight: bold;">Sección <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                                          <div class="input-group">
+                                              <select class="form-control" id="id_seccion" name="id_seccion"
+                                            [(ngModel)]="matricula.id_seccion" #regseccion="ngModel" required>
+                                            <option value="0" selected disabled>---Seleccionar Sección----</option>
+                                                <option *ngFor="let s of DataSecciones" value="{{s.id_seccion}}">{{s.nombre_seccion}}</option>
+                                            </select>
+                                            <div *ngIf="myForm.submitted && matricula.id_seccion==0" style="
+                                              width: 100%;
+                                              margin-top: .25rem;
+                                              font-size: 80%;
+                                              color: #f86c6b;">
+                                                Debe seleccionar una opción
+                                          </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                          </div><!--/.row-->
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" (click)="frmMat_hide('N')"><span class="fa fa-times-circle"></span> Close</button>
+          <button type="submit" class="btn btn-primary" ><span class="fa fa-save"></span> Guardar</button>
+        </div>
+      </form>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div>
+  <!-- /.Fin Modal Nuevo Apoderado-->
+</div>

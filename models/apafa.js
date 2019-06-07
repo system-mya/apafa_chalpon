@@ -227,6 +227,28 @@ update_alumno(alumno, res) {
             }
         });
     };
+
+    listar_apoderados(res) {
+        connection.acquire((err, con) => {
+            if(err){
+                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+            }else{
+            con.query("CALL pa_listar_apoderados()", (err, result) => {
+                con.release();
+                if(err){
+                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                }else{
+                    if (result[0].length == 0) {
+                        res.send({status: 2, message: 'NO HAY DATOS EN LA TABLA APODERADOS'});
+                    } else {
+                        res.send({status: 1, message: 'CONSULTA EXITOSA',data:result[0]});
+                    }
+                }
+               
+            });
+        }
+        });
+    };
     
     nvo_apoderado(apoderado, res) {
         connection.acquire((err, con) => {
@@ -237,25 +259,25 @@ update_alumno(alumno, res) {
             if ([apoderado.correo_apoderado]==''){
                 var correo_apoderado="NULL";
             }else{
-                correo_apoderado="'"+[alumno.correo_apoderado]+"'";
+                correo_apoderado="'"+[apoderado.correo_apoderado]+"'";
             }
     
-            var query_doc = "CALL pa_buscar_doc_apoderdo('"+ [apoderado.doc_apoderado] +"')";
+            var query_doc = "CALL pa_buscar_doc_apoderado('"+ [apoderado.doc_apoderado] +"')";
             
             con.query(query_doc,(err, result) => {
                 con.release();
                 if(err){
-                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS1'});
                 }else{
                     if (result[0].length == 0) {
                         var query = "CALL pa_insertar_apoderado('"+ [apoderado.tdoc_apoderado] +"','"+ [apoderado.doc_apoderado] 
                         +"','"+ [apoderado.apellidos_apoderado] + "','"+ [apoderado.nombres_apoderado] 
-                        + "','"+ [apoderado.sexo_apoderado] + "','"+ [apoderado.celular_apoderdo]
-                        + "','"+ [apoderado.direccion_apoderado] + "',"+ correo_alumno + ")";
+                        + "','"+ [apoderado.sexo_apoderado] + "','"+ [apoderado.celular_apoderado]
+                        + "','"+ [apoderado.direccion_apoderado] + "',"+ correo_apoderado + ")";
                         
                         con.query(query,(err, result) => {
                             if(err){
-                                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS2'});
                             }else{
                                 if (result.affectedRows == 1) {
                                     res.send({status: 1, message: 'APODERADO REGISTRADO'});
@@ -275,6 +297,28 @@ update_alumno(alumno, res) {
         });
     };
     
+    obtener_apoderado(apoderado, res) {
+        connection.acquire((err, con) => {
+            if(err){
+                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+            }else{
+            var query = "CALL pa_detalle_apoderado("+ [apoderado.idbusqueda] +")"; 
+            /* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
+            con.query(query,(err, result) => {
+                con.release();
+                if(err){
+                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                }else{
+                    if (result[0].length == 0) {
+                        res.send({status: 2, message: 'Apoderado No Existe'});
+                    } else {
+                        res.send({status: 1, message: 'Datos Apoderado',data:result[0]});
+                    }
+                }
+            });
+            }
+        });
+    };
 
     update_apoderado(apoderado, res) {
         connection.acquire((err, con) => {
@@ -291,10 +335,9 @@ update_alumno(alumno, res) {
                         var query = "CALL pa_update_apoderado("+ [apoderado.id_apoderado]
                         + ",'" +[apoderado.apellidos_apoderado] + "','"+ [apoderado.nombres_apoderado]
                         + "','" + [apoderado.sexo_apoderado]
-                        + "','"+ [apoderado.celular_apoderdo]
+                        + "','"+ [apoderado.celular_apoderado]
                         + "','" + [apoderado.direccion_apoderado]
-                        + "','" + [apoderado.correo_apoderado]
-                        + "')";
+                        + "'," + correo_apoderado + ")";
                         con.query(query,(err, result) => {
                             if(err){
                                 res.send({status: 0, message: 'ERROR EN LA BASE DE DATOSs'});
@@ -331,6 +374,53 @@ update_alumno(alumno, res) {
                     }
                 }
             });
+            }
+        });
+    };
+
+    listar_matriculados(res) {
+        connection.acquire((err, con) => {
+            if(err){
+                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+            }else{
+            con.query("CALL pa_listar_matriculados()", (err, result) => {
+                con.release();
+                if(err){
+                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                }else{
+                    if (result[0].length == 0) {
+                        res.send({status: 2, message: 'NO HAY DATOS EN LA TABLA MATRICULA'});
+                    } else {
+                        res.send({status: 1, message: 'CONSULTA EXITOSA',data:result[0]});
+                    }
+                }
+               
+            });
+        }
+        });
+    };
+
+    obtener_datos_xdoc(datos, res) {
+        connection.acquire((err, con) => {
+            if(err){
+                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+            }else{
+              if([datos.idbusqueda]==0){
+                var query = "CALL pa_buscar_doc_alumno('"+ [datos.datobusqueda] +"')"; 
+                /* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
+                con.query(query,(err, result) => {
+                    con.release();
+                    if(err){
+                        res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                    }else{
+                        if (result[0].length == 0) {
+                            res.send({status: 2, message: 'Alumno No Existe'});
+                        } else {
+                            res.send({status: 1, message: 'Datos Alumno',data:result[0]});
+                        }
+                    }
+                });
+              }
             }
         });
     };

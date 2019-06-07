@@ -17,11 +17,11 @@ import { TabsComponent } from './tabs.component';
 
 // Carousel Component
 import { CarouselModule } from 'ngx-bootstrap/carousel';
-import { CarouselsComponent } from './carousels.component';
+import { ApoderdoComponent } from './apoderado.component';
 
 // Collapse Component
 import { CollapseModule } from 'ngx-bootstrap/collapse';
-import { CollapsesComponent } from './collapses.component';
+import { MatriculaComponent } from './matricula.component';
 
 // Dropdowns Component
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
@@ -145,8 +145,8 @@ import { MatAutocompleteModule,
     SwitchesComponent,
     TablesComponent,
     TabsComponent,
-    CarouselsComponent,
-    CollapsesComponent,
+    ApoderdoComponent,
+    MatriculaComponent,
     PaginationsComponent,
     PopoversComponent,
     ProgressComponent,

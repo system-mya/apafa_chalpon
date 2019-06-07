@@ -408,6 +408,29 @@ listar_grados(res) {
     });
 };
 
+listar_grados_activos(res) {
+    connection.acquire((err, con) => {
+		if(err){
+			res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+		}else{
+        con.query("CALL pa_listar_grados_activos('S')", (err, result) => {
+            con.release();
+            if(err){
+                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+			}else{
+				if (result[0].length == 0) {
+					res.send({status: 2, message: 'NO HAY DATOS EN LA TABLA GRADOS'});
+				} else {
+                    res.send({status: 1, message: 'CONSULTA EXITOSA',data:result[0]});
+                }
+			}
+           
+		});
+	}
+    });
+};
+
+
 cambiar_estado_grado(grado, res) {
 	connection.acquire((err, con) => {
 		if(err){

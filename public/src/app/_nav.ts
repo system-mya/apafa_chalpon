@@ -54,12 +54,12 @@ export const navAD: NavData[] = [
       },
       {
         name: 'Apoderado',
-        url: '/apafa/carousels',
+        url: '/apafa/apoderado',
         icon: 'fa fa-user-circle'
       },
       {
         name: 'Matricula',
-        url: '/apafa/collapses',
+        url: '/apafa/matricula',
         icon: 'fa fa-vcard-o'
       },
       {
