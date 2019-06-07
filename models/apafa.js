@@ -463,36 +463,122 @@ update_alumno(alumno, res) {
     };
 
     nva_matricula(matricula, res) {
-        connection.acquire((err, con) => {
+       connection.acquire((err, con) => {
             if(err){
                 res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
-            }else{
-    
-            //var query_dni = "CALL pa_buscar_dni_usuario('"+ [user.dni_usu] +"')";
-            
-         
-                
-               
-                        var query = "CALL pa_insertar_matricula('"+ [matricula.fecha_matricula]
-                        +"',"+ [matricula.id_apoderado] + ","+ [matricula.id_alumno] 
-                        + ","+ [matricula.id_seccion] + ","+ [matricula.id_tipo_relacion] 
-                        + ",'"+ [matricula.id_anhio] + "')";
-                        con.release();
-                        con.query(query,(err, result) => {
-                            if(err){
-                                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
-                            }else{
-                                if (result.affectedRows == 1) {
-                                    res.send({status: 1, message: 'Matricula Registrado'});
-                                } else {
-                                    res.send({status: 2, message: 'Matricula No Registrado'});
-                                }
-                            }
+            }else{    
+                con.beginTransaction(function(err) {
+                    if (err) {  
+                        con.rollback(function() {
+                            con.release();                                                                                                  
                         });
-            
-            }
-        });
-    };
+                        res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'}); 
+                    }
+                    var query_matricula = "CALL pa_verificar_matricula_alumno("+[matricula.id_alumno]+",'"+ [matricula.anhio] +"')";
+                    con.query(query_matricula, function(err, result) {
+                      if (err) { 
+                        con.rollback(function() {
+                            con.release();                                                                                                  
+                        });
+                            res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                      }else{
+                        if (result[0].length == 0) {
+                            var query_insert_matricula = "CALL pa_insertar_matricula('"+ [matricula.fecha_matricula]
+                            +"',"+ [matricula.id_apoderado] + ","+ [matricula.id_alumno] 
+                            + ","+ [matricula.id_seccion] + ","+ [matricula.id_tipo_relacion] 
+                            + ",'"+ [matricula.anhio] + "')";
+
+                            con.query(query_insert_matricula, function(err, result) {
+                                
+                                if (err) { 
+                                    con.rollback(function() {
+                                        con.release();                                                                                                  
+                                    });
+                                  res.send({status: 0, message: 'ERROR EN LA BASE DE DATOSss'});
+                                }else{
+                                    if (result.affectedRows == 1) {
+                                        var query_apafa = "CALL pa_verificar_si_cuota_apafa_registrada("+[matricula.id_apoderado]+",'"+ [matricula.anhio] +"')";
+                                        con.query(query_apafa, function(err, result) {
+                                          if (err) { 
+                                            con.rollback(function() {
+                                                con.release();                                                                                                  
+                                            });
+                                                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                                          }else{
+                                            if (result[0].length == 0) {
+                                                var query_insert_apafa = "CALL pa_insertar_deuda_apafa("+ [matricula.id_apoderado] 
+                                                + ",'"+ [matricula.anhio] + "')";
+                                                
+                                                con.query(query_insert_apafa, function(err, result_apafa) {
+                                                    if (err) { 
+                                                        con.rollback(function() {
+                                                            res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});                                                                                               
+                                                        });                                                  
+                                                    }else{
+                                                        if (result_apafa.affectedRows == 1) {
+                                                            con.commit(function(err) {
+                                                                if (err) { 
+                                                                  con.rollback(function() {
+                                                                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                                                                  });
+                                                                }else{
+                                                                    res.send({status: 1, message: 'MATRICULA REGISTRADA'});
+                                                                }                                                      
+                                                                
+                                                              });
+                                                            
+                                                        }else{
+                                                            con.rollback(function() {
+                                                                con.release();
+                                                                res.send({status: 2, message: 'MATRICULA NO REGISTRADA'});                                                                                                  
+                                                            });
+                                                           
+                                                        }
+                                                    }
+                                                }); 
+                                            }else{
+                                                con.commit(function(err) {
+                                                    if (err) { 
+                                                      con.rollback(function() {
+                                                        res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                                                      });
+                                                    }else{
+                                                        res.send({status: 1, message: 'MATRICULA REGISTRADA'});
+                                                    }                                                      
+                                                    
+                                                  });
+                                            }
+                                            
+                                          }
+                                        });
+                                        
+                                        
+                                    } else {
+                                        con.rollback(function() {
+                                            con.release();    
+                                            res.send({status: 2, message: 'MATRICULA NO REGISTRADA'});                                                                                              
+                                        });
+                                        
+                                    }
+                                }
+                          });
+                        } else {
+                            res.send({status: 3, message: 'ALUMNO YA MATRICULO'});
+                        }
+                       
+
+                    }
+
+                });
+            });
+
+        }
+
+    });
+
+}
+                      
+                  
     
 }
 

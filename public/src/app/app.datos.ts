@@ -108,7 +108,7 @@ export class Matricula
     fecha_matricula ?: string;
     id_apoderado ?: number;
     id_alumno ?: number;
-    id_anhio ?: string;
+    anhio ?: string;
     id_grado ?: number;
     id_seccion ?: number;
     id_tipo_relacion ?: number;
@@ -118,6 +118,8 @@ export class Matricula
     datos_alumno ?: string;
     datos_apoderado ?: string;
     sexo_alumno ?: string;
+    grado ?: string;
+    seccion ?: string;
     
 }
 

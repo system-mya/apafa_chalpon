@@ -83,6 +83,12 @@ DataApoderados : any = [];
   )
 }
 
+applyFilter(filterValue: string) {
+  this.dataSource.filter = filterValue.trim().toLowerCase();
+  if (this.dataSource.paginator) {
+    this.dataSource.paginator.firstPage();
+  }
+}
   onSubmit(form:Apoderado){    
       swal({
         title: '¿Esta seguro que desea guardar?',

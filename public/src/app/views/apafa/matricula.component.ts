@@ -21,7 +21,7 @@ export class MatriculaComponent {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   public f = new Date();
-  displayedColumns: string[] = ['doc_alumno', 'apellidos_alumno','sexo_alumno','num_contacto','opciones_alumno'];
+  displayedColumns: string[] = ['doc_alumno', 'datos_alumno','grado','seccion','opciones_alumno'];
   positionOptions: TooltipPosition[] = ['after', 'before', 'above', 'below', 'left', 'right'];
   public matricula : Matricula = {};
   public DatoBusqueda : Busqueda;
@@ -53,10 +53,18 @@ export class MatriculaComponent {
   )
 }
 
+applyFilter(filterValue: string) {
+  this.dataSource.filter = filterValue.trim().toLowerCase();
+  if (this.dataSource.paginator) {
+    this.dataSource.paginator.firstPage();
+  }
+}
+
 btnNueva_Matricula(){
   this.NvaMatriculaModal.show();
   this.ListarGrados();
   this.ListarTipoRelacion();
+  this.mytemplateForm.resetForm();
   this.matricula = {
     id_grado:0,
     id_seccion:0,
@@ -184,7 +192,7 @@ btnBuscar_xDoc(id:number,dato:string){
       allowEscapeKey:false,
     }).then((result) => {
       if (result.value==true) {
-        form.id_anhio=localStorage.getItem('_anhio');
+        form.anhio=localStorage.getItem('_anhio');
         this._MatriculaServicios.nva_matricula(form)
         .then(data => {
           if(data.status==1){
@@ -196,6 +204,8 @@ btnBuscar_xDoc(id:number,dato:string){
                 allowEscapeKey:false
             })            
             this.ListarMatriculados();
+            this.NvaMatriculaModal.hide();
+            this.mytemplateForm.resetForm();
           }else{
               swal({
                 title: 'Aviso!',

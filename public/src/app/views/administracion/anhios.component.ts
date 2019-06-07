@@ -124,7 +124,7 @@ export class AnhiosComponent implements OnInit {
             this.ListarAnhios();
             this.myFormNvoAnhio.resetForm();
           }else{
-            if(data.data.length==2){
+           
               swal({
                 title: 'Aviso!',
                 html:
@@ -135,18 +135,6 @@ export class AnhiosComponent implements OnInit {
                 allowOutsideClick: false,
                 allowEscapeKey:false
               })
-            }else{
-              swal({
-                title: 'Aviso!',
-                html:
-                '<span style="color:red">' +
-                data.data[0].anhio +
-                '</span>',
-                type: 'error',
-                allowOutsideClick: false,
-                allowEscapeKey:false
-              })
-            }
           }
         } )
         .catch(err => console.log(err))
