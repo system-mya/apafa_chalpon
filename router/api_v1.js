@@ -158,5 +158,15 @@ app.post('/api/apafa/datos_alumno_apoderado', (req, res) => {
     apafa.obtener_datos_xdoc(req.body, res);
 });
 
+//LLAMADA LISTA DE TIPO DE RELACION
+app.get('/api/apafa/listar_tipo_relacion', (req, res) => {
+    apafa.listar_tipo_relacion(res);
+});
+
+//LLAMADA INSERTAR NUEVA MATRICULA
+app.post('/api/apafa/insertar_matricula', (req, res) => {
+    apafa.nva_matricula(req.body, res);
+});
+
 }
 }

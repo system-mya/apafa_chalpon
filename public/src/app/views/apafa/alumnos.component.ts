@@ -7,8 +7,6 @@ import {ModalDirective} from 'ngx-bootstrap/modal';
 import 'rxjs/add/operator/map';
 import {Alumno,Busqueda} from '../../app.datos';
 import { ToastrService } from 'ngx-toastr';
-import { AlertComponent } from 'ngx-bootstrap/alert/alert.component';
-import {animate, state, style, transition, trigger} from '@angular/animations';
 declare var swal: any;
 import { LoadingBarService } from '@ngx-loading-bar/core';
 

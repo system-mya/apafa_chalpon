@@ -108,13 +108,22 @@ export class Matricula
     fecha_matricula ?: string;
     id_apoderado ?: number;
     id_alumno ?: number;
-    id_anhio ?: number;
+    id_anhio ?: string;
     id_grado ?: number;
     id_seccion ?: number;
     id_tipo_relacion ?: number;
     estado_matricula ?: boolean;
     doc_alumno ?: string;
+    doc_apoderado ?: string;
     datos_alumno ?: string;
+    datos_apoderado ?: string;
     sexo_alumno ?: string;
     
+}
+
+export class Tipo_Relacion
+{
+   id_tipo_relacion ?: number;
+   nombre_relacion ?: string;
+   estado_relacion ?: boolean;
 }

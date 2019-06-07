@@ -420,7 +420,76 @@ update_alumno(alumno, res) {
                         }
                     }
                 });
+              }else{
+                var query = "CALL pa_buscar_doc_apoderado('"+ [datos.datobusqueda] +"')"; 
+                /* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
+                con.query(query,(err, result) => {
+                    con.release();
+                    if(err){
+                        res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                    }else{
+                        if (result[0].length == 0) {
+                            res.send({status: 2, message: 'Apoderado No Existe'});
+                        } else {
+                            res.send({status: 1, message: 'Datos Apoderado',data:result[0]});
+                        }
+                    }
+                });
               }
+            }
+        });
+    };
+
+    listar_tipo_relacion(res) {
+        connection.acquire((err, con) => {
+            if(err){
+                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+            }else{
+            con.query("CALL pa_listar_tipo_relacion()", (err, result) => {
+                con.release();
+                if(err){
+                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                }else{
+                    if (result[0].length == 0) {
+                        res.send({status: 2, message: 'NO HAY DATOS EN LA TABLA TIPO RELACION'});
+                    } else {
+                        res.send({status: 1, message: 'CONSULTA EXITOSA',data:result[0]});
+                    }
+                }
+               
+            });
+        }
+        });
+    };
+
+    nva_matricula(matricula, res) {
+        connection.acquire((err, con) => {
+            if(err){
+                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+            }else{
+    
+            //var query_dni = "CALL pa_buscar_dni_usuario('"+ [user.dni_usu] +"')";
+            
+         
+                
+               
+                        var query = "CALL pa_insertar_matricula('"+ [matricula.fecha_matricula]
+                        +"',"+ [matricula.id_apoderado] + ","+ [matricula.id_alumno] 
+                        + ","+ [matricula.id_seccion] + ","+ [matricula.id_tipo_relacion] 
+                        + ",'"+ [matricula.id_anhio] + "')";
+                        con.release();
+                        con.query(query,(err, result) => {
+                            if(err){
+                                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                            }else{
+                                if (result.affectedRows == 1) {
+                                    res.send({status: 1, message: 'Matricula Registrado'});
+                                } else {
+                                    res.send({status: 2, message: 'Matricula No Registrado'});
+                                }
+                            }
+                        });
+            
             }
         });
     };

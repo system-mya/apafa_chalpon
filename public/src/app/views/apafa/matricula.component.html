@@ -73,11 +73,11 @@
 
        </div>
      </div>
-     <!--Modal Registrar Nuevo Apoderado-->
+     <!--Modal Registrar Nueva Matricula-->
  <div bsModal #NvaMatriculaModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}" >
     <div class="modal-dialog modal-lg modal-success" role="document">
       <div class="modal-content">
-          <form name="form" class="formulario" (ngSubmit)="myForm.form.valid && onSubmit(apoderado)" #myForm="ngForm" novalidate autocomplete="off">
+          <form name="form" class="formulario" (ngSubmit)="myForm.form.valid && onSubmit(matricula)" #myForm="ngForm" novalidate autocomplete="off">
         <div class="modal-header">
           <h4 class="modal-title">Nueva Matricula</h4>
           <button type="button" class="close" (click)="frmMat_hide('N')" aria-label="Close">
@@ -152,7 +152,8 @@
                                       placeholder="Doc Identidad"  [(ngModel)]="matricula.doc_apoderado" #regdocalumno="ngModel"
                                       pattern="[0-9a-zA-Z]{8,15}" onkeyup="verif(this);mayus(this);" maxlength="15">
                                     <span class="input-group-append">
-                                      <button type="button" class="btn btn-primary">
+                                      <button type="button" class="btn btn-primary" 
+                                        (click)="btnBuscar_xDoc(1,matricula.doc_apoderado)">
                                           <span class="fa fa-search"></span>
                                       </button>
                                     </span>
@@ -160,7 +161,7 @@
                                 </div>
                               </div>
                             </div>
-                            <div class="form-group frm-matricula col-sm-12 col-md-6 col-lg-5">
+                            <div class="form-group frm-matricula col-sm-12 col-md-6 col-lg-4">
                                 <div class="form-group frm-matricula row">
                                     <div class="col-md-12">
                                         <label for="datos_apoderado" style="font-weight: bold;">Datos Apoderado <i class="fa fa-certificate" style="color:red !important"></i> :</label>
@@ -175,18 +176,27 @@
                                     </div>
                                   </div>
                                 </div>
-                                <div class="form-group frm-matricula col-sm-12 col-md-6 col-lg-3">
-                                    <div class="form-group frm-matricula row">
-                                        <div class="col-md-12">
-                                            <label for="tipo_relacion" style="font-weight: bold;">Tipo Relación <i class="fa fa-certificate" style="color:red !important"></i> :</label>
-                                          <div class="input-group">
-                                              <input type="text" class="form-control" id="tipo_relacion" name="tipo_relacion" 
-                                              placeholder="Apellidos Completos" [(ngModel)]="matricula.tipo_relacion" #regrelacion="ngModel" 
-                                              maxlength="60" readonly>
-                                          </div>
+                                <div class="form-group frm-matricula col-sm-12 col-md-6 col-lg-4">
+                                  <div class="form-group frm-matricula row">
+                                      <div class="col-md-12">
+                                          <label for="id_tipo_relacion" style="font-weight: bold;">Tipo Relación <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                                        <div class="input-group">
+                                            <select class="form-control" id="id_tipo_relacion" name="id_tipo_relacion"
+                                          [(ngModel)]="matricula.id_tipo_relacion" #regseccion="ngModel" required>
+                                          <option value="0" selected disabled>---Seleccionar Sección----</option>
+                                              <option *ngFor="let r of DataRelaciones" value="{{r.id_tipo_relacion}}">{{r.nombre_relacion}}</option>
+                                          </select>
+                                          <div *ngIf="myForm.submitted && matricula.id_tipo_relacion==0" style="
+                                            width: 100%;
+                                            margin-top: .25rem;
+                                            font-size: 80%;
+                                            color: #f86c6b;">
+                                              Debe seleccionar una opción
+                                        </div>
                                         </div>
                                       </div>
                                     </div>
+                                  </div>
                           </div><!--/.row-->
                 </div>
             </div>
@@ -194,8 +204,6 @@
                 <div class="card-header estilo-cabecera">DATOS DE LA MATRICULA</div>
                 <div class="card-body" style="padding: 0.8rem !important">
                     <div class="row">
-                        <div class="form-group frm-matricula col-sm-12 col-md-1 col-lg-1">
-                        </div>
                             <div class="form-group frm-matricula col-sm-12 col-md-5 col-lg-5">
                                 <div class="form-group frm-matricula row">
                                     <div class="col-md-12">
@@ -238,6 +246,17 @@
                                           </div>
                                         </div>
                                       </div>
+                                  </div>
+                                  <div class="form-group frm-matricula col-sm-12 col-md-5 col-lg-3">
+                                    <div class="form-group frm-matricula row">
+                                        <div class="col-md-12">
+                                            <label for="grado_matricula" style="font-weight: bold;">Grado <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                                          <div class="input-group">
+                                            <input class="form-control" id="fecha_matricula" type='date' name="fecha_matricula" placeholder="date"
+                                            [(ngModel)]="matricula.fecha_matricula" #regfecha="ngModel"  readonly required>
+                                          </div>
+                                        </div>
+                                      </div>
                                     </div>
                           </div><!--/.row-->
                 </div>
@@ -251,5 +270,5 @@
       </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
   </div>
-  <!-- /.Fin Modal Nuevo Apoderado-->
+  <!-- /.Fin Modal Nueva Matricula-->
 </div>

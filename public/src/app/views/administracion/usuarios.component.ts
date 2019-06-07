@@ -28,7 +28,7 @@ export class UsuariosComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild('myForm') mytemplateForm : NgForm;
-  public min = new Date().toISOString().substring(0, 10);
+  public min = new Date();
   public usuario : Usuario;
   public DatoBusqueda : Busqueda;
   public Editusuario : Usuario;
@@ -47,7 +47,7 @@ export class UsuariosComponent implements OnInit {
       correo_usu:'',
       sexo_usu:'',
       direccion_usu:'',
-      fecha_usu: this.min,
+      fecha_usu: this.min.getFullYear() + '-' + (this.min.getMonth()+1).toString().padStart(2, "0") + '-' + this.min.getDate().toString().padStart(2, "0"),
       obser_usu:'',
       perfil_usu:0
     };
@@ -61,7 +61,7 @@ export class UsuariosComponent implements OnInit {
       correo_usu:'',
       sexo_usu:'',
       direccion_usu:'',
-      fecha_usu: this.min,
+      fecha_usu: this.min.getFullYear() + '-' + (this.min.getMonth()+1).toString().padStart(2, "0") + '-' + this.min.getDate().toString().padStart(2, "0"),
       obser_usu:'',
       perfil_usu:0,
       baja_usu:''
@@ -116,7 +116,7 @@ export class UsuariosComponent implements OnInit {
       celular_usu:'',
       sexo_usu:'',
       direccion_usu:'',
-      fecha_usu: this.min,
+      fecha_usu: this.min.getFullYear() + '-' + (this.min.getMonth()+1).toString().padStart(2, "0") + '-' + this.min.getDate().toString().padStart(2, "0"),
       obser_usu:'',
       perfil_usu:0
     };

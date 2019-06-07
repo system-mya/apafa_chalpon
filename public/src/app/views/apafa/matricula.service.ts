@@ -3,7 +3,7 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/delay';
 import { Http } from '@angular/http';
 import "rxjs/add/operator/map";
-import { Apoderado,Busqueda } from '../../app.datos';
+import { Matricula,Busqueda } from '../../app.datos';
 
 @Injectable({
   providedIn: 'root'
@@ -21,4 +21,15 @@ export class MatriculaService {
   return this._http.post('/api/apafa/datos_alumno_apoderado',datos)
    .map(data => data.json()).toPromise()
 }
+
+public getListar_tipo_relacion(){
+  return this._http.get('/api/apafa/listar_tipo_relacion')
+   .map(res => res.json())
+}
+
+public nva_matricula(matricula:Matricula){
+  return this._http.post('/api/apafa/insertar_matricula',matricula)
+   .map(data => data.json()).toPromise()
+}
+
 }
