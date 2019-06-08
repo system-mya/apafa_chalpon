@@ -77,28 +77,28 @@ export const navAD: NavData[] = [
   },
   {
     name: 'Tesoreria',
-    url: '/notifications',
+    url: '/tesoreria',
     icon: 'icon-screen-tablet',
     children: [
       {
         name: 'Ingresos',
-        url: '/notifications/alerts',
+        url: '/tesoreria/ingresos',
         icon: 'cui-note'
       },
       {
         name: 'Compras',
-        url: '/notifications/badges',
+        url: '/tesoreria/badges',
         icon: 'icon-basket'
       },
       {
         name: 'Reuniones',
-        url: '/notifications/modals',
+        url: '/tesoreria/modals',
         icon: 'fa fa-bell-o'
       },
       
       {
         name: 'Conceptos',
-        url: '/notifications/modals',
+        url: '/tesoreria/modals',
         icon: 'cui-bookmark'
       }
     ]

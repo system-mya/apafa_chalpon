@@ -1,6 +1,7 @@
 //obtenemos el modelo UserModel con toda la funcionalidad
 var admin = require('../models/administracion');
 var apafa = require('../models/apafa');
+var tesoreria = require('../models/tesoreria');
 //creamos el ruteo de la aplicación
 module.exports = {
    configure: (app) => {
@@ -166,6 +167,11 @@ app.get('/api/apafa/listar_tipo_relacion', (req, res) => {
 //LLAMADA INSERTAR NUEVA MATRICULA
 app.post('/api/apafa/insertar_matricula', (req, res) => {
     apafa.nva_matricula(req.body, res);
+});
+
+//LLAMADA LISTA DE INGRESOS
+app.post('/api/tesoreria/listar_tipo_relacion', (req, res) => {
+    tesoreria.listar_ingresos_xperido(req.body,res);
 });
 
 }

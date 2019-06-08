@@ -1,5 +1,5 @@
 export class Busqueda {
-    idbusqueda : number;
+    idbusqueda ?: number;
     datobusqueda ?: string;
 }
 

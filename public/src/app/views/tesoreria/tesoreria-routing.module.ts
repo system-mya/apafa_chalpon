@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { AlertsComponent } from './alerts.component';
+import { IngresosComponent } from './ingresos.component';
 import { BadgesComponent } from './badges.component';
 import { ModalsComponent } from './modals.component';
 
@@ -9,18 +9,18 @@ const routes: Routes = [
   {
     path: '',
     data: {
-      title: 'Notifications'
+      title: 'Tesoreria'
     },
     children: [
       {
         path: '',
-        redirectTo: 'alerts'
+        redirectTo: 'ingresos'
       },
       {
-        path: 'alerts',
-        component: AlertsComponent,
+        path: 'ingresos',
+        component: IngresosComponent,
         data: {
-          title: 'Alerts'
+          title: 'Ingresos'
         }
       },
       {
@@ -45,4 +45,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class NotificationsRoutingModule {}
+export class TesoreriaRoutingModule {}

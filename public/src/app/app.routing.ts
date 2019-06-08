@@ -80,8 +80,8 @@ export const routes: Routes = [
         canActivate:[LoginGuard]
       },
       {
-        path: 'notifications',
-        loadChildren: './views/notifications/notifications.module#NotificationsModule',
+        path: 'tesoreria',
+        loadChildren: './views/tesoreria/tesoreria.module#TesoreriaModule',
         canActivate:[LoginGuard]
       },
       {
