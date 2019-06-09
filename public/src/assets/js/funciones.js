@@ -21,11 +21,31 @@ if (v.value==" "){
      return true;
     }
 
+    //SOLO NUMEROS CON PUNTO
+ function Num_Decimal(e){
+  var key;
+if(window.event){
+   key = e.keyCode;
+}
+else if(e.wich){
+  key = e.which;
+}
+if((key <46 || key > 57)  ){
+ return false;
+}
+    return true;
+
+
+
+}
+
+
 //SOLO LETRAS
 function soloLetras(e){
        key = e.keyCode || e.which;
        tecla = String.fromCharCode(key).toLowerCase();
-       letras = " áéíóúabcdefghijklmnñopqrstuvwxyz";
+       //letras = " áéíóúabcdefghijklmnñopqrstuvwxyz1234567890";
+       letras ="abcdefghijklmnñopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
        especiales = "8-37-39-46";
 
        tecla_especial = false

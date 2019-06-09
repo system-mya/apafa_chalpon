@@ -8,7 +8,7 @@
             <button class="btn btn-success btn-xs" 
             matTooltip="Agregar Nuevo Ingreso"
             matTooltipClass="tooltip-mensaje"
-            data-toggle="modal" (click)="btnNuevo_Alumno()">
+            data-toggle="modal" (click)="btnNuevo_OtroIngreso()">
               <span class="fa fa-plus-square"></span>
               OTROS INGRESOS
             </button>
@@ -65,7 +65,7 @@
                     matTooltip="Imprimir"
                     matTooltipClass="tooltip-mensaje"
                     [matTooltipPosition]="positionOptions[3]"
-                    data-toggle="modal" (click)="btnEdit_Alumno(element.id_alumno)">
+                    data-toggle="modal" (click)="generatePDF()">
                   <span class="fa fa-print"></span></button>
                  <button class="btn btn-danger btn-xs distancia_btn_opciones"
                       matTooltip="Eliminar"
@@ -87,4 +87,100 @@
 
    </div>
  </div>
+ <!--Modal Registrar Nuevo Otro Ingreso-->
+ <div bsModal #NvoOtroIngresoModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}" >
+  <div class="modal-dialog modal-md modal-success" role="document">
+    <div class="modal-content">
+        <form name="form" class="formulario" (ngSubmit)="myForm.form.valid && onSubmit(otro)" #myForm="ngForm" novalidate autocomplete="off">
+      <div class="modal-header">
+        <h4 class="modal-title">Nuevo Ingreso</h4>
+        <button type="button" class="close" (click)="frmIngresos_hide('RO')" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <div class="row">
+              <div class="form-group col-sm-12 col-md-5">
+                  <label for="doc_encargado_ingreso" style="font-weight: bold;">Doc. Ident. <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                  <input type="text" class="form-control" id="doc_encargado_ingreso" name="doc_encargado_ingreso"
+                  placeholder="Doc Identidad"  [(ngModel)]="otro.doc_encargado_ingreso" #regdoc="ngModel"
+                  pattern="[0-9a-zA-Z]{8,15}" [ngClass]="{ 'is-invalid': myForm.submitted && regdoc.invalid }" required onkeyup="verif(this);mayus(this);" maxlength="15">
+                  <div *ngIf="myForm.submitted && regdoc.invalid" class="invalid-feedback">
+                      <div *ngIf="regdoc.errors.required">Doc. Identidad campo requerido</div>
+                      <div *ngIf="regdoc.errors.pattern">Debe Ingresar al menos 8 Carácteres</div>
+                  </div>
+                </div>
+                <div class="form-group col-sm-12 col-md-7">
+                  <label for="datos_encrgado_ingreso" style="font-weight: bold;">Datos Encargado <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                  <input type="text" class="form-control" id="datos_encrgado_ingreso" name="datos_encrgado_ingreso"
+                   placeholder="Nombres Completos" [(ngModel)]="otro.datos_encrgado_ingreso" #regdatos="ngModel" 
+                   onkeyup="verif(this)" maxlength="100" [ngClass]="{ 'is-invalid': myForm.submitted && regdatos.invalid }" 
+                   pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,100}[\s]*)+$" required>
+                   <div *ngIf="myForm.submitted && regdatos.invalid" class="invalid-feedback">
+                    <div *ngIf="regdatos.errors.required">Datos Encargado campo requerido</div>
+                    <div *ngIf="regdatos.errors.pattern">Formato de Encargado incorrectos</div>
+                   </div>
+                </div>
+            </div><!--/.row--> 
+            <div class="row">
+              <div class="form-group col-sm-12 col-md-8">
+                  <label for="descripcion_ingreso" style="font-weight: bold;">Descripción <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                  <input type="text" class="form-control" id="descripcion_ingreso" name="descripcion_ingreso"
+                  placeholder="Descripción Ingreso"  [(ngModel)]="otro.descripcion_ingreso" #regdesc="ngModel"
+                  pattern="^([A-Za-z0-9#/ñ]{1,80}[\s]*)+$" [ngClass]="{ 'is-invalid': myForm.submitted && regdesc.invalid }" required onkeyup="verif(this)" maxlength="100">
+                  <div *ngIf="myForm.submitted && regdesc.invalid" class="invalid-feedback">
+                      <div *ngIf="regdesc.errors.required">Descripción campo requerido</div>
+                      <div *ngIf="regdesc.errors.pattern">Formato Descripción Incorrectos</div>
+                  </div>
+                </div>
+                <div class="form-group col-sm-12 col-md-4">
+                  <label for="monto_ingreso" style="font-weight: bold;">Monto <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                  <input type="text" class="form-control" id="monto_ingreso" name="monto_ingreso"
+                   placeholder="Monto" [(ngModel)]="otro.monto_ingreso" #regmonto="ngModel" 
+                   onkeyup="verif(this)" maxlength="100" [ngClass]="{ 'is-invalid': myForm.submitted && regmonto.invalid }" 
+                   pattern="^(?!\.?$)\d{1,8}(\.\d{1,2})?$" onkeypress="return Num_Decimal(event);" required>
+                   <div *ngIf="myForm.submitted && regmonto.invalid" class="invalid-feedback">
+                    <div *ngIf="regmonto.errors.required">Monto campo requerido</div>
+                    <div *ngIf="regmonto.errors.pattern">Formato Monto Incorrecto</div>
+                   </div>
+                </div>
+            </div><!--/.row-->       
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="frmIngresos_hide('RO')"><span class="fa fa-times-circle"></span> Close</button>
+        <button type="submit" class="btn btn-primary" ><span class="fa fa-save"></span> Guardar</button>
+      </div>
+    </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
+<!-- /.Fin Modal Nuevo Apoderado-->
+
+<table id="contentToConvert"> 
+  <tr> 
+  <th>Column1</th> 
+  <th>Column2</th> 
+  <th>Column3</th> 
+  </tr> 
+  <tr> 
+  <td>Row 1</td> 
+  <td>Row 1</td> 
+  <td>Row 1</td> 
+  </tr> 
+  <tr> 
+  <td>Row 2</td> 
+  <td>Row 2</td> 
+  <td>Row 2</td> 
+  </tr> 
+  <tr> 
+  <td>Row 3</td> 
+  <td>Row 3</td> 
+  <td>Row 3</td> 
+  </tr> 
+  <tr> 
+  <td>Row 4</td> 
+  <td>Row 4</td> 
+  <td>Row 4</td> 
+  </tr> 
+  </table> 
 </div>

@@ -174,5 +174,10 @@ app.post('/api/tesoreria/listar_tipo_relacion', (req, res) => {
     tesoreria.listar_ingresos_xperido(req.body,res);
 });
 
+//INSERTAR NUEVO INGRESO
+app.post('/api/tesoreria/insertar_ingreso', (req, res) => {
+    tesoreria.nvo_otro_ingreso(req.body, res);
+});
+
 }
 }

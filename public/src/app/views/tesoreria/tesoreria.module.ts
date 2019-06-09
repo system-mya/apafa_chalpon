@@ -1,5 +1,6 @@
 // Angular
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 
 // Alert Component
@@ -94,6 +95,7 @@ import { MatAutocompleteModule,
       MatTreeModule,
       MatFormFieldModule,
     ],
+    FormsModule,
   ],
   declarations: [
     IngresosComponent,

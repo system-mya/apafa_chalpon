@@ -129,3 +129,15 @@ export class Tipo_Relacion
    nombre_relacion ?: string;
    estado_relacion ?: boolean;
 }
+
+export class Otro_Ingreso
+{
+    id_otro_ingres ?: number;
+    descripcion_ingreso ?: string;
+    monto_ingreso ?: number;
+    freg_ingreso ?: string;
+    doc_encargado_ingreso ?: string;
+    datos_encrgado_ingreso ?: string;
+    id_usuario ?: string;
+    estado_ingreso ?: boolean;
+}
