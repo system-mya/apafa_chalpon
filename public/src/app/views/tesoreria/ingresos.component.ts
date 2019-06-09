@@ -127,8 +127,14 @@ export class IngresosComponent {
 
   public generatePDF() 
   { 
-  const doc=new jspdf('p', 'mm', [148, 210]);
-  doc.text('Algo de texto adsadasd as dfsf as fasf asfas fasf s f',10,10);
+  const doc=new jspdf(
+    {
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'A5'
+    }
+  );
+  doc.text('Algo de texto adsadasd as dfsf as fasf asfas fasf s f',5,10);
   doc.save('test.pdf');
   } 
   
