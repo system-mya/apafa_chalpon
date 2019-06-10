@@ -136,6 +136,7 @@ export class IngresosComponent {
   );
   doc.text('Algo de texto adsadasd as dfsf as fasf asfas fasf s f',5,10);
   doc.save('test.pdf');
+  $("#pdf_preview").attr("src", doc.output('blob','test.pdf'));
   } 
   
 }
