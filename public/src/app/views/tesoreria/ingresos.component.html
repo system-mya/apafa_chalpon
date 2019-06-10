@@ -155,6 +155,28 @@
   </div><!-- /.modal-dialog -->
 </div>
 <!-- /.Fin Modal Nuevo Apoderado-->
+ <!--Modal Mostrar Imprimir-->
+ <div bsModal #FrmImprimir="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}" >
+  <div class="modal-dialog modal-lg modal-success" role="document">
+    <div class="modal-content">
+        <!-- <form name="form" class="formulario" (ngSubmit)="myForm.form.valid && onSubmit(otro)" #myForm="ngForm" novalidate autocomplete="off"> -->
+      <div class="modal-header">
+        <h4 class="modal-title">Nuevo Ingreso</h4>
+        <button type="button" class="close" (click)="frmIngresos_hide('RO')" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <iframe id="pdf_preview" type="application/pdf" src="" width="700" height="400"></iframe>    
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="frmIngresos_hide('RO')"><span class="fa fa-times-circle"></span> Close</button>
+        <button type="submit" class="btn btn-primary" ><span class="fa fa-save"></span> Guardar</button>
+      </div>
+    <!-- </form> -->
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
+<!-- /.Fin Modal Mostrar Imprimir-->
 
-<iframe id="pdf_preview" type="application/pdf" src="" width="800" height="400"></iframe>
 </div>

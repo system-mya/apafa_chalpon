@@ -58,6 +58,7 @@
     "html2canvas": "^1.0.0-rc.3",
     "jquery": "^3.4.0",
     "jspdf": "^1.5.3",
+    "jspdf-autotable": "^3.1.1",
     "moment": "^2.24.0",
     "mutationobserver-shim": "^0.3.3",
     "ng-pick-datetime": "^7.0.0",
