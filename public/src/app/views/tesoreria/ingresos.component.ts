@@ -351,9 +351,58 @@ doc.autoTable({
       .catch(err => console.log(err))
     }
 
-    public RegRecibo(form:any){
-      console.log("funcionando recibo");
-      console.log(form);
+    public RegRecibo(form:Recibo){
+      swal({
+        title: '¿Esta seguro que desea guardar?',
+        type: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si, Guardar!',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+      }).then((result) => {
+        if (result.value == true) {
+          form.anhio = localStorage.getItem('_anhio');
+          form.id_usuario = localStorage.getItem('ID');
+          this._IngresosServicios.nvo_recibo(form)
+          .then(data => {
+            if (data.status == 1) {
+              swal({
+                  title: 'Aviso!',
+                  text: data.message,
+                  html:
+                  '<span style="color:green"> Núm. Reicbo: ' +
+                  data.data +
+                  '</span>',
+                  type: 'success',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: 'Ver Recibo, SI',
+                  allowOutsideClick: false,
+                  allowEscapeKey: false
+              })
+              this.ListarIngresos();
+              this.tabla_deuda=false;
+              this.NvoPagoModal.hide();
+              this.mytemplatemyRecibo.resetForm();
+            } else {
+                swal({
+                  title: 'Aviso!',
+                  html:
+                  '<span style="color:red">' +
+                  data.message +
+                  '</span>',
+                  type: 'error',
+                  allowOutsideClick: false,
+                  allowEscapeKey: false
+                });
+            }
+          } )
+          .catch(err => console.log(err));
+        }
+      });
     }
     
 
@@ -373,16 +422,18 @@ doc.autoTable({
         }
     }
      
-    monto_invalid : boolean;
+    public monto_invalid : boolean;
     public monto_parcial(index,tipo){
       console.log(tipo.mytemplatemyRecibo.form.controls[index].status);
       var indice;
       this.recibo.mtotal_recibo=0;
      if(Number(this.DataDeuda[index].monto)<=Number(this.DataDeuda[index].saldo_deuda)){
-       this.monto_invalid=false;
+      this.DataDeuda[index].monto_invalid=false;
+      this.monto_invalid=false;
        this.monto_cero=false;
      }else{
-       this.monto_invalid=true;
+      this.DataDeuda[index].monto_invalid=true;
+      this.monto_invalid=true;
      }
       if(tipo.mytemplatemyRecibo.form.controls[index].status=='VALID'){
         for(indice in this.DataDeuda){

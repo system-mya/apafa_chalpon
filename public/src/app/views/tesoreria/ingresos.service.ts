@@ -27,4 +27,10 @@ export class IngresosService {
     .map(data => data.json()).toPromise()
   }
 
+  public nvo_recibo(recibo:Recibo){
+    return this._http.post('/api/tesoreria/insertar_nvo_recibo',recibo)
+     .map(data => data.json()).toPromise()
+  }
+
+
 }

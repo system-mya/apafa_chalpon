@@ -182,7 +182,7 @@
     <div bsModal #NvoPagoModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}" >
       <div class="modal-dialog modal-lg modal-success" role="document">
         <div class="modal-content">
-            <form name="form" class="formulario" (ngSubmit)="myRecibo.form.valid && RegRecibo(DataDeuda)" #myRecibo="ngForm" novalidate autocomplete="off">
+            <form name="form" class="formulario" (ngSubmit)="myRecibo.form.valid && RegRecibo(recibo)" #myRecibo="ngForm" novalidate autocomplete="off">
           <div class="modal-header">
             <h4 class="modal-title">Nuevo Pago</h4>
             <button type="button" class="close" (click)="frmIngresos_hide('R')" aria-label="Close">
@@ -318,8 +318,8 @@
                                               <div *ngIf="regmonto.errors.required">Campo requerido</div>
                                               <div *ngIf="regmonto.errors.pattern">Formato Incorrecto</div>
                                           </div>
-                                          <div *ngIf="DataDeuda[i].tipo_pago=='P' && monto_invalid && !regmonto.invalid && DataDeuda[i].monto!=0" class="monto_invalid">
-                                            <div *ngIf="monto_invalid"><span class="fa fa-times"></span>Monto debe ser menor</div>
+                                          <div *ngIf="DataDeuda[i].tipo_pago=='P' && !regmonto.invalid && DataDeuda[i].monto!=0" class="monto_invalid">
+                                            <div *ngIf="DataDeuda[i].monto_invalid"><span class="fa fa-times"></span>Monto debe ser menor</div>
                                           </div>
                                           <div *ngIf="DataDeuda[i].tipo_pago=='P' && DataDeuda[i].monto==0 && !regmonto.invalid" class="monto_invalid">
                                             <div *ngIf="DataDeuda[i].tipo_pago=='P'"><span class="fa fa-times"></span>Monto debe ser Mayor a 0</div>
@@ -361,8 +361,8 @@
           </div>
           <div class="modal-footer">
                 <button type="button" class="btn btn-danger" (click)="frmIngresos_hide('R')"><span class="fa fa-times-circle"></span> Close</button>
-                <button type="submit" class="btn btn-primary" [disabled]="monto_invalid || monto_cero"><span class="fa fa-save"></span> Guardar</button>
-            </div>
+                <button type="submit" class="btn btn-primary" [disabled]="!myRecibo.form.valid || monto_invalid || monto_cero"><span class="fa fa-save"></span> Guardar</button>
+          </div>
         </form>
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->

@@ -184,5 +184,10 @@ app.post('/api/tesoreria/listar_detalle_deuda', (req, res) => {
     tesoreria.listar_detalle_deuda(req.body,res);
 });
 
+//INSERTAR NUEVO RECIBO
+app.post('/api/tesoreria/insertar_nvo_recibo', (req, res) => {
+    tesoreria.nvo_recibo(req.body, res);
+});
+
 }
 }

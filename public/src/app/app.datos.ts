@@ -147,6 +147,7 @@ export class Recibo
 {
     id_recibo ?: number;
     id_apoderado ?: number;
+    id_usuario ?: string;
     doc_apoderado ?: string;
     anhio ?: string;
     datos_apoderado ?: string;
@@ -167,5 +168,6 @@ export class Detalle_Deuda
     saldo_deuda ?: number;
     estado_deuda ?: string;
     monto ?: number;
+    monto_invalid ?: boolean;
 }
 
