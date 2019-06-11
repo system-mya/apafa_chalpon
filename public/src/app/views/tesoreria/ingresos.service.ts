@@ -3,7 +3,7 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/delay';
 import { Http } from '@angular/http';
 import "rxjs/add/operator/map";
-import { Otro_Ingreso,Busqueda } from '../../app.datos';
+import { Otro_Ingreso,Busqueda,Recibo } from '../../app.datos';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +20,11 @@ export class IngresosService {
   public nvo_otro_ingreso(ingreso:Otro_Ingreso){
     return this._http.post('/api/tesoreria/insertar_ingreso',ingreso)
      .map(data => data.json()).toPromise()
+  }
+
+  public Listar_Detalle_Deuda(recibo:Recibo){
+    return this._http.post('/api/tesoreria/listar_detalle_deuda',recibo)
+    .map(data => data.json()).toPromise()
   }
 
 }

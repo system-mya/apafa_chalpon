@@ -100,3 +100,19 @@
   .frm-matricula{
     margin-bottom: 0.2rem !important;
   }
+
+  
+  .secciones-deuda {
+    height: 200px !important;
+    overflow: auto;
+  }
+  
+  .secciones-deuda th {
+    position: sticky;
+    position: -webkit-sticky;
+    top: 0;
+    background: white;
+    z-index: 10;
+  }
+
+  

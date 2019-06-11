@@ -1,10 +1,12 @@
 import { Component, ViewChild, ViewEncapsulation, ElementRef  } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import {MatPaginator, MatSort, MatTableDataSource, TooltipPosition} from '@angular/material';
-import {Busqueda, Otro_Ingreso} from '../../app.datos';
+import {Busqueda, Otro_Ingreso,Recibo} from '../../app.datos';
 import { IngresosService } from './ingresos.service';
+import { MatriculaService } from '../apafa/matricula.service';
 import { ToastrService } from 'ngx-toastr';
 import {ModalDirective} from 'ngx-bootstrap/modal';
+import { LoadingBarService } from '@ngx-loading-bar/core';
 declare var swal: any;
 import * as jspdf from 'jspdf';
 import 'jspdf-autotable';
@@ -18,6 +20,7 @@ import 'jspdf-autotable';
 export class IngresosComponent {
   @ViewChild('NvoOtroIngresoModal') public NvoOtroIngresoModal: ModalDirective;
   @ViewChild('FrmImprimir') public FrmImprimir: ModalDirective;
+  @ViewChild('NvoPagoModal') public NvoPagoModal: ModalDirective;
   displayedColumns: string[] = ['doc_ingreso', 'descripcion_ingreso', 'monto_ingreso', 'freg_ingreso', 'opciones_ingreso'];
   positionOptions: TooltipPosition[] = ['after', 'before', 'above', 'below', 'left', 'right'];
   dataSource: MatTableDataSource<any>;
@@ -26,7 +29,10 @@ export class IngresosComponent {
   @ViewChild('myForm') mytemplateForm: NgForm;
   public DatoBusqueda: Busqueda;
   public otro: Otro_Ingreso = {};
-  constructor(private _IngresosServicios: IngresosService, private toastr: ToastrService) {
+  public recibo : Recibo = {};
+  constructor(private _IngresosServicios: IngresosService, 
+    private _MatriculaServicios:MatriculaService,
+    private toastr: ToastrService,private loadingBar: LoadingBarService) {
     this.DatoBusqueda = {
       datobusqueda: ''
     };
@@ -69,8 +75,8 @@ export class IngresosComponent {
     this.NvoOtroIngresoModal.hide();
       this.mytemplateForm.resetForm();
     } else {
-      if (opc == 'I') {
-        this.FrmImprimir.hide();
+      if (opc == 'R') {
+        this.NvoPagoModal.hide();
       } else {
         if (opc == 'E') {
         }
@@ -129,6 +135,7 @@ export class IngresosComponent {
 
   public generatePDF()
   {
+    this.loadingBar.start();
   const doc = new jspdf(
     {
       orientation: 'portrait',
@@ -298,7 +305,48 @@ doc.autoTable({
   }).then((result) => {
     if (result.value == true) {
       doc.output('save', 'filename.pdf');
+      this.loadingBar.complete();
     }
   });
   }
+
+  public btnNuevo_Recibo(){
+     this.NvoPagoModal.show();
+  } 
+
+  DataDeuda : any =[];
+  
+  btnBuscar_xDoc(dato:string){
+    this.DatoBusqueda.idbusqueda=1;
+    this.DatoBusqueda.datobusqueda=dato;
+      this._MatriculaServicios.buscar_datos_xdoc(this.DatoBusqueda)
+      .then(data => {
+        if(data.status==1){
+            this.recibo.id_apoderado = data.data[0].id_apoderado;
+            this.recibo.datos_apoderado = data.data[0].apellidos_apoderado + " " + data.data[0].nombres_apoderado;
+            this.recibo.celular_apoderado = data.data[0].celular_apoderado;
+            this.recibo.direccion_apoderado = data.data[0].direccion_apoderado;
+            this.recibo.correo_apoderado = data.data[0].correo_apoderado;
+            this.recibo.anhio=localStorage.getItem('_anhio');
+            this._IngresosServicios.Listar_Detalle_Deuda(this.recibo)
+      .then(data => {
+        if(data.status==1){
+            this.DataDeuda = data.data;
+            console.log(this.DataDeuda);
+        }else{
+          this.toastr.error(data.message, 'Aviso!');
+         }
+      } )
+      .catch(err => console.log(err))
+        }else{
+          this.toastr.error(data.message, 'Aviso!');
+         }
+      } )
+      .catch(err => console.log(err))
+    }
+
+    public RegRecibo(form:any){
+      console.log("funcionando recibo");
+        console.log(form);
+    }
 }

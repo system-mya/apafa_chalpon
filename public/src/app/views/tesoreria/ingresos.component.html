@@ -17,7 +17,7 @@
             <button class="btn btn-primary btn-xs" style="margin: 0px 20px;"
             matTooltip="Agregar Nuevo Recibo"
             matTooltipClass="tooltip-mensaje"
-            data-toggle="modal" (click)="btnNuevo_Alumno()">
+            data-toggle="modal" (click)="btnNuevo_Recibo()">
               <span class="fa fa-plus-square"></span>
               PAGO APAFA
             </button>
@@ -178,5 +178,180 @@
   </div><!-- /.modal-dialog -->
 </div>
 <!-- /.Fin Modal Mostrar Imprimir-->
+<!--Modal Registrar Nueva Matricula-->
+    <div bsModal #NvoPagoModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}" >
+      <div class="modal-dialog modal-lg modal-success" role="document">
+        <div class="modal-content">
+            <form name="form" class="formulario" (ngSubmit)="myRecibo.form.valid && RegRecibo(DataDeuda)" #myRecibo="ngForm" novalidate autocomplete="off">
+          <div class="modal-header">
+            <h4 class="modal-title">Nuevo Pago</h4>
+            <button type="button" class="close" (click)="frmIngresos_hide('R')" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+              <div class="car-body">
+                  <div class="card-header estilo-cabecera">DATOS DEL APODERADO</div>
+                  <div class="card-body" style="padding: 0.8rem !important">
+                      <div class="row">
+                          <div class="form-group frm-matricula col-sm-12 col-md-6 col-lg-4">
+                              <div class="form-group frm-matricula row">
+                                  <div class="col-md-12">
+                                    <div class="input-group">
+                                        <input type="text" id="doc_apoderado" name="doc_apoderado" class="form-control"
+                                        placeholder="Doc Identidad"  [(ngModel)]="recibo.doc_apoderado" #regdocapoderado="ngModel"
+                                        pattern="[0-9a-zA-Z]{8,15}" onkeyup="verif(this);mayus(this);" maxlength="15">
+                                      <span class="input-group-append">
+                                        <button type="button" class="btn btn-primary" 
+                                          (click)="btnBuscar_xDoc(recibo.doc_apoderado)">
+                                            <span class="fa fa-search"></span>
+                                        </button>
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="form-group frm-matricula col-sm-12 col-md-6 col-lg-4">
+                                  <div class="form-group frm-matricula row">
+                                      <div class="col-md-12">
+                                       <div class="input-group">
+                                          <input type="text" class="form-control" id="datos_apoderado" name="datos_apoderado" 
+                                            placeholder="Datos Apoderado" [(ngModel)]="recibo.datos_apoderado" #regdatos_apoderado="ngModel" 
+                                            maxlength="60" [ngClass]="{'is-invalid': myRecibo.submitted && regdatos_apoderado.invalid }" readonly required>
+                                            <div *ngIf="myRecibo.submitted && regdatos_apoderado.invalid" class="invalid-feedback">
+                                                <div *ngIf="regdatos_apoderado.errors.required">Datos Apoderado campo requerido</div>
+                                          </div>
+                                      </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="form-group frm-matricula col-sm-12 col-md-6 col-lg-4">
+                                <div class="form-group frm-matricula row">
+                                    <div class="col-md-12">
+                                     <div class="input-group">
+                                        <input type="text" class="form-control" id="celular_apoderado" name="celular_apoderado" 
+                                          placeholder="Celular Contacto" [(ngModel)]="recibo.celular_apoderado" #regcelular_apoderado="ngModel" 
+                                          maxlength="60" [ngClass]="{'is-invalid': myRecibo.submitted && regcelular_apoderado.invalid }" readonly required>
+                                          <div *ngIf="myRecibo.submitted && regcelular_apoderado.invalid" class="invalid-feedback">
+                                              <div *ngIf="regcelular_apoderado.errors.required">Celular Contacto campo requerido</div>
+                                        </div>
+                                    </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group frm-matricula col-sm-12 col-md-6 col-lg-7">
+                              <div class="form-group frm-matricula row">
+                                  <div class="col-md-12">
+                                     <div class="input-group">
+                                      <input type="text" class="form-control" id="direccion_apoderado" name="direccion_apoderado" 
+                                        placeholder="Dirección Apoderado" [(ngModel)]="recibo.direccion_apoderado" #regdireccion_apoderado="ngModel" 
+                                        maxlength="60" [ngClass]="{'is-invalid': myRecibo.submitted && regdireccion_apoderado.invalid }" readonly required>
+                                        <div *ngIf="myRecibo.submitted && regdireccion_apoderado.invalid" class="invalid-feedback">
+                                            <div *ngIf="regdireccion_apoderado.errors.required">Dirección Apoderado campo requerido</div>
+                                      </div>
+                                  </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-group frm-matricula col-sm-12 col-md-6 col-lg-5">
+                              <div class="form-group frm-matricula row">
+                                  <div class="col-md-12">
+                                     <div class="input-group">
+                                      <input type="text" class="form-control" id="correo_apoderado" name="correo_apoderado" 
+                                        placeholder="Correo Apoderado" [(ngModel)]="recibo.correo_apoderado" #regcorreo_apoderado="ngModel" 
+                                        maxlength="60" [ngClass]="{'is-invalid': myRecibo.submitted && regcorreo_apoderado.invalid }" readonly>
+                                        
+                                  </div>
+                              </div>
+                            </div>
+                          </div>
+                      </div><!--/.row-->
+                  </div>
+              </div>
+              <div class="car-body">
+                  <div class="card-header estilo-cabecera">DETALLE DE CONCEPTOS</div>
+                  <div class="card-body" style="padding: 0.8rem !important">
+                      <div class="row">
+                          <div class="secciones-deuda table-responsive">
+                              <table class="table ">
+                                <thead>
+                                  <tr>
+                                    <th nowrap>Descripción Concepto</th>
+                                    <th nowrap>Saldo Deuda</th>
+                                    <th nowrap>Estado</th>
+                                    <th>Tipo</th>
+                                    <th nowrap>Monto</th>
+                                    <th nowrap>Opciones</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr *ngFor="let item of DataDeuda;index as i">
+                                      <td nowrap>
+                                        {{item.descripcion_concepto}}
+                                      </td>
+                                      <td nowrap>
+                                        {{item.saldo_deuda}}
+                                      </td>
+                                      <td nowrap>
+                                        {{item.estado_deuda}}
+                                      </td>
+                                      <td style="width:130px" nowrap>
+                                        <select class="form-control" id="tipo_pago" name="tipo_pago" 
+                                          placeholder="Selecionar Perfil" [(ngModel)]="DataDeuda[i].tipo_pago" #tipo_pago="ngModel" >
+                                            <option value="" selected disabled>--Tipo--</option>
+                                            <option value="T">TOTAL</option>
+                                            <option value="P">PARCIAL</option>
+                                        </select>
+                                      </td>
+                                      <td nowrap>
+                                          <input type="text" class="form-control" id="monto" name="monto-{{i}}"
+                                          placeholder="Monto" [(ngModel)]="DataDeuda[i].monto" #regmonto="ngModel" 
+                                          onkeyup="verif(this)" maxlength="100" [ngClass]="{ 'is-invalid': DataDeuda[i].tipo_pago!='' && regmonto.invalid }" 
+                                          pattern="^(?!\.?$)\d{1,8}(\.\d{1,2})?$" onkeypress="return Num_Decimal(event);" required>
+                                          <div *ngIf="DataDeuda[i].tipo_pago!='' && regmonto.invalid" class="invalid-feedback">
+                                              <div *ngIf="regmonto.errors.required">Monto campo requerido</div>
+                                              <div *ngIf="regmonto.errors.pattern">Formato Monto Incorrecto</div>
+                                             </div>
+                                      </td>
+                                      
+                                      <td nowrap>
+                                        <button class="btn btn-danger btn-xs distancia_btn_opciones"
+                                              matTooltip="Eliminar"
+                                              matTooltipClass="tooltip-mensaje"
+                                              [matTooltipPosition]="positionOptions[3]"
+                                              (click)="btnEliminar_Usuario(element.idusuario)">
+                                        <span class="fa fa-trash-o btn-xs"></span>
+                                        </button>
+                                      </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                      </div><!--/.row-->
+                      <div class="row">
+                        <div class="col-lg-7"></div>
+                        <div class="col lg-5">
+                            <div class="form-horizontal">
+                                <div class="row">
+                                    <label class="col-md-5 col-form-label" for="text-input">Text Input</label>
+                                    <div class="col-md-5">
+                                      <input class="form-control" id="text-input" name="text-input" placeholder="Text" type="text">
+                                    </div>
+                                  </div>
+                            </div>
+                        </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div class="modal-footer">
+                <button type="button" class="btn btn-danger" (click)="frmIngresos_hide('R')"><span class="fa fa-times-circle"></span> Close</button>
+                <button type="submit" class="btn btn-primary" ><span class="fa fa-save"></span> Guardar</button>
+            </div>
+        </form>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+    <!-- /.Fin Modal Nueva Matricula-->
 
 </div>

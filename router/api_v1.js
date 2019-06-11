@@ -179,5 +179,10 @@ app.post('/api/tesoreria/insertar_ingreso', (req, res) => {
     tesoreria.nvo_otro_ingreso(req.body, res);
 });
 
+//LLAMADA LISTA DE INGRESOS
+app.post('/api/tesoreria/listar_detalle_deuda', (req, res) => {
+    tesoreria.listar_detalle_deuda(req.body,res);
+});
+
 }
 }

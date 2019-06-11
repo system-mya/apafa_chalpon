@@ -141,3 +141,21 @@ export class Otro_Ingreso
     id_usuario ?: string;
     estado_ingreso ?: boolean;
 }
+
+
+export class Recibo 
+{
+    id_recibo ?: number;
+    id_apoderado ?: number;
+    doc_apoderado ?: string;
+    anhio ?: string;
+    datos_apoderado ?: string;
+    direccion_apoderado ?: string;
+    celular_apoderado ?: string;
+    correo_apoderado ?: string;
+    mtotal_recibo ?: number;
+    num_recibo ?:string;
+    ober_recibo ?: string;
+    estado_recibo ?: boolean;
+}
+

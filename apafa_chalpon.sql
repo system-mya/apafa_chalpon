@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 09-06-2019 a las 00:07:56
+-- Tiempo de generación: 11-06-2019 a las 00:10:47
 -- Versión del servidor: 5.7.14
 -- Versión de PHP: 5.6.25
 
@@ -194,6 +194,14 @@ celular_apoderado
 FROM apoderado
 WHERE estado_apoderado=1
 ORDER BY apellidos_apoderado$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_detalle_deuda` (IN `dato_anhio` CHAR(4), IN `apo` SMALLINT)  NO SQL
+SELECT ca.descripcion_concepto,de.saldo_deuda,
+(CASE WHEN de.estado_deuda='P' THEN 'PENDIENTE'
+ELSE 'PAGADO' END) AS estado_deuda,'' as tipo_pago FROM detalle_deuda de 
+INNER JOIN concepto_apafa ca ON ca.id_concepto=de.id_concepto
+WHERE ca.id_anhio=(SELECT idanhio FROM anhio_lectivo WHERE condicion_anhio='A' AND estado_anhio=1 AND anhio=dato_anhio) 
+AND de.id_apoderado=apo$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_grados` (IN `nivel` CHAR(1))  NO SQL
 SELECT g.id_grado,g.descripcion_grado,g.nivel_grado,
@@ -471,7 +479,10 @@ CREATE TABLE `concepto_apafa` (
 --
 
 INSERT INTO `concepto_apafa` (`id_concepto`, `descripcion_concepto`, `tipo_concepto`, `id_anhio`, `monto_concepto`, `estado_concepto`) VALUES
-(2, 'CUOTA APAFA', 'A', 2, 59, b'1');
+(2, 'CUOTA APAFA', 'A', 2, 59, b'1'),
+(3, 'ASAMBLEA GENERAL', 'O', 2, 20, b'1'),
+(4, 'REUNION DE AULA', 'O', 2, 15, b'1'),
+(5, 'ASAMBLEA DE ELECCIONES', 'O', 2, 20, b'1');
 
 -- --------------------------------------------------------
 
@@ -494,7 +505,10 @@ CREATE TABLE `detalle_deuda` (
 --
 
 INSERT INTO `detalle_deuda` (`id_detalle_deuda`, `id_concepto`, `id_apoderado`, `saldo_deuda`, `freg_deuda`, `fseg_deuda`, `estado_deuda`) VALUES
-(13, 2, 1, 59, '2019-06-07', '2019-06-07 22:45:59', 'P');
+(13, 2, 1, 59, '2019-06-07', '2019-06-07 22:45:59', 'P'),
+(14, 3, 1, 20, '2019-06-10', '2019-06-10 07:33:35', 'P'),
+(15, 4, 1, 15, '2019-06-10', '2019-06-10 07:18:20', 'P'),
+(16, 5, 1, 20, '2019-06-10', '2019-06-10 09:37:23', 'P');
 
 -- --------------------------------------------------------
 
@@ -843,12 +857,12 @@ ALTER TABLE `apoderado`
 -- AUTO_INCREMENT de la tabla `concepto_apafa`
 --
 ALTER TABLE `concepto_apafa`
-  MODIFY `id_concepto` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_concepto` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT de la tabla `detalle_deuda`
 --
 ALTER TABLE `detalle_deuda`
-  MODIFY `id_detalle_deuda` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id_detalle_deuda` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 --
 -- AUTO_INCREMENT de la tabla `grados`
 --

@@ -62,5 +62,28 @@ class Tesoreria {
             }
         });
     };
+
+    listar_detalle_deuda(recibo, res) {
+        connection.acquire((err, con) => {
+            if(err){
+                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+            }else{
+            var query = "CALL pa_listar_detalle_deuda('"+ [recibo.anhio] +"',"+[recibo.id_apoderado]+")"; 
+            /* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
+            con.query(query,(err, result) => {
+                con.release();
+                if(err){
+                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                }else{
+                    if (result[0].length == 0) {
+                        res.send({status: 2, message: 'Lista Detalle No Existe'});
+                    } else {
+                        res.send({status: 1, message: 'Datos Deuda',data:result[0]});
+                    }
+                }
+            });
+            }
+        });
+    };
 }
 module.exports = new Tesoreria();
