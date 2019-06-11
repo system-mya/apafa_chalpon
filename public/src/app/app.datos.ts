@@ -159,3 +159,13 @@ export class Recibo
     estado_recibo ?: boolean;
 }
 
+export class Detalle_Deuda
+{
+    id_detalle_deuda ?: number;
+    tipo_pago ?: string;
+    descripcion_concepto ?: string;
+    saldo_deuda ?: number;
+    estado_deuda ?: string;
+    monto ?: number;
+}
+

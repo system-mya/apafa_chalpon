@@ -189,7 +189,7 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body">
+          <div class="modal-body" style="padding-bottom: 1px !important;">
               <div class="car-body">
                   <div class="card-header estilo-cabecera">DATOS DEL APODERADO</div>
                   <div class="card-body" style="padding: 0.8rem !important">
@@ -271,8 +271,12 @@
               <div class="car-body">
                   <div class="card-header estilo-cabecera">DETALLE DE CONCEPTOS</div>
                   <div class="card-body" style="padding: 0.8rem !important">
-                      <div class="row">
-                          <div class="secciones-deuda table-responsive">
+                      <div class="row" style="
+                      border-bottom: #0000008c;
+                      border-bottom-style: solid;
+                      margin-bottom: 10px;
+                  ">
+                          <div class="secciones-deuda table-responsive" *ngIf="tabla_deuda">
                               <table class="table ">
                                 <thead>
                                   <tr>
@@ -297,21 +301,29 @@
                                       </td>
                                       <td style="width:130px" nowrap>
                                         <select class="form-control" id="tipo_pago" name="tipo_pago" 
-                                          placeholder="Selecionar Perfil" [(ngModel)]="DataDeuda[i].tipo_pago" #tipo_pago="ngModel" >
+                                          placeholder="Selecionar Perfil" [(ngModel)]="DataDeuda[i].tipo_pago" #tipo_pago="ngModel"
+                                          (change)="select_tipo_pago(DataDeuda[i].tipo_pago,i)">
                                             <option value="" selected disabled>--Tipo--</option>
                                             <option value="T">TOTAL</option>
                                             <option value="P">PARCIAL</option>
                                         </select>
                                       </td>
-                                      <td nowrap>
-                                          <input type="text" class="form-control" id="monto" name="monto-{{i}}"
+                                      <td style="width: 110px;" nowrap>
+                                          <input type="text" class="form-control" id="monto" name="{{i}}"
                                           placeholder="Monto" [(ngModel)]="DataDeuda[i].monto" #regmonto="ngModel" 
                                           onkeyup="verif(this)" maxlength="100" [ngClass]="{ 'is-invalid': DataDeuda[i].tipo_pago!='' && regmonto.invalid }" 
-                                          pattern="^(?!\.?$)\d{1,8}(\.\d{1,2})?$" onkeypress="return Num_Decimal(event);" required>
+                                          pattern="^(?!\.?$)\d{1,8}(\.\d{1,2})?$" onkeypress="return Num_Decimal(event);" 
+                                          [disabled]="DataDeuda[i].tipo_pago=='T'" (ngModelChange)="monto_parcial(i,this)" required>
                                           <div *ngIf="DataDeuda[i].tipo_pago!='' && regmonto.invalid" class="invalid-feedback">
-                                              <div *ngIf="regmonto.errors.required">Monto campo requerido</div>
-                                              <div *ngIf="regmonto.errors.pattern">Formato Monto Incorrecto</div>
-                                             </div>
+                                              <div *ngIf="regmonto.errors.required">Campo requerido</div>
+                                              <div *ngIf="regmonto.errors.pattern">Formato Incorrecto</div>
+                                          </div>
+                                          <div *ngIf="DataDeuda[i].tipo_pago=='P' && monto_invalid && !regmonto.invalid && DataDeuda[i].monto!=0" class="monto_invalid">
+                                            <div *ngIf="monto_invalid"><span class="fa fa-times"></span>Monto debe ser menor</div>
+                                          </div>
+                                          <div *ngIf="DataDeuda[i].tipo_pago=='P' && DataDeuda[i].monto==0 && !regmonto.invalid" class="monto_invalid">
+                                            <div *ngIf="DataDeuda[i].tipo_pago=='P'"><span class="fa fa-times"></span>Monto debe ser Mayor a 0</div>
+                                          </div>
                                       </td>
                                       
                                       <td nowrap>
@@ -328,14 +340,17 @@
                               </table>
                             </div>
                       </div><!--/.row-->
-                      <div class="row">
+                      <div class="row" *ngIf="tabla_deuda">
                         <div class="col-lg-7"></div>
                         <div class="col lg-5">
                             <div class="form-horizontal">
                                 <div class="row">
-                                    <label class="col-md-5 col-form-label" for="text-input">Text Input</label>
+                                    <label class="col-md-5 col-form-label" for="text-input" style="text-align: right !important;
+                                    padding-right: 0px !important;"><b>Total Pagar :</b></label>
                                     <div class="col-md-5">
-                                      <input class="form-control" id="text-input" name="text-input" placeholder="Text" type="text">
+                                      <input type="text" class="form-control" id="mtotal_recibo" name="mtotal_recibo" 
+                                      placeholder="0" [(ngModel)]="recibo.mtotal_recibo" #regmtotal_recibo="ngModel" 
+                                      maxlength="60" readonly>
                                     </div>
                                   </div>
                             </div>
@@ -346,7 +361,7 @@
           </div>
           <div class="modal-footer">
                 <button type="button" class="btn btn-danger" (click)="frmIngresos_hide('R')"><span class="fa fa-times-circle"></span> Close</button>
-                <button type="submit" class="btn btn-primary" ><span class="fa fa-save"></span> Guardar</button>
+                <button type="submit" class="btn btn-primary" [disabled]="monto_invalid || monto_cero"><span class="fa fa-save"></span> Guardar</button>
             </div>
         </form>
         </div><!-- /.modal-content -->

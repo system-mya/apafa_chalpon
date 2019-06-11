@@ -68,7 +68,7 @@ class Tesoreria {
             if(err){
                 res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
             }else{
-            var query = "CALL pa_listar_detalle_deuda('"+ [recibo.anhio] +"',"+[recibo.id_apoderado]+")"; 
+            var query = "CALL pa_listar_detalle_deuda("+[recibo.id_apoderado]+")"; 
             /* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
             con.query(query,(err, result) => {
                 con.release();

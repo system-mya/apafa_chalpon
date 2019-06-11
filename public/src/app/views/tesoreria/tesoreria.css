@@ -115,4 +115,11 @@
     z-index: 10;
   }
 
+  .monto_invalid{
+    width: 100%;
+    margin-top: .25rem;
+    font-size: 80%;
+    color: #a30d0d;
+  }
+
   

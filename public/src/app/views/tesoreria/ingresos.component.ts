@@ -1,7 +1,7 @@
 import { Component, ViewChild, ViewEncapsulation, ElementRef  } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import {MatPaginator, MatSort, MatTableDataSource, TooltipPosition} from '@angular/material';
-import {Busqueda, Otro_Ingreso,Recibo} from '../../app.datos';
+import {Busqueda, Otro_Ingreso,Recibo,Detalle_Deuda} from '../../app.datos';
 import { IngresosService } from './ingresos.service';
 import { MatriculaService } from '../apafa/matricula.service';
 import { ToastrService } from 'ngx-toastr';
@@ -27,9 +27,11 @@ export class IngresosComponent {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild('myForm') mytemplateForm: NgForm;
+  @ViewChild('myRecibo') mytemplatemyRecibo: NgForm;
   public DatoBusqueda: Busqueda;
   public otro: Otro_Ingreso = {};
   public recibo : Recibo = {};
+  public DataDeuda : Detalle_Deuda ={};
   constructor(private _IngresosServicios: IngresosService, 
     private _MatriculaServicios:MatriculaService,
     private toastr: ToastrService,private loadingBar: LoadingBarService) {
@@ -37,6 +39,7 @@ export class IngresosComponent {
       datobusqueda: ''
     };
     this.ListarIngresos();
+    this.recibo.mtotal_recibo=0;
   }
 
   DataIngresos: any = [];
@@ -77,6 +80,8 @@ export class IngresosComponent {
     } else {
       if (opc == 'R') {
         this.NvoPagoModal.hide();
+        this.tabla_deuda=false;
+        this.mytemplatemyRecibo.resetForm();
       } else {
         if (opc == 'E') {
         }
@@ -314,8 +319,7 @@ doc.autoTable({
      this.NvoPagoModal.show();
   } 
 
-  DataDeuda : any =[];
-  
+  public tabla_deuda : boolean;
   btnBuscar_xDoc(dato:string){
     this.DatoBusqueda.idbusqueda=1;
     this.DatoBusqueda.datobusqueda=dato;
@@ -327,19 +331,21 @@ doc.autoTable({
             this.recibo.celular_apoderado = data.data[0].celular_apoderado;
             this.recibo.direccion_apoderado = data.data[0].direccion_apoderado;
             this.recibo.correo_apoderado = data.data[0].correo_apoderado;
-            this.recibo.anhio=localStorage.getItem('_anhio');
             this._IngresosServicios.Listar_Detalle_Deuda(this.recibo)
       .then(data => {
         if(data.status==1){
+            this.tabla_deuda=true;
             this.DataDeuda = data.data;
-            console.log(this.DataDeuda);
         }else{
           this.toastr.error(data.message, 'Aviso!');
+          this.tabla_deuda=false;
          }
       } )
       .catch(err => console.log(err))
         }else{
           this.toastr.error(data.message, 'Aviso!');
+          this.tabla_deuda=false;
+          this.recibo = {};
          }
       } )
       .catch(err => console.log(err))
@@ -347,6 +353,44 @@ doc.autoTable({
 
     public RegRecibo(form:any){
       console.log("funcionando recibo");
-        console.log(form);
+      console.log(form);
     }
+    
+
+    monto_cero : boolean;
+    public select_tipo_pago(dato,index){
+      var indice;
+      this.recibo.mtotal_recibo=0;
+        if(dato=='T'){
+          this.DataDeuda[index].monto=this.DataDeuda[index].saldo_deuda;
+          this.monto_cero=false;
+        }else{
+          this.DataDeuda[index].monto=0;
+          this.monto_cero=true;
+        }
+        for(indice in this.DataDeuda){
+          this.recibo.mtotal_recibo=this.recibo.mtotal_recibo + Number(this.DataDeuda[indice].monto);
+        }
+    }
+     
+    monto_invalid : boolean;
+    public monto_parcial(index,tipo){
+      console.log(tipo.mytemplatemyRecibo.form.controls[index].status);
+      var indice;
+      this.recibo.mtotal_recibo=0;
+     if(Number(this.DataDeuda[index].monto)<=Number(this.DataDeuda[index].saldo_deuda)){
+       this.monto_invalid=false;
+       this.monto_cero=false;
+     }else{
+       this.monto_invalid=true;
+     }
+      if(tipo.mytemplatemyRecibo.form.controls[index].status=='VALID'){
+        for(indice in this.DataDeuda){
+          this.recibo.mtotal_recibo=this.recibo.mtotal_recibo + Number(this.DataDeuda[indice].monto);
+        }
+      }
+      
+    }
+
+    
 }
