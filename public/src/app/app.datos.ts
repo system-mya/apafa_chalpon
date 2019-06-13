@@ -158,6 +158,8 @@ export class Recibo
     num_recibo ?:string;
     ober_recibo ?: string;
     estado_recibo ?: boolean;
+    detalle ?: Detalle_Deuda;
+    contador ?: number;
 }
 
 export class Detalle_Deuda

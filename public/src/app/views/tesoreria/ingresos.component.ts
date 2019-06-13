@@ -365,6 +365,8 @@ doc.autoTable({
         if (result.value == true) {
           form.anhio = localStorage.getItem('_anhio');
           form.id_usuario = localStorage.getItem('ID');
+          form.detalle = this.DataDeuda;
+          form.contador=0;
           this._IngresosServicios.nvo_recibo(form)
           .then(data => {
             if (data.status == 1) {

@@ -216,18 +216,46 @@ class Tesoreria {
                                     con.release();                                                                                                  
                                 });
                                     res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
-                            }else{
+                            }else{           
                                 if (result.affectedRows == 1) {
-                                    con.commit(function(err) {
+                                    var cantidad=[recibo.detalle.length]; 
+                                    var monto=0;                             
+                                    for(var i = 0; i < cantidad;i++){
+                                        var query_update_deuda = "CALL pa_update_deuda("+[recibo.detalle[i].id_detalle_deuda]
+                                        + ",'" + [recibo.detalle[i].monto] + "')";
+                                        con.query(query_update_deuda, function(err, result) {
                                         if (err) { 
-                                          con.rollback(function() {
-                                            res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
-                                          });
+                                            con.rollback(function() {
+                                                con.release();                                                                                                  
+                                            });
+                                                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
                                         }else{
-                                            res.send({status: 1, message: 'RECIBO REGISTRADO',data:num_recibo});
-                                        }                                                      
-                                        
+                                            if (result.affectedRows == 1) {
+                                                monto = monto + 1;
+                                                
+                                            }
+                                        }
                                       });
+                                    }
+                                    console.log("contador final: " + cantidad);
+                                    if(cantidad == 4 ){
+                                        con.commit(function(err) {
+                                            if (err) { 
+                                              con.rollback(function() {
+                                                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                                              });
+                                            }else{
+                                                res.send({status: 1, message: 'RECIBO REGISTRADO',data:num_recibo});
+                                            }                                                      
+                                            
+                                          }); 
+                                    }else{
+                                        con.rollback(function() {
+                                            con.release();
+                                            res.send({status: 2, message: 'RECIBO NO REGISTRADOss'});                                                                                                  
+                                        });
+                                    }
+                                    
                                 }else{
                                     con.rollback(function() {
                                         con.release();
