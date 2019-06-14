@@ -1,6 +1,5 @@
 connection = require('../conexion');
- CryptoJS =require('crypto-js');
-
+ CryptoJS =require('crypto-js'); 
  function addZero(i) {
     if (i < 10) {
         i = '0' + i;
@@ -33,13 +32,35 @@ function hoyFecha(){
 
     return decrypted.toString(CryptoJS.enc.Utf8);
   };
+  
+  function update_deuda (recibo, con,cantidad) {
+    var monto=0;
+    var malos=0;
+    return new Promise(function (resolve, reject) {
+    for(i=0;i<cantidad;i++){
+        console.log(i);        
+            var query="CALL pa_update_deuda("+recibo.detalle[i].id_detalle_deuda+",'"+recibo.detalle[i].monto+"')";
+            console.log(query);
+               con.query(query ,function(err,result_update) {
+                  if (err) { 
+                      malos=malos+1;
+                      console.log("malos: " +malos);
+                    return reject(malos);
+                  }else{
+                       if (result_update.affectedRows == 1) {
+                             monto= monto + 1;
+                             return resolve(monto);                                                                                       
+                        }
+                            
+                     }
+                });
+             
+    }
+    
+})
 
-  function contador(contador) {  
-    return new Promise(function(resolve, reject) {
-            return resolve(contador);
-    });
+    
   }
-
 class Tesoreria {
     listar_ingresos_xperido(anhio,res) {
         connection.acquire((err, con) => {
@@ -228,56 +249,38 @@ class Tesoreria {
                             }else{           
                                 if (result.affectedRows == 1) {
                                     var cantidad = [recibo.detalle.length];
-                                    var p1;
-                                    var monto=0;
-                                     recibo.detalle.forEach(function(element) {
-                                                var query_update_deuda = "CALL pa_update_deuda("+ element.id_detalle_deuda
-                                                + ",'" + element.monto + "')";
-                                                con.query(query_update_deuda,function(err,result_update) {
-                                                    if (err) { 
-                                                        con.rollback(function() {
-                                                            con.release();                                                                                                  
-                                                        });
-                                                            res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
-                                                    }else{
-                                                    if (result_update.affectedRows == 1) {
-                                                        monto = monto + 1;
-                                                        
-                                                       
-                                                                                                       
-                                                    }
-                                                }
-                                                p1 = new Promise((resolve, reject) => { 
-                                                    setTimeout(resolve, 1000, monto); 
-                                                  }); 
-                                                });
-
-                                        });                             
-                                         
-                                        Promise.all([p1]).then(values => { 
-                                            console.log("MONTO" + values); // [3, 1337, "foo"] 
+                                    var resultad;
+                                    var contador=0;
+                                resultad = update_deuda(recibo,con,cantidad);
+                                resultad.then(function(valule1){
+                                    if(valule1>0){
+                                       console.log("nu hubo error");
+                                       con.commit(function(err) {
+                                        if (err) { 
+                                          con.rollback(function() {
+                                            res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
                                           });
-
-                                    console.log("monto suma: " + monto);
-                                    console.log("contador final: " + cantidad);
-                                    if(cantidad == monto ){
-                                        con.commit(function(err) {
-                                            if (err) { 
-                                              con.rollback(function() {
-                                                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
-                                              });
-                                            }else{
-                                                res.send({status: 1, message: 'RECIBO REGISTRADO',data:num_recibo});
-                                            }                                                      
-                                            
-                                          }); 
-                                    }else{
-                                        con.rollback(function() {
-                                            con.release();
-                                            res.send({status: 2, message: 'RECIBO NO REGISTRADOss'});                                                                                                  
-                                        });
+                                        }else{
+                                            res.send({status: 1, message: 'RECIBO REGISTRADO',data:num_recibo});
+                                        }                                                      
+                                        
+                                      });
                                     }
+                                }     
+                                    )
+                                .catch(function(value){
+                                    if(value>0){
+                                       console.log("hubo error");
+                                       con.rollback(function() {
+                                        con.release();
+                                        res.send({status: 2, message: 'RECIBO NO REGISTRADO'});                                                                                                  
+                                    });
+                                    }
+                                }                                     
                                     
+                                    );    
+                                              
+                                                 
                                 }else{
                                     con.rollback(function() {
                                         con.release();
