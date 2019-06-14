@@ -137,7 +137,7 @@ export class IngresosComponent {
       }
     });
   }
-
+  public aumento=0;
   public generatePDF()
   {
     this.loadingBar.start();
@@ -145,159 +145,48 @@ export class IngresosComponent {
     {
       orientation: 'portrait',
       unit: 'mm',
-      format: 'A6'
+      format: 'A5'
     }
   );
-  var img = new Image()
-   img.src = 'assets/img/user-perfil.png'
-   doc.addImage(img, 'png', 5, 10, 12, 15);
-  doc.text('Algo de texto adsadasd as dfsf as fasf asfas fasf s f', 5, 10);
-  var columns = ["Id", "Nombre", "Email", "Pais"];
-var data = [
-[1, "Hola", "hola@gmail.com", "Mexico"],
-[2, "Hello", "hello@gmail.com", "Estados Unidos"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[1, "Hola", "hola@gmail.com", "Mexico"],
-[2, "Hello", "hello@gmail.com", "Estados Unidos"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[1, "Hola", "hola@gmail.com", "Mexico"],
-[2, "Hello", "hello@gmail.com", "Estados Unidos"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[1, "Hola", "hola@gmail.com", "Mexico"],
-[2, "Hello", "hello@gmail.com", "Estados Unidos"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[1, "Hola", "hola@gmail.com", "Mexico"],
-[2, "Hello", "hello@gmail.com", "Estados Unidos"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"],
-[3, "Otro", "otro@gmail.com", "Otro"] ];
+  
+  
 
+   // Add Page content
+   doc.setFontSize(12);
+   doc.text(30, 60, 'Numero de Recibo: 7191-20190614-123456');
+   doc.text(120, 60, 'Fecha: 14/06/2019 03:14:52');
+   doc.text(25, 70, 'Nombres y Apellidos: Jose Andersson Julca Vasquez');
+   doc.text(25, 80, 'Documento Identidad: 719185974586237');
+   doc.text(125, 80, 'Num. contacto: 978902579');
+  var splitTitle = doc.splitTextToSize('Dirección: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi', 160);
+  doc.text(25, 90, splitTitle);
+  doc.text(25, 110, 'Nombre del Concepto');
+  doc.text(150, 110, 'Monto');
+  
+  for (var j=0; j<5;j++){    
+    doc.text(25, 120+this.aumento, 'CONCPETO APAFA');
+    doc.text(150, 120+10+this.aumento, '59.00');
+    this.aumento=this.aumento+10;
+  }
+  doc.text(150, this.aumento+10, 'Total');
+   doc.addPage();
+   doc.addPage();
+   doc.addPage();
+   doc.addPage();
+   doc.addPage();
+   doc.addPage();
+   doc.addPage();
+   var pageCount = doc.internal.getNumberOfPages();
 
-doc.autoTable({
-  styles: {fillColor: [255, 0, 0]},
-  columnStyles: {0: {halign: 'center', fillColor: [0, 255, 0]}}, // Cells in first column centered and green
-  margin: {top: 80},
-  body: data,
-  columns:columns,
-})
+   
+   for(var i = 0; i < pageCount; i++) { 
+    var img = new Image()
+    img.src = 'assets/img/cabecera_recibos.png'
+    doc.addImage(img, 'png', 25, 10, 150, 40);
+    doc.setPage(i+1); 
+    doc.text(10,10, doc.internal.getCurrentPageInfo().pageNumber + "/" + pageCount);
+   }
+
   swal({
     title: '¿Esta seguro que desea descargar?',
     type: 'question',

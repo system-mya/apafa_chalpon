@@ -34,7 +34,7 @@ function hoyFecha(){
   };
   
   function update_deuda (recibo, con,cantidad) {
-    var monto=0;
+    var buenas=0;
     var malos=0;
     return new Promise(function (resolve, reject) {
     for(i=0;i<cantidad;i++){
@@ -45,11 +45,11 @@ function hoyFecha(){
                   if (err) { 
                       malos=malos+1;
                       console.log("malos: " +malos);
-                    return reject(malos);
+                      return reject(malos);
                   }else{
                        if (result_update.affectedRows == 1) {
-                             monto= monto + 1;
-                             return resolve(monto);                                                                                       
+                            buenas= buenas + 1;
+                             return resolve(buenas);                                                                                       
                         }
                             
                      }
@@ -250,7 +250,6 @@ class Tesoreria {
                                 if (result.affectedRows == 1) {
                                     var cantidad = [recibo.detalle.length];
                                     var resultad;
-                                    var contador=0;
                                 resultad = update_deuda(recibo,con,cantidad);
                                 resultad.then(function(valule1){
                                     if(valule1>0){
