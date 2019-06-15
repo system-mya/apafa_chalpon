@@ -11,6 +11,18 @@ declare var swal: any;
 import * as jspdf from 'jspdf';
 import 'jspdf-autotable';
 
+function bodyRows(rowCount) {
+  rowCount = rowCount || 10;
+  let body = [];
+  for (var j = 1; j <= rowCount; j++) {
+      body.push({
+          id: j,
+          name: 'faker.name.findName()',
+          email: '59.00',
+      });
+  }
+  return body;
+}
 
 @Component({
   templateUrl: 'ingresos.component.html',
@@ -89,6 +101,8 @@ export class IngresosComponent {
     }
   }
 
+
+
   onSubmit(form: Otro_Ingreso) {
     swal({
       title: '¿Esta seguro que desea guardar?',
@@ -137,7 +151,7 @@ export class IngresosComponent {
       }
     });
   }
-  public aumento=0;
+  
   public generatePDF()
   {
     this.loadingBar.start();
@@ -151,41 +165,118 @@ export class IngresosComponent {
   
   
 
-   // Add Page content
-   doc.setFontSize(12);
-   doc.text(30, 60, 'Numero de Recibo: 7191-20190614-123456');
-   doc.text(120, 60, 'Fecha: 14/06/2019 03:14:52');
-   doc.text(25, 70, 'Nombres y Apellidos: Jose Andersson Julca Vasquez');
-   doc.text(25, 80, 'Documento Identidad: 719185974586237');
-   doc.text(125, 80, 'Num. contacto: 978902579');
-  var splitTitle = doc.splitTextToSize('Dirección: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi', 160);
-  doc.text(25, 90, splitTitle);
-  doc.text(25, 110, 'Nombre del Concepto');
-  doc.text(150, 110, 'Monto');
-  
-  for (var j=0; j<5;j++){    
-    doc.text(25, 120+this.aumento, 'CONCPETO APAFA');
-    doc.text(150, 120+10+this.aumento, '59.00');
-    this.aumento=this.aumento+10;
-  }
-  doc.text(150, this.aumento+10, 'Total');
-   doc.addPage();
-   doc.addPage();
-   doc.addPage();
-   doc.addPage();
-   doc.addPage();
-   doc.addPage();
-   doc.addPage();
-   var pageCount = doc.internal.getNumberOfPages();
+ 
+  // doc.setLineWidth(0.5)
+  // doc.line(20, 105, 190, 105)
+  // doc.line(20, 105, 20, 113)
+  // doc.text(50, 110, 'Nombre del Concepto');
+  // doc.text(160, 110, 'Monto');
+  // doc.setLineWidth(0.5)
+  // doc.line(20, 113, 190, 113)
+  // doc.line(140, 105, 140, 113)
+  // doc.line(190, 105, 190, 113)
+  // var aumento=0;
+  // var aumento2=0;
+  // var x=0;
+  // for (var j=0; j<20;j++){    
+  //   if((120+aumento)==250){  
+  //     if(x==0){
+  //       doc.addPage();
+  //     }else{
+  //      if(x==5){
+  //       aumento=0;
+  //      }
+  //     }   
+  //       doc.text(25, 60+aumento2, 'CONCPETO APAFA');
+  //       doc.text(150, 60+aumento2, '' + j);
+  //       aumento2=aumento2+10;   
+  //       x=x+1;
+  //   }else{
+  //     doc.line(20, 113, 20, 123+aumento)
+  //     doc.line(140, 113, 140, 123+aumento)
+  //     doc.line(190, 113, 190, 123+aumento)
+  //     doc.text(25, 120+aumento, 'CONCPETO APAFA');
+  //     doc.text(150, 120+aumento, '' + j );
+  //     aumento=aumento+10;
+  //     aumento2=0;
+  //     x=0;
+  //   }
+  //   if(j==19 && (120+aumento)==250){
+  //     doc.text(100,60+aumento2+10, 'Total');
+  //     doc.text(150, 60+aumento2+10, '150.00');
+  //   }else{
+  //     if(j==19){
+  //       doc.line(20, 113+aumento, 190, 113+aumento)
+  //       doc.text(100, 120+aumento+10, 'Total');
+  //       doc.text(150, 120+aumento+10, '150.00');
+  //     }
+  //   }
+    
+  // }
 
-   
-   for(var i = 0; i < pageCount; i++) { 
-    var img = new Image()
-    img.src = 'assets/img/cabecera_recibos.png'
-    doc.addImage(img, 'png', 25, 10, 150, 40);
-    doc.setPage(i+1); 
-    doc.text(10,10, doc.internal.getCurrentPageInfo().pageNumber + "/" + pageCount);
-   }
+
+
+
+
+
+var headRows=  [{id: 'ID', name: 'Name', email: 'Email'}];
+
+var totalPagesExp = "{total_pages_count_string}";
+ var img = new Image();
+ img.src = 'assets/img/cabecera_recibos.png'
+ doc.addImage(img,'png',25,10,150,40);
+ doc.setFontSize(11);
+ doc.setFont('helvetica')
+ doc.setFontType('bold')
+ doc.text(30, 60, 'N° de Recibo: 7191-20190614-123456');
+ doc.text(120, 60, 'Fecha y Hora: 14/06/2019 03:14:52');
+ doc.text(25, 70, 'Sr(a) Apoderado(a): Jose Andersson Julca Vasquez');
+ doc.text(25, 80, 'Documento Identidad: 719185974586237');
+ doc.text(125, 80, 'Num. contacto: 978902579');
+var splitTitle = doc.splitTextToSize('Dirección: Calle chiclayo # 114 - Pomalca Calle chiclayo # 114 - Pomalca Calle chiclayo # 114 - Pomalca Calle chiclayo # 114 - Pomalca Calle chiclayo # 114 - Pomalca Calle chiclayo # 114 - Pomalca Calle chiclayo # 114 - Pomalca Calle chiclayo # 114 - Pomalca Calle chiclayo # 114 - Pomalca Calle chiclayo # 114 - Pomalca Calle chiclayo # 114 - Pomalca Calle chiclayo # 114 - Pomalca Calle chiclayo # 114 - Pomalca', 160);
+doc.text(25, 90, splitTitle);
+
+doc.autoTable({
+    head: headRows,
+    body: bodyRows(40),
+    startY: 110, 
+    showHead: 'firstPage',
+    didDrawPage: function (data) {
+      // Footer
+      var str = "Page " + doc.internal.getNumberOfPages()
+      // Total page number plugin only available in jspdf v1.0+
+      if (typeof doc.putTotalPages === 'function') {
+          str = str + " of " + totalPagesExp;
+      }
+      doc.setFontSize(10);
+
+      // jsPDF 1.4+ uses getWidth, <1.4 uses .width
+      var pageSize = doc.internal.pageSize;
+      var pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
+      doc.text(str, data.settings.margin.left, pageHeight - 10);
+  },
+  bodyStyles: {valign: 'top'},
+        styles: {cellWidth: 'wrap', rowPageBreak: 'auto', halign: 'justify'},
+        columnStyles: {text: {cellWidth: 'auto'}}
+});
+doc.text(100, doc.autoTable.previous.finalY + 10, 'Total');
+doc.text(150, doc.autoTable.previous.finalY + 10, '150.00');
+    // Total page number plugin only available in jspdf v1.0+
+    if (typeof doc.putTotalPages === 'function') {
+        doc.putTotalPages(totalPagesExp);
+    }
+
+  
+  //  var pageCount = doc.internal.getNumberOfPages();
+
+  //https://github.com/simonbengtsson/jsPDF-AutoTable/blob/master/examples/examples.js ejemplos
+  //  for(var i = 0; i < pageCount; i++) { 
+  //   var img = new Image()
+  //   img.src = 'assets/img/cabecera_recibos.png'
+  //   doc.addImage(img, 'png', 25, 10, 150, 40);
+  //   doc.setPage(i+1); 
+  //   doc.text(10,10, doc.internal.getCurrentPageInfo().pageNumber + "/" + pageCount);
+  //  }
 
   swal({
     title: '¿Esta seguro que desea descargar?',
