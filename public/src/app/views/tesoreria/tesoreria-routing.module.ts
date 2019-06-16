@@ -14,13 +14,13 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'ingresos'
+        redirectTo: 'pagos'
       },
       {
-        path: 'ingresos',
+        path: 'pagos',
         component: IngresosComponent,
         data: {
-          title: 'Ingresos'
+          title: 'Pagos'
         }
       },
       {

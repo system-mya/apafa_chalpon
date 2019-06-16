@@ -170,8 +170,8 @@ app.post('/api/apafa/insertar_matricula', (req, res) => {
 });
 
 //LLAMADA LISTA DE INGRESOS
-app.post('/api/tesoreria/listar_tipo_relacion', (req, res) => {
-    tesoreria.listar_ingresos_xperido(req.body,res);
+app.post('/api/tesoreria/listar_ingresos_xperiodo', (req, res) => {
+    tesoreria.listar_ingresos_xperiodo(req.body,res);
 });
 
 //INSERTAR NUEVO INGRESO
@@ -187,6 +187,11 @@ app.post('/api/tesoreria/listar_detalle_deuda', (req, res) => {
 //INSERTAR NUEVO RECIBO
 app.post('/api/tesoreria/insertar_nvo_recibo', (req, res) => {
     tesoreria.nvo_recibo(req.body, res);
+});
+
+//OBTENER DETALLE RECIBO
+app.post('/api/tesoreria/obtener_detalle_recibo', (req, res) => {
+    tesoreria.obtener_detalle_recibo(req.body, res);
 });
 
 }

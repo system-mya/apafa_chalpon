@@ -38,7 +38,8 @@ export class AlumnosComponent implements OnInit {
   public alumno : Alumno;
   public Editalumno : Alumno;
   public DatoBusqueda : Busqueda;
-  constructor(private _AlumnosServicios:AlumnosService,private toastr: ToastrService,@Inject(DOCUMENT) private document: Document,private loadingBar: LoadingBarService) {
+  constructor(private _AlumnosServicios:AlumnosService,private toastr: ToastrService,
+    @Inject(DOCUMENT) private document: Document,private loadingBar: LoadingBarService) {
     this.LoadTableData();
     this.panel_tabla=true;
     this.panel_registro=false;

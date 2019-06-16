@@ -81,8 +81,8 @@ export const navAD: NavData[] = [
     icon: 'icon-screen-tablet',
     children: [
       {
-        name: 'Ingresos',
-        url: '/tesoreria/ingresos',
+        name: 'Pagos',
+        url: '/tesoreria/pagos',
         icon: 'cui-note'
       },
       {

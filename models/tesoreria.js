@@ -33,27 +33,51 @@ function hoyFecha(){
     return decrypted.toString(CryptoJS.enc.Utf8);
   };
   
-  function update_deuda (recibo, con,cantidad) {
+  function update_deuda (recibo,con,cantidad,id_recibo) {
     var buenas=0;
     var malos=0;
+    var estado;
     return new Promise(function (resolve, reject) {
     for(i=0;i<cantidad;i++){
-        console.log(i);        
-            var query="CALL pa_update_deuda("+recibo.detalle[i].id_detalle_deuda+",'"+recibo.detalle[i].monto+"')";
-            console.log(query);
-               con.query(query ,function(err,result_update) {
-                  if (err) { 
-                      malos=malos+1;
-                      console.log("malos: " +malos);
-                      return reject(malos);
-                  }else{
-                       if (result_update.affectedRows == 1) {
-                            buenas= buenas + 1;
-                             return resolve(buenas);                                                                                       
-                        }
-                            
-                     }
-                });
+        if(parseFloat(recibo.detalle[i].monto)>0){
+            if(parseFloat(recibo.detalle[i].monto)<recibo.detalle[i].saldo_deuda){
+                estado='P';
+              }else{
+                estado='C';
+              }
+              console.log(recibo.detalle[i].id_detalle_deuda);        
+                  var query="CALL pa_update_deuda("+recibo.detalle[i].id_detalle_deuda+",'"+recibo.detalle[i].monto+"','"+estado+"')";
+                  console.log(query);
+                  console.log("X AKI" + recibo.detalle[i].id_detalle_deuda); 
+                     con.query(query ,function(err,result_update) {                     
+                        if (err) { 
+                            malos=malos+1;
+                            console.log("malos: " +malos);
+                            return reject(malos);
+                        }else{
+                             if (result_update.affectedRows == 1) {                                 
+                                buenas= buenas + 1;
+                                return resolve(buenas);                                                                             
+                              }
+                                  
+                           }
+                      });
+                      var query_insert="CALL pa_insertar_detalle_recibo("+recibo.detalle[i].id_detalle_deuda+","+id_recibo+",'"+recibo.detalle[i].monto+"')";
+                      console.log(query_insert);
+                         con.query(query_insert ,function(err,result_insert) {
+                            if (err) { 
+                                malos=malos+1;
+                                console.log("malos: " +malos);
+                                return reject(malos);
+                            }else{
+                                 if (result_insert.affectedRows == 1) {
+                                      buenas= buenas + 1;
+                                       return resolve(buenas);                                                                                       
+                                  }
+                                      
+                               }
+                          });   
+        }
              
     }
     
@@ -62,7 +86,7 @@ function hoyFecha(){
     
   }
 class Tesoreria {
-    listar_ingresos_xperido(anhio,res) {
+    listar_ingresos_xperiodo(anhio,res) {
         connection.acquire((err, con) => {
             if(err){
                 res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
@@ -114,7 +138,7 @@ class Tesoreria {
             if(err){
                 res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
             }else{
-            var query = "CALL pa_listar_detalle_deuda("+[recibo.id_apoderado]+")"; 
+            var query = "CALL pa_listar_detalle_deuda_pendientes("+[recibo.id_apoderado]+")"; 
             /* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
             con.query(query,(err, result) => {
                 con.release();
@@ -122,7 +146,7 @@ class Tesoreria {
                     res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
                 }else{
                     if (result[0].length == 0) {
-                        res.send({status: 2, message: 'Lista Detalle No Existe'});
+                        res.send({status: 2, message: 'No Registra Deuda'});
                     } else {
                         res.send({status: 1, message: 'Datos Deuda',data:result[0]});
                     }
@@ -155,85 +179,76 @@ class Tesoreria {
                              res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
                        }else{
                          if (result[0].length == 0) {
-                             var query_insert_matricula = "CALL pa_insertar_matricula('"+ [matricula.fecha_matricula]
-                             +"',"+ [matricula.id_apoderado] + ","+ [matricula.id_alumno] 
-                             + ","+ [matricula.id_seccion] + ","+ [matricula.id_tipo_relacion] 
-                             + ",'"+ [matricula.anhio] + "')";
- 
-                             con.query(query_insert_matricula, function(err, result) {
-                                 
-                                 if (err) { 
-                                     con.rollback(function() {
-                                         con.release();                                                                                                  
-                                     });
-                                   res.send({status: 0, message: 'ERROR EN LA BASE DE DATOSss'});
-                                 }else{
-                                     if (result.affectedRows == 1) {
-                                         var query_apafa = "CALL pa_verificar_si_cuota_apafa_registrada("+[matricula.id_apoderado]+",'"+ [matricula.anhio] +"')";
-                                         con.query(query_apafa, function(err, result) {
-                                           if (err) { 
-                                             con.rollback(function() {
-                                                 con.release();                                                                                                  
-                                             });
-                                                 res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
-                                           }else{
-                                             if (result[0].length == 0) {
-                                                 var query_insert_apafa = "CALL pa_insertar_deuda_apafa("+ [matricula.id_apoderado] 
-                                                 + ",'"+ [matricula.anhio] + "')";
-                                                 
-                                                 con.query(query_insert_apafa, function(err, result_apafa) {
-                                                     if (err) { 
-                                                         con.rollback(function() {
-                                                             res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});                                                                                               
-                                                         });                                                  
-                                                     }else{
-                                                         if (result_apafa.affectedRows == 1) {
-                                                             con.commit(function(err) {
-                                                                 if (err) { 
-                                                                   con.rollback(function() {
-                                                                     res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
-                                                                   });
-                                                                 }else{
-                                                                     res.send({status: 1, message: 'MATRICULA REGISTRADA'});
-                                                                 }                                                      
-                                                                 
-                                                               });
-                                                             
-                                                         }else{
-                                                             con.rollback(function() {
-                                                                 con.release();
-                                                                 res.send({status: 2, message: 'MATRICULA NO REGISTRADA'});                                                                                                  
-                                                             });
-                                                            
-                                                         }
-                                                     }
-                                                 }); 
-                                             }else{
-                                                 con.commit(function(err) {
-                                                     if (err) { 
-                                                       con.rollback(function() {
-                                                         res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
-                                                       });
-                                                     }else{
-                                                         res.send({status: 1, message: 'MATRICULA REGISTRADA'});
-                                                     }                                                      
-                                                     
-                                                   });
-                                             }
-                                             
-                                           }
-                                         });
-                                         
-                                         
-                                     } else {
-                                         con.rollback(function() {
-                                             con.release();    
-                                             res.send({status: 2, message: 'MATRICULA NO REGISTRADA'});                                                                                              
-                                         });
-                                         
-                                     }
-                                 }
-                           });
+                            var num_recibo = [recibo.doc_apoderado][0].substr(0,4) + "-" + hoyFecha() + "-1";
+                            var query_nvo_recibo = "CALL pa_insertar_nvo_recibo("+[recibo.id_apoderado]
+                            + "," + get('123456$#@$^@1ERF',[recibo.id_usuario][0]) 
+                            + ",'" + [recibo.mtotal_recibo] + "','"+ num_recibo + "')";
+                            con.query(query_nvo_recibo, function(err, result) {
+                            if (err) { 
+                                con.rollback(function() {
+                                    con.release();                                                                                                  
+                                });
+                                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                            }else{           
+                                if (result.affectedRows == 1) {
+                                    var query_obtener_recibo = "CALL pa_ultimo_recibo_ingresado('"+[recibo.anhio]+"')";
+                                    con.query(query_obtener_recibo, function(err, result) {
+                                      if (err) { 
+                                        con.rollback(function() {
+                                            con.release();                                                                                                  
+                                        });
+                                            res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                                      }else{
+                                        if (result[0].length > 0) {
+                                        var id_recibo = result[0][0].id_recibo;
+                                        var freg_recibo = result[0][0].freg_recibo;
+                                        var cantidad = [recibo.detalle.length];
+                                        var resultad;
+                                        resultad = update_deuda(recibo,con,cantidad,id_recibo);
+                                        resultad.then(function(valule1){
+                                            if(valule1>0){
+                                               console.log("nu hubo error");
+                                               con.commit(function(err) {
+                                                if (err) { 
+                                                  con.rollback(function() {
+                                                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                                                  });
+                                                }else{
+                                                    res.send({status: 1, message: 'RECIBO REGISTRADO',data:[num_recibo,[recibo.id_apoderado],freg_recibo]});
+                                                }                                                      
+                                                
+                                              });
+                                            }
+                                        }     
+                                            )
+                                        .catch(function(value){
+                                            if(value>0){
+                                               console.log("hubo error");
+                                               con.rollback(function() {
+                                                con.release();
+                                                res.send({status: 2, message: 'RECIBO NO REGISTRADO'});                                                                                                  
+                                            });
+                                            }
+                                        }                                     
+                                            
+                                            );   
+                                        }else{
+                                            con.rollback(function() {
+                                                con.release();                                                                                                  
+                                            });
+                                                res.send({status: 2, message: 'RECIBO NO REGISTRADO'}); 
+                                        }
+                                      }
+                                    })          
+                                }else{
+                                    con.rollback(function() {
+                                        con.release();
+                                        res.send({status: 2, message: 'RECIBO NO REGISTRADO'});                                                                                                  
+                                    });
+                                }
+                                
+                            }
+                        });
                          } else {
                             var array = result[0][0].num_recibo.split("-");
                             var num_recibo = [recibo.doc_apoderado][0].substr(0,4) + "-" + hoyFecha() + "-" + (parseInt(array[2])+1);
@@ -248,38 +263,55 @@ class Tesoreria {
                                     res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
                             }else{           
                                 if (result.affectedRows == 1) {
-                                    var cantidad = [recibo.detalle.length];
-                                    var resultad;
-                                resultad = update_deuda(recibo,con,cantidad);
-                                resultad.then(function(valule1){
-                                    if(valule1>0){
-                                       console.log("nu hubo error");
-                                       con.commit(function(err) {
-                                        if (err) { 
-                                          con.rollback(function() {
+                                    var query_obtener_recibo = "CALL pa_ultimo_recibo_ingresado('"+[recibo.anhio]+"')";
+                                    con.query(query_obtener_recibo, function(err, result) {
+                                      if (err) { 
+                                        con.rollback(function() {
+                                            con.release();                                                                                                  
+                                        });
                                             res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
-                                          });
+                                      }else{
+                                        if (result[0].length > 0) {
+                                        var id_recibo = result[0][0].id_recibo;
+                                        var freg_recibo = result[0][0].freg_recibo;
+                                        var cantidad = [recibo.detalle.length];
+                                        var resultad;
+                                        resultad = update_deuda(recibo,con,cantidad,id_recibo);
+                                        resultad.then(function(valule1){
+                                            if(valule1>0){
+                                               console.log("nu hubo error");
+                                               con.commit(function(err) {
+                                                if (err) { 
+                                                  con.rollback(function() {
+                                                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                                                  });
+                                                }else{
+                                                    res.send({status: 1, message: 'RECIBO REGISTRADO',data:[num_recibo,[recibo.id_apoderado],freg_recibo]});
+                                                }                                                      
+                                                
+                                              });
+                                            }
+                                        }     
+                                            )
+                                        .catch(function(value){
+                                            if(value>0){
+                                               console.log("hubo error");
+                                               con.rollback(function() {
+                                                con.release();
+                                                res.send({status: 2, message: 'RECIBO NO REGISTRADO'});                                                                                                  
+                                            });
+                                            }
+                                        }                                     
+                                            
+                                            );   
                                         }else{
-                                            res.send({status: 1, message: 'RECIBO REGISTRADO',data:num_recibo});
-                                        }                                                      
-                                        
-                                      });
-                                    }
-                                }     
-                                    )
-                                .catch(function(value){
-                                    if(value>0){
-                                       console.log("hubo error");
-                                       con.rollback(function() {
-                                        con.release();
-                                        res.send({status: 2, message: 'RECIBO NO REGISTRADO'});                                                                                                  
-                                    });
-                                    }
-                                }                                     
-                                    
-                                    );    
-                                              
-                                                 
+                                            con.rollback(function() {
+                                                con.release();                                                                                                  
+                                            });
+                                                res.send({status: 2, message: 'RECIBO NO REGISTRADO'}); 
+                                        }
+                                      }
+                                    })          
                                 }else{
                                     con.rollback(function() {
                                         con.release();
@@ -302,6 +334,28 @@ class Tesoreria {
  
      });
  
- }
+    }
+
+    obtener_detalle_recibo(recibo,res) {
+        connection.acquire((err, con) => {
+            if(err){
+                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+            }else{
+            con.query("CALL pa_obtener_detalle_recibo('"+[recibo.datobusqueda]+"')", (err, result) => {
+                con.release();
+                if(err){
+                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                }else{
+                    if (result[0].length == 0) {
+                        res.send({status: 2, message: 'NO HAY DATOS EN LA TABLA DETALLE RECIBO'});
+                    } else {
+                        res.send({status: 1, message: 'CONSULTA EXITOSA',data:result[0]});
+                    }
+                }
+               
+            });
+        }
+        });
+    };
 }
 module.exports = new Tesoreria();

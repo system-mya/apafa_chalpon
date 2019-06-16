@@ -465,7 +465,7 @@ update_alumno(alumno, res) {
     nva_matricula(matricula, res) {
        connection.acquire((err, con) => {
             if(err){
-                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                res.send({status: 0, message: err.sqlMessage});
             }else{    
                 con.beginTransaction(function(err) {
                     if (err) {  
@@ -494,7 +494,7 @@ update_alumno(alumno, res) {
                                     con.rollback(function() {
                                         con.release();                                                                                                  
                                     });
-                                  res.send({status: 0, message: 'ERROR EN LA BASE DE DATOSss'});
+                                  res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
                                 }else{
                                     if (result.affectedRows == 1) {
                                         var query_apafa = "CALL pa_verificar_si_cuota_apafa_registrada("+[matricula.id_apoderado]+",'"+ [matricula.anhio] +"')";
@@ -511,8 +511,9 @@ update_alumno(alumno, res) {
                                                 
                                                 con.query(query_insert_apafa, function(err, result_apafa) {
                                                     if (err) { 
+                                                        console.log(err.sqlMessage);
                                                         con.rollback(function() {
-                                                            res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});                                                                                               
+                                                            res.send({status: 0, message: err.sqlMessage});                                                                                               
                                                         });                                                  
                                                     }else{
                                                         if (result_apafa.affectedRows == 1) {

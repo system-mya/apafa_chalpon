@@ -9,7 +9,7 @@ class Connection {
             connectionLimit: 10,
             host: 'localhost',
             user: 'root',
-            password: '',
+            password: '03071593SS',
             database: 'apafa_chalpon',
             debug: false,
         });

@@ -2,7 +2,7 @@
   <div class="card">
     <div class="card-header">
         <h5><strong>
-            <i class="fa fa-align-justify"></i>&nbsp;&nbsp;Lista de Ingresos
+            <i class="fa fa-align-justify"></i>&nbsp;&nbsp;Lista de Pagos
           </strong>          
           <span class="float-right">
             <button class="btn btn-success btn-xs" 
@@ -45,7 +45,7 @@
             
             <ng-container matColumnDef="monto_ingreso">
                 <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Monto Ingreso </th>
-                <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.monto_ingreso}} </td>
+                <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.monto_ingreso | number : '.2-2'}} </td>
               </ng-container>
 
               <ng-container matColumnDef="freg_ingreso">
@@ -59,13 +59,13 @@
                       matTooltip="Detalle"
                       matTooltipClass="tooltip-mensaje"
                       [matTooltipPosition]="positionOptions[3]"
-                      data-toggle="modal" (click)="btnDetalle_Alumno(element.id_alumno)">
+                      data-toggle="modal" (click)="btnDetalle_Pago(element)">
                     <span class="fa fa-address-card-o"></span></button>
                 <button class="btn btn-warning btn-xs distancia_btn_opciones"
                     matTooltip="Imprimir"
                     matTooltipClass="tooltip-mensaje"
                     [matTooltipPosition]="positionOptions[3]"
-                    data-toggle="modal" (click)="generatePDF()">
+                    data-toggle="modal" (click)="generatePDF(element.doc_ingreso)">
                   <span class="fa fa-print"></span></button>
                  <button class="btn btn-danger btn-xs distancia_btn_opciones"
                       matTooltip="Eliminar"
@@ -285,7 +285,7 @@
                                     <th nowrap>Estado</th>
                                     <th>Tipo</th>
                                     <th nowrap>Monto</th>
-                                    <th nowrap>Opciones</th>
+                                    <!-- <th nowrap>Opciones</th> -->
                                   </tr>
                                 </thead>
                                 <tbody>
@@ -294,7 +294,7 @@
                                         {{item.descripcion_concepto}}
                                       </td>
                                       <td nowrap>
-                                        {{item.saldo_deuda}}
+                                        {{item.saldo_deuda | number : '.2-2'}}
                                       </td>
                                       <td nowrap>
                                         {{item.estado_deuda}}
@@ -326,7 +326,7 @@
                                           </div>
                                       </td>
                                       
-                                      <td nowrap>
+                                      <!-- <td nowrap>
                                         <button class="btn btn-danger btn-xs distancia_btn_opciones"
                                               matTooltip="Eliminar"
                                               matTooltipClass="tooltip-mensaje"
@@ -334,7 +334,7 @@
                                               (click)="btnEliminar_Usuario(element.idusuario)">
                                         <span class="fa fa-trash-o btn-xs"></span>
                                         </button>
-                                      </td>
+                                      </td> -->
                                   </tr>
                                 </tbody>
                               </table>
@@ -346,11 +346,10 @@
                             <div class="form-horizontal">
                                 <div class="row">
                                     <label class="col-md-5 col-form-label" for="text-input" style="text-align: right !important;
-                                    padding-right: 0px !important;"><b>Total Pagar :</b></label>
+                                    padding-right: 0px !important;"><b>Total Pagar : </b></label>
                                     <div class="col-md-5">
-                                      <input type="text" class="form-control" id="mtotal_recibo" name="mtotal_recibo" 
-                                      placeholder="0" [(ngModel)]="recibo.mtotal_recibo" #regmtotal_recibo="ngModel" 
-                                      maxlength="60" readonly>
+                                      <label class="col-md-5 col-form-label" for="text-input" style="text-align: right !important;
+                                    padding-right: 0px !important;"><b>{{recibo.mtotal_recibo | number : '.2-2'}}</b></label>
                                     </div>
                                   </div>
                             </div>
@@ -361,12 +360,109 @@
           </div>
           <div class="modal-footer">
                 <button type="button" class="btn btn-danger" (click)="frmIngresos_hide('R')"><span class="fa fa-times-circle"></span> Close</button>
-                <button type="submit" class="btn btn-primary" [disabled]="!myRecibo.form.valid || monto_invalid || monto_cero"><span class="fa fa-save"></span> Guardar</button>
+                <button type="submit" class="btn btn-primary" [disabled]="!myRecibo.form.valid || monto_invalid || monto_cero || !tabla_deuda || !seleccion_deuda"><span class="fa fa-save"></span> Guardar</button>
           </div>
         </form>
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
     </div>
-    <!-- /.Fin Modal Nueva Matricula-->
-
+<!-- /.Fin Modal Nueva Matricula-->
+<!--Modal Detalle Pago-->
+<div bsModal #DetallePago="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}">
+  <div class="modal-dialog modal-lg modal-info" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Detalle Pago</h4>
+        <button type="button" class="close" (click)="frmIngresos_hide('D')" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="bd-example">
+          <dl class="row">
+                <dt class="col-sm-3">Num. Recibo:</dt>
+                <dd class="col-sm-3 text-rigth"><em style="font-size: 16px;">{{DetApoderado.doc_ingreso}}</em></dd>
+                <dt class="col-sm-3">Fecha Registro:</dt>
+                <dd class="col-sm-3 text-left"><em style="font-size: 16px;">{{DetApoderado.fecha_registro | date:'dd/MM/yyyy HH:mm:ss'}}</em></dd>
+          </dl> 
+          <dl class="row">
+            <dt class="col-sm-4">Sr(a) Apoderado(a): </dt>
+            <dd class="col-sm-3 text-rigth"><em style="font-size: 16px;">{{DetApoderado.apellidos_apoderado}}</em></dd>
+            <dd class="col-sm-3 text-left"><em style="font-size: 16px;">{{DetApoderado.nombres_apoderado}}</em></dd>
+          </dl> 
+          <dl class="row">
+            <dt class="col-sm-2">Tipo Doc.: </dt>
+            <dd class="col-sm-1">{{DetApoderado.tdoc_apoderado}}</dd>
+            <dt class="col-sm-2">Doc. Identidad: </dt>
+            <dd class="col-sm-2">{{DetApoderado.doc_apoderado}}</dd>
+            <dt class="col-sm-3">Num. Contacto: </dt>
+            <dd class="col-sm-2 text-left">{{DetApoderado.celular_apoderado}}</dd>              
+          </dl>
+          <dl class="row">
+            <dt class="col-sm-2">Dirección: </dt>
+            <dd class="col-sm-10">{{DetApoderado.direccion_apoderado}}</dd>
+          </dl>
+          <dl class="row">
+            <div class="secciones-deuda table-responsive">
+              <table class="table ">
+                <thead>
+                  <tr>
+                    <th nowrap>Descripción Concepto</th>
+                    <th nowrap>Monto</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of detalle_recibo;index as i">
+                      <td nowrap>
+                        {{item.descripcion_concepto}}
+                      </td>
+                      <td nowrap>
+                        {{item.monto_detalle | number : '.2-2'}}
+                      </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </dl>
+          <dl class="row" style="margin-bottom: -10px !important;">
+            <dd class="col-sm-6"></dd>
+            <dd class="col-sm-6">
+                <dl class="row">
+                  <dt class="col-sm-12">Total Pagado: {{monto_pagado | number : '.2-2'}}</dt>
+               </dl>
+           </dd>
+          </dl>
+          <!-- <dl class="row">
+              <dt class="col-sm-3">Datos del Padre: </dt>
+              <dd class="col-sm-3 text-left"><em style="font-size: 16px;">{{DataAlumno.apellidos_padre}}</em></dd>
+              <dd class="col-sm-3 text-left"><em style="font-size: 16px;">{{DataAlumno.nombres_padre}}</em></dd>
+          </dl>
+          <dl class="row">
+            <dt class="col-sm-2">N° Celular: </dt>
+            <dd class="col-sm-2">{{DataAlumno.celular_padre}}</dd>
+            <dt class="col-sm-5">Correo Electronico: </dt>
+            <dd class="col-sm-2">{{DataAlumno.correo_padre}}</dd>
+          </dl>
+          <dl class="row">
+            <dt class="col-sm-3">Datos de la Madre: </dt>
+            <dd class="col-sm-3 text-left"><em style="font-size: 16px;">{{DataAlumno.apellidos_madre}}</em></dd>
+            <dd class="col-sm-3 text-left"><em style="font-size: 16px;">{{DataAlumno.nombres_madre}}</em></dd>
+        </dl>
+        <dl class="row">
+          <dt class="col-sm-2">N° Celular: </dt>
+          <dd class="col-sm-2">{{DataAlumno.celular_madre}}</dd>
+          <dt class="col-sm-5">Correo Electronico: </dt>
+          <dd class="col-sm-2">{{DataAlumno.correo_madre}}</dd>
+        </dl> -->
+        </div>
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="frmIngresos_hide('D')"><span class="fa fa-times-circle"></span> Close</button>
+        <button type="button" class="btn btn-warning" (click)="generatePDF(DetApoderado)"><span class="fa fa-print"></span> Imprimir</button>
+  </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
+<!-- /.Fin Modal Detalle Pago-->
 </div>
