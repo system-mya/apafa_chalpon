@@ -781,4 +781,198 @@
         </form>
  </div>
  <!-- Fin Formulario Actualizar Alumno -->
+ <!-- DETALLE E HISTORIAL DEL ALUMNO-->
+ <div class="card" *ngIf="panel_detalle" id="card-edit">
+  <div class="card-header">
+        <h5><strong>
+          <i class="fa fa-list-alt"></i>&nbsp;&nbsp;DETALLE E HISTORIAL ALUMNO
+        </strong></h5>
+        </div>
+        <div class="car-body">
+            <div class="card-header estilo-cabecera">DATOS DEL ALUMNO</div>
+            <div class="card-body">
+              <div class="row">
+                  <div class="col-xs-12 col-md-6 col-lg-6" style="border:0px;">
+                     <div class="row">
+                        <div class="form-group col-xs-12 col-sm-12 col-md-11 col-lg-6">
+                            <label for="tdoc_alumno" style="font-weight: bold;">Tipo Doc.:</label>
+                            <input type="text" class="form-control" id="doc_alumno" name="doc_alumno"
+                            placeholder="Doc Identidad" [(ngModel)]="DataAlumno.tdoc_alumno" 
+                            readonly maxlength="10">
+                           </div>
+                          <div class="form-group col-xs-12 col-sm-12 col-md-11 col-lg-6">
+                              <label for="doc_alumno" style="font-weight: bold;">Num. Doc. :</label>
+                              <input type="text" class="form-control" id="doc_alumno" name="doc_alumno"
+                              placeholder="Doc Identidad"  [(ngModel)]="DataAlumno.doc_alumno" readonly maxlength="15">
+                          </div>
+                     </div>
+                      <div class="row">
+                          <div class="form-group col-sm-6">
+                              <label for="apellidos_alumno" style="font-weight: bold;">Apellidos Completos :</label>
+                              <input type="text" class="form-control" id="apellidos_alumno" name="apellidos_alumno" 
+                              placeholder="Apellidos Completos" [(ngModel)]="DataAlumno.apellidos_alumno"  
+                              maxlength="60" readonly>
+                          </div>
+                          <div class="form-group col-sm-6">
+                              <label for="nombres_alumno" style="font-weight: bold;">Nombres Completos :</label>
+                              <input type="text" class="form-control" id="nombres_alumno" name="nombres_alumno"
+                               placeholder="Nombres Completos" [(ngModel)]="DataAlumno.nombres_alumno" maxlength="50" readonly>
+                            </div>
+                      </div>
+                      <div class="row">
+                          <div class="form-group col-sm-6">
+                              <label for="postal-code" style="font-weight: bold;">Fecha Nacimiento :</label>
+                              <input class="form-control" id="fecha_nac" type='date' name="fecha_nac" placeholder="date"
+                               [(ngModel)]="DataAlumno.fnac_alumno" readonly>
+                            </div>
+                          <div class="form-group col-sm-6">
+                              <label for="postal-code" style="font-weight: bold;">Sexo :</label>
+                              <input type="text" class="form-control" id="sexo_alumno" name="sexo_alumno"
+                               placeholder="Sexo Alumno" [(ngModel)]="DataAlumno.sexo_alumno" maxlength="50" readonly>
+                            </div>
+                      </div>
+                      <div class="row">
+                          <div class="form-group col-sm-12">
+                              <label for="direccion_alumno" style="font-weight: bold;">Dirección :</label>
+                              <input type="text" class="form-control" id="direccion_alumno" name="direccion_alumno"
+                              placeholder="Dirección del Alumno" [(ngModel)]="DataAlumno.direccion_alumno"
+                              maxlength="80" readonly>
+                            </div>
+                      </div>
+                    </div>
+      <div class="col-xs-12 col-md-6 col-lg-6" style="border:0px;">
+                    <div class="row">
+                        <div class="form-group col-xs-12 col-sm-12 col-md-11 col-lg-6">
+                            <label for="telefono_alumno" style="font-weight: bold;">Teléfono :</label>
+                            <input type="text" class="form-control" id="telefono_alumno" name="telefono_alumno"
+                            placeholder="Num. Teléfonico"  [(ngModel)]="DataAlumno.telefono_alumno" maxlength="6" readonly>
+                          </div>
+                          <div class="form-group col-xs-12 col-sm-12 col-md-11 col-lg-6">
+                              <label for="celular_alumno" style="font-weight: bold;">Celular :</label>
+                              <input type="text" class="form-control" id="celular_alumno" name="celular_alumno"
+                              placeholder="Num. Celular" [(ngModel)]="DataAlumno.celular_alumno" maxlength="9" readonly>
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="form-group col-sm-12">
+                              <label for="correo_alumno" style="font-weight: bold;">Correo Electrónico:</label>
+                              <input type="text" class="form-control" id="correo_alumno" name="correo_alumno"
+                              placeholder="Correo Electrónico" [(ngModel)]="DataAlumno.correo_alumno" 
+                              maxlength="80" readonly email>
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="form-group col-sm-12">
+                              <label for="procedencia_alumno" style="font-weight: bold;">Colegio de Procedencia :</label>
+                              <input type="text" class="form-control" id="procedencia_alumno" name="procedencia_alumno"
+                              placeholder="Colegio de Procedencia" [(ngModel)]="DataAlumno.procedencia_alumno"
+                              maxlength="100" readonly>
+                          </div>
+                      </div>
+                    </div>
+              </div>
+            </div>
+            <div class="card-header estilo-cabecera">DATOS DEL PADRE</div>
+            <div class="card-body">
+              <div class="row">
+                  <div class="col-xs-12 col-md-6 col-lg-6" style="border:0px;">
+                      <div class="row">
+                          <div class="form-group col-xs-12 col-sm-12 col-md-11 col-lg-6">
+                              <label for="apellidos_padre" style="font-weight: bold;">Apellidos Completos :</label>
+                              <input type="text" class="form-control" id="apellidos_padre" name="apellidos_padre" 
+                              placeholder="Apellidos Completos" [(ngModel)]="DataAlumno.apellidos_padre" 
+                              maxlength="60" readonly >
+                          </div>
+                          <div class="form-group col-xs-12 col-sm-12 col-md-11 col-lg-6">
+                              <label for="nombres_padre" style="font-weight: bold;">Nombres Completos :</label>
+                              <input type="text" class="form-control" id="nombres_padre" name="nombres_padre"
+                               placeholder="Nombres Completos" [(ngModel)]="DataAlumno.nombres_padre" 
+                                maxlength="50" readonly>
+                          </div>
+                      </div>
+                     </div>
+                     <div class="col-xs-12 col-md-6 col-lg-6" style="border:0px;">
+                        <div class="row">
+                            <div class="form-group col-xs-12 col-sm-12 col-md-11 col-lg-4">
+                                <label for="celular_padre" style="font-weight: bold;">Celular :</label>
+                                <input type="text" class="form-control" id="celular_padre" name="celular_padre"
+                                placeholder="Num. Celular"  [(ngModel)]="DataAlumno.celular_padre"  maxlength="9" readonly>
+                            </div>
+                            <div class="form-group col-xs-12 col-sm-12 col-md-11 col-lg-8">
+                                  <label for="correo_padre" style="font-weight: bold;">Correo Electrónico :</label>
+                                  <input type="text" class="form-control" id="correo_padre" name="correo_padre"
+                                  placeholder="Correo Electrónico" [(ngModel)]="DataAlumno.correo_padre"  
+                                  maxlength="80" readonly email>
+                           </div>
+                        </div>
+                     </div>
+              </div>
+            </div>
+            <div class="card-header estilo-cabecera">DATOS DE LA MADRE</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-xs-12 col-md-6 col-lg-6" style="border:0px;">
+                        <div class="row">
+                            <div class="form-group col-xs-12 col-sm-12 col-md-11 col-lg-6">
+                                <label for="apellidos_madre" style="font-weight: bold;">Apellidos Completos :</label>
+                                <input type="text" class="form-control" id="apellidos_madre" name="apellidos_madre" 
+                                placeholder="Apellidos Completos" [(ngModel)]="DataAlumno.apellidos_madre" maxlength="60" readonly>
+                            </div>
+                            <div class="form-group col-xs-12 col-sm-12 col-md-11 col-lg-6">
+                                <label for="nombres_madre" style="font-weight: bold;">Nombres Completos :</label>
+                                <input type="text" class="form-control" id="nombres_madre" name="nombres_madre"
+                                 placeholder="Nombres Completos" [(ngModel)]="DataAlumno.nombres_madre" 
+                                maxlength="50" readonly>
+                             </div>
+                        </div>
+                       </div>
+                       <div class="col-xs-12 col-md-6 col-lg-6" style="border:0px;">
+                          <div class="row">
+                              <div class="form-group col-xs-12 col-sm-12 col-md-11 col-lg-4">
+                                  <label for="celular_madre" style="font-weight: bold;">Celular :</label>
+                                  <input type="text" class="form-control" id="celular_madre" name="celular_madre"
+                                  placeholder="Num. Celular"  [(ngModel)]="DataAlumno.celular_madre" 
+                                  maxlength="9" readonly>
+                                </div>
+                                <div class="form-group col-xs-12 col-sm-12 col-md-11 col-lg-8">
+                                    <label for="correo_madre" style="font-weight: bold;">Correo Electrónico :</label>
+                                    <input type="text" class="form-control" id="correo_madre" name="correo_madre"
+                                    placeholder="Correo Electrónico" [(ngModel)]="DataAlumno.correo_madre"  
+                                    maxlength="80" readonly email>
+                                </div>
+                          </div>                                                      
+                       </div>
+                </div>
+            </div>
+            <div class="card-header estilo-cabecera">HISTORIAL MATRICULAS</div>
+            <div class="card-body">
+                <div class="row">
+                  <div class="col-sm-6 col-md-4" *ngFor="let item of DetalleMatricula;index as i">
+                    <div class="card card-accent-primary">
+                      <div class="card-header"> 
+                        {{item.descripcion_grado}}  - {{item.anhio}} <br>
+                        Seción: {{item.nombre_seccion}}</div>
+                      <div class="card-body"> 
+                        <b>Apoderado: </b><em style="font-size: 15px;">{{item.apellidos_apoderado}}  {{item.nombres_apoderado}}</em><br>
+                        <b>Doc. Apoderado: </b> {{item.doc_apoderado}} <br>
+                        <b>Total Deuda: </b> {{item.total | number : '.2-2'}} 
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+              <div class="card-footer" style="text-align: right;">
+                  <button type="button" class="btn btn-danger" style="margin: 0px 20px;"
+                  (click)="btnCancelar_Alumno('D')">
+                      <span class="fa fa-times-circle"></span>
+                  Cancelar</button>
+               <button type="submit" class="btn btn-success" >
+                  <span class="fa fa-save"></span>
+                Grabar</button>
+                
+              </div>
+              
+        </div>
+</div>
+ <!--FIN DETALLE E HISTORIAL DEL ALUMNO-->
 </div>

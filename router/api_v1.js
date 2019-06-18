@@ -170,6 +170,11 @@ app.post('/api/apafa/insertar_matricula', (req, res) => {
 });
 
 //LLAMADA LISTA DE INGRESOS
+app.post('/api/apafa/listar_historial_matricula', (req, res) => {
+    apafa.listar_historial_matricula(req.body,res);
+});
+
+//LLAMADA LISTA DE INGRESOS
 app.post('/api/tesoreria/listar_ingresos_xperiodo', (req, res) => {
     tesoreria.listar_ingresos_xperiodo(req.body,res);
 });
@@ -193,6 +198,7 @@ app.post('/api/tesoreria/insertar_nvo_recibo', (req, res) => {
 app.post('/api/tesoreria/obtener_detalle_recibo', (req, res) => {
     tesoreria.obtener_detalle_recibo(req.body, res);
 });
+
 
 }
 }

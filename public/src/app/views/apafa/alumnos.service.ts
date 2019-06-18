@@ -37,6 +37,11 @@ public update_alumno(alumno:Alumno){
   return this._http.post('/api/apafa/update_alumno',alumno)
    .map(data => data.json()).toPromise()
 }
+
+public historial_matricual(alumno:Busqueda){
+  return this._http.post('/api/apafa/listar_historial_matricula',alumno)
+   .map(data => data.json()).toPromise()
+}
   
   
 }

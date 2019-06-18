@@ -2,6 +2,8 @@ import { Component,ViewChild,ViewEncapsulation } from '@angular/core';
 import {ModalDirective} from 'ngx-bootstrap/modal';
 import {Compras,Detalle_Compra} from '../../app.datos';
 import {MatPaginator, MatSort, MatTableDataSource, TooltipPosition} from '@angular/material';
+import { ToastrService } from 'ngx-toastr';
+
 @Component({
   templateUrl: 'compras.component.html',
   styleUrls: ['tesoreria.css'],
@@ -16,7 +18,7 @@ export class ComprasComponent {
   public panel_tabla_compras : boolean;
   public detalle_compra = [];
   public btnagregar : boolean;
-  constructor() { 
+  constructor(private toastr: ToastrService) { 
     this.panel_tabla_compras=true;
   }
 
@@ -53,6 +55,13 @@ export class ComprasComponent {
       this.btnagregar=false;
     }else{
       this.btnagregar=true;
+    }
+  }
+
+  Agregar_NvaCompra(){
+    console.log("this.detalle_compra.length");
+    if(this.detalle_compra.length==0){
+      this.toastr.success('No hay Detalle de la Compra', 'Aviso!',{positionClass: 'toast-top-right',timeOut: 500});
     }
   }
 

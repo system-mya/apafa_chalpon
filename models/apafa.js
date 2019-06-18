@@ -578,6 +578,29 @@ update_alumno(alumno, res) {
     });
 
 }
+
+listar_historial_matricula(alumno, res) {
+    connection.acquire((err, con) => {
+        if(err){
+            res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+        }else{
+        var query = "CALL pa_listar_historial_matricula("+ [alumno.idbusqueda] +")"; 
+        /* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
+        con.query(query,(err, result) => {
+            con.release();
+            if(err){
+                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+            }else{
+                if (result[0].length == 0) {
+                    res.send({status: 2, message: 'Historial No Existe'});
+                } else {
+                    res.send({status: 1, message: 'Datos Historial',data:result[0]});
+                }
+            }
+        });
+        }
+    });
+};
                       
                   
     
