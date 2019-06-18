@@ -71,7 +71,7 @@ listar_perfiles(res) {
 		con.query(query,(err, result) => {
 			con.release();
 			if(err){
-                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                res.send({status: 0, message: err.sqlMessage});
 			}else{
 				if (result[0].length == 0) {
 					res.send({status: 2, message: 'Usuario / Clave incorrectos'});
