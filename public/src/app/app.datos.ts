@@ -173,3 +173,30 @@ export class Detalle_Deuda
     monto_invalid ?: boolean;
 }
 
+
+export class Compras 
+{
+    id_compra ?: number;
+    id_usuario ?: number;
+    id_anhio ?: number;
+    tipo_compra ?: string;
+    num_compra ?: string;
+    razon_social_compra ?: string;
+    ruc_compra ?: string;
+    fecha_compra ?: string;
+    freg_compra ?: string;
+    doc_encargado_compra ?: string;
+    encargado_compra ?: string;
+    total_compra ?: number;
+    estado_compra ?: boolean;
+}
+
+export class Detalle_Compra
+{
+    id_detalle_compra ?: number;
+    id_compra ?: number;
+    nom_producto ?: string;
+    cantidad ?: number;
+    medida ?: string;
+    precio_unit ?: number;
+}

@@ -7,7 +7,7 @@ import { IngresosService } from './ingresos.service';
 import { MatriculaService } from '../apafa/matricula.service';
 import { ApoderadoService } from '../apafa/apoderado.service';
 import { ToastrService } from 'ngx-toastr';
-import {ModalDirective} from 'ngx-bootstrap/modal';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 declare var swal: any;
 import * as jspdf from 'jspdf';
@@ -35,7 +35,6 @@ function bodyRows(data,rowCount) {
 })
 export class IngresosComponent {
   @ViewChild('NvoOtroIngresoModal') public NvoOtroIngresoModal: ModalDirective;
-  @ViewChild('FrmImprimir') public FrmImprimir: ModalDirective;
   @ViewChild('NvoPagoModal') public NvoPagoModal: ModalDirective;
   @ViewChild('DetallePago') public DetallePago: ModalDirective;
   displayedColumns: string[] = ['doc_ingreso', 'descripcion_ingreso', 'monto_ingreso', 'freg_ingreso', 'opciones_ingreso'];

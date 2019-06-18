@@ -7,7 +7,7 @@ import { NgModule } from '@angular/core';
 import { AlertModule } from 'ngx-bootstrap/alert';
 import { IngresosComponent } from './ingresos.component';
 
-import { BadgesComponent } from './badges.component';
+import { ComprasComponent } from './compras.component';
 
 // Modal Component
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -99,7 +99,7 @@ import { MatAutocompleteModule,
   ],
   declarations: [
     IngresosComponent,
-    BadgesComponent,
+    ComprasComponent,
     ModalsComponent
   ]
 })

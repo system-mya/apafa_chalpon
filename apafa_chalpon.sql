@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 16-06-2019 a las 00:00:25
+-- Tiempo de generación: 18-06-2019 a las 00:43:46
 -- Versión del servidor: 5.7.14
 -- Versión de PHP: 5.6.25
 
@@ -201,6 +201,11 @@ celular_apoderado
 FROM apoderado
 WHERE estado_apoderado=1
 ORDER BY apellidos_apoderado$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_compras_anhio` (IN `dato_anhio` INT)  NO SQL
+SELECT * FROM compra
+WHERE id_anhio=(SELECT idanhio FROM anhio_lectivo WHERE anhio=dato_anhio AND condicion_anhio='A' AND estado_anhio=1)
+AND estado_compra=1$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_detalle_deuda_pendientes` (IN `apo` SMALLINT)  NO SQL
 SELECT de.id_detalle_deuda,ca.descripcion_concepto,de.saldo_deuda,
@@ -491,6 +496,28 @@ INSERT INTO `apoderado` (`id_apoderado`, `tdoc_apoderado`, `doc_apoderado`, `ape
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `compra`
+--
+
+CREATE TABLE `compra` (
+  `id_compra` smallint(6) NOT NULL,
+  `id_usuario` smallint(6) NOT NULL,
+  `id_anhio` smallint(6) NOT NULL,
+  `tipo_compra` char(1) NOT NULL,
+  `num_compra` varchar(20) NOT NULL,
+  `razon_social_compra` varchar(80) NOT NULL,
+  `ruc_compra` char(11) DEFAULT NULL,
+  `fecha_compra` date NOT NULL,
+  `freg_compra` datetime NOT NULL,
+  `doc_encargado_compra` varchar(15) NOT NULL,
+  `encargado_compra` varchar(80) NOT NULL,
+  `total_compra` float NOT NULL,
+  `estado_compra` bit(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `concepto_apafa`
 --
 
@@ -509,6 +536,21 @@ CREATE TABLE `concepto_apafa` (
 
 INSERT INTO `concepto_apafa` (`id_concepto`, `descripcion_concepto`, `tipo_concepto`, `id_anhio`, `monto_concepto`, `estado_concepto`) VALUES
 (1, 'CONCEPTO APAFA 2019', 'A', 2, 59, b'1');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `detalle_compra`
+--
+
+CREATE TABLE `detalle_compra` (
+  `id_detalle_compra` smallint(6) NOT NULL,
+  `id_compra` smallint(6) NOT NULL,
+  `nom_producto` varchar(30) NOT NULL,
+  `cantidad` int(11) NOT NULL,
+  `medida` varchar(10) NOT NULL,
+  `precio_unit` float NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -787,11 +829,25 @@ ALTER TABLE `apoderado`
   ADD PRIMARY KEY (`id_apoderado`);
 
 --
+-- Indices de la tabla `compra`
+--
+ALTER TABLE `compra`
+  ADD PRIMARY KEY (`id_compra`),
+  ADD KEY `id_usuario` (`id_usuario`);
+
+--
 -- Indices de la tabla `concepto_apafa`
 --
 ALTER TABLE `concepto_apafa`
   ADD PRIMARY KEY (`id_concepto`),
   ADD KEY `id_anhio` (`id_anhio`);
+
+--
+-- Indices de la tabla `detalle_compra`
+--
+ALTER TABLE `detalle_compra`
+  ADD PRIMARY KEY (`id_detalle_compra`),
+  ADD KEY `id_compra` (`id_compra`);
 
 --
 -- Indices de la tabla `detalle_deuda`
@@ -885,10 +941,20 @@ ALTER TABLE `anhio_lectivo`
 ALTER TABLE `apoderado`
   MODIFY `id_apoderado` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
+-- AUTO_INCREMENT de la tabla `compra`
+--
+ALTER TABLE `compra`
+  MODIFY `id_compra` smallint(6) NOT NULL AUTO_INCREMENT;
+--
 -- AUTO_INCREMENT de la tabla `concepto_apafa`
 --
 ALTER TABLE `concepto_apafa`
   MODIFY `id_concepto` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+--
+-- AUTO_INCREMENT de la tabla `detalle_compra`
+--
+ALTER TABLE `detalle_compra`
+  MODIFY `id_detalle_compra` smallint(6) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT de la tabla `detalle_deuda`
 --
@@ -939,10 +1005,22 @@ ALTER TABLE `usuario`
 --
 
 --
+-- Filtros para la tabla `compra`
+--
+ALTER TABLE `compra`
+  ADD CONSTRAINT `compra_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`idusuario`);
+
+--
 -- Filtros para la tabla `concepto_apafa`
 --
 ALTER TABLE `concepto_apafa`
   ADD CONSTRAINT `concepto_apafa_ibfk_2` FOREIGN KEY (`id_anhio`) REFERENCES `anhio_lectivo` (`idanhio`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `detalle_compra`
+--
+ALTER TABLE `detalle_compra`
+  ADD CONSTRAINT `detalle_compra_ibfk_1` FOREIGN KEY (`id_compra`) REFERENCES `compra` (`id_compra`);
 
 --
 -- Filtros para la tabla `detalle_deuda`

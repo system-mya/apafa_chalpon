@@ -87,7 +87,7 @@ export const navAD: NavData[] = [
       },
       {
         name: 'Compras',
-        url: '/tesoreria/badges',
+        url: '/tesoreria/compras',
         icon: 'icon-basket'
       },
       {

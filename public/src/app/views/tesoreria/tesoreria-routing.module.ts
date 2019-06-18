@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { IngresosComponent } from './ingresos.component';
-import { BadgesComponent } from './badges.component';
+import { ComprasComponent } from './compras.component';
 import { ModalsComponent } from './modals.component';
 
 const routes: Routes = [
@@ -24,10 +24,10 @@ const routes: Routes = [
         }
       },
       {
-        path: 'badges',
-        component: BadgesComponent,
+        path: 'compras',
+        component: ComprasComponent,
         data: {
-          title: 'Badges'
+          title: 'Compras'
         }
       },
       {

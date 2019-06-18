@@ -1,0 +1,431 @@
+<div class="animated fadeIn">
+  <div class="card" *ngIf="panel_tabla_compras">
+    <div class="card-header">
+        <h5><strong>
+            <i class="fa fa-align-justify"></i>&nbsp;&nbsp;Listado de Compras
+          </strong>     
+          <span class="float-right">
+            <button class="btn btn-primary btn-xs" style="margin: 0px 20px;"
+            matTooltip="Agregar Nueva Compra"
+            matTooltipClass="tooltip-mensaje"
+            data-toggle="modal" (click)="btnNueva_Compra()">
+              <span class="fa fa-plus-square"></span>
+            </button>
+          </span></h5>
+   </div>
+   <div class="card-body">
+      <div class="mat-elevation-z8 table-responsive">
+          <mat-form-field class="example-full-width" style="margin-left: 15px;">
+            <span matPrefix>Buscar: &nbsp;</span>
+            <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Ingrese Dato">
+          </mat-form-field>  
+          <table mat-table [dataSource]="dataSource" matSort id="tabla">
+             
+          
+            <ng-container matColumnDef="doc_ingreso">
+              <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap > Documento </th>
+              <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.doc_ingreso}} </td>
+            </ng-container>
+        
+        
+            <ng-container matColumnDef="descripcion_ingreso">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" nowrap> Descripcion </th>
+              <td mat-cell *matCellDef="let element" nowrap> {{element.	descripcion_ingreso}}</td>
+            </ng-container>
+            
+            <ng-container matColumnDef="monto_ingreso">
+                <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Monto Ingreso </th>
+                <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.monto_ingreso | number : '.2-2'}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="freg_ingreso">
+                  <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Frecha Registro </th>
+                  <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.freg_ingreso | date:'dd/MM/yyyy HH:mm:ss'}} </td>
+                </ng-container>
+                <ng-container matColumnDef="opciones_ingreso">
+                    <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Opciones </th>
+                    <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> 
+                      <button class="btn btn-info btn-xs distancia_btn_opciones"
+                      matTooltip="Detalle"
+                      matTooltipClass="tooltip-mensaje"
+                      [matTooltipPosition]="positionOptions[3]"
+                      data-toggle="modal" (click)="btnDetalle_Pago(element)">
+                    <span class="fa fa-address-card-o"></span></button>
+                <!-- <button class="btn btn-warning btn-xs distancia_btn_opciones"
+                    matTooltip="Imprimir"
+                    matTooltipClass="tooltip-mensaje"
+                    [matTooltipPosition]="positionOptions[3]"
+                    data-toggle="modal" (click)="generatePDF(element.doc_ingreso)">
+                  <span class="fa fa-print"></span></button> -->
+                 <button class="btn btn-danger btn-xs distancia_btn_opciones"
+                      matTooltip="Eliminar"
+                      matTooltipClass="tooltip-mensaje"
+                      [matTooltipPosition]="positionOptions[3]"
+                      (click)="btnEliminar_Alumno(element.id_alumno)">
+                 <span class="fa fa-trash-o btn-xs"></span>
+                 </button>
+                      
+                    </td>
+                  </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns" style="background-color: #b6b9d0 !important;"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        
+          <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+          
+        </div>
+
+   </div>
+ </div>
+ <!--Panel Registrar Nueva Compra-->
+ <div class="card" *ngIf="panel_registro">
+    <form name="form" class="formulario" (ngSubmit)="MyCompra.form.valid && onSubmit(alumno)" #MyCompra="ngForm" novalidate autocomplete="off">
+        <div class="card-header">
+          <h5><strong>
+            <i class="fa fa-edit"></i>&nbsp;&nbsp;Registrar Nueva Compra
+          </strong></h5>
+          </div>
+          <div class="car-body">
+              <div class="row">
+                  <div class="col-lg-6">
+                      <div class="card-header estilo-cabecera">DATOS DE LA COMPRA</div>
+                      <div class="card-body" style="padding: 0.8rem !important">
+                          <div class="row">
+                              <div class="form-group col-xs-12 col-sm-12 col-md-11 col-lg-5">
+                                  <label for="tipo_compra" style="font-weight: bold;">Tipo Doc. <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                                  <select class="form-control" id="tipo_compra" name="tipo_compra" 
+                                  placeholder="Selecionar Perfil" [(ngModel)]="compra.tipo_compra" #tipo_compra="ngModel">
+                                    <option value="" selected disabled>--Tipo--</option>
+                                    <option value="B">BOLETA</option>
+                                    <option value="F">FACTURA</option>
+                                 </select>
+                               </div>
+                               <div class="form-group col-xs-12 col-sm-12 col-md-11 col-lg-7">
+                                  <label for="num_compra" style="font-weight: bold;">Num. Doc.<i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                                  <input type="text" class="form-control" id="num_compra" name="num_compra"
+                                  placeholder="Num Doc"  [(ngModel)]="compra.num_compra" #regnum_compra="ngModel"
+                                  pattern="[0-9]{8}" [ngClass]="{ 'is-invalid': MyCompra.submitted && regnum_compra.invalid }" 
+                                  required onkeyup="verif(this)" onkeypress="return Num(event);" maxlength="8">
+                                  <div *ngIf="MyCompra.submitted && regnum_compra.invalid" class="invalid-feedback">
+                                      <div *ngIf="regnum_compra.errors.required">Doc. Identidad campo requerido</div>
+                                      <div *ngIf="regnum_compra.errors.pattern">Debe Ingresar 8 Números</div>
+                                  </div>
+                               </div>
+                          </div>
+                          <div class="row">
+                              <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                  <label for="razon_social_compra" style="font-weight: bold;">Razón Social.<i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                                  <input type="text" class="form-control" id="razon_social_compra" name="razon_social_compra"
+                                  placeholder="Num Doc"  [(ngModel)]="compra.razon_social_compra" #regrazon_social_compra="ngModel"
+                                  [ngClass]="{ 'is-invalid': MyCompra.submitted && regrazon_social_compra.invalid }" 
+                                  required onkeyup="verif(this)" onkeypress="return Num(event);" maxlength="8">
+                                  <div *ngIf="MyCompra.submitted && regrazon_social_compra.invalid" class="invalid-feedback">
+                                      <div *ngIf="regrazon_social_compra.errors.required">Doc. Identidad campo requerido</div></div>
+                               </div>
+                          </div>
+                          <div class="row">
+                              <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+                                  <label for="razon_social_compra" style="font-weight: bold;">RUC. :</label>
+                                  <input type="text" class="form-control" id="razon_social_compra" name="razon_social_compra"
+                                  placeholder="Num Doc"  [(ngModel)]="compra.razon_social_compra" #regrazon_social_compra="ngModel"
+                                  [ngClass]="{ 'is-invalid': MyCompra.submitted && regrazon_social_compra.invalid }" 
+                                  required onkeyup="verif(this)" onkeypress="return Num(event);" maxlength="8">
+                                  <div *ngIf="MyCompra.submitted && regrazon_social_compra.invalid" class="invalid-feedback">
+                                      <div *ngIf="regrazon_social_compra.errors.required">Doc. Identidad campo requerido</div></div>
+                              </div>
+                              <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+                                  <label for="razon_social_compra" style="font-weight: bold;">Fecha<i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                                  <input type="text" class="form-control" id="razon_social_compra" name="razon_social_compra"
+                                  placeholder="Num Doc"  [(ngModel)]="compra.razon_social_compra" #regrazon_social_compra="ngModel"
+                                  [ngClass]="{ 'is-invalid': MyCompra.submitted && regrazon_social_compra.invalid }" 
+                                  required onkeyup="verif(this)" onkeypress="return Num(event);" maxlength="8">
+                                  <div *ngIf="MyCompra.submitted && regrazon_social_compra.invalid" class="invalid-feedback">
+                                      <div *ngIf="regrazon_social_compra.errors.required">Doc. Identidad campo requerido</div></div>
+                               </div>
+                          </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card-header estilo-cabecera">DATOS DEL ENCARGADO</div>
+                        <div class="card-body" style="padding: 0.8rem !important; margin-bottom: -20px;">
+                            <div class="row">
+                                <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+                                    <label for="razon_social_compra" style="font-weight: bold;">RUC.<i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                                    <input type="text" class="form-control" id="razon_social_compra" name="razon_social_compra"
+                                    placeholder="Num Doc"  [(ngModel)]="compra.razon_social_compra" #regrazon_social_compra="ngModel"
+                                    [ngClass]="{ 'is-invalid': MyCompra.submitted && regrazon_social_compra.invalid }" 
+                                    required onkeyup="verif(this)" onkeypress="return Num(event);" maxlength="8">
+                                    <div *ngIf="MyCompra.submitted && regrazon_social_compra.invalid" class="invalid-feedback">
+                                        <div *ngIf="regrazon_social_compra.errors.required">Doc. Identidad campo requerido</div></div>
+                                </div>
+                                <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+                                    <label for="razon_social_compra" style="font-weight: bold;">Fecha<i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                                    <input type="text" class="form-control" id="razon_social_compra" name="razon_social_compra"
+                                    placeholder="Num Doc"  [(ngModel)]="compra.razon_social_compra" #regrazon_social_compra="ngModel"
+                                    [ngClass]="{ 'is-invalid': MyCompra.submitted && regrazon_social_compra.invalid }" 
+                                    required onkeyup="verif(this)" onkeypress="return Num(event);" maxlength="8">
+                                    <div *ngIf="MyCompra.submitted && regrazon_social_compra.invalid" class="invalid-feedback">
+                                        <div *ngIf="regrazon_social_compra.errors.required">Doc. Identidad campo requerido</div></div>
+                                 </div>
+                            </div>
+                        </div>
+                        <div class="card-header estilo-cabecera">DATOS DE LA COMPRA</div>
+                        <div class="card-body" style="padding: 0.8rem !important">
+                            <div class="row">
+                                <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-8">
+                                    <label for="nombre_producto" style="font-weight: bold;">Nombre Producto <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                                    <input type="text" class="form-control" id="nombre_producto" name="nombre_producto"
+                                    placeholder="Nombre Producto"  [(ngModel)]="producto.nom_producto" #regnombre_producto="ngModel"
+                                    [ngClass]="{ 'is-invalid': btnagregar && regnombre_producto.invalid }" 
+                                    required onkeyup="verif(this)" maxlength="20">
+                                    <div *ngIf="btnagregar && regnombre_producto.invalid" class="invalid-feedback">
+                                        <div *ngIf="regnombre_producto.errors.required">Doc. Identidad campo requerido</div></div>
+                                </div>
+                                <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
+                                    <label for="medida" style="font-weight: bold;">Medida <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                                    <input type="text" class="form-control" id="medida" name="medida"
+                                    placeholder="Medilla"  [(ngModel)]="producto.medida" #regmedida="ngModel"
+                                    [ngClass]="{ 'is-invalid': btnagregar && regmedida.invalid }" 
+                                    required onkeyup="verif(this)" maxlength="8">
+                                    <div *ngIf="btnagregar && regmedida.invalid" class="invalid-feedback">
+                                        <div *ngIf="regmedida.errors.required">Doc. Identidad campo requerido</div></div>
+                                 </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-3">
+                                    <label for="cantidad" style="font-weight: bold;">Cantidad <i class="fa fa- certificate" style="color:red !important"></i> :</label>
+                                    <input type="number" class="form-control" id="cantidad" name="cantidad"
+                                    placeholder="Cantidad"  [(ngModel)]="producto.cantidad" #regcantidad="ngModel" step="1" min='0'
+                                    [ngClass]="{ 'is-invalid': btnagregar && regcantidad.invalid }" 
+                                    required>
+                                    <div *ngIf="btnagregar && regcantidad.invalid" class="invalid-feedback">
+                                        <div *ngIf="regcantidad.errors.required">Doc. Identidad campo requerido</div></div>
+                                </div>
+                                <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-3">
+                                    <label for="precio" style="font-weight: bold;">Precio Unit <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                                    <input type="text" class="form-control" id="precio" name="precio"
+                                    placeholder="Precio"  [(ngModel)]="producto.precio_unit" #regprecio="ngModel"
+                                    [ngClass]="{ 'is-invalid': btnagregar && regprecio.invalid }" 
+                                    required onkeyup="verif(this)" onkeypress="return Num(event);" maxlength="8">
+                                    <div *ngIf="btnagregar && regprecio.invalid" class="invalid-feedback">
+                                        <div *ngIf="regprecio.errors.required">Doc. Identidad campo requerido</div></div>
+                                 </div>
+                                 <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-5">
+                                    <label for="precio" style="font-weight: bold;">&nbsp;</label>
+                                    <div class="input-group">
+                                      <span class="input-group-append">
+                                        <button type="button" class="btn btn-success" 
+                                          (click)="btnagregar_producto(producto)">
+                                            <span class="fa fa-plus-square"></span> Agregar
+                                        </button>
+                                      </span>
+                                    </div>
+                                    <div *ngIf="MyCompra.submitted && regrazon_social_compra.invalid" class="invalid-feedback">
+                                        <div *ngIf="regrazon_social_compra.errors.required">Doc. Identidad campo requerido</div>
+                                    </div>
+                                 </div>
+                            </div>
+                        </div>
+                    </div>
+              </div>
+              <div class="car-body">
+                  <div class="card-header estilo-cabecera">DETALLE DE LA COMPRA</div>
+                  <div class="card-body" style="padding: 0.8rem !important">
+                      <div style="
+                      border-bottom: #0000008c;
+                      border-bottom-style: solid;
+                      margin-bottom: 10px;
+                  "> <div class="secciones-deuda table-responsive" >
+                              <table class="table ">
+                                <thead>
+                                  <tr>
+                                    <th nowrap>Descripción Producto</th>
+                                    <th nowrap>Medida</th>
+                                    <th nowrap>Cantidad</th>
+                                    <th nowrap>Precio</th>
+                                    <th nowrap>Total</th>
+                                    <th nowrap>Opciones</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr *ngFor="let item of detalle_compra;index as i">
+                                      <td nowrap>
+                                        {{item.nom_producto}}
+                                      </td>
+                                      <td nowrap>
+                                        {{item.medida}}
+                                      </td>
+                                      <td nowrap>
+                                        {{item.cantidad}}
+                                      </td>
+                                      <td style="width:130px" nowrap>
+                                        {{item.precio_unit | number : '.2-2'}}
+                                      </td>
+                                      <td style="width: 110px;" nowrap>
+                                          {{item.precio_unit * item.cantidad | number : '.2-2'}}
+                                      </td>
+                                      <td nowrap>
+                                        <button class="btn btn-danger btn-xs distancia_btn_opciones"
+                                              matTooltip="Eliminar"
+                                              matTooltipClass="tooltip-mensaje"
+                                              [matTooltipPosition]="positionOptions[3]"
+                                              (click)="btnEliminar_Usuario(element.idusuario)">
+                                        <span class="fa fa-trash-o btn-xs"></span>
+                                        </button>
+                                      </td> 
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                      </div><!--/.row-->
+                      <div class="row">
+                        <div class="col-lg-7"></div>
+                        <div class="col lg-5">
+                            <div class="form-horizontal">
+                                <div class="row">
+                                    <label class="col-md-5 col-form-label" for="text-input" style="text-align: right !important;
+                                    padding-right: 0px !important;"><b>Total Pagar : </b></label>
+                                    <div class="col-md-5">
+                                      <label class="col-md-5 col-form-label" for="text-input" style="text-align: right !important;
+                                    padding-right: 0px !important;"><b></b></label>
+                                    </div>
+                                  </div>
+                            </div>
+                        </div>
+                      </div>
+                  </div>
+              </div>
+                <div class="card-footer" style="text-align: right;">
+                    <button type="button" class="btn btn-danger" style="margin: 0px 20px;"
+                    (click)="btnCancelar_Alumno('I')">
+                        <span class="fa fa-times-circle"></span>
+                    Cancelar</button>
+                 <button type="submit" class="btn btn-success">
+                    <span class="fa fa-save"></span>
+                  Grabar</button>
+                  
+                </div>
+                
+          </div>
+          <div class="card-footer text-center" style="background:#019dd6; color:#fff">
+            <h4>Todos los campos con <font class="cascade2">(*)</font> son obligatorios</h4>
+          </div>
+        </form>
+ </div>
+ <!--Fin Panel Registrar Nuvea Compra-->
+ <!--Modal Registrar Nuevo Pago-->
+ <div bsModal #NvaCompraModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}" >
+  <div class="modal-dialog modal-lg modal-success" role="document">
+    <div class="modal-content">
+        <form name="form" class="formulario" (ngSubmit)="MyCompra.form.valid && RegRecibo(recibo)" #MyCompra="ngForm" novalidate autocomplete="off">
+      <div class="modal-header">
+        <h4 class="modal-title">Nueva Compra</h4>
+        <button type="button" class="close" (click)="frmIngresos_hide('R')" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" style="padding-bottom: 1px !important;">
+          <div class="car-body">
+              
+          </div>
+          <div class="car-body">
+              <div class="card-header estilo-cabecera">DETALLE DE CONCEPTOS</div>
+              <div class="card-body" style="padding: 0.8rem !important">
+                  <div class="row" style="
+                  border-bottom: #0000008c;
+                  border-bottom-style: solid;
+                  margin-bottom: 10px;">
+                      <div class="secciones-deuda table-responsive" *ngIf="tabla_deuda">
+                          <table class="table ">
+                            <thead>
+                              <tr>
+                                <th nowrap>Descripción Concepto</th>
+                                <th nowrap>Saldo Deuda</th>
+                                <th nowrap>Estado</th>
+                                <th>Tipo</th>
+                                <th nowrap>Monto</th>
+                                <!-- <th nowrap>Opciones</th> -->
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let item of DataDeuda;index as i">
+                                  <td nowrap>
+                                    {{item.descripcion_concepto}}
+                                  </td>
+                                  <td nowrap>
+                                    {{item.saldo_deuda | number : '.2-2'}}
+                                  </td>
+                                  <td nowrap>
+                                    {{item.estado_deuda}}
+                                  </td>
+                                  <td style="width:130px" nowrap>
+                                    <select class="form-control" id="tipo_pago" name="tipo_pago" 
+                                      placeholder="Selecionar Perfil" [(ngModel)]="DataDeuda[i].tipo_pago" #tipo_pago="ngModel"
+                                      (change)="select_tipo_pago(DataDeuda[i].tipo_pago,i)">
+                                        <option value="" selected disabled>--Tipo--</option>
+                                        <option value="T">TOTAL</option>
+                                        <option value="P">PARCIAL</option>
+                                    </select>
+                                  </td>
+                                  <td style="width: 110px;" nowrap>
+                                      <input type="text" class="form-control" id="monto" name="{{i}}"
+                                      placeholder="Monto" [(ngModel)]="DataDeuda[i].monto" #regmonto="ngModel" 
+                                      onkeyup="verif(this)" maxlength="100" [ngClass]="{ 'is-invalid': DataDeuda[i].tipo_pago!='' && regmonto.invalid }" 
+                                      pattern="^(?!\.?$)\d{1,8}(\.\d{1,2})?$" onkeypress="return Num_Decimal(event);" 
+                                      [disabled]="DataDeuda[i].tipo_pago=='T'" (ngModelChange)="monto_parcial(i,this)" required>
+                                      <div *ngIf="DataDeuda[i].tipo_pago!='' && regmonto.invalid" class="invalid-feedback">
+                                          <div *ngIf="regmonto.errors.required">Campo requerido</div>
+                                          <div *ngIf="regmonto.errors.pattern">Formato Incorrecto</div>
+                                      </div>
+                                      <div *ngIf="DataDeuda[i].tipo_pago=='P' && !regmonto.invalid && DataDeuda[i].monto!=0" class="monto_invalid">
+                                        <div *ngIf="DataDeuda[i].monto_invalid"><span class="fa fa-times"></span>Monto debe ser menor</div>
+                                      </div>
+                                      <div *ngIf="DataDeuda[i].tipo_pago=='P' && DataDeuda[i].monto==0 && !regmonto.invalid" class="monto_invalid">
+                                        <div *ngIf="DataDeuda[i].tipo_pago=='P'"><span class="fa fa-times"></span>Monto debe ser Mayor a 0</div>
+                                      </div>
+                                  </td>
+                                  
+                                  <!-- <td nowrap>
+                                    <button class="btn btn-danger btn-xs distancia_btn_opciones"
+                                          matTooltip="Eliminar"
+                                          matTooltipClass="tooltip-mensaje"
+                                          [matTooltipPosition]="positionOptions[3]"
+                                          (click)="btnEliminar_Usuario(element.idusuario)">
+                                    <span class="fa fa-trash-o btn-xs"></span>
+                                    </button>
+                                  </td> -->
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                  </div><!--/.row-->
+                  <div class="row" *ngIf="tabla_deuda">
+                    <div class="col-lg-7"></div>
+                    <div class="col lg-5">
+                        <div class="form-horizontal">
+                            <div class="row">
+                                <label class="col-md-5 col-form-label" for="text-input" style="text-align: right !important;
+                                padding-right: 0px !important;"><b>Total Pagar : </b></label>
+                                <div class="col-md-5">
+                                  <label class="col-md-5 col-form-label" for="text-input" style="text-align: right !important;
+                                padding-right: 0px !important;"><b>{{recibo.mtotal_recibo | number : '.2-2'}}</b></label>
+                                </div>
+                              </div>
+                        </div>
+                    </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <div class="modal-footer">
+            <button type="button" class="btn btn-danger" (click)="frmIngresos_hide('R')"><span class="fa fa-times-circle"></span> Close</button>
+            <button type="submit" class="btn btn-primary"><span class="fa fa-save"></span> Guardar</button>
+      </div>
+    </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
+<!-- /.Fin Modal Nuevo Pago-->
+ </div>
+
+ 
