@@ -79,7 +79,7 @@
  </div>
  <!--Panel Registrar Nueva Compra-->
  <div class="card" *ngIf="panel_registro">
-    <form name="form" class="formulario" (ngSubmit)="MyCompra.form.valid && Agregar_NvaCompra()" #MyCompra="ngForm" novalidate autocomplete="off">
+    <form name="form" class="formulario" (ngSubmit)="MyCompra.form.valid && Agregar_NvaCompra(compra)" #MyCompra="ngForm" novalidate autocomplete="off">
         <div class="card-header">
           <h5><strong>
             <i class="fa fa-edit"></i>&nbsp;&nbsp;Registrar Nueva Compra
@@ -111,11 +111,11 @@
                                   <label for="num_compra" style="font-weight: bold;">Num. Doc.<i class="fa fa-certificate" style="color:red !important"></i> :</label>
                                   <input type="text" class="form-control" id="num_compra" name="num_compra"
                                   placeholder="Num Doc"  [(ngModel)]="compra.num_compra" #regnum_compra="ngModel"
-                                  pattern="[0-9]{8}" [ngClass]="{ 'is-invalid': MyCompra.submitted && regnum_compra.invalid }" 
+                                  pattern="[0-9]{6,10}" [ngClass]="{ 'is-invalid': MyCompra.submitted && regnum_compra.invalid }" 
                                   required onkeyup="verif(this)" onkeypress="return Num(event);" maxlength="10">
                                   <div *ngIf="MyCompra.submitted && regnum_compra.invalid" class="invalid-feedback">
-                                      <div *ngIf="regnum_compra.errors.required">Doc. Identidad campo requerido</div>
-                                      <div *ngIf="regnum_compra.errors.pattern">Debe Ingresar 8 Números</div>
+                                      <div *ngIf="regnum_compra.errors.required">Num Doc campo requerido</div>
+                                      <div *ngIf="regnum_compra.errors.pattern">Debe Ingresar al menos 6 Números</div>
                                   </div>
                                </div>
                           </div>
@@ -191,17 +191,17 @@
                                     <label for="nombre_producto" style="font-weight: bold;">Nombre Producto <i class="fa fa-certificate" style="color:red !important"></i> :</label>
                                     <input type="text" class="form-control" id="nombre_producto" name="nombre_producto"
                                     placeholder="Nombre Producto"  [(ngModel)]="producto.nom_producto" #regnombre_producto="ngModel"
-                                    [ngClass]="{ 'is-invalid': btnagregar && regnombre_producto.invalid }" 
-                                    onkeyup="verif(this);mayus(this)" maxlength="30">
+                                    [ngClass]="{ 'is-invalid': btnagregar && regnombre_producto.invalid }"
+                                    required="{{btnagregar}}" onkeyup="verif(this);mayus(this)" maxlength="30">
                                     <div *ngIf="btnagregar && regnombre_producto.invalid" class="invalid-feedback">
-                                        <div *ngIf="regnombre_producto.errors.required">Doc. Identidad campo requerido</div></div>
+                                        <div *ngIf="regnombre_producto.errors.required">Nombre Producto campo requerido</div></div>
                                 </div>
                                 <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
                                     <label for="medida" style="font-weight: bold;">Medida <i class="fa fa-certificate" style="color:red !important"></i> :</label>
                                     <input type="text" class="form-control" id="medida" name="medida"
                                     placeholder="Medida"  [(ngModel)]="producto.medida" #regmedida="ngModel"
                                     [ngClass]="{ 'is-invalid': btnagregar && regmedida.invalid }" 
-                                    onkeyup="verif(this);mayus(this)" maxlength="10">
+                                    required="{{btnagregar}}" onkeyup="verif(this);mayus(this)" maxlength="10">
                                     <div *ngIf="btnagregar" class="invalid-feedback">
                                         <div *ngIf="btnagregar"> Medida campo requerido</div></div>
                                  </div>
@@ -211,7 +211,7 @@
                                     <label for="cantidad" style="font-weight: bold;">Cantidad <i class="fa fa- certificate" style="color:red !important"></i> :</label>
                                     <input type="number" class="form-control" id="cantidad" name="cantidad"
                                     placeholder="Cantidad"  [(ngModel)]="producto.cantidad" #regcantidad="ngModel" step="1" min='0'
-                                    pattern="[0-9]{1,10}" [ngClass]="{ 'is-invalid': btnagregar && regcantidad.invalid }" 
+                                    required="{{btnagregar}}" pattern="[0-9]{1,10}" [ngClass]="{ 'is-invalid': btnagregar && regcantidad.invalid }" 
                                     >
                                     <div *ngIf="btnagregar && regcantidad.invalid" class="invalid-feedback">
                                         <div *ngIf="regcantidad.errors.required">Cantidad campo requerido</div>
@@ -227,7 +227,7 @@
                                     placeholder="Precio"  [(ngModel)]="producto.precio_unit" #regprecio="ngModel"
                                     [ngClass]="{ 'is-invalid': btnagregar && regprecio.invalid }" 
                                      onkeyup="verif(this)"pattern="^(?!\.?$)\d{1,8}(\.\d{1,2})?$" onkeypress="return Num_Decimal(event);" 
-                                     maxlength="10">
+                                     required="{{btnagregar}}" maxlength="10">
                                     <div *ngIf="btnagregar && regprecio.invalid" class="invalid-feedback">
                                         <div *ngIf="regprecio.errors.required">Precio campo requerido</div>
                                         <div *ngIf="regprecio.errors.pattern">Formato Incorrecto</div>
@@ -271,7 +271,7 @@
                                   </tr>
                                 </thead>
                                 <tbody>
-                                  <tr *ngFor="let item of detalle_compra;index as i">
+                                  <tr *ngFor="let item of detalle_compra;let i = index">
                                       <td nowrap>
                                         {{item.nom_producto}}
                                       </td>
@@ -288,11 +288,11 @@
                                           {{item.precio_unit * item.cantidad | number : '.2-2'}}
                                       </td>
                                       <td nowrap>
-                                        <button class="btn btn-danger btn-xs distancia_btn_opciones"
+                                        <button type="button" class="btn btn-danger btn-xs distancia_btn_opciones"
                                               matTooltip="Eliminar"
                                               matTooltipClass="tooltip-mensaje"
                                               [matTooltipPosition]="positionOptions[3]"
-                                              (click)="btnEliminar_Usuario(element.idusuario)">
+                                              (click)="btnElimianr_Producto(i)">
                                         <span class="fa fa-trash-o btn-xs"></span>
                                         </button>
                                       </td> 
@@ -320,7 +320,7 @@
               </div>
                 <div class="card-footer" style="text-align: right;">
                     <button type="button" class="btn btn-danger" style="margin: 0px 20px;"
-                    (click)="btnCancelar_Alumno('I')">
+                    (click)="btnCancelar_Compra('R')">
                         <span class="fa fa-times-circle"></span>
                     Cancelar</button>
                  <button type="submit" class="btn btn-success">

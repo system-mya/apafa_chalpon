@@ -177,8 +177,9 @@ export class Detalle_Deuda
 export class Compras 
 {
     id_compra ?: number;
-    id_usuario ?: number;
+    id_usuario ?: string;
     id_anhio ?: number;
+    anhio ?: string;
     tipo_compra ?: string;
     num_compra ?: string;
     razon_social_compra ?: string;
@@ -189,6 +190,7 @@ export class Compras
     encargado_compra ?: string;
     total_compra ?: number;
     estado_compra ?: boolean;
+    detalle ?: any ;
 }
 
 export class Detalle_Compra

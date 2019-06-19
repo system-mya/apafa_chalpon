@@ -199,6 +199,11 @@ app.post('/api/tesoreria/obtener_detalle_recibo', (req, res) => {
     tesoreria.obtener_detalle_recibo(req.body, res);
 });
 
+//INSERTAR NUEVA COMPRA
+app.post('/api/tesoreria/insertar_nueva_compra', (req, res) => {
+    tesoreria.nva_compra(req.body, res);
+});
+
 
 }
 }
