@@ -1,6 +1,7 @@
-import { Component,ViewChild,ViewEncapsulation } from '@angular/core';
+import { Component,ViewChild,ViewEncapsulation,Inject } from '@angular/core';
+import { DOCUMENT } from '@angular/platform-browser';
 import {ModalDirective} from 'ngx-bootstrap/modal';
-import {Compras,Detalle_Compra} from '../../app.datos';
+import {Compras,Detalle_Compra,Busqueda} from '../../app.datos';
 import {MatPaginator, MatSort, MatTableDataSource, TooltipPosition} from '@angular/material';
 import { ToastrService } from 'ngx-toastr';
 import { LoadingBarService } from '@ngx-loading-bar/core';
@@ -13,19 +14,48 @@ declare var swal: any;
 })
 export class ComprasComponent {
   @ViewChild('NvaCompraModal') public NvaCompraModal: ModalDirective;
+  @ViewChild('DetalleCompraModal') public DetalleCompraModal: ModalDirective;
+  displayedColumns: string[] = ['tipo_compra', 'num_compra', 'razon_social_compra', 'fecha_compra', 'total_compra','opciones'];
+  dataSource: MatTableDataSource<any>;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
   positionOptions: TooltipPosition[] = ['after', 'before', 'above', 'below', 'left', 'right'];
   public compra : Compras = {};
+  public DatoBusqueda: Busqueda;
   public producto : Detalle_Compra = {};
   public panel_registro : boolean;
   public panel_tabla_compras : boolean;
   public detalle_compra : any = [];
   public btnagregar : boolean;
   constructor(private toastr: ToastrService,private loadingBar: LoadingBarService,
-    private _CompraServicios: ComprasService) { 
+    private _CompraServicios: ComprasService,
+    @Inject(DOCUMENT) private document: Document,) { 
+    this.DatoBusqueda = {
+        datobusqueda: ''
+      };
     this.panel_tabla_compras=true;
+    this.ListarComprasxPeriodo();
   }
 
-  
+  DataCompras: any = [];
+ ListarComprasxPeriodo () {
+  this.DatoBusqueda.datobusqueda = localStorage.getItem('_anhio');
+  this._CompraServicios.getLista_compras_xperiodo(this.DatoBusqueda).subscribe(
+    data => {
+      if (data.status === 1) {
+       this.DataCompras = data.data;
+       this.dataSource = new MatTableDataSource(this.DataCompras);
+       this.dataSource.paginator = this.paginator;
+       this.dataSource.sort = this.sort;
+      } else {
+        this.toastr.error(data.message, 'Aviso!', {
+          positionClass: 'toast-top-right'
+        });
+      }
+
+    }
+  );
+}
 
   btnNueva_Compra() {
     this.panel_registro=true;
@@ -37,6 +67,7 @@ export class ComprasComponent {
     this.producto.precio_unit=0;
     this.producto.cantidad=0;
     this.btnagregar=false;
+    this.document.documentElement.scrollTop = 0;
   }
 
   btnagregar_producto(dato){
@@ -60,6 +91,10 @@ export class ComprasComponent {
       this.btnagregar=false;
     }else{
       this.btnagregar=true;
+      this.opcmedida=true;
+      this.opcnom_producto=true;
+      this.producto.nom_producto='';
+      this.producto.medida='';
     }
   }
 
@@ -94,7 +129,12 @@ export class ComprasComponent {
                 type: 'success',
                 allowOutsideClick: false,
                 allowEscapeKey:false
-            }) 
+              }) 
+              this.panel_tabla_compras=true;
+              this.panel_registro=false;
+              this.loadingBar.complete();
+              this.document.documentElement.scrollTop = 0;
+              this.ListarComprasxPeriodo();
             } else {
                 swal({
                   title: 'Aviso!',
@@ -115,16 +155,71 @@ export class ComprasComponent {
   }
 
   btnElimianr_Producto(dato){
-    this.toastr.success(dato, 'Aviso!',{positionClass: 'toast-top-right',timeOut: 500});
     this.detalle_compra.splice(dato, 1);
   }
 
-  btnCancelar_Compra(opt){
+  frmCompras_hide(opt){
       if(opt=='R'){
            this.panel_registro=false;
            this.panel_tabla_compras=true;
+           this.document.documentElement.scrollTop = 0;
+           this.ListarComprasxPeriodo();
 
+      }else{
+        this.DetalleCompraModal.hide();
       }
+  }
+
+  public DetalleCompra:any=[];
+  public DetalleLista : Detalle_Compra;
+  btnDetalle_Compra(dato){
+     this.DetalleCompraModal.show();
+     this.DetalleCompra.tipo_compra = dato.tipo_compra;
+     this.DetalleCompra.num_compra = dato.num_compra;
+     this.DetalleCompra.razon_social_compra = dato.razon_social_compra;
+     this.DetalleCompra.ruc_compra = dato.ruc_compra;
+     this.DetalleCompra.fecha_compra = dato.fecha_compra;
+     this.DetalleCompra.doc_encargado_compra = dato.doc_encargado_compra;
+     this.DetalleCompra.encargado_compra = dato.encargado_compra;
+     this.DetalleCompra.total_compra = dato.total_compra;
+     this.DatoBusqueda.idbusqueda=dato.id_compra;
+     this._CompraServicios.getObtener_Detalle_Compra(this.DatoBusqueda)
+     .subscribe(
+      data => {
+        if (data.status === 1) {
+           this.DetalleLista = data.data;
+        } else {
+          this.toastr.error(data.message, 'Aviso!', {
+            positionClass: 'toast-top-right'
+          });
+        }
+  
+      }
+    );
+  }
+ 
+  public opcnom_producto : boolean;
+  public opcmedida : boolean;
+  cambios_texto(opt,dato){
+    if(opt==0){
+      if(dato==''){
+        console.log('valor vacio');
+        this.opcnom_producto=true;
+        
+      }else{
+        console.log(dato);
+        this.opcnom_producto=false;
+      }
+    }else{
+      if(dato==''){
+        console.log('valor vacio');
+        this.opcmedida=true;
+        
+      }else{
+        console.log(dato);
+        this.opcmedida=false;
+      }
+    }
   }
 
 

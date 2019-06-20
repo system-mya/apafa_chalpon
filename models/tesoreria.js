@@ -89,17 +89,14 @@ function hoyFecha(){
   function insertar_detalle_compra(compra,con,cantidad,id_compra) {
     var buenas=0;
     var malos=0;
-    var estado;
     return new Promise(function (resolve, reject) {
     for(i=0;i<cantidad;i++){       
                   var query="CALL pa_insertar_detalle_compra("+id_compra
                   +",'"+compra.detalle[i].nom_producto +"',"+ compra.detalle[i].cantidad
                   +",'" + compra.detalle[i].medida +"','" + compra.detalle[i].precio_unit +"')";
-                  console.log(query);
                      con.query(query ,function(err,result) {                     
                         if (err) { 
                             malos=malos+1;
-                            console.log("malos: " +malos);
                             return reject(malos);
                         }else{
                              if (result.affectedRows == 1) {                                 
@@ -394,72 +391,130 @@ class Tesoreria {
             if(err){
                 res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
             }else{
-              console.log([compra.detalle.length]);
-            if ([compra.ruc_compra]==''){
-                var ruc_compra="NULL";
-            }else{
-                ruc_compra="'"+[compra.ruc_compra]+"'";
-            }                
-                        var query = "CALL pa_insertar_compra("+ get('123456$#@$^@1ERF',[compra.id_usuario][0]) +",'"+ [compra.anhio] 
-                        +"','"+ [compra.tipo_compra] + "','"+ [compra.num_compra] +"','" + [compra.razon_social_compra]
-                        + "',"+ ruc_compra + ",'"+  [compra.fecha_compra]
-                        + "','"+ [compra.doc_encargado_compra] 
-                        + "','"+ [compra.encargado_compra] +"','"+ [compra.total_compra] + "')";
-                        
-                        con.query(query,(err, result) => {
-                            if(err){
-                                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
-                            }else{
-                                if (result.affectedRows == 1) {
-                                    var query_obtener_compra = "CALL pa_ultima_compra('"+[compra.anhio]+"')";
-                                    con.query(query_obtener_compra, function(err, result) {
-                                      if (err) { 
-                                          res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
-                                      }else{
-                                        if (result[0].length > 0) {
-                                            var id_compra = result[0][0].id_compra;
-                                            console.log(id_compra);
-                                            var cantidad = [compra.detalle.length];
-                                            var resultad;
-                                            resultad = insertar_detalle_compra(compra,con,cantidad,id_compra);
-                                            resultad.then(function(valule1){
-                                            if(valule1>0){
-                                               console.log("nu hubo error");
-                                               con.commit(function(err) {
-                                                if (err) { 
-                                                  con.rollback(function() {
-                                                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
-                                                  });
-                                                }else{
-                                                    res.send({status: 1, message: 'COMPRA REGISTRADA',data:'data'});
-                                                }                                                      
-                                                
-                                              });
-                                            }
-                                        }     
-                                            )
-                                        .catch(function(value){
-                                            if(value>0){
-                                               console.log("hubo error");
-                                               con.rollback(function() {
-                                                con.release();
-                                                res.send({status: 2, message: 'COMPRA NO REGISTRADA'});                                                                                                  
-                                            });
-                                            }
-                                        }                                     
-                                            
-                                            );
-                                        }
-                                    }
-                                })
-                                    res.send({status: 1, message: 'Compra Registrada'});
-                                } else {
-                                    res.send({status: 2, message: 'Compra No Registrada'});
-                                }
-                            }
+                con.beginTransaction(function(err) {
+                    if (err) {  
+                        con.rollback(function() {
+                            con.release();                                                                                                  
                         });
-            
+                        res.send({status: 0, message: err.sqlMessage}); 
+                    }else{
+                        if ([compra.ruc_compra]==''){
+                            var ruc_compra="NULL";
+                        }else{
+                            ruc_compra="'"+[compra.ruc_compra]+"'";
+                        }                
+                                    var query = "CALL pa_insertar_compra("+ get('123456$#@$^@1ERF',[compra.id_usuario][0]) +",'"+ [compra.anhio] 
+                                    +"','"+ [compra.tipo_compra] + "','"+ [compra.num_compra] +"','" + [compra.razon_social_compra]
+                                    + "',"+ ruc_compra + ",'"+  [compra.fecha_compra]
+                                    + "','"+ [compra.doc_encargado_compra] 
+                                    + "','"+ [compra.encargado_compra] +"','"+ [compra.total_compra] + "')";
+                                    
+                                    con.query(query,(err, result) => {
+                                        if(err){
+                                            con.rollback(function() {
+                                                con.release();                                                                                                  
+                                            });
+                                            res.send({status: 0, message: err.sqlMessage}); 
+                                        }else{
+                                            if (result.affectedRows == 1) {
+                                                var query_obtener_compra = "CALL pa_ultima_compra('"+[compra.anhio]+"')";
+                                                con.query(query_obtener_compra, function(err, result) {
+                                                  if (err) { 
+                                                    con.rollback(function() {
+                                                        con.release();                                                                                                  
+                                                    });
+                                                    res.send({status: 0, message: err.sqlMessage}); 
+                                                  }else{
+                                                    if (result[0].length > 0) {
+                                                        var id_compra = result[0][0].id_compra;
+                                                        var cantidad = [compra.detalle.length];
+                                                        var resultad;
+                                                        resultad = insertar_detalle_compra(compra,con,cantidad,id_compra);
+                                                        resultad.then(function(valule1){
+                                                        if(valule1>0){
+                                                           con.commit(function(err) {
+                                                            if (err) { 
+                                                                con.rollback(function() {
+                                                                    con.release();                                                                                                  
+                                                                });
+                                                                res.send({status: 0, message: err.sqlMessage}); 
+                                                            }else{
+                                                                res.send({status: 1, message: 'COMPRA REGISTRADA'});
+                                                            }                                                      
+                                                            
+                                                          });
+                                                        }
+                                                    }     
+                                                        )
+                                                    .catch(function(value){
+                                                        if(value>0){
+                                                           con.rollback(function() {
+                                                            con.release();                                                                                                  
+                                                        });
+                                                        res.send({status: 0, message: err.sqlMessage}); 
+                                                        }
+                                                    }                                     
+                                                        
+                                                        );
+                                                    }
+                                                }
+                                            })
+                                            } else {
+                                                con.rollback(function() {
+                                                    con.release();
+                                                    res.send({status: 2, message: 'COMPRA NO REGISTRADA'});                                                                                                  
+                                                });
+                                            }
+                                        }
+                                    });
+                    }
+                })
             }
+        });
+    };
+
+
+    listar_compras_xperiodo(anhio,res) {
+        connection.acquire((err, con) => {
+            if(err){
+                res.send({status: 0, message:err.sqlMessage});
+            }else{
+            con.query("CALL pa_listar_compras_xperiodo('"+[anhio.datobusqueda]+"')", (err, result) => {
+                con.release();
+                if(err){
+                    res.send({status: 0, message:err.sqlMessage});
+                }else{
+                    if (result[0].length == 0) {
+                        res.send({status: 2, message: 'NO HAY DATOS EN LA TABLA COMPRAS'});
+                    } else {
+                        res.send({status: 1, message: 'CONSULTA EXITOSA',data:result[0]});
+                    }
+                }
+               
+            });
+        }
+        });
+    };
+
+    listar_detalle_compra(compra,res) {
+        connection.acquire((err, con) => {
+            if(err){
+                res.send({status: 0, message:err.sqlMessage});
+            }else{
+            con.query("CALL pa_listar_detalle_compra("+[compra.idbusqueda]+")", (err, result) => {
+                con.release();
+                if(err){
+                    res.send({status: 0, message:err.sqlMessage});
+                }else{
+                    if (result[0].length == 0) {
+                        res.send({status: 2, message: 'NO HAY DATOS EN LA TABLA DETALLE COMPRA'});
+                    } else {
+                        res.send({status: 1, message: 'CONSULTA EXITOSA',data:result[0]});
+                    }
+                }
+               
+            });
+        }
         });
     };
 }

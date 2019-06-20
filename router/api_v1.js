@@ -204,6 +204,15 @@ app.post('/api/tesoreria/insertar_nueva_compra', (req, res) => {
     tesoreria.nva_compra(req.body, res);
 });
 
+//LLAMADA LISTA DE COMPRAS X PERIODO
+app.post('/api/tesoreria/listar_compras_xperiodo', (req, res) => {
+    tesoreria.listar_compras_xperiodo(req.body,res);
+});
+
+//LLAMADA LISTA DE DETALLE X COMPRA
+app.post('/api/tesoreria/listar_detalle_compra', (req, res) => {
+    tesoreria.listar_detalle_compra(req.body,res);
+});
 
 }
 }

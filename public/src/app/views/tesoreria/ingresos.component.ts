@@ -60,7 +60,7 @@ export class IngresosComponent {
     this.recibo.mtotal_recibo=0;
   }
 
-  DataIngresos: any = [];
+DataIngresos: any = [];
  ListarIngresos () {
   this.DatoBusqueda.datobusqueda = localStorage.getItem('_anhio');
   this._IngresosServicios.getLista_Ingresos(this.DatoBusqueda).subscribe(

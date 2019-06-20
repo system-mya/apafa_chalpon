@@ -177,7 +177,7 @@
                                     <div class="input-group">
                                         <input type="text" id="doc_apoderado" name="doc_apoderado" class="form-control"
                                         placeholder="Doc Identidad"  [(ngModel)]="recibo.doc_apoderado" #regdocapoderado="ngModel"
-                                        pattern="[0-9a-zA-Z]{8,15}" onkeyup="verif(this);mayus(this);" maxlength="15">
+                                        pattern="[0-9a-zA-Z ]{8,15}" onkeyup="verif(this);mayus(this);" maxlength="15">
                                       <span class="input-group-append">
                                         <button type="button" class="btn btn-primary" 
                                           (click)="btnBuscar_xDoc(recibo.doc_apoderado)">

@@ -203,9 +203,8 @@ btnDetalle_Alumno(id){
       .then(data => {
         if(data.status==1){
           this.DetalleMatricula = data.data; 
-          console.log(this.DetalleMatricula);
         }else{
-          this.toastr.error(data.message, 'Aviso!');
+          this.DetalleMatricula = []; 
          }
       } )
       .catch(err => console.log(err))
