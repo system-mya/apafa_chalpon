@@ -202,3 +202,15 @@ export class Detalle_Compra
     medida ?: string;
     precio_unit ?: number;
 }
+
+
+export class Reunion
+{
+    id_reunion ?: number;
+    motivo_reunion ?: string;
+    fecha_reunion ?: string;
+    id_concepto ?: number;
+    descipcion_concepto ?: string;
+    monto_concepto ?: string;
+    estado_reunion ?: boolean;
+}

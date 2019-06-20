@@ -1,0 +1,173 @@
+<div class="animated fadeIn">
+  <div class="card">
+    <div class="card-header">
+        <h5><strong>
+            <i class="fa fa-align-justify"></i>&nbsp;&nbsp;Listado de Reuniones
+          </strong>     
+          <span class="float-right">
+            <button class="btn btn-primary btn-xs" style="margin: 0px 20px;"
+            matTooltip="Agregar Nueva Reunión"
+            matTooltipClass="tooltip-mensaje"
+            data-toggle="modal" (click)="btnNueva_Reunion()">
+              <span class="fa fa-plus-square"></span>
+            </button>
+          </span></h5>
+   </div>
+   <div class="card-body">
+      <div class="mat-elevation-z8 table-responsive">
+          <mat-form-field class="example-full-width" style="margin-left: 15px;">
+            <span matPrefix>Buscar: &nbsp;</span>
+            <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Ingrese Dato">
+          </mat-form-field>  
+          <table mat-table [dataSource]="dataSource" matSort id="tabla">
+             
+          
+            <ng-container matColumnDef="motivo_reunion">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" nowrap > Motivo Reunión </th>
+              <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.motivo_reunion}} </td>
+            </ng-container>
+        
+        
+            <ng-container matColumnDef="fecha_reunion">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" nowrap>Fecha Reunión </th>
+              <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.fecha_reunion | date:'dd/MM/yyyy'}}</td>
+            </ng-container>
+            
+            <ng-container matColumnDef="concepto">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" nowrap> Bajo Concepto </th>
+                <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.descripcion_concepto}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="monto_concepto">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" nowrap> Monto Multa </th>
+                  <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.monto_concepto | number : '.2-2'}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="opciones">
+                    <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Opciones </th>
+                    <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> 
+                      <button class="btn btn-info btn-xs distancia_btn_opciones"
+                      matTooltip="Detalle"
+                      matTooltipClass="tooltip-mensaje"
+                      [matTooltipPosition]="positionOptions[3]"
+                      data-toggle="modal" (click)="btnDetalle_Compra(element)">
+                    <span class="fa fa-address-card-o"></span></button>
+                <!-- <button class="btn btn-warning btn-xs distancia_btn_opciones"
+                    matTooltip="Imprimir"
+                    matTooltipClass="tooltip-mensaje"
+                    [matTooltipPosition]="positionOptions[3]"
+                    data-toggle="modal" (click)="generatePDF(element.doc_ingreso)">
+                  <span class="fa fa-print"></span></button> -->
+                 <button class="btn btn-danger btn-xs distancia_btn_opciones"
+                      matTooltip="Eliminar"
+                      matTooltipClass="tooltip-mensaje"
+                      [matTooltipPosition]="positionOptions[3]"
+                      (click)="btnEliminar_Alumno(element.id_alumno)">
+                 <span class="fa fa-trash-o btn-xs"></span>
+                 </button>
+                      
+                    </td>
+                  </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns" style="background-color: #b6b9d0 !important;"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        
+          <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+          
+        </div>
+
+   </div>
+ </div>
+ <!--Modal Registrar Nuevo Año Lectivo-->
+ <div bsModal #NvaReunionModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}" >
+  <div class="modal-dialog modal-md modal-success" role="document">
+    <div class="modal-content">
+     <form name="form" class="formulario" (ngSubmit)="myForm.form.valid && onSubmit(anhiolectivo)" #myForm="ngForm" novalidate autocomplete="off">
+      <div class="modal-header">
+        <h4 class="modal-title">Nueva Reunión</h4>
+        <button type="button" class="close" (click)="frmAnhio_hide('N')" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="form-group col-sm-12 col-md-12">
+            <label for="datos_encrgado_ingreso" style="font-weight: bold;">Motivo Reunión <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+            <input type="text" class="form-control" id="datos_encrgado_ingreso" name="datos_encrgado_ingreso"
+             placeholder="Motivo Reunión" [(ngModel)]="otro.datos_encrgado_ingreso" #regdatos="ngModel" 
+             onkeyup="verif(this)" maxlength="100" [ngClass]="{ 'is-invalid': myForm.submitted && regdatos.invalid }" 
+             pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,100}[\s]*)+$" required>
+             <div *ngIf="myForm.submitted && regdatos.invalid" class="invalid-feedback">
+              <div *ngIf="regdatos.errors.required">Datos Encargado campo requerido</div>
+              <div *ngIf="regdatos.errors.pattern">Formato de Encargado incorrectos</div>
+             </div>
+          </div>
+          
+        </div>
+        <div class="row">
+          <div class="form-group col-sm-12 col-md-5">
+            <label for="postal-code" style="font-weight: bold;">Fecha Reunión <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+               <input class="form-control" id="fecha_nac" type='date' name="fecha_nac" placeholder="date"
+                 [(ngModel)]="alumno.fnac_alumno" #regfecha="ngModel" required>
+               <div *ngIf="myForm.submitted && regfecha.errors?.required" style="
+                   width: 100%;
+                   margin-top: .25rem;
+                   font-size: 80%;
+                   color: #f86c6b;">
+                   Debe ingresar una fecha válida
+               </div>
+          </div>
+          <div class="form-group col-sm-12 col-md-5">
+             <label for="postal-code" style="font-weight: bold;">Hora Reunión <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+             <input type="time" class="form-control" name="eta">
+                <div *ngIf="myForm.submitted && regfecha.errors?.required" style="
+                    width: 100%;
+                    margin-top: .25rem;
+                    font-size: 80%;
+                    color: #f86c6b;">
+                    Debe ingresar una fecha válida
+                </div>
+           </div>
+        </div>
+        <div class="row">
+          <div class="form-group col-sm-12 col-md-8">
+            <label for="postal-code" style="font-weight: bold;">Bajo Concepto <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+            <select class="form-control" id="tipo_compra" name="tipo_compra" 
+            placeholder="Selecionar Perfil" [(ngModel)]="compra.tipo_compra" #tipo_compra="ngModel">
+              <option value="" selected disabled>--Tipo--</option>
+              <option value="B">BOLETA</option>
+              <option value="F">FACTURA</option>
+           </select>
+           <div *ngIf="MyCompra.submitted && compra.tipo_compra==''" style="
+               width: 100%;
+               margin-top: .25rem;
+               font-size: 80%;
+               color: #f86c6b;">
+                 Debe seleccionar una opción
+                </div>
+          </div>
+          <div class="form-group col-sm-12 col-md-4">
+             <label for="postal-code" style="font-weight: bold;">Monto <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+             <input type="time" class="form-control" name="eta">
+                <div *ngIf="myForm.submitted && regfecha.errors?.required" style="
+                    width: 100%;
+                    margin-top: .25rem;
+                    font-size: 80%;
+                    color: #f86c6b;">
+                    Debe ingresar una fecha válida
+                </div>
+           </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="frmAnhio_hide('N')"><span class="fa fa-times-circle"></span> Close</button>
+        <button class="btn btn-primary" [disabled]="usu_invalido"><span class="fa fa-save"></span> Guardar</button>
+      </div>
+    </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
+<!-- /.Fin Modal Nuevo Año Lectivo-->
+</div>
+
+

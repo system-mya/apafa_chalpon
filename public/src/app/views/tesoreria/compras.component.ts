@@ -5,7 +5,7 @@ import {Compras,Detalle_Compra,Busqueda} from '../../app.datos';
 import {MatPaginator, MatSort, MatTableDataSource, TooltipPosition} from '@angular/material';
 import { ToastrService } from 'ngx-toastr';
 import { LoadingBarService } from '@ngx-loading-bar/core';
-import { ComprasService } from './compras.service'
+import { ComprasService } from './compras.service';
 declare var swal: any;
 @Component({
   templateUrl: 'compras.component.html',
@@ -37,7 +37,7 @@ export class ComprasComponent {
     this.ListarComprasxPeriodo();
   }
 
-  DataCompras: any = [];
+ DataCompras: any = [];
  ListarComprasxPeriodo () {
   this.DatoBusqueda.datobusqueda = localStorage.getItem('_anhio');
   this._CompraServicios.getLista_compras_xperiodo(this.DatoBusqueda).subscribe(
@@ -172,8 +172,7 @@ export class ComprasComponent {
 
   public DetalleCompra:any=[];
   public DetalleLista : Detalle_Compra;
-  btnDetalle_Compra(dato){
-     this.DetalleCompraModal.show();
+  btnDetalle_Compra(dato){     
      this.DetalleCompra.tipo_compra = dato.tipo_compra;
      this.DetalleCompra.num_compra = dato.num_compra;
      this.DetalleCompra.razon_social_compra = dato.razon_social_compra;
@@ -188,9 +187,11 @@ export class ComprasComponent {
       data => {
         if (data.status === 1) {
            this.DetalleLista = data.data;
+           this.DetalleCompraModal.show();
         } else {
           this.toastr.error(data.message, 'Aviso!', {
-            positionClass: 'toast-top-right'
+            positionClass: 'toast-top-right',
+            timeOut: 500
           });
         }
   

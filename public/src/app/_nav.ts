@@ -92,7 +92,7 @@ export const navAD: NavData[] = [
       },
       {
         name: 'Reuniones',
-        url: '/tesoreria/modals',
+        url: '/tesoreria/reuniones',
         icon: 'fa fa-bell-o'
       },
       

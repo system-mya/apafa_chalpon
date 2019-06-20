@@ -11,7 +11,7 @@ import { ComprasComponent } from './compras.component';
 
 // Modal Component
 import { ModalModule } from 'ngx-bootstrap/modal';
-import { ModalsComponent } from './modals.component';
+import { ReunionesComponent } from './reuniones.component';
 
 // Notifications Routing
 import { TesoreriaRoutingModule } from './tesoreria-routing.module';
@@ -100,7 +100,7 @@ import { MatAutocompleteModule,
   declarations: [
     IngresosComponent,
     ComprasComponent,
-    ModalsComponent
+    ReunionesComponent
   ]
 })
 export class TesoreriaModule { }

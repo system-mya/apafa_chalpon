@@ -214,5 +214,10 @@ app.post('/api/tesoreria/listar_detalle_compra', (req, res) => {
     tesoreria.listar_detalle_compra(req.body,res);
 });
 
+//LLAMADA LISTA DE REUNIONES X PERIODO
+app.post('/api/tesoreria/listar_reuniones_xperiodo', (req, res) => {
+    tesoreria.listar_reuniones_xperiodo(req.body,res);
+});
+
 }
 }
