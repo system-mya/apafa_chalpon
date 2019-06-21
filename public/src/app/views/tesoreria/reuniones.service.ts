@@ -16,4 +16,9 @@ export class ReunionesService {
     return this._http.post('/api/tesoreria/listar_reuniones_xperiodo',anhio)
     .map(res => res.json())
   }
+
+  public getLista_otros_conceptos(anhio:Busqueda){
+    return this._http.post('/api/tesoreria/listar_otros_conceptos',anhio)
+    .map(res => res.json())
+  }
 }

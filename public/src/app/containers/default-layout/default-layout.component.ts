@@ -32,7 +32,7 @@ export class DefaultLayoutComponent implements OnInit {
   }
 
   ngOnInit() {
-    
+    this.spinner.show();
     this.username=localStorage.getItem('username');
     this.perfil=localStorage.getItem('perfil');
     this.anhio_lectivo=localStorage.getItem('_anhio');

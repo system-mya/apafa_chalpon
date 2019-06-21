@@ -1,3 +1,10 @@
+<ngx-spinner
+bdColor = "rgba(242,245,240,0)"
+size = "medium"
+color = "#65f40b"
+type = "ball-square-spin">
+<p style="color: #65f40b" > Espere Cargando....... </p>
+</ngx-spinner>
 <div class="animated fadeIn">
   <div class="card">
     <div class="card-header">
@@ -82,34 +89,34 @@
  <div bsModal #NvaReunionModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}" >
   <div class="modal-dialog modal-md modal-success" role="document">
     <div class="modal-content">
-     <form name="form" class="formulario" (ngSubmit)="myForm.form.valid && onSubmit(anhiolectivo)" #myForm="ngForm" novalidate autocomplete="off">
+     <form name="form" class="formulario" (ngSubmit)="myForm.form.valid && onSubmit(reunion)" #myForm="ngForm" novalidate autocomplete="off">
       <div class="modal-header">
         <h4 class="modal-title">Nueva Reunión</h4>
-        <button type="button" class="close" (click)="frmAnhio_hide('N')" aria-label="Close">
+        <button type="button" class="close" (click)="frmReunion_hide('N')" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <div class="row">
           <div class="form-group col-sm-12 col-md-12">
-            <label for="datos_encrgado_ingreso" style="font-weight: bold;">Motivo Reunión <i class="fa fa-certificate" style="color:red !important"></i> :</label>
-            <input type="text" class="form-control" id="datos_encrgado_ingreso" name="datos_encrgado_ingreso"
-             placeholder="Motivo Reunión" [(ngModel)]="otro.datos_encrgado_ingreso" #regdatos="ngModel" 
-             onkeyup="verif(this)" maxlength="100" [ngClass]="{ 'is-invalid': myForm.submitted && regdatos.invalid }" 
-             pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,100}[\s]*)+$" required>
-             <div *ngIf="myForm.submitted && regdatos.invalid" class="invalid-feedback">
-              <div *ngIf="regdatos.errors.required">Datos Encargado campo requerido</div>
-              <div *ngIf="regdatos.errors.pattern">Formato de Encargado incorrectos</div>
+            <label for="motivo_reunion" style="font-weight: bold;">Motivo Reunión <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+            <input type="text" class="form-control" id="motivo_reunion" name="motivo_reunion"
+             placeholder="Motivo Reunión" [(ngModel)]="reunion.motivo_reunion" #regmotivo="ngModel" 
+             onkeyup="verif(this)" maxlength="100" [ngClass]="{ 'is-invalid': myForm.submitted && regmotivo.invalid }" 
+             pattern="^([A-ZÁÉÍÓÚ0-9]{1}[a-zñáéíóú0-9]{1,100}[\s]*)+$" required>
+             <div *ngIf="myForm.submitted && regmotivo.invalid" class="invalid-feedback">
+              <div *ngIf="regmotivo.errors.required">Motivo campo requerido</div>
+              <div *ngIf="regmotivo.errors.pattern">Formato Motivo incorrecto</div>
              </div>
           </div>
           
         </div>
         <div class="row">
           <div class="form-group col-sm-12 col-md-5">
-            <label for="postal-code" style="font-weight: bold;">Fecha Reunión <i class="fa fa-certificate" style="color:red !important"></i> :</label>
-               <input class="form-control" id="fecha_nac" type='date' name="fecha_nac" placeholder="date"
-                 [(ngModel)]="alumno.fnac_alumno" #regfecha="ngModel" required>
-               <div *ngIf="myForm.submitted && regfecha.errors?.required" style="
+            <label for="fecha_reunion" style="font-weight: bold;">Fecha Reunión <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+               <input class="form-control" id="fecha_reunion" type='date' name="fecha_reunion" placeholder="date"
+                 [(ngModel)]="reunion.fecha_reunion" #regfecha_reunion="ngModel" required>
+               <div *ngIf="myForm.submitted && regfecha_reunion.errors?.required" style="
                    width: 100%;
                    margin-top: .25rem;
                    font-size: 80%;
@@ -118,27 +125,29 @@
                </div>
           </div>
           <div class="form-group col-sm-12 col-md-5">
-             <label for="postal-code" style="font-weight: bold;">Hora Reunión <i class="fa fa-certificate" style="color:red !important"></i> :</label>
-             <input type="time" class="form-control" name="eta">
-                <div *ngIf="myForm.submitted && regfecha.errors?.required" style="
+             <label for="hora_reunion" style="font-weight: bold;">Hora Reunión <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+             <input type="time" class="form-control" name="hora_reunion"
+             [(ngModel)]="reunion.hora_reunion" #reghora_reunion="ngModel" required>
+                <div *ngIf="myForm.submitted && reghora_reunion.errors?.required" style="
                     width: 100%;
                     margin-top: .25rem;
                     font-size: 80%;
                     color: #f86c6b;">
-                    Debe ingresar una fecha válida
+                    Debe ingresar una hora válida
                 </div>
            </div>
         </div>
         <div class="row">
           <div class="form-group col-sm-12 col-md-8">
-            <label for="postal-code" style="font-weight: bold;">Bajo Concepto <i class="fa fa-certificate" style="color:red !important"></i> :</label>
-            <select class="form-control" id="tipo_compra" name="tipo_compra" 
-            placeholder="Selecionar Perfil" [(ngModel)]="compra.tipo_compra" #tipo_compra="ngModel">
-              <option value="" selected disabled>--Tipo--</option>
-              <option value="B">BOLETA</option>
-              <option value="F">FACTURA</option>
+            <label for="id_concepto" style="font-weight: bold;">Bajo Concepto <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+            <select class="form-control" id="id_concepto" name="id_concepto" 
+            placeholder="Selecionar Perfil" 
+            (change)="obtener_monto(reunion.id_concepto)"
+            [(ngModel)]="reunion.id_concepto" #id_concepto="ngModel">
+            <option value="0" selected disabled>-----Seleccionar Concepto------</option>
+            <option *ngFor="let c of DataConcepto" value="{{c.id_concepto}}">{{c.descripcion_concepto}}</option>
            </select>
-           <div *ngIf="MyCompra.submitted && compra.tipo_compra==''" style="
+           <div *ngIf="myForm.submitted && reunion.id_concepto==''" style="
                width: 100%;
                margin-top: .25rem;
                font-size: 80%;
@@ -147,20 +156,15 @@
                 </div>
           </div>
           <div class="form-group col-sm-12 col-md-4">
-             <label for="postal-code" style="font-weight: bold;">Monto <i class="fa fa-certificate" style="color:red !important"></i> :</label>
-             <input type="time" class="form-control" name="eta">
-                <div *ngIf="myForm.submitted && regfecha.errors?.required" style="
-                    width: 100%;
-                    margin-top: .25rem;
-                    font-size: 80%;
-                    color: #f86c6b;">
-                    Debe ingresar una fecha válida
-                </div>
+             <label for="monto_concepto" style="font-weight: bold;">Monto Multa<i class="fa fa-certificate" style="color:red !important"></i> :</label>
+             <input type="text" class="form-control" id="monto_concepto" name="monto_concepto"
+             placeholder="Monto Multa" [(ngModel)]="reunion.monto_concepto" #regmonto_concepto="ngModel" 
+              maxlength="100" required readonly>
            </div>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" (click)="frmAnhio_hide('N')"><span class="fa fa-times-circle"></span> Close</button>
+        <button type="button" class="btn btn-danger" (click)="frmReunion_hide('N')"><span class="fa fa-times-circle"></span> Close</button>
         <button class="btn btn-primary" [disabled]="usu_invalido"><span class="fa fa-save"></span> Guardar</button>
       </div>
     </form>

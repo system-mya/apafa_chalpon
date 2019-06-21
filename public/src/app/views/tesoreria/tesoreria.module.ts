@@ -12,7 +12,7 @@ import { ComprasComponent } from './compras.component';
 // Modal Component
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ReunionesComponent } from './reuniones.component';
-
+import { NgxSpinnerModule } from 'ngx-spinner';
 // Notifications Routing
 import { TesoreriaRoutingModule } from './tesoreria-routing.module';
 import { MatAutocompleteModule,
@@ -96,6 +96,7 @@ import { MatAutocompleteModule,
       MatFormFieldModule,
     ],
     FormsModule,
+    NgxSpinnerModule
   ],
   declarations: [
     IngresosComponent,

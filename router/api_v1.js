@@ -219,5 +219,10 @@ app.post('/api/tesoreria/listar_reuniones_xperiodo', (req, res) => {
     tesoreria.listar_reuniones_xperiodo(req.body,res);
 });
 
+//LLAMADA LISTA DE OTROS CONCEPTOS X PERIODO
+app.post('/api/tesoreria/listar_otros_conceptos', (req, res) => {
+    tesoreria.listar_otros_conceptos(req.body,res);
+});
+
 }
 }

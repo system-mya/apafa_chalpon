@@ -209,8 +209,16 @@ export class Reunion
     id_reunion ?: number;
     motivo_reunion ?: string;
     fecha_reunion ?: string;
+    hora_reunion ?: string;
     id_concepto ?: number;
     descipcion_concepto ?: string;
     monto_concepto ?: string;
     estado_reunion ?: boolean;
+}
+
+export class Concepto
+{
+  id_concepto ?: number;
+  descripcion_concepto ?: string;
+  monto_concepto ?: number;
 }
