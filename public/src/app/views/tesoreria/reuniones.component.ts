@@ -21,11 +21,11 @@ function bodyRows(data,rowCount) {
           id: j+1,
           apoderado: data[j].apoderado,
           matriculados: data[j].matriculados,
+          firma_apoderado:''
       });
   }
   return body;
 }
-
 @Component({
   templateUrl: 'reuniones.component.html',
   styleUrls: ['tesoreria.css'],
@@ -40,6 +40,9 @@ export class ReunionesComponent implements  OnInit {
   positionOptions: TooltipPosition[] = ['after', 'before', 'above', 'below', 'left', 'right'];
   public DatoBusqueda: Busqueda;
   public reunion : Reunion = {};
+  public panel_tabla:boolean;
+  public panel_detalle:boolean;
+  apoderado: string;
   constructor(private toastr: ToastrService,private loadingBar: LoadingBarService,
     private _ReunionesServicio: ReunionesService,
     @Inject(DOCUMENT) private document: Document,
@@ -48,11 +51,20 @@ export class ReunionesComponent implements  OnInit {
         datobusqueda: ''
       };
     this.ListarReunionesxPeriodo();
+    this.panel_tabla=true;
   }
 
   ngOnInit() {
   
   }
+
+  applyFilter(filterValue: string) {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+  }
+
 
   DataReuniones: any = [];
   ListarReunionesxPeriodo () {
@@ -84,6 +96,9 @@ export class ReunionesComponent implements  OnInit {
   frmReunion_hide(opt){
        if(opt=='N'){
         this.NvaReunionModal.hide();
+       }else{
+         this.panel_tabla=true;
+         this.panel_detalle=false;
        }
   }
 
@@ -227,63 +242,105 @@ export class ReunionesComponent implements  OnInit {
 
   public ImprimirListaFirmas(dato)
   {
-  this.loadingBar.start();
-  const doc = new jspdf({orientation: 'portrait',unit: 'mm',format: 'A5'});
-           var headRows=  [{id:'N°',apoderado: 'Apellidos y Nombres / APODERADO', matriculados: 'ALUMNOS MATRICULADOS'}];
-           var totalPagesExp = "{total_pages_count_string}";
-            var img = new Image();
-            img.src = 'assets/img/cabecera_recibos.png'
-            doc.addImage(img,'png',25,10,150,40);
-            doc.setFontSize(11);
-            doc.setFont('helvetica')
-            doc.setFontType('bold')
-        
-        this.DatoBusqueda.idbusqueda=dato;
-        this.DatoBusqueda.datobusqueda = localStorage.getItem('_anhio');
-        this._ReunionesServicio.listar_apoderados_reunion(this.DatoBusqueda).subscribe(
-        data_lista => {
-          if (data_lista.status === 1) {
-            var contador= data_lista.data.length;
-            doc.autoTable({
-              head: headRows,
-              body: bodyRows(data_lista.data,contador),
-              startY: 110, 
-              showHead: 'firstPage',
-              didDrawPage: function (data) {
-                // Footer
-                var str = "Página " + doc.internal.getNumberOfPages()
-                // Total page number plugin only available in jspdf v1.0+
-                if (typeof doc.putTotalPages === 'function') {
-                    str = str + " de " + totalPagesExp;
+    swal({
+      title: '¿Esta seguro que desea imprimir lista?',
+      type: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, Imprimir!',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+    }).then((result) => {
+      if (result.value == true) {
+        this.loadingBar.start();
+        this.spinner.show();
+        const doc = new jspdf({orientation: 'portrait',unit: 'mm',format: 'A4'});
+                 var headRows=  [{id:'N°',apoderado: 'Apellidos y Nombres / APODERADO', matriculados: 'ALUMNOS MATRICULADOS',firma_apoderado:'FIRMA APODERADO'}];
+                 var totalPagesExp = "{total_pages_count_string}";
+                  var img = new Image();
+                  img.src = 'assets/img/cabecera_recibos.png'
+                  doc.addImage(img,'png',25,10,150,40);
+                  doc.setFontSize(11);
+                  doc.setFont('helvetica')
+                  doc.setFontType('bold')
+                  doc.text(70, 60, 'Fecha y Hora: ' + formatDate(dato.fecha_reunion,'dd/MM/yyyy h:mm a','en-US'));
+                  var splitTitle = doc.splitTextToSize('Motivo Reunión: ' + dato.motivo_reunion, 160);
+                  doc.text(25, 70, splitTitle);
+                  doc.text(25, 85, 'Bajo Concepto: '+ dato.descripcion_concepto);
+                  doc.text(25, 95, 'Monto Multa: '+ dato.monto_concepto.toFixed(2));
+                  this.DatoBusqueda.idbusqueda=dato.id_reunion;
+              this.DatoBusqueda.datobusqueda = localStorage.getItem('_anhio');
+              this._ReunionesServicio.listar_apoderados_reunion(this.DatoBusqueda).subscribe(
+              data_lista => {
+                if (data_lista.status === 1) {
+                  var contador= data_lista.data.length;
+                  doc.autoTable({
+                    head: headRows,
+                    body: bodyRows(data_lista.data,contador),
+                    startY: 110, 
+                    showHead: 'firstPage',
+                    theme: 'grid',
+                    didDrawPage: function (data) {
+                      // Footer
+                      var str = "Página " + doc.internal.getNumberOfPages()
+                      // Total page number plugin only available in jspdf v1.0+
+                      if (typeof doc.putTotalPages === 'function') {
+                          str = str + " de " + totalPagesExp;
+                      }
+                      doc.setFontSize(10);
+                
+                      // jsPDF 1.4+ uses getWidth, <1.4 uses .width
+                      var pageSize = doc.internal.pageSize;
+                      var pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
+                      doc.text(str, data.settings.margin.left, pageHeight - 10);
+                  },
+                  bodyStyles: {valign: 'top'},
+                });
+               
+               
+                    // Total page number plugin only available in jspdf v1.0+
+                    if (typeof doc.putTotalPages === 'function') {
+                        doc.putTotalPages(totalPagesExp);
+                    }
+                    setTimeout(() => {
+                    this.spinner.hide();
+                    doc.output('save', dato.fecha_reunion+'.pdf');
+                    this.toastr.success('Lista Generada', 'Aviso!',{positionClass: 'toast-top-right',timeOut: 500});
+                   
+                    this.loadingBar.complete();
+                    this.document.documentElement.scrollTop = 0;
+                  }, 5000);
+                  }else{
+                  this.toastr.error(data_lista.message, 'Aviso!');
                 }
-                doc.setFontSize(10);
-          
-                // jsPDF 1.4+ uses getWidth, <1.4 uses .width
-                var pageSize = doc.internal.pageSize;
-                var pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
-                doc.text(str, data.settings.margin.left, pageHeight - 10);
-            },
-            bodyStyles: {valign: 'top'},
-                  styles: {cellWidth: 'wrap', rowPageBreak: 'auto', halign: 'justify'},
-                  columnStyles: {text: {cellWidth: 'auto'}}
-          });
-         
-         
-              // Total page number plugin only available in jspdf v1.0+
-              if (typeof doc.putTotalPages === 'function') {
-                  doc.putTotalPages(totalPagesExp);
-              }
+              }) 
+      }
+    });
+  }
 
-              doc.output('save', 'lista'+'.pdf');
-              this.toastr.success('Lista Generada', 'Aviso!',{positionClass: 'toast-top-right',timeOut: 500});
-             
-              this.loadingBar.complete();
-              this.document.documentElement.scrollTop = 0;
-            }else{
-            this.toastr.error(data_lista.message, 'Aviso!');
-          }
-        })      
-           
-           
+  
+  public Detalle : Reunion = {};
+  public DataAsistentes : any = [];
+  Detalle_Lista_Reunion(dato){
+     
+      this.Detalle.motivo_reunion=dato.motivo_reunion;
+      this.Detalle.fecha_reunion=formatDate(dato.fecha_reunion,'dd/MM/yyyy h:mm a','en-US');
+      this.Detalle.descipcion_concepto=dato.descipcion_concepto;
+      this.Detalle.monto_concepto=dato.monto_concepto.toFixed(2);
+      this.DatoBusqueda.idbusqueda = dato.id_reunion;
+      this.DatoBusqueda.datobusqueda = localStorage.getItem('_anhio');
+      this.loadingBar.start();
+              this._ReunionesServicio.listar_apoderados_reunion(this.DatoBusqueda).subscribe(
+              data_lista => {
+                if (data_lista.status === 1) {
+                    this.DataAsistentes=data_lista.data;
+                    this.panel_tabla=false;
+                    this.panel_detalle=true;
+                    this.loadingBar.complete();
+                  }else{
+                  this.toastr.error(data_lista.message, 'Aviso!');
+                }
+              }) 
   }
 }

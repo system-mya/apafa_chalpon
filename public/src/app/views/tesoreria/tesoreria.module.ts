@@ -13,6 +13,7 @@ import { ComprasComponent } from './compras.component';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ReunionesComponent } from './reuniones.component';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { TableFilterPipe } from './table-filter.pipe';
 // Notifications Routing
 import { TesoreriaRoutingModule } from './tesoreria-routing.module';
 import { MatAutocompleteModule,
@@ -101,7 +102,8 @@ import { MatAutocompleteModule,
   declarations: [
     IngresosComponent,
     ComprasComponent,
-    ReunionesComponent
+    ReunionesComponent,
+    TableFilterPipe
   ]
 })
 export class TesoreriaModule { }

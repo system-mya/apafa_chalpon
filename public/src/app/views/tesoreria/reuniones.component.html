@@ -6,7 +6,7 @@ type = "ball-clip-rotate-multiple">
 <p style="color: #e80606" > Espere Cargando....... </p>
 </ngx-spinner>
 <div class="animated fadeIn">
-  <div class="card">
+  <div class="card" *ngIf="panel_tabla">
     <div class="card-header">
         <h5><strong>
             <i class="fa fa-align-justify"></i>&nbsp;&nbsp;Listado de Reuniones
@@ -61,12 +61,19 @@ type = "ball-clip-rotate-multiple">
                       data-toggle="modal" (click)="Generar_Lista_Firmas(element.id_reunion)">
                     <span class="fa fa-refresh"></span></button>
                 <button class="btn btn-success btn-xs distancia_btn_opciones"
-                    matTooltip="Imprimir"
+                    matTooltip="Imprimir Lista"
                     matTooltipClass="tooltip-mensaje"
                     [matTooltipPosition]="positionOptions[3]"
                     [disabled]="element.lista_reunion.data[0]==0"
-                    data-toggle="modal" (click)="ImprimirListaFirmas(element.id_reunion)">
+                    data-toggle="modal" (click)="ImprimirListaFirmas(element)">
                   <span class="fa fa-print"></span></button>
+               <button class="btn btn-info btn-xs distancia_btn_opciones"
+                  matTooltip="Registrar Asistencia"
+                  matTooltipClass="tooltip-mensaje"
+                  [matTooltipPosition]="positionOptions[3]"
+                  [disabled]="element.lista_reunion.data[0]==0"
+                  data-toggle="modal" (click)="Detalle_Lista_Reunion(element)">
+                <span class="fa fa-save"></span></button>
                  <button class="btn btn-danger btn-xs distancia_btn_opciones"
                       matTooltip="Eliminar"
                       matTooltipClass="tooltip-mensaje"
@@ -174,6 +181,105 @@ type = "ball-clip-rotate-multiple">
   </div><!-- /.modal-dialog -->
 </div>
 <!-- /.Fin Modal Nuevo Año Lectivo-->
+ <!-- Detalle de Lista de Reunion-->
+ <div class="card" *ngIf="panel_detalle" id="card-edit">
+  <div class="card-header">
+        <h5><strong>
+          <i class="fa fa-list-alt"></i>&nbsp;&nbsp;DETALLE DE LA REUNIÓN
+        </strong></h5>
+        </div>
+        <div class="car-body">
+            <div class="card-header estilo-cabecera">DATOS DE LA REUNION</div>
+            <div class="card-body">
+              <div class="row">
+                  <div class="col-xs-12 col-md-6 col-lg-6" style="border:0px;">
+                     <div class="row">
+                        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <label for="motivo_reunion" style="font-weight: bold;">Motivo Reunión:</label>
+                            <input type="text" class="form-control" id="doc_alumno" name="doc_alumno"
+                            placeholder="Motivo Reunión" [(ngModel)]="Detalle.motivo_reunion" 
+                            readonly maxlength="100">
+                           </div>
+                     </div>
+                      <div class="row">
+                          <div class="form-group col-sm-6">
+                              <label for="fecha_reunion" style="font-weight: bold;">Fecha y Hora:</label>
+                              <input type="text" class="form-control" id="fecha_reunion" name="fecha_reunion" 
+                              placeholder="Apellidos Completos" [(ngModel)]="Detalle.fecha_reunion"  
+                              maxlength="60" readonly>
+                          </div>
+                      </div>
+                    </div>
+      <div class="col-xs-12 col-md-6 col-lg-6" style="border:0px;">
+                    <div class="row">
+                        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <label for="descripcion_concepto" style="font-weight: bold;">Bajo Concepto :</label>
+                            <input type="text" class="form-control" id="descripcion_concepto" name="descripcion_concepto"
+                            placeholder="Bajo Concepto"  [(ngModel)]="Detalle.descripcion_concepto" maxlength="50" readonly>
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="form-group col-sm-6">
+                              <label for="monto_concepto" style="font-weight: bold;">Monto Multa:</label>
+                              <input type="text" class="form-control" id="monto_concepto" name="monto_concepto"
+                            placeholder="Monto Multa"  [(ngModel)]="Detalle.monto_concepto" maxlength="10" readonly>
+                          </div>
+                      </div>
+                    </div>
+              </div>
+            </div>
+            <div class="card-header estilo-cabecera">LISTA DE APODERADOS</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="form-group col-sm-6">
+                        <label for="monto_concepto" style="font-weight: bold;">Buscar Apoderado:</label>
+                      <input type="text" class="form-control" name="searchString" placeholder="Ingrese Datos Apoderado" [(ngModel)]="searchString">
+                    </div>
+                </div>
+                
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th width="10%">N°</th>
+                    <th width="30%">Apoderado</th>
+                    <th width="40%">Alumnos Matriculados</th>
+                    <th width="20%">Asistio</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of DataAsistentes | filter : 'apoderado' : searchString;let indice=index;">
+                      <td>
+                        {{indice + 1}}                        
+                      </td>
+                      <td>
+                        {{item.apoderado}}                        
+                      </td>
+                      <td>
+                        {{item.matriculados}}                        
+                      </td>
+                      <td>
+                        <!-- <span class="badge badge-success" [ngStyle]="{'background-color':item.estado === 'ACTIVO' ? 'green' : 'red' }">{{item.estado}}</span> -->
+                        <label class="switch switch-label switch-success" style="width: 78px;">
+                            <input checked="" [checked]="item.asistio_reunion.data==1" class="switch-input" type="checkbox" 
+                            (click)="Cambiar_Estado()">
+                            <span class="switch-slider" data-checked="SI" data-unchecked="NO"></span>
+                          </label>
+                      </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+              <div class="card-footer" style="text-align: right;">
+                  <button type="button" class="btn btn-danger" style="margin: 0px 20px;"
+                  (click)="frmReunion_hide('D')">
+                      <span class="fa fa-times-circle"></span>
+                  Cancelar</button>
+                
+              </div>
+              
+        </div>
+</div>
+ <!--FIN Detalle de Lista de Reunion-->
 </div>
 
 

@@ -240,7 +240,7 @@ DataIngresos: any = [];
   {
   this.loadingBar.start();
   const doc = new jspdf({orientation: 'portrait',unit: 'mm',format: 'A5'});
-  this.DatoBusqueda.idbusqueda=id;
+    this.DatoBusqueda.idbusqueda=id;
     this._ApoderadoServicios.detalle_apoderado(this.DatoBusqueda)
     .then(data => {
       if(data.status==1){
