@@ -213,6 +213,7 @@ export class Reunion
     id_concepto ?: number;
     descipcion_concepto ?: string;
     monto_concepto ?: string;
+    lista_reunion ?: boolean;
     estado_reunion ?: boolean;
 }
 

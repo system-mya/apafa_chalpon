@@ -113,6 +113,34 @@ function hoyFecha(){
 
     
   }
+  
+  function insertar_reunion_apoderado(con,data,id_reunion) {
+    var buenas=0;
+    var malos=0;
+    return new Promise(function (resolve, reject) {
+    for(i=0;i<data.length;i++){       
+                  var query="CALL pa_insertar_reunion_apoderado("+id_reunion
+                  +"," + data[i].id_apoderado +")";
+                     con.query(query ,function(err,result) {                     
+                        if (err) { 
+                            malos=malos+1;
+                            return reject(malos);
+                        }else{
+                             if (result.affectedRows == 1) {                                 
+                                buenas= buenas + 1;
+                                return resolve(buenas);                                                                             
+                              }
+                                  
+                           }
+                      });   
+             
+    }
+    
+})
+
+    
+  }
+  
 class Tesoreria {
     listar_ingresos_xperiodo(anhio,res) {
         connection.acquire((err, con) => {
@@ -552,6 +580,123 @@ class Tesoreria {
                 }else{
                     if (result[0].length == 0) {
                         res.send({status: 2, message: 'NO HAY OTROS CONCEPTOS'});
+                    } else {
+                        res.send({status: 1, message: 'CONSULTA EXITOSA',data:result[0]});
+                    }
+                }
+               
+            });
+        }
+        });
+    };
+
+    nva_reunion(reunion, res) {
+        connection.acquire((err, con) => {
+            if(err){
+                res.send({status: 0, message: err.sqlMessage});
+            }else{                   
+               var query = "CALL pa_insertar_reunion('"+ [reunion.motivo_reunion] 
+                        +"','"+ [reunion.fecha_reunion] + "','"+ [reunion.hora_reunion] 
+                        + "',"+ [reunion.id_concepto] + ")";
+                        con.query(query,(err, result) => {
+                            con.release();
+                            if(err){
+                                res.send({status: 0, message:  err.sqlMessage});
+                            }else{
+                                if (result.affectedRows == 1) {
+                                    res.send({status: 1, message: 'Reunión Registrada'});
+                                } else {
+                                    res.send({status: 2, message: 'Reunión No Registrada'});
+                                }
+                            }
+                        });
+            }
+        });
+    };
+
+    generar_lista_firmas_apoderados(dato,res) {
+        connection.acquire((err, con) => {
+            if(err){
+                res.send({status: 0, message:err.sqlMessage});
+            }else{
+                con.beginTransaction(function(err) {
+                    if (err) {  
+                        con.rollback(function() {
+                            con.release();                                                                                                  
+                        });
+                        res.send({status: 0, message: err.sqlMessage}); 
+                    }else{
+                        con.query("CALL pa_listar_apoderados_matricula('"+[dato.datobusqueda]+"')", (err, result) => {
+                            con.release();
+                            if(err){
+                                res.send({status: 0, message:err.sqlMessage});
+                            }else{
+                                if (result[0].length == 0) {
+                                    res.send({status: 2, message: 'NO HAY OTROS CONCEPTOS'});
+                                } else {
+                                    
+                                    var resultad;
+                                    resultad = insertar_reunion_apoderado(con,result[0],[dato.idbusqueda]);
+                                    resultad.then(function(valule1){
+                                    if(valule1>0){
+                                        con.query("CALL pa_cambiar_lista_reunion("+[dato.idbusqueda]+")", (err, result) => {
+                                            if(err){
+                                                con.rollback(function() {   
+                                                    res.send({status: 0, message:err.sqlMessage});
+                                                }); 
+                                            }else{
+                                                if (result.affectedRows == 0) {
+                                                    con.rollback(function() {   
+                                                        res.send({status: 0, message: 'LISTA NO GENERADA'});                                                                                               
+                                                    });  
+                                                }else{
+                                                    con.commit(function(err) {
+                                                        if (err) { 
+                                                            con.rollback(function() {
+                                                                con.release();                                                                                                  
+                                                            });
+                                                            res.send({status: 0, message: err.sqlMessage}); 
+                                                        }else{
+                                                            res.send({status: 1, message: 'LISTA GENERADA'});
+                                                        }                                                      
+                                                      });
+                                                }
+                                            }
+    
+                                        })
+                                      
+                                    }
+                                }).catch(function(value){
+                                    if(value>0){
+                                        con.rollback(function() {   
+                                            res.send({status: 0, message: 'LISTA NO GENERADA'});                                                                                               
+                                        });
+                                        
+                                        }
+                                    });
+                                }
+                            }
+                           
+                        });
+                    }
+                    
+                })
+           }
+        });
+    };
+
+    listar_apoderados_reunion(dato,res) {
+        connection.acquire((err, con) => {
+            if(err){
+                res.send({status: 0, message:err.sqlMessage});
+            }else{
+            con.query("CALL pa_listar_apoderados_reunion("+[dato.idbusqueda]+",'"+[dato.datobusqueda]+"')", (err, result) => {
+                con.release();
+                if(err){
+                    res.send({status: 0, message:err.sqlMessage});
+                }else{
+                    if (result[0].length == 0) {
+                        res.send({status: 2, message: 'NO HAY DETALLE REUNION'});
                     } else {
                         res.send({status: 1, message: 'CONSULTA EXITOSA',data:result[0]});
                     }

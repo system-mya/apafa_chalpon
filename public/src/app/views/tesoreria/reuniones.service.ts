@@ -3,7 +3,7 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/delay';
 import { Http } from '@angular/http';
 import "rxjs/add/operator/map";
-import { Compras,Busqueda } from '../../app.datos';
+import { Reunion,Busqueda } from '../../app.datos';
 
 @Injectable({
   providedIn: 'root'
@@ -21,4 +21,21 @@ export class ReunionesService {
     return this._http.post('/api/tesoreria/listar_otros_conceptos',anhio)
     .map(res => res.json())
   }
+
+  public nva_reunion(reunion:Reunion){
+    return this._http.post('/api/tesoreria/insertar_nva_reunion',reunion)
+     .map(data => data.json()).toPromise()
+  }
+
+  public generar_lista_firmas_reunion(dato:Busqueda){
+    return this._http.post('/api/tesoreria/generar_lista_firmas',dato)
+     .map(data => data.json()).toPromise()
+  }
+
+  public listar_apoderados_reunion(dato:Busqueda){
+    return this._http.post('/api/tesoreria/listar_apoderados_reunion',dato)
+    .map(res => res.json())
+  }
+
+
 }

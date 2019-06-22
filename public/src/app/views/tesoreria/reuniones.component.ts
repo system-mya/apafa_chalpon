@@ -8,6 +8,23 @@ import { ToastrService } from 'ngx-toastr';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 declare var swal: any;
+import * as jspdf from 'jspdf';
+import 'jspdf-autotable';
+import { formatDate } from '@angular/common';
+
+function bodyRows(data,rowCount) {
+  rowCount = rowCount;
+  console.log(data);
+  let body = [];
+  for (var j = 0; j < rowCount; j++) {
+      body.push({
+          id: j+1,
+          apoderado: data[j].apoderado,
+          matriculados: data[j].matriculados,
+      });
+  }
+  return body;
+}
 
 @Component({
   templateUrl: 'reuniones.component.html',
@@ -16,7 +33,7 @@ declare var swal: any;
 })
 export class ReunionesComponent implements  OnInit {
   @ViewChild('NvaReunionModal') public NvaReunionModal: ModalDirective;
-  displayedColumns: string[] = ['motivo_reunion', 'fecha_reunion', 'concepto', 'monto_concepto','opciones'];
+  displayedColumns: string[] = ['motivo_reunion', 'fecha_reunion','concepto', 'monto_concepto','opciones'];
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -72,7 +89,7 @@ export class ReunionesComponent implements  OnInit {
 
   DataConcepto : any = [];
   ListarOtrosConceptos(){
-    this.DatoBusqueda.datobusqueda = localStorage.getItem('_anhio');
+   this.DatoBusqueda.datobusqueda = localStorage.getItem('_anhio');
    this._ReunionesServicio.getLista_otros_conceptos(this.DatoBusqueda).subscribe(
      data => {
        if(data.status==1){
@@ -98,6 +115,175 @@ export class ReunionesComponent implements  OnInit {
 
 
   onSubmit(form:Reunion){
-       console.log(form);
+    this.loadingBar.start();    
+    swal({
+      title: '¿Esta seguro que desea guardar?',
+      type: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, Guardar!',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+    }).then((result) => {
+      if (result.value == true) {
+        //form.contador=0;
+        this.spinner.show();
+        this._ReunionesServicio.nva_reunion(form)
+        .then(data => {
+          if (data.status == 1) {
+            this.NvaReunionModal.hide();
+            setTimeout(() => {
+            swal({
+              title: 'Aviso!',
+              text: data.message,
+              type: 'success',
+              allowOutsideClick: false,
+              allowEscapeKey:false
+            }) 
+              this.spinner.hide();
+              
+            this.loadingBar.complete();
+            this.document.documentElement.scrollTop = 0;
+            this.ListarReunionesxPeriodo();
+            }, 5000);
+            
+          } else {
+              swal({
+                title: 'Aviso!',
+                html:
+                '<span style="color:red">' +
+                data.message +
+                '</span>',
+                type: 'error',
+                allowOutsideClick: false,
+                allowEscapeKey: false
+              });
+          }
+        } )
+        .catch(err => console.log(err));
+      }
+    });
+  }
+
+  Generar_Lista_Firmas(dato){       
+    swal({
+      title: '¿Esta seguro que desea generar lista?',
+      type: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, Generar!',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+    }).then((result) => {
+      if (result.value == true) {
+        this.DatoBusqueda.idbusqueda = dato;
+        this.DatoBusqueda.datobusqueda = localStorage.getItem('_anhio');
+        this.loadingBar.start(); 
+        this.spinner.show();
+        this._ReunionesServicio.generar_lista_firmas_reunion(this.DatoBusqueda)
+        .then(data => {
+          if (data.status == 1) {
+            this.NvaReunionModal.hide();
+            setTimeout(() => {
+            swal({
+              title: 'Aviso!',
+              text: data.message,
+              type: 'success',
+              allowOutsideClick: false,
+              allowEscapeKey:false
+            }) 
+              this.spinner.hide();
+              
+            this.loadingBar.complete();
+            this.document.documentElement.scrollTop = 0;
+            this.ListarReunionesxPeriodo();
+            }, 5000);
+            
+          } else {
+            setTimeout(() => {
+              swal({
+                title: 'Aviso!',
+                html:
+                '<span style="color:red">' +
+                data.message +
+                '</span>',
+                type: 'error',
+                allowOutsideClick: false,
+                allowEscapeKey: false
+              });
+              this.spinner.hide();              
+              this.loadingBar.complete();
+              this.document.documentElement.scrollTop = 0;
+              this.ListarReunionesxPeriodo();
+              }, 5000);
+          }
+        } )
+        .catch(err => console.log(err));
+      }
+    });
+  }
+
+  public ImprimirListaFirmas(dato)
+  {
+  this.loadingBar.start();
+  const doc = new jspdf({orientation: 'portrait',unit: 'mm',format: 'A5'});
+           var headRows=  [{id:'N°',apoderado: 'Apellidos y Nombres / APODERADO', matriculados: 'ALUMNOS MATRICULADOS'}];
+           var totalPagesExp = "{total_pages_count_string}";
+            var img = new Image();
+            img.src = 'assets/img/cabecera_recibos.png'
+            doc.addImage(img,'png',25,10,150,40);
+            doc.setFontSize(11);
+            doc.setFont('helvetica')
+            doc.setFontType('bold')
+        
+        this.DatoBusqueda.idbusqueda=dato;
+        this.DatoBusqueda.datobusqueda = localStorage.getItem('_anhio');
+        this._ReunionesServicio.listar_apoderados_reunion(this.DatoBusqueda).subscribe(
+        data_lista => {
+          if (data_lista.status === 1) {
+            var contador= data_lista.data.length;
+            doc.autoTable({
+              head: headRows,
+              body: bodyRows(data_lista.data,contador),
+              startY: 110, 
+              showHead: 'firstPage',
+              didDrawPage: function (data) {
+                // Footer
+                var str = "Página " + doc.internal.getNumberOfPages()
+                // Total page number plugin only available in jspdf v1.0+
+                if (typeof doc.putTotalPages === 'function') {
+                    str = str + " de " + totalPagesExp;
+                }
+                doc.setFontSize(10);
+          
+                // jsPDF 1.4+ uses getWidth, <1.4 uses .width
+                var pageSize = doc.internal.pageSize;
+                var pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
+                doc.text(str, data.settings.margin.left, pageHeight - 10);
+            },
+            bodyStyles: {valign: 'top'},
+                  styles: {cellWidth: 'wrap', rowPageBreak: 'auto', halign: 'justify'},
+                  columnStyles: {text: {cellWidth: 'auto'}}
+          });
+         
+         
+              // Total page number plugin only available in jspdf v1.0+
+              if (typeof doc.putTotalPages === 'function') {
+                  doc.putTotalPages(totalPagesExp);
+              }
+
+              doc.output('save', 'lista'+'.pdf');
+              this.toastr.success('Lista Generada', 'Aviso!',{positionClass: 'toast-top-right',timeOut: 500});
+             
+              this.loadingBar.complete();
+              this.document.documentElement.scrollTop = 0;
+            }else{
+            this.toastr.error(data_lista.message, 'Aviso!');
+          }
+        })      
+           
+           
   }
 }

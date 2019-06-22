@@ -224,5 +224,19 @@ app.post('/api/tesoreria/listar_otros_conceptos', (req, res) => {
     tesoreria.listar_otros_conceptos(req.body,res);
 });
 
+//LLAMADA LISTA DE OTROS CONCEPTOS X PERIODO
+app.post('/api/tesoreria/insertar_nva_reunion', (req, res) => {
+    tesoreria.nva_reunion(req.body,res);
+});
+
+//LLAMADA GENERAR LISTA DE FIRMAS PADRES
+app.post('/api/tesoreria/generar_lista_firmas', (req, res) => {
+    tesoreria.generar_lista_firmas_apoderados(req.body,res);
+});
+
+//LLAMADA LISTAR APODERADOS REUNION
+app.post('/api/tesoreria/listar_apoderados_reunion', (req, res) => {
+    tesoreria.listar_apoderados_reunion(req.body,res);
+});
 }
 }
