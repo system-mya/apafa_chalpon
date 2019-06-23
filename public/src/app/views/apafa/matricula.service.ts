@@ -3,7 +3,7 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/delay';
 import { Http } from '@angular/http';
 import "rxjs/add/operator/map";
-import { Matricula,Busqueda } from '../../app.datos';
+import { Matricula,Busqueda,Libro_Matricula } from '../../app.datos';
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +29,21 @@ public getListar_tipo_relacion(){
 
 public nva_matricula(matricula:Matricula){
   return this._http.post('/api/apafa/insertar_matricula',matricula)
+   .map(data => data.json()).toPromise()
+}
+
+public libros_xgrado(dato:Busqueda){
+  return this._http.post('/api/apafa/listar_libros_xgrado',dato)
+   .map(data => data.json()).toPromise()
+}
+
+public libros_xmatricula(dato:Busqueda){
+  return this._http.post('/api/apafa/listar_libros_xmatricula',dato)
+   .map(data => data.json()).toPromise()
+}
+
+public insertar_libro_xmatricula(libro:Libro_Matricula){
+  return this._http.post('/api/apafa/insertar_libro_matricula',libro)
    .map(data => data.json()).toPromise()
 }
 

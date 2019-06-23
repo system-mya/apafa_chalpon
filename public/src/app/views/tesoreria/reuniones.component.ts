@@ -19,6 +19,7 @@ function bodyRows(data,rowCount) {
   for (var j = 0; j < rowCount; j++) {
       body.push({
           id: j+1,
+          doc_apoderado:data[j].doc_apoderado,
           apoderado: data[j].apoderado,
           matriculados: data[j].matriculados,
           firma_apoderado:''
@@ -85,7 +86,7 @@ export class ReunionesComponent implements  OnInit {
     }
   );
 }
-
+searchString:string;
   btnNueva_Reunion(){
     //this.spinner.show();
     this.NvaReunionModal.show();
@@ -99,6 +100,7 @@ export class ReunionesComponent implements  OnInit {
        }else{
          this.panel_tabla=true;
          this.panel_detalle=false;
+         this.searchString='';
        }
   }
 
@@ -256,7 +258,7 @@ export class ReunionesComponent implements  OnInit {
         this.loadingBar.start();
         this.spinner.show();
         const doc = new jspdf({orientation: 'portrait',unit: 'mm',format: 'A4'});
-                 var headRows=  [{id:'N°',apoderado: 'Apellidos y Nombres / APODERADO', matriculados: 'ALUMNOS MATRICULADOS',firma_apoderado:'FIRMA APODERADO'}];
+                 var headRows=  [{id:'N°',doc_apoderado:'Doc. Apoderado',apoderado: 'APODERADO', matriculados: 'ALUMNOS MATRICULADOS',firma_apoderado:'FIRMA APODERADO'}];
                  var totalPagesExp = "{total_pages_count_string}";
                   var img = new Image();
                   img.src = 'assets/img/cabecera_recibos.png'
@@ -281,6 +283,13 @@ export class ReunionesComponent implements  OnInit {
                     startY: 110, 
                     showHead: 'firstPage',
                     theme: 'grid',
+                    headStyles: {
+                      cellWidth: 'wrap'
+                   },
+                   bodyStyles: {
+                    halign: 'justify'
+                     },
+                    // Override the default above for the text column
                     didDrawPage: function (data) {
                       // Footer
                       var str = "Página " + doc.internal.getNumberOfPages()
@@ -295,7 +304,6 @@ export class ReunionesComponent implements  OnInit {
                       var pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
                       doc.text(str, data.settings.margin.left, pageHeight - 10);
                   },
-                  bodyStyles: {valign: 'top'},
                 });
                
                
@@ -323,10 +331,10 @@ export class ReunionesComponent implements  OnInit {
   public Detalle : Reunion = {};
   public DataAsistentes : any = [];
   Detalle_Lista_Reunion(dato){
-     
+      this.Detalle.id_reunion=dato.id_reunion;
       this.Detalle.motivo_reunion=dato.motivo_reunion;
       this.Detalle.fecha_reunion=formatDate(dato.fecha_reunion,'dd/MM/yyyy h:mm a','en-US');
-      this.Detalle.descipcion_concepto=dato.descipcion_concepto;
+      this.Detalle.descripcion_concepto=dato.descripcion_concepto;
       this.Detalle.monto_concepto=dato.monto_concepto.toFixed(2);
       this.DatoBusqueda.idbusqueda = dato.id_reunion;
       this.DatoBusqueda.datobusqueda = localStorage.getItem('_anhio');
@@ -342,5 +350,60 @@ export class ReunionesComponent implements  OnInit {
                   this.toastr.error(data_lista.message, 'Aviso!');
                 }
               }) 
+  }
+
+  Marcar_Asistencia(detalle,dato){
+    console.log(this.Detalle.id_reunion,dato);
+    this.loadingBar.start();
+   if(dato[0]==1){
+    this.DatoBusqueda.datobusqueda='0'+'-'+this.Detalle.id_reunion;
+   }else{
+    this.DatoBusqueda.datobusqueda='1'+'-'+this.Detalle.id_reunion;
+   }
+      this.DatoBusqueda.idbusqueda=detalle.id_apoderado;
+        //console.log(this.DatoBusqueda.idbusqueda);
+        //this.DetUsuarioModal.show(); 
+          this._ReunionesServicio.registrar_asistencia(this.DatoBusqueda)
+          .then(data => {
+            if(data.status==1){
+              this.toastr.success(data.message, 'Aviso!',{
+                positionClass: 'toast-top-right',
+                timeOut: 500
+              });
+              this.DatoBusqueda.idbusqueda = this.Detalle.id_reunion;
+              this.DatoBusqueda.datobusqueda = localStorage.getItem('_anhio');
+                      this._ReunionesServicio.listar_apoderados_reunion(this.DatoBusqueda).subscribe(
+                      data_lista => {
+                        if (data_lista.status === 1) {
+                            this.DataAsistentes=data_lista.data;
+                            this.panel_tabla=false;
+                            this.panel_detalle=true;
+                            this.loadingBar.complete();
+                          }else{
+                          this.toastr.error(data_lista.message, 'Aviso!');
+                        }
+                      }) 
+            }else{
+              this.toastr.error(data.message, 'Aviso!',{
+                positionClass: 'toast-top-right',
+                timeOut: 500
+              });
+              this.DatoBusqueda.idbusqueda = this.Detalle.id_reunion;
+              this.DatoBusqueda.datobusqueda = localStorage.getItem('_anhio');
+                      this._ReunionesServicio.listar_apoderados_reunion(this.DatoBusqueda).subscribe(
+                      data_lista => {
+                        if (data_lista.status === 1) {
+                            this.DataAsistentes=data_lista.data;
+                            this.panel_tabla=false;
+                            this.panel_detalle=true;
+                            this.loadingBar.complete();
+                          }else{
+                          this.toastr.error(data_lista.message, 'Aviso!');
+                        }
+                      }) 
+              this.loadingBar.complete();
+             }
+          } )
+          .catch(err => console.log(err))
   }
 }

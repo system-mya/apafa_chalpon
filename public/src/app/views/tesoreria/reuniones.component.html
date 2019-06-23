@@ -186,7 +186,13 @@ type = "ball-clip-rotate-multiple">
   <div class="card-header">
         <h5><strong>
           <i class="fa fa-list-alt"></i>&nbsp;&nbsp;DETALLE DE LA REUNIÓN
-        </strong></h5>
+        </strong>
+        <span class="float-right">
+          <button type="button" class="btn btn-danger" style="margin: 0px 20px;"
+                  (click)="frmReunion_hide('D')">
+                      <span class="fa fa-reply-all"></span>
+                  Regresar</button>
+        </span></h5>
         </div>
         <div class="car-body">
             <div class="card-header estilo-cabecera">DATOS DE LA REUNION</div>
@@ -236,20 +242,24 @@ type = "ball-clip-rotate-multiple">
                       <input type="text" class="form-control" name="searchString" placeholder="Ingrese Datos Apoderado" [(ngModel)]="searchString">
                     </div>
                 </div>
-                
+                <div class="table-responsive">  
               <table class="table">
                 <thead>
                   <tr>
                     <th width="10%">N°</th>
-                    <th width="30%">Apoderado</th>
+                    <th width="15%">Doc. Apdoerado</th>
+                    <th width="25%">Apoderado</th>
                     <th width="40%">Alumnos Matriculados</th>
-                    <th width="20%">Asistio</th>
+                    <th width="10%">Asistio</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr *ngFor="let item of DataAsistentes | filter : 'apoderado' : searchString;let indice=index;">
                       <td>
                         {{indice + 1}}                        
+                      </td>
+                      <td>
+                        {{item.doc_apoderado}}                        
                       </td>
                       <td>
                         {{item.apoderado}}                        
@@ -261,22 +271,15 @@ type = "ball-clip-rotate-multiple">
                         <!-- <span class="badge badge-success" [ngStyle]="{'background-color':item.estado === 'ACTIVO' ? 'green' : 'red' }">{{item.estado}}</span> -->
                         <label class="switch switch-label switch-success" style="width: 78px;">
                             <input checked="" [checked]="item.asistio_reunion.data==1" class="switch-input" type="checkbox" 
-                            (click)="Cambiar_Estado()">
+                            (click)="Marcar_Asistencia(item,item.asistio_reunion.data)">
                             <span class="switch-slider" data-checked="SI" data-unchecked="NO"></span>
                           </label>
                       </td>
                   </tr>
                 </tbody>
               </table>
-            </div>
-              <div class="card-footer" style="text-align: right;">
-                  <button type="button" class="btn btn-danger" style="margin: 0px 20px;"
-                  (click)="frmReunion_hide('D')">
-                      <span class="fa fa-times-circle"></span>
-                  Cancelar</button>
-                
               </div>
-              
+            </div>              
         </div>
 </div>
  <!--FIN Detalle de Lista de Reunion-->

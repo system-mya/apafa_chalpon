@@ -162,80 +162,6 @@ DataIngresos: any = [];
   
 
   public detalle_recibo;
-  public generatePDF(dato)
-  {
-  this.loadingBar.start();
-  console.log(dato);
-  const doc = new jspdf({orientation: 'portrait',unit: 'mm',format: 'A5'});
-           var headRows=  [{id:'N°',descripcion_concepto: 'DESCRIPCION CONCEPTO', monto_detalle: 'MONTO'}];
-           var totalPagesExp = "{total_pages_count_string}";
-            var img = new Image();
-            img.src = 'assets/img/cabecera_recibos.png'
-            doc.addImage(img,'png',25,10,150,40);
-            doc.setFontSize(11);
-            doc.setFont('helvetica')
-            doc.setFontType('bold')
-            doc.text(30, 60, 'N° de Recibo: ' + dato.doc_ingreso);
-            doc.text(120, 60, 'Fecha y Hora: ' + formatDate(dato.fecha_registro,'dd/MM/yyyy HH:mm:ss','en-US'));
-            doc.text(25, 70, 'Sr(a) Apoderado(a): '+ dato.apellidos_apoderado + " " + dato.nombres_apoderado);
-            doc.text(25, 80, 'Documento Identidad: '+ dato.doc_apoderado);
-            doc.text(125, 80, 'Num. contacto: ' + dato.celular_apoderado);
-           var splitTitle = doc.splitTextToSize('Dirección: ' + dato.direccion_apoderado, 160);
-           doc.text(25, 90, splitTitle);
-        
-        this.DatoBusqueda.datobusqueda=dato.doc_ingreso;
-        this._IngresosServicios.get_obtener_detalle_recibo(this.DatoBusqueda).subscribe(
-        data_recibo => {
-          if (data_recibo.status === 1) {
-            this.detalle_recibo = data_recibo.data;
-            var contador= data_recibo.data.length;
-            doc.autoTable({
-              head: headRows,
-              body: bodyRows(this.detalle_recibo,contador),
-              startY: 110, 
-              showHead: 'firstPage',
-              didDrawPage: function (data) {
-                // Footer
-                var str = "Página " + doc.internal.getNumberOfPages()
-                // Total page number plugin only available in jspdf v1.0+
-                if (typeof doc.putTotalPages === 'function') {
-                    str = str + " de " + totalPagesExp;
-                }
-                doc.setFontSize(10);
-          
-                // jsPDF 1.4+ uses getWidth, <1.4 uses .width
-                var pageSize = doc.internal.pageSize;
-                var pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
-                doc.text(str, data.settings.margin.left, pageHeight - 10);
-            },
-            bodyStyles: {valign: 'top'},
-                  styles: {cellWidth: 'wrap', rowPageBreak: 'auto', halign: 'justify'},
-                  columnStyles: {text: {cellWidth: 'auto'}}
-          });
-          var suma_total=0.00;
-          for(var i=0;i<contador;i++){
-              suma_total=suma_total+this.detalle_recibo[i].monto_detalle;
-          }
-          doc.text(100, doc.autoTable.previous.finalY + 10, 'Total: ');
-          doc.text(150, doc.autoTable.previous.finalY + 10, ''+suma_total.toFixed(2));
-              // Total page number plugin only available in jspdf v1.0+
-              if (typeof doc.putTotalPages === 'function') {
-                  doc.putTotalPages(totalPagesExp);
-              }
-
-              doc.output('save', dato.doc_ingreso+'.pdf');
-              this.toastr.success('Recibo Generado', 'Aviso!',{positionClass: 'toast-top-right',timeOut: 500});
-              this.DetallePago.hide();
-              this.loadingBar.complete();
-              this.document.documentElement.scrollTop = 0;
-            }else{
-            this.toastr.error(data_recibo.message, 'Aviso!');
-          }
-        })      
-           
-           
-  }
-
   public VerPrimeroPDF(id,num,fecha)
   {
   this.loadingBar.start();
@@ -253,7 +179,7 @@ DataIngresos: any = [];
             doc.setFont('helvetica')
             doc.setFontType('bold')
             doc.text(30, 60, 'N° de Recibo: ' + num);
-            doc.text(120, 60, 'Fecha y Hora: ' + formatDate(fecha,'dd/MM/yyyy HH:mm:ss','en-US'));
+            doc.text(120, 60, 'Fecha y Hora: ' + formatDate(fecha,'dd/MM/yyyy h:mm a','en-US'));
             doc.text(25, 70, 'Sr(a) Apoderado(a): '+ data.data[0].apellidos_apoderado + " " + data.data[0].nombres_apoderado);
             doc.text(25, 80, 'Documento Identidad: '+ data.data[0].doc_apoderado);
             doc.text(125, 80, 'Num. contacto: ' + data.data[0].celular_apoderado);
@@ -271,6 +197,13 @@ DataIngresos: any = [];
               body: bodyRows(this.detalle_recibo,contador),
               startY: 110, 
               showHead: 'firstPage',
+              theme: 'grid',
+              headStyles: {
+                cellWidth: 'wrap',
+             },
+             bodyStyles: {
+              halign: 'justify'
+               },
               didDrawPage: function (data) {
                 // Footer
                 var str = "Página " + doc.internal.getNumberOfPages()
@@ -284,10 +217,7 @@ DataIngresos: any = [];
                 var pageSize = doc.internal.pageSize;
                 var pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
                 doc.text(str, data.settings.margin.left, pageHeight - 10);
-            },
-            bodyStyles: {valign: 'top'},
-                  styles: {cellWidth: 'wrap', rowPageBreak: 'auto', halign: 'justify'},
-                  columnStyles: {text: {cellWidth: 'auto'}}
+            }
           });
           var suma_total=0.00;
           for(var i=0;i<contador;i++){

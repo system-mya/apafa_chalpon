@@ -5,7 +5,7 @@ import { GradoSeccionService } from './../administracion/grado-seccion.service';
 import { ToastrService } from 'ngx-toastr';
 import {MatPaginator, MatSort, MatTableDataSource,TooltipPosition} from '@angular/material';
 import {ModalDirective} from 'ngx-bootstrap/modal';
-import {Matricula,Grados,Secciones,Tipo_Relacion, Busqueda} from '../../app.datos';
+import {Matricula,Grados,Secciones,Tipo_Relacion, Busqueda,Libro,Libro_Matricula} from '../../app.datos';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 declare var swal: any;
 
@@ -16,6 +16,7 @@ declare var swal: any;
 })
 export class MatriculaComponent {
   @ViewChild('NvaMatriculaModal') public NvaMatriculaModal: ModalDirective;
+  @ViewChild('NvoRegistroLibro') public NvoRegistroLibro: ModalDirective;
   @ViewChild('myForm') mytemplateForm : NgForm;
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -78,8 +79,8 @@ frmMat_hide(opc){
     this.NvaMatriculaModal.hide();
     this.mytemplateForm.resetForm();
   }else{
-    if(opc=="D"){
-
+    if(opc=="RL"){
+   this.NvoRegistroLibro.hide();
     }else{
       if(opc=="E"){
         
@@ -153,7 +154,7 @@ DataGrado : Grados;
          .catch(err => console.log(err))
 }
 
-btnBuscar_xDoc(id:number,dato:string){
+  btnBuscar_xDoc(id:number,dato:string){
   this.DatoBusqueda.idbusqueda=id;
   this.DatoBusqueda.datobusqueda=dato;
     this._MatriculaServicios.buscar_datos_xdoc(this.DatoBusqueda)
@@ -222,6 +223,110 @@ btnBuscar_xDoc(id:number,dato:string){
         .catch(err => console.log(err))
       }
     })
+  }
+  
+  DataLibros : Libro;
+  nivel_libro : string;
+  Listar_Libros(id_grado,id_matricula,nivel){
+    this.loadingBar.start();
+      this.DatoBusqueda.idbusqueda=id_grado;
+      this.DatoBusqueda.datobusqueda=id_matricula;
+      this.nivel_libro=nivel;
+       //console.log(this.DatoBusqueda.idbusqueda);
+       //this.DetUsuarioModal.show(); 
+         this._MatriculaServicios.libros_xgrado(this.DatoBusqueda)
+         .then(data => {
+           if(data.status==1){
+            this.Listar_Libros_xMatricula(id_matricula);
+            this.NvoRegistroLibro.show();
+            this.DataLibros = data.data;
+            console.log(this.DataLibros);
+            this.loadingBar.complete();
+           }else{
+              this.toastr.error(data.message, 'Aviso!',{
+                positionClass: 'toast-top-right',
+                timeOut: 500
+              });
+              this.DataLibros=null;
+              this.Listar_Libros_xMatricula(id_matricula);
+              this.NvoRegistroLibro.show();
+              this.loadingBar.complete();
+            }
+         } )
+         .catch(err => console.log(err))
+  }
+  
+  DataMisLibros : any=[];
+  id_matriucla : number;
+  Listar_Libros_xMatricula(id_matricula){
+    this.loadingBar.start();
+      this.DatoBusqueda.idbusqueda=id_matricula;
+      this.id_matriucla=id_matricula;
+       //console.log(this.DatoBusqueda.idbusqueda);
+       //this.DetUsuarioModal.show(); 
+         this._MatriculaServicios.libros_xmatricula(this.DatoBusqueda)
+         .then(data => {
+           if(data.status==1){
+            this.DataMisLibros = data.data;
+            this.loadingBar.complete();
+           }else{
+              this.toastr.error(data.message, 'Aviso!',{
+                positionClass: 'toast-top-right',
+                timeOut: 500
+              });
+              this.DataMisLibros=null;
+              this.loadingBar.complete();
+            }
+         } )
+         .catch(err => console.log(err))
+  }
+  libro_matricula:Libro_Matricula={};
+  Entregar_Libro(id_libro,id_grado){
+      this.libro_matricula.id_libro=id_libro;
+      this.libro_matricula.id_matricula=this.id_matriucla;
+      this._MatriculaServicios.insertar_libro_xmatricula(this.libro_matricula)
+        .then(data => {
+          if(data.status==1){
+            swal({
+                title: 'Aviso!',
+                text: data.message,
+                type: 'success',
+                allowOutsideClick: false,
+                allowEscapeKey:false
+            })            
+            this.Listar_Libros(id_grado,this.id_matriucla,this.nivel_libro);
+          }else{
+              swal({
+                title: 'Aviso!',
+                html:
+                '<span style="color:red">' +
+                data.message +
+                '</span>',
+                type: 'error',
+                allowOutsideClick: false,
+                allowEscapeKey:false
+              })
+              this.Listar_Libros(id_grado,this.id_matriucla,this.nivel_libro);
+          }
+        } )
+        .catch(err => console.log(err))
+  }
+
+  
+  isCollapsed: boolean = true;
+  iconCollapse: string = 'icon-arrow-up';
+
+  collapsed(event: any): void {
+    // console.log(event);
+  }
+
+  expanded(event: any): void {
+    // console.log(event);
+  }
+
+  toggleCollapse(): void {
+    this.isCollapsed = !this.isCollapsed;
+    this.iconCollapse = this.isCollapsed ? 'icon-arrow-down' : 'icon-arrow-up';
   }
 
 }

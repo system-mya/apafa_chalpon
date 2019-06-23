@@ -37,5 +37,10 @@ export class ReunionesService {
     .map(res => res.json())
   }
 
+  public registrar_asistencia(dato:Busqueda){
+    return this._http.post('/api/tesoreria/registrar_asistencia_reunion',dato)
+     .map(data => data.json()).toPromise()
+  }
+
 
 }

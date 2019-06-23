@@ -174,6 +174,21 @@ app.post('/api/apafa/listar_historial_matricula', (req, res) => {
     apafa.listar_historial_matricula(req.body,res);
 });
 
+//LLAMADA LISTAR LIBROS X GRADO
+app.post('/api/apafa/listar_libros_xgrado', (req, res) => {
+    apafa.listar_libros_xgrado(req.body,res);
+});
+
+//LLAMADA LISTAR LIBROS X MATRICULA
+app.post('/api/apafa/listar_libros_xmatricula', (req, res) => {
+    apafa.listar_libros_xmatricula(req.body,res);
+});
+
+//LLAMADA ENTREGAR LIBRO A ALUMNO 
+app.post('/api/apafa/insertar_libro_matricula', (req, res) => {
+    apafa.insertar_libro_matricula(req.body,res);
+});
+
 //LLAMADA LISTA DE INGRESOS
 app.post('/api/tesoreria/listar_ingresos_xperiodo', (req, res) => {
     tesoreria.listar_ingresos_xperiodo(req.body,res);
@@ -237,6 +252,11 @@ app.post('/api/tesoreria/generar_lista_firmas', (req, res) => {
 //LLAMADA LISTAR APODERADOS REUNION
 app.post('/api/tesoreria/listar_apoderados_reunion', (req, res) => {
     tesoreria.listar_apoderados_reunion(req.body,res);
+});
+
+//LLAMADA REGISTRAR ASISTENCIA REUNION
+app.post('/api/tesoreria/registrar_asistencia_reunion', (req, res) => {
+    tesoreria.registrar_asistencia_reunion(req.body,res);
 });
 }
 }

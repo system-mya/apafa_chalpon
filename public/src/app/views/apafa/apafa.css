@@ -100,3 +100,30 @@ th.mat-header-cell {
 .frm-matricula{
   margin-bottom: 0.2rem !important;
 }
+
+
+.libros-container {
+  height: 250px !important;
+  overflow: auto;
+}
+
+.libros-container th {
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+  background: white;
+  z-index: 10;
+}
+
+.switch-success .switch-input:checked + .switch-slider::before{
+  margin-left: 1px !important;
+  }
+  
+  .switch-success .switch-input:not(:checked) + .switch-slider{
+  background-color: #a30d0d !important;
+  border: 1px solid #e2f10a;
+  }
+   
+  .switch-label .switch-slider::after{
+    width: 50% !important;
+  }

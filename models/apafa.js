@@ -577,33 +577,101 @@ update_alumno(alumno, res) {
 
     });
 
-}
+    }
 
-listar_historial_matricula(alumno, res) {
-    connection.acquire((err, con) => {
-        if(err){
-            res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
-        }else{
-        var query = "CALL pa_listar_historial_matricula("+ [alumno.idbusqueda] +")"; 
-        /* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
-        con.query(query,(err, result) => {
-            con.release();
+    listar_historial_matricula(alumno, res) {
+        connection.acquire((err, con) => {
             if(err){
                 res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
             }else{
-                if (result[0].length == 0) {
-                    res.send({status: 2, message: 'Historial No Existe'});
-                } else {
-                    res.send({status: 1, message: 'Datos Historial',data:result[0]});
+            var query = "CALL pa_listar_historial_matricula("+ [alumno.idbusqueda] +")"; 
+            /* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
+            con.query(query,(err, result) => {
+                con.release();
+                if(err){
+                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                }else{
+                    if (result[0].length == 0) {
+                        res.send({status: 2, message: 'Historial No Existe'});
+                    } else {
+                        res.send({status: 1, message: 'Datos Historial',data:result[0]});
+                    }
                 }
+            });
             }
         });
-        }
-    });
-};
+    };
+
+    listar_libros_xgrado(dato, res) {
+        connection.acquire((err, con) => {
+            if(err){
+                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+            }else{
+            var query = "CALL pa_listar_libros_xgrado("+ [dato.idbusqueda] +","+parseInt([dato.datobusqueda])+")"; 
+            /* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
+            con.query(query,(err, result) => {
+                con.release();
+                if(err){
+                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                }else{
+                    if (result[0].length == 0) {
+                        res.send({status: 2, message: 'No hay Libros Registrados'});
+                    } else {
+                        res.send({status: 1, message: 'Libros Registrados',data:result[0]});
+                    }
+                }
+            });
+            }
+        });
+    };
+
+    listar_libros_xmatricula(dato, res) {
+        connection.acquire((err, con) => {
+            if(err){
+                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+            }else{
+            var query = "CALL pa_listar_libros_xmatricula("+ [dato.idbusqueda] +")"; 
+            /* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
+            con.query(query,(err, result) => {
+                con.release();
+                if(err){
+                    res.send({status: 0, message: err.sqlMessage});
+                }else{
+                    if (result[0].length == 0) {
+                        res.send({status: 2, message: 'No hay Libros Entregados'});
+                    } else {
+                        res.send({status: 1, message: 'Libros Entregados',data:result[0]});
+                    }
+                }
+            });
+            }
+        });
+    };
                       
                   
-    
+    insertar_libro_matricula(libro, res) {
+        connection.acquire((err, con) => {
+            if(err){
+                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+            }else{            
+                        var query = "CALL pa_insertar_libro_xmatricula("+ [libro.id_matricula] 
+                            + "," + [libro.id_libro] +")";
+                            con.query(query,(err, result) => {
+                                if(err){
+                                    res.send({status: 0, message: err.sqlMessage});
+                                }else{
+                                    if (result.affectedRows == 1) {
+                                        res.send({status: 1, message: 'LIBRO AGREGADO'});
+                                    } else {
+                                        res.send({status: 2, message: 'LIBRO NO AGREGADO'});
+                                    }
+                                }
+                            });
+        
+                
+                }
+            });
+        };
 }
 
 module.exports = new Apafa();

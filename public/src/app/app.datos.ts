@@ -211,7 +211,7 @@ export class Reunion
     fecha_reunion ?: string;
     hora_reunion ?: string;
     id_concepto ?: number;
-    descipcion_concepto ?: string;
+    descripcion_concepto ?: string;
     monto_concepto ?: string;
     lista_reunion ?: boolean;
     estado_reunion ?: boolean;
@@ -222,4 +222,19 @@ export class Concepto
   id_concepto ?: number;
   descripcion_concepto ?: string;
   monto_concepto ?: number;
+}
+
+export class Libro
+{
+    id_libro ?: number;
+    titulo_libro ?: string;
+    editorial_libro ?: string;
+    id_grado ?: number;
+    estado_libro ?: boolean;
+}
+
+export class Libro_Matricula
+{
+    id_libro ?: number;
+    id_matricula ?: number;
 }

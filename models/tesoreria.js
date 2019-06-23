@@ -706,5 +706,28 @@ class Tesoreria {
         }
         });
     };
+
+    registrar_asistencia_reunion(dato, res) {
+        connection.acquire((err, con) => {
+            if(err){
+                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+            }else{
+               var array = dato.datobusqueda.split("-");
+            var query = "CALL pa_registrar_asistencia_reunion("+ parseInt(array[1]) +","+[dato.idbusqueda]+","+array[0]+")"; 
+            con.query(query,(err, result) => {
+                con.release();
+                if(err){
+                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                }else{
+                    if (result.affectedRows == 0) {
+                        res.send({status: 2, message: 'ASISTENCIA NO REGISTRADA'});
+                    } else {
+                        res.send({status: 1, message: 'ASISTENCIA REGISTRADA'});
+                    }
+                }
+            });
+            }
+        });
+    };
 }
 module.exports = new Tesoreria();
