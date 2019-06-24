@@ -16,7 +16,6 @@ declare var swal: any;
 })
 export class MatriculaComponent {
   @ViewChild('NvaMatriculaModal') public NvaMatriculaModal: ModalDirective;
-  @ViewChild('NvoRegistroLibro') public NvoRegistroLibro: ModalDirective;
   @ViewChild('myForm') mytemplateForm : NgForm;
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -26,9 +25,12 @@ export class MatriculaComponent {
   positionOptions: TooltipPosition[] = ['after', 'before', 'above', 'below', 'left', 'right'];
   public matricula : Matricula = {};
   public DatoBusqueda : Busqueda;
+  public panel_tabla : boolean;
+  public panel_registro_libro : boolean;
   constructor(private _MatriculaServicios:MatriculaService,private toastr: ToastrService,
     private _GradoServicios:GradoSeccionService,private loadingBar: LoadingBarService) { 
     this.ListarMatriculados();
+    this.panel_tabla=true;
     this.DatoBusqueda = {
       idbusqueda:0,
       datobusqueda:''
@@ -80,7 +82,8 @@ frmMat_hide(opc){
     this.mytemplateForm.resetForm();
   }else{
     if(opc=="RL"){
-   this.NvoRegistroLibro.hide();
+   this.panel_tabla=true;
+   this.panel_registro_libro=false;
     }else{
       if(opc=="E"){
         
@@ -238,19 +241,28 @@ DataGrado : Grados;
          .then(data => {
            if(data.status==1){
             this.Listar_Libros_xMatricula(id_matricula);
-            this.NvoRegistroLibro.show();
+            this.panel_tabla=false;
+            this.panel_registro_libro=true;
             this.DataLibros = data.data;
             console.log(this.DataLibros);
             this.loadingBar.complete();
            }else{
-              this.toastr.error(data.message, 'Aviso!',{
-                positionClass: 'toast-top-right',
-                timeOut: 500
-              });
-              this.DataLibros=null;
-              this.Listar_Libros_xMatricula(id_matricula);
-              this.NvoRegistroLibro.show();
-              this.loadingBar.complete();
+              if(data.status==2){
+                this.toastr.info(data.message, 'Aviso!',{
+                  positionClass: 'toast-top-right',
+                  timeOut: 700
+                });
+                this.DataLibros=null;
+                this.Listar_Libros_xMatricula(id_matricula);
+                this.panel_tabla=false;
+                this.panel_registro_libro=true;
+                this.loadingBar.complete();
+              }else{
+                this.toastr.error(data.message, 'Aviso!',{
+                  positionClass: 'toast-top-right',
+                  timeOut: 700
+                });
+              }
             }
          } )
          .catch(err => console.log(err))
@@ -270,12 +282,19 @@ DataGrado : Grados;
             this.DataMisLibros = data.data;
             this.loadingBar.complete();
            }else{
-              this.toastr.error(data.message, 'Aviso!',{
-                positionClass: 'toast-top-right',
-                timeOut: 500
-              });
-              this.DataMisLibros=null;
-              this.loadingBar.complete();
+              if(data.status==2){
+                this.toastr.info(data.message, 'Aviso!',{
+                  positionClass: 'toast-top-right',
+                  timeOut: 700
+                });
+                this.DataMisLibros=null;
+                this.loadingBar.complete();
+              }else{
+                this.toastr.error(data.message, 'Aviso!',{
+                  positionClass: 'toast-top-right',
+                  timeOut: 700
+                });
+              }
             }
          } )
          .catch(err => console.log(err))
@@ -313,20 +332,81 @@ DataGrado : Grados;
   }
 
   
-  isCollapsed: boolean = true;
+  isCollapsed: boolean = false;
   iconCollapse: string = 'icon-arrow-up';
-
-  collapsed(event: any): void {
-    // console.log(event);
-  }
-
-  expanded(event: any): void {
-    // console.log(event);
-  }
+  isCollapsed_mislibros: boolean = false;
+  iconCollapse_mislibros: string = 'icon-arrow-up';
 
   toggleCollapse(): void {
     this.isCollapsed = !this.isCollapsed;
     this.iconCollapse = this.isCollapsed ? 'icon-arrow-down' : 'icon-arrow-up';
   }
 
+  toggleCollapse_mislibros() : void {
+    this.isCollapsed_mislibros = !this.isCollapsed_mislibros;
+    this.iconCollapse_mislibros = this.isCollapsed_mislibros ? 'icon-arrow-down' : 'icon-arrow-up';
+  }
+  
+  btnquitar_libro(dato){
+    swal({
+      title: '¿Esta seguro que desea quitar libro?',
+      type: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, Guardar!',
+      allowOutsideClick: false,
+      allowEscapeKey:false,
+    }).then((result) => {
+      //console.log(result.value);
+      if (result.value==true) {
+        this.DatoBusqueda.idbusqueda=dato.id_matricula;
+        this.DatoBusqueda.datobusqueda=dato.id_libro;
+          //console.log(this.DatoBusqueda.idbusqueda);
+          //this.DetUsuarioModal.show(); 
+            this._MatriculaServicios.quitar_libro_alumno(this.DatoBusqueda)
+            .then(data => {
+              if(data.status==1){
+                swal({
+                  title: 'Aviso!',
+                  text: data.message,
+                  type: 'success',
+                  allowOutsideClick: false,
+                  allowEscapeKey:false
+              })
+              this.Listar_Libros(dato.id_grado,dato.id_matricula,this.nivel_libro)
+              }else{
+                this.toastr.error(data.message, 'Aviso!');
+               }
+            } )
+            .catch(err => console.log(err))
+      }
+    })
+  }
+
+  Devolucion_Libro(detalle,dato){
+   if(dato[0]==1){
+    this.DatoBusqueda.datobusqueda='0'+'-'+detalle.id_libro;
+   }else{
+    this.DatoBusqueda.datobusqueda='1'+'-'+detalle.id_libro;
+   }
+      this.DatoBusqueda.idbusqueda=detalle.id_matricula;
+      this._MatriculaServicios.registrar_devolucion_libro(this.DatoBusqueda)
+          .then(data => {
+            if(data.status==1){
+              this.toastr.success(data.message, 'Aviso!',{
+                positionClass: 'toast-top-right',
+                timeOut: 600
+              });
+              this.Listar_Libros(detalle.id_grado,detalle.id_matricula,this.nivel_libro);
+            }else{
+              this.toastr.error(data.message, 'Aviso!',{
+                positionClass: 'toast-top-right',
+                timeOut: 600
+              });
+              this.Listar_Libros(detalle.id_grado,detalle.id_matricula,this.nivel_libro);
+             }
+          })
+          .catch(err => console.log(err))
+  }
 }

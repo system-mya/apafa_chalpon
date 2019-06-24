@@ -137,7 +137,7 @@
 
 
   .switch-success .switch-input:checked + .switch-slider::before{
-    margin-left: 25px !important;
+    margin-left: 1px !important;
     }
     
     .switch-success .switch-input:not(:checked) + .switch-slider{

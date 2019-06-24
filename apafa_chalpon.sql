@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 23-06-2019 a las 00:40:13
+-- Tiempo de generación: 24-06-2019 a las 23:35:29
 -- Versión del servidor: 5.7.14
 -- Versión de PHP: 5.6.25
 
@@ -81,6 +81,11 @@ INNER JOIN perfil_usuario pu ON pu.idperfil_usuario=u.idperfil_usuario
 WHERE u.idusuario=usuario
 AND u.estado_usu=1$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_devolver_libro` (IN `matricula` SMALLINT, IN `libro` SMALLINT, IN `estado` BIT(1))  NO SQL
+UPDATE libro_matricula SET devolvio_libro=estado
+WHERE id_matricula=matricula
+AND id_libro=libro$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_alumno` (IN `id` SMALLINT)  NO SQL
 UPDATE alumno SET estado_alumno=0
 WHERE id_alumno=id$$
@@ -90,6 +95,13 @@ UPDATE anhio_lectivo SET estado_anhio=0 WHERE idanhio=anhio$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_apoderado` (IN `id_apo` SMALLINT)  NO SQL
 UPDATE apoderado SET estado_apoderado=0 WHERE id_apoderado=id_apo$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_concepto` (IN `id` SMALLINT)  NO SQL
+UPDATE concepto_apafa SET estado_concepto=0
+WHERE id_concepto=id$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_libro` (IN `idlibro` SMALLINT)  NO SQL
+UPDATE libro SET estado_libro=0 WHERE id_libro=idlibro$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_usuario` (IN `id_usu` SMALLINT)  NO SQL
 UPDATE usuario SET estado_usu=0
@@ -138,6 +150,10 @@ AND estado_anhio=1
 AND anhio=codanhio),tipo,num,rsocial,ruc,fecha,NOW(),doc,
 encargado,total)$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_concepto_apafa` (IN `des_concepto` VARCHAR(100), IN `tipo` CHAR(1), IN `anhio_lec` CHAR(4), IN `monto` FLOAT(10,2))  NO SQL
+INSERT INTO concepto_apafa (descripcion_concepto, tipo_concepto, id_anhio, monto_concepto) 
+VALUES (des_concepto,tipo,(SELECT idanhio FROM anhio_lectivo WHERE anhio=anhio_lec AND condicion_anhio='A' AND estado_anhio=1),monto)$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_detalle_compra` (IN `compra` SMALLINT, IN `producto` VARCHAR(30), IN `cant` INT, IN `med` VARCHAR(10), IN `precio` FLOAT)  NO SQL
 INSERT INTO detalle_compra(id_compra,nom_producto,
 cantidad,medida,precio_unit) VALUES (compra,
@@ -156,6 +172,10 @@ AND a.estado_anhio=1 AND ca.estado_concepto=1),apoderado,
 INNER JOIN anhio_lectivo a ON a.idanhio=ca.id_anhio 
 WHERE ca.tipo_concepto='A' AND a.anhio=dato_anhio AND a.condicion_anhio='A' 
 AND a.estado_anhio=1 AND ca.estado_concepto=1),CURDATE(),NOW())$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_libro` (IN `titulo_lib` VARCHAR(80), IN `edit_libro` VARCHAR(20), IN `grado` INT)  NO SQL
+INSERT INTO libro (titulo_libro, editorial_libro,id_grado ) 
+VALUES (titulo_lib,edit_lib,grado)$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_libro_xmatricula` (IN `matricula` SMALLINT, IN `libro` SMALLINT)  NO SQL
 INSERT INTO libro_matricula(id_matricula, id_libro) 
@@ -294,7 +314,7 @@ SELECT * FROM grados g
  AND g.estado_grado=1$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_historial_matricula` (IN `alumno` SMALLINT)  NO SQL
-SELECT g.descripcion_grado,s.nombre_seccion,a.anhio, ap.id_apoderado,ap.apellidos_apoderado,ap.nombres_apoderado,ap.doc_apoderado,deuda.total FROM apoderado ap LEFT JOIN
+SELECT m.id_matricula,g.descripcion_grado,s.nombre_seccion,a.anhio, ap.id_apoderado,ap.apellidos_apoderado,ap.nombres_apoderado,ap.doc_apoderado,deuda.total FROM apoderado ap LEFT JOIN
     (  SELECT id_apoderado, SUM(saldo_deuda) as total
        FROM detalle_deuda GROUP BY id_apoderado
     ) deuda ON ap.id_apoderado = deuda.id_apoderado
@@ -303,7 +323,7 @@ SELECT g.descripcion_grado,s.nombre_seccion,a.anhio, ap.id_apoderado,ap.apellido
  INNER JOIN grados g ON g.id_grado=s.id_grado
  INNER JOIN anhio_lectivo a ON a.idanhio=m.id_anhio
  WHERE m.id_alumno=alumno
- GROUP BY ap.id_apoderado,g.descripcion_grado,s.nombre_seccion,a.anhio$$
+ GROUP BY ap.id_apoderado,m.id_matricula,g.descripcion_grado,s.nombre_seccion,a.anhio$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_ingresos_xperiodo` (IN `anhio` CHAR(4))  NO SQL
 SELECT r.id_recibo AS id_ingreso,a.id_apoderado as id_apoderado,r.num_recibo AS doc_ingreso, 
@@ -415,6 +435,11 @@ WHERE u.idusuario=cod
 AND u.estado_usu=1
 AND u.fbaja_usu IS NULL$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_quitar_entrega_libro` (IN `matricula` SMALLINT, IN `libro` SMALLINT)  NO SQL
+DELETE FROM libro_matricula
+WHERE id_matricula=matricula
+AND id_libro=libro$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_registrar_asistencia_reunion` (IN `reunion` SMALLINT, IN `apoderado` SMALLINT, IN `opt` BIT(1))  NO SQL
 UPDATE reunion_apoderado SET asistio_reunion=opt
 WHERE id_reunion=reunion AND id_apoderado=apoderado$$
@@ -463,6 +488,9 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_deuda` (IN `id` SMALLINT,
 UPDATE detalle_deuda SET saldo_deuda=saldo_deuda-monto,
 fseg_deuda=NOW(),estado_deuda=estado
 WHERE id_detalle_deuda=id$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_libro` (IN `t_libro` VARCHAR(80), IN `edit_libro` VARCHAR(20), IN `grado` INT, IN `idlibro` SMALLINT)  NO SQL
+UPDATE libro SET titulo_libro=t_libro,editorial_libro=edit_libro,id_grado=grado WHERE id_libro=idlibro$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_usuario` (IN `idusu` INT, IN `nom_usu` VARCHAR(20), IN `nombres` VARCHAR(45), IN `apellidos` VARCHAR(60), IN `sexo` CHAR(1), IN `celular` CHAR(9), IN `correo` VARCHAR(80), IN `direccion` VARCHAR(80), IN `fbaja` DATE, IN `obser` VARCHAR(50), IN `perfil` INT)  UPDATE usuario SET nom_usu=nom_usu,nombres_usu=nombres,apellidos_usu=apellidos,sexo_usu=sexo,celular_usu=celular,correo_usu=correo,direccion_usu=direccion,fbaja_usu=fbaja,obser_usu=obser,idperfil_usuario=perfil
 WHERE idusuario=idusu$$
@@ -767,10 +795,10 @@ CREATE TABLE `grados` (
 --
 
 INSERT INTO `grados` (`id_grado`, `descripcion_grado`, `nivel_grado`, `estado_grado`) VALUES
-(1, 'PRIMER GRADO SECUNDARIA', 'S', b'1'),
-(2, 'SEGUNDO GRADO SECUNDARIA', 'S', b'1'),
-(3, 'TERCER GRADO SECUNDARIA', 'S', b'1'),
-(4, 'CUARTO GRADO SECUNDARIA', 'S', b'1'),
+(1, 'PRIMER GRADO SECUNDARIA', 'S', b'0'),
+(2, 'SEGUNDO GRADO SECUNDARIA', 'S', b'0'),
+(3, 'TERCER GRADO SECUNDARIA', 'S', b'0'),
+(4, 'CUARTO GRADO SECUNDARIA', 'S', b'0'),
 (5, 'QUINTO GRADO SECUNDARIA', 'S', b'1');
 
 -- --------------------------------------------------------
@@ -797,7 +825,7 @@ INSERT INTO `libro` (`id_libro`, `titulo_libro`, `editorial_libro`, `id_grado`, 
 (3, 'LIBRO DE TRABAJO MATEMATICA 2', 'SANTILLANA', 2, b'1'),
 (4, 'LIBRO DE LECTURA MATEMATICA 2', 'SANTILLANA', 2, b'1'),
 (5, 'LIBRO DE TRABAJO COMUNICACION', 'NORMA', 2, b'1'),
-(6, 'LIBRO DE TRABAJO COMUNCIACION', 'NORMA', 2, b'1');
+(6, 'LIBRO DE LECTURA COMUNCIACION', 'NORMA', 2, b'1');
 
 -- --------------------------------------------------------
 
@@ -816,14 +844,7 @@ CREATE TABLE `libro_matricula` (
 --
 
 INSERT INTO `libro_matricula` (`id_matricula`, `id_libro`, `devolvio_libro`) VALUES
-(31, 3, b'0'),
-(31, 4, b'0'),
-(31, 6, b'0'),
-(32, 3, b'0'),
-(32, 4, b'0'),
-(32, 5, b'0'),
-(32, 6, b'0'),
-(31, 5, b'0');
+(31, 3, b'0');
 
 -- --------------------------------------------------------
 
@@ -967,8 +988,8 @@ CREATE TABLE `reunion_apoderado` (
 --
 
 INSERT INTO `reunion_apoderado` (`id_reunion`, `id_apoderado`, `asistio_reunion`) VALUES
-(1, 2, b'1'),
-(1, 4, b'1');
+(1, 2, b'0'),
+(1, 4, b'0');
 
 -- --------------------------------------------------------
 

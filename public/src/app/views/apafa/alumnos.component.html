@@ -786,7 +786,14 @@
   <div class="card-header">
         <h5><strong>
           <i class="fa fa-list-alt"></i>&nbsp;&nbsp;DETALLE E HISTORIAL ALUMNO
-        </strong></h5>
+        </strong>
+        <span class="float-right">
+          <button type="button" class="btn btn-danger" style="margin: 0px 20px;"
+                  (click)="btnCancelar_Alumno('D')">
+                      <span class="fa fa-reply-all"></span>
+                  Regresar</button>
+        </span>
+      </h5>
         </div>
         <div class="car-body">
             <div class="card-header estilo-cabecera">DATOS DEL ALUMNO</div>
@@ -955,21 +962,59 @@
                       <div class="card-body"> 
                         <b>Apoderado: </b><em style="font-size: 15px;">{{item.apellidos_apoderado}}  {{item.nombres_apoderado}}</em><br>
                         <b>Doc. Apoderado: </b> {{item.doc_apoderado}} <br>
-                        <b>Total Deuda: </b> {{item.total | number : '.2-2'}} 
+                        <b>Total Deuda: </b> {{item.total | number : '.2-2'}} <br>
+                        <b>Lista Libros: </b> 
+                        <button class="btn btn-warning btn-xs distancia_btn_opciones" style="padding: 0.2rem !important;"
+                          data-toggle="modal" (click)="Listar_Libros_xMatricula(item.id_matricula)">
+                          <span class="fa fa-archive"></span></button> 
                       </div>
                     </div>
                   </div>
                 </div>
-            </div>
-              <div class="card-footer" style="text-align: right;">
-                  <button type="button" class="btn btn-danger" style="margin: 0px 20px;"
-                  (click)="btnCancelar_Alumno('D')">
-                      <span class="fa fa-times-circle"></span>
-                  Cancelar</button>
-                
-              </div>
-              
+            </div>              
         </div>
 </div>
  <!--FIN DETALLE E HISTORIAL DEL ALUMNO-->
+ <!--Modal Listado de Libros-->
+ <div bsModal #ListadoLibrosModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}" >
+  <div class="modal-dialog modal-md modal-success" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Mis Libros</h4>
+        <button type="button" class="close" (click)="btnCancelar_Alumno('LL')" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Título</th>
+              <th>Editorial</th>
+              <th>Devolvio</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of DataMisLibros;let indice=index">
+                <td>
+                  {{item.titulo_libro}}
+                </td>
+                <td>
+                  {{item.editorial_libro}}
+                </td>
+                <td>
+                    <label class="switch switch-label switch-success" style="width: 50px !important;">
+                        <input checked="" [checked]="item.devolvio_libro.data==1" class="switch-input" type="checkbox" 
+                        (click)="Devolucion_Libro(item,item.devolvio_libro.data)">
+                        <span class="switch-slider" data-checked="SI" data-unchecked="NO"></span>
+                      </label>
+                </td>
+            </tr>
+          </tbody>
+        </table>     
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
+<!-- /.Fin Listado de Libros-->
 </div>

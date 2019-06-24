@@ -9,6 +9,7 @@ import {Alumno,Busqueda} from '../../app.datos';
 import { ToastrService } from 'ngx-toastr';
 declare var swal: any;
 import { LoadingBarService } from '@ngx-loading-bar/core';
+import { MatriculaService } from './matricula.service';
 
 @Component({
   templateUrl: 'alumnos.component.html',
@@ -25,6 +26,7 @@ import { LoadingBarService } from '@ngx-loading-bar/core';
 export class AlumnosComponent implements OnInit {  
   DataArray : any = [];
   @ViewChild('DetAlumnoModal') public DetAlumnoModal: ModalDirective;
+  @ViewChild('ListadoLibrosModal') public ListadoLibrosModal: ModalDirective;
   //columnsToDisplay = ['id_alumno', 'tdoc_alumno', 'doc_alumno', 'apepaterno_alumno'];
   displayedColumns: string[] = ['doc_alumno', 'apellidos_alumno','sexo_alumno','num_contacto','opciones_alumno'];
   positionOptions: TooltipPosition[] = ['after', 'before', 'above', 'below', 'left', 'right'];
@@ -41,7 +43,7 @@ export class AlumnosComponent implements OnInit {
   public Editalumno : Alumno;
   public DatoBusqueda : Busqueda;
   constructor(private _AlumnosServicios:AlumnosService,
-    private _IngresosServicios:IngresosService,private toastr: ToastrService,
+    private _MatriculaServicios:MatriculaService,private toastr: ToastrService,
     @Inject(DOCUMENT) private document: Document,private loadingBar: LoadingBarService) {
     this.LoadTableData();
     this.panel_tabla=true;
@@ -118,9 +120,13 @@ export class AlumnosComponent implements OnInit {
         this.panel_detalle=false;
         this.LoadTableData(); 
       }else{
-        this.panel_tabla=true;
-        this.panel_modificar=false;
-        this.LoadTableData(); 
+        if(opt=='LL'){
+          this.ListadoLibrosModal.hide();  
+        }else{
+          this.panel_tabla=true;
+          this.panel_modificar=false;
+          this.LoadTableData(); 
+        }
       }     
     }
     
@@ -310,6 +316,37 @@ btnDetalle_Alumno(id){
             .catch(err => console.log(err))
       }
     })
+  }
+
+  DataMisLibros : any=[];
+  Listar_Libros_xMatricula(id_matricula){
+    this.loadingBar.start();
+      this.DatoBusqueda.idbusqueda=id_matricula;
+       //console.log(this.DatoBusqueda.idbusqueda);
+       //this.DetUsuarioModal.show(); 
+         this._MatriculaServicios.libros_xmatricula(this.DatoBusqueda)
+         .then(data => {
+           if(data.status==1){
+            this.DataMisLibros = data.data;
+            this.ListadoLibrosModal.show();
+            this.loadingBar.complete();
+           }else{
+              if(data.status==2){
+                this.toastr.info(data.message, 'Aviso!',{
+                  positionClass: 'toast-top-right',
+                  timeOut: 700
+                });
+                this.DataMisLibros=null;
+                this.loadingBar.complete();
+              }else{
+                this.toastr.error(data.message, 'Aviso!',{
+                  positionClass: 'toast-top-right',
+                  timeOut: 700
+                });
+              }
+            }
+         } )
+         .catch(err => console.log(err))
   }
 
 }

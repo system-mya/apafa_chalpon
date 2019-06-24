@@ -103,6 +103,21 @@ app.get('/api/listaralumnos', (req, res) => {
     apafa.listar_alumnos(res);
 });
 
+//LLAMADA INSERTAR NUEVO LIBRO 
+app.post('/api/insertar_libro', (req, res) => {
+    admin.nvo_libro(req.body,res);
+})
+
+// LLAMADO AL MODELO ELIMINAR LIBRO
+app.post('/api/eliminar_libro', (req, res) => {
+    admin.eliminar_libro(req.body, res);
+});
+
+//LLAMADA UPDATE LIBRO 
+app.post('/api/update_libro', (req, res) => {
+    admin.update_libro(req.body,res);
+})
+
 //INSERTAR NUEVO ALUMNO
 app.post('/api/apafa/insertar_alumno', (req, res) => {
     apafa.nvo_alumno(req.body, res);
@@ -189,6 +204,17 @@ app.post('/api/apafa/insertar_libro_matricula', (req, res) => {
     apafa.insertar_libro_matricula(req.body,res);
 });
 
+// LLAMADO QUITAR LIBRO ALUMNO
+app.post('/api/apafa/quitar_libro_alumno', (req, res) => {
+    apafa.quitar_entrega_libro(req.body, res);
+});
+
+// LLAMADO DEVOLUCION DE LIBRO
+app.post('/api/apafa/registrar_devolucion_libro', (req, res) => {
+    apafa.registrar_devolucion_libro(req.body, res);
+});
+
+
 //LLAMADA LISTA DE INGRESOS
 app.post('/api/tesoreria/listar_ingresos_xperiodo', (req, res) => {
     tesoreria.listar_ingresos_xperiodo(req.body,res);
@@ -258,5 +284,9 @@ app.post('/api/tesoreria/listar_apoderados_reunion', (req, res) => {
 app.post('/api/tesoreria/registrar_asistencia_reunion', (req, res) => {
     tesoreria.registrar_asistencia_reunion(req.body,res);
 });
+
+
+
 }
+
 }

@@ -3,7 +3,6 @@ class Connection {
     constructor(pool) {
         this.pool = pool;
     }
-
     init() {
         this.pool = mysql.createPool({
             connectionLimit: 10,

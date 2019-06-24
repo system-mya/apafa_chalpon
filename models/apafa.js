@@ -615,7 +615,7 @@ update_alumno(alumno, res) {
                     res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
                 }else{
                     if (result[0].length == 0) {
-                        res.send({status: 2, message: 'No hay Libros Registrados'});
+                        res.send({status: 2, message: 'ENTREGA COMPLETA'});
                     } else {
                         res.send({status: 1, message: 'Libros Registrados',data:result[0]});
                     }
@@ -669,6 +669,52 @@ update_alumno(alumno, res) {
                             });
         
                 
+                }
+            });
+        };
+
+        quitar_entrega_libro(dato, res) {
+            connection.acquire((err, con) => {
+                if(err){
+                    res.send({status: 0, message: err.sqlMessage});
+                }else{
+                var query = "CALL pa_quitar_entrega_libro("+ [dato.idbusqueda] +","+parseInt([dato.datobusqueda])+")"; 
+                /* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
+                con.query(query,(err, result) => {
+                    con.release();
+                    if(err){
+                        res.send({status: 0, message: err.sqlMessage});
+                    }else{
+                        if (result.affectedRows == 0) {
+                            res.send({status: 2, message: 'ERROR AL QUITAR LIBRO'});
+                        } else {
+                            res.send({status: 1, message: 'LIBRO DEVUELTO A LISTA'});
+                        }
+                    }
+                });
+                }
+            });
+        };
+
+        registrar_devolucion_libro(dato, res) {
+            connection.acquire((err, con) => {
+                if(err){
+                    res.send({status: 0, message: err.sqlMessage});
+                }else{
+                var array = dato.datobusqueda.split("-");
+                var query = "CALL pa_devolver_libro("+[dato.idbusqueda] +","+parseInt(array[1])+","+parseInt(array[0])+")"; 
+                con.query(query,(err, result) => {
+                    con.release();
+                    if(err){
+                        res.send({status: 0, message: err.sqlMessage});
+                    }else{
+                        if (result.affectedRows == 0) {
+                            res.send({status: 2, message: 'DEVOLUCIÓN NO REALIZADA'});
+                        } else {
+                            res.send({status: 1, message: 'DEVOLUCIÓN REGISTRADA'});
+                        }
+                    }
+                });
                 }
             });
         };

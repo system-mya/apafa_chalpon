@@ -361,8 +361,6 @@ searchString:string;
     this.DatoBusqueda.datobusqueda='1'+'-'+this.Detalle.id_reunion;
    }
       this.DatoBusqueda.idbusqueda=detalle.id_apoderado;
-        //console.log(this.DatoBusqueda.idbusqueda);
-        //this.DetUsuarioModal.show(); 
           this._ReunionesServicio.registrar_asistencia(this.DatoBusqueda)
           .then(data => {
             if(data.status==1){

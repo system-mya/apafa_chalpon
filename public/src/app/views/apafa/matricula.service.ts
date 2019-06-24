@@ -47,4 +47,14 @@ public insertar_libro_xmatricula(libro:Libro_Matricula){
    .map(data => data.json()).toPromise()
 }
 
+public quitar_libro_alumno(dato:Busqueda){
+  return this._http.post('/api/apafa/quitar_libro_alumno',dato)
+   .map(data => data.json()).toPromise()
+}
+
+public registrar_devolucion_libro(dato:Busqueda){
+  return this._http.post('/api/apafa/registrar_devolucion_libro',dato)
+   .map(data => data.json()).toPromise()
+}
+
 }

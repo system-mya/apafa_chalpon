@@ -515,6 +515,81 @@ nva_seccion(seccion, res) {
 	});
 };
 
+nvo_libro(libro, res) {
+	connection.acquire((err, con) => {
+		if(err){
+			res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+		}else{
+        
+				
+					var query = "CALL pa_insertar_libro('"+ [libro.titulo_libro] +"','"+ [libro.editorial_libro] 
+                    + "',"+ [libro.id_grado] + ")";
+		
+                    con.query(query,(err, result) => {
+                        if(err){
+                            res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                        }else{
+                            if (result.affectedRows == 1) {
+                                res.send({status: 1, message: 'Libro Registrado'});
+                            } else {
+                                res.send({status: 2, message: 'Libro No Registrado'});
+                            }
+                        }
+                    });
+        
+		}
+	});
+};
+
+update_libro(libro, res) {
+	connection.acquire((err, con) => {
+		if(err){
+			res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+		}else{
+        
+				
+					var query = "CALL pa_update_libro('"+ [libro.titulo_libro] +"','"+ [libro.editorial_libro] 
+                    + "',"+ [libro.id_grado] + ")";
+		
+                    con.query(query,(err, result) => {
+                        if(err){
+                            res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                        }else{
+                            if (result.affectedRows == 1) {
+                                res.send({status: 1, message: 'Libro Actualizado'});
+                            } else {
+                                res.send({status: 2, message: 'Libro No Actualizado'});
+                            }
+                        }
+                    });
+        
+		}
+	});
+};
+
+eliminar_libro(libro, res) {
+	connection.acquire((err, con) => {
+		if(err){
+			res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+		}else{
+		var query = "CALL pa_eliminar_libro("+ [libro.idbusqueda] +")"; 
+		/* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
+		con.query(query,(err, result) => {
+			con.release();
+			if(err){
+                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+			}else{
+				if (result.affectedRows == 0) {
+					res.send({status: 2, message: 'LIBRO NO ELIMINADO'});
+				} else {
+					res.send({status: 1, message: 'LIBRO ELIMINADO'});
+				}
+			}
+		});
+		}
+	});
+};
+
 //http://raquellorente.esy.es/nodejs/subir-y-bajar-archivos-del-servidor-con-express-y-node-js/
 agregar(user, res) {
 //El modulo 'fs' (File System) que provee Nodejs nos permite manejar los archivos

@@ -103,7 +103,7 @@ th.mat-header-cell {
 
 
 .libros-container {
-  height: 250px !important;
+  height: 350px !important;
   overflow: auto;
 }
 
@@ -125,5 +125,5 @@ th.mat-header-cell {
   }
    
   .switch-label .switch-slider::after{
-    width: 50% !important;
+    width: 70% !important;
   }
