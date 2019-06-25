@@ -98,7 +98,7 @@ export const navAD: NavData[] = [
       
       {
         name: 'Conceptos',
-        url: '/tesoreria/modals',
+        url: '/tesoreria/conceptos',
         icon: 'cui-bookmark'
       }
     ]

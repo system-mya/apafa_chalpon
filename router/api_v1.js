@@ -265,6 +265,16 @@ app.post('/api/tesoreria/listar_otros_conceptos', (req, res) => {
     tesoreria.listar_otros_conceptos(req.body,res);
 });
 
+//LLAMADA LISTA DE CONCEPTOS X PERIODO
+app.post('/api/tesoreria/listar_todos_conceptos', (req, res) => {
+    tesoreria.listar_todos_conceptos(req.body,res);
+});
+
+//LLAMADA INSERTAR NUEVO CONCEPTO
+app.post('/api/tesoreria/insertar_nvo_concepto', (req, res) => {
+    tesoreria.nvo_concepto(req.body,res);
+});
+
 //LLAMADA LISTA DE OTROS CONCEPTOS X PERIODO
 app.post('/api/tesoreria/insertar_nva_reunion', (req, res) => {
     tesoreria.nva_reunion(req.body,res);

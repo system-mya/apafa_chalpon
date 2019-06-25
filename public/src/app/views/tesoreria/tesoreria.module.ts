@@ -6,8 +6,8 @@ import { NgModule } from '@angular/core';
 // Alert Component
 import { AlertModule } from 'ngx-bootstrap/alert';
 import { IngresosComponent } from './ingresos.component';
-
 import { ComprasComponent } from './compras.component';
+import { ConceptosComponent } from './conceptos.component';
 
 // Modal Component
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -103,7 +103,8 @@ import { MatAutocompleteModule,
     IngresosComponent,
     ComprasComponent,
     ReunionesComponent,
-    TableFilterPipe
+    TableFilterPipe,
+    ConceptosComponent
   ]
 })
 export class TesoreriaModule { }

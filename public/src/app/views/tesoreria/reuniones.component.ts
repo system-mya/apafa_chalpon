@@ -2,6 +2,7 @@ import { Component,ViewChild,ViewEncapsulation,Inject,OnInit } from '@angular/co
 import { DOCUMENT } from '@angular/platform-browser';
 import {ModalDirective} from 'ngx-bootstrap/modal';
 import { ReunionesService } from './reuniones.service';
+import { ConceptosComponent } from './conceptos.component';
 import { Reunion,Busqueda,Concepto } from '../../app.datos';
 import {MatPaginator, MatSort, MatTableDataSource, TooltipPosition} from '@angular/material';
 import { ToastrService } from 'ngx-toastr';
@@ -11,6 +12,7 @@ declare var swal: any;
 import * as jspdf from 'jspdf';
 import 'jspdf-autotable';
 import { formatDate } from '@angular/common';
+import { ConceptosService } from './conceptos.service';
 
 function bodyRows(data,rowCount) {
   rowCount = rowCount;
@@ -46,6 +48,7 @@ export class ReunionesComponent implements  OnInit {
   apoderado: string;
   constructor(private toastr: ToastrService,private loadingBar: LoadingBarService,
     private _ReunionesServicio: ReunionesService,
+    private _ConceptosServicio: ConceptosService,
     @Inject(DOCUMENT) private document: Document,
     private spinner: NgxSpinnerService) { 
     this.DatoBusqueda = {
@@ -107,7 +110,7 @@ searchString:string;
   DataConcepto : any = [];
   ListarOtrosConceptos(){
    this.DatoBusqueda.datobusqueda = localStorage.getItem('_anhio');
-   this._ReunionesServicio.getLista_otros_conceptos(this.DatoBusqueda).subscribe(
+   this._ConceptosServicio.Lista_otros_conceptos(this.DatoBusqueda).subscribe(
      data => {
        if(data.status==1){
          this.DataConcepto = data.data;

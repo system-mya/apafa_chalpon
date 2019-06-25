@@ -17,11 +17,6 @@ export class ReunionesService {
     .map(res => res.json())
   }
 
-  public getLista_otros_conceptos(anhio:Busqueda){
-    return this._http.post('/api/tesoreria/listar_otros_conceptos',anhio)
-    .map(res => res.json())
-  }
-
   public nva_reunion(reunion:Reunion){
     return this._http.post('/api/tesoreria/insertar_nva_reunion',reunion)
      .map(data => data.json()).toPromise()

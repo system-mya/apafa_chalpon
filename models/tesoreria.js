@@ -590,6 +590,28 @@ class Tesoreria {
         });
     };
 
+    listar_todos_conceptos(anhio,res) {
+        connection.acquire((err, con) => {
+            if(err){
+                res.send({status: 0, message:err.sqlMessage});
+            }else{
+            con.query("CALL pa_listar_todos_conceptos('"+[anhio.datobusqueda]+"')", (err, result) => {
+                con.release();
+                if(err){
+                    res.send({status: 0, message:err.sqlMessage});
+                }else{
+                    if (result[0].length == 0) {
+                        res.send({status: 2, message: 'NO HAY CONCEPTOS REGISTRADOS'});
+                    } else {
+                        res.send({status: 1, message: 'CONSULTA EXITOSA',data:result[0]});
+                    }
+                }
+               
+            });
+        }
+        });
+    };
+
     nva_reunion(reunion, res) {
         connection.acquire((err, con) => {
             if(err){
@@ -727,6 +749,59 @@ class Tesoreria {
                 }
             });
             }
+        });
+    };
+
+    nvo_concepto(concepto, res) {
+        connection.acquire((err, con) => {
+            if(err){
+                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+            }else{
+                if([concepto.tipo_concepto]=='A'){
+                    var query_doc = "CALL pa_verificar_cuota_apafa_xanhio('"+ [concepto.anhio] +"')";
+            
+                    con.query(query_doc,(err, result) => {
+                        con.release();
+                        if(err){
+                            res.send({status: 0, message: err.sqlMessage});
+                        }else{
+                            if (result[0].length == 0) {
+                                var query = "CALL pa_insertar_concepto_apafa('"+ [concepto.descripcion_concepto.toUpperCase()]  
+                                + "','"+ [concepto.tipo_concepto] + "','"+[concepto.anhio]+"','"+[concepto.monto_concepto]+"')";
+                    
+                                con.query(query,(err, result) => {
+                                    if(err){
+                                        res.send({status: 0, message: err.sqlMessage});
+                                    }else{
+                                        if (result.affectedRows == 1) {
+                                            res.send({status: 1, message: 'Concepto Registrado'});
+                                        } else {
+                                            res.send({status: 2, message: 'Concepto No Registrado'});
+                                        }
+                                    }
+                                });
+                            }else{
+                                res.send({status: 3, message: 'CUOTA DE APAFA YA REGISTRADA'});
+                            }
+                        }
+                    })
+                }else{
+                    var query = "CALL pa_insertar_concepto_apafa('"+ [concepto.descripcion_concepto.toUpperCase()]  
+                    + "','"+ [concepto.tipo_concepto] + "','"+[concepto.anhio]+"','"+[concepto.monto_concepto]+"')";
+        
+                    con.query(query,(err, result) => {
+                        if(err){
+                            res.send({status: 0, message: err.sqlMessage});
+                        }else{
+                            if (result.affectedRows == 1) {
+                                res.send({status: 1, message: 'Concepto Registrado'});
+                            } else {
+                                res.send({status: 2, message: 'Concepto No Registrado'});
+                            }
+                        }
+                    });
+                }
+             }
         });
     };
 }

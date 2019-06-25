@@ -220,6 +220,8 @@ export class Reunion
 export class Concepto
 {
   id_concepto ?: number;
+  tipo_concepto ?: string;
+  anhio ?: string;
   descripcion_concepto ?: string;
   monto_concepto ?: number;
 }
