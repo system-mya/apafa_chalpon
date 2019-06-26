@@ -8,7 +8,7 @@ import { AlertModule } from 'ngx-bootstrap/alert';
 
 import { UsuariosComponent } from './usuarios.component';
 import { GradoSeccionComponent } from './grado_seccion.component';
-
+import { LibrosComponent } from './libros.component';
 // Dropdowns Component
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { AnhiosComponent } from './anhios.component';
@@ -113,7 +113,8 @@ import { MatAutocompleteModule,
   declarations: [
     UsuariosComponent,
     AnhiosComponent,
-    GradoSeccionComponent
+    GradoSeccionComponent, 
+    LibrosComponent
   ],
   providers: [
     {provide: OWL_DATE_TIME_LOCALE, useValue: 'es-do'},

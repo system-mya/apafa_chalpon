@@ -118,6 +118,13 @@ app.post('/api/update_libro', (req, res) => {
     admin.update_libro(req.body,res);
 })
 
+
+//LISTAR LIBROS ACTIVOS
+app.get('/api/listar_libros_activos', (req, res) => {
+    admin.listar_libros_activos(res);
+});
+
+
 //INSERTAR NUEVO ALUMNO
 app.post('/api/apafa/insertar_alumno', (req, res) => {
     apafa.nvo_alumno(req.body, res);
@@ -273,6 +280,11 @@ app.post('/api/tesoreria/listar_todos_conceptos', (req, res) => {
 //LLAMADA INSERTAR NUEVO CONCEPTO
 app.post('/api/tesoreria/insertar_nvo_concepto', (req, res) => {
     tesoreria.nvo_concepto(req.body,res);
+});
+
+// LLAMADO AL MODELO ELIMINAR CONCEPTO
+app.post('/api/tesoreria/eliminar_concepto', (req, res) => {
+    tesoreria.eliminar_concepto(req.body, res);
 });
 
 //LLAMADA LISTA DE OTROS CONCEPTOS X PERIODO

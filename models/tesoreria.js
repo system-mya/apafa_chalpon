@@ -804,5 +804,28 @@ class Tesoreria {
              }
         });
     };
+
+    eliminar_concepto(concepto, res) {
+        connection.acquire((err, con) => {
+            if(err){
+                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+            }else{
+            var query = "CALL pa_eliminar_concepto("+ [concepto.idbusqueda] +")"; 
+            /* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
+            con.query(query,(err, result) => {
+                con.release();
+                if(err){
+                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                }else{
+                    if (result.affectedRows == 0) {
+                        res.send({status: 2, message: 'CONCEPTO NO ELIMINADO'});
+                    } else {
+                        res.send({status: 1, message: 'CONCEPTO ELIMINADO'});
+                    }
+                }
+            });
+            }
+        });
+    };
 }
 module.exports = new Tesoreria();

@@ -41,12 +41,12 @@
                 <ng-container matColumnDef="opciones">
                     <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Opciones </th>
                     <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> 
-                      <button class="btn btn-info btn-xs distancia_btn_opciones"
+                      <!-- <button class="btn btn-info btn-xs distancia_btn_opciones"
                       matTooltip="Detalle"
                       matTooltipClass="tooltip-mensaje"
                       [matTooltipPosition]="positionOptions[3]"
                       data-toggle="modal" (click)="btnDetalle_Compra(element)">
-                    <span class="fa fa-address-card-o"></span></button>
+                    <span class="fa fa-address-card-o"></span></button> -->
                 <!-- <button class="btn btn-warning btn-xs distancia_btn_opciones"
                     matTooltip="Imprimir"
                     matTooltipClass="tooltip-mensaje"
@@ -57,7 +57,7 @@
                       matTooltip="Eliminar"
                       matTooltipClass="tooltip-mensaje"
                       [matTooltipPosition]="positionOptions[3]"
-                      (click)="btnEliminar_Alumno(element.id_alumno)">
+                      (click)="btnEliminar_Concepto(element.id_concepto)">
                  <span class="fa fa-trash-o btn-xs"></span>
                  </button>
                       
@@ -79,8 +79,8 @@
       <div class="modal-content">
           <form name="form" class="formulario" (ngSubmit)="myForm.form.valid && onSubmit(concepto)" #myForm="ngForm" novalidate autocomplete="off">
         <div class="modal-header">
-          <h4 class="modal-title">Nuevo Ingreso</h4>
-          <button type="button" class="close" (click)="frmIngresos_hide('RO')" aria-label="Close">
+          <h4 class="modal-title">Nuevo Concepto</h4>
+          <button type="button" class="close" (click)="frmConceptos_hide('N')" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
@@ -91,7 +91,7 @@
                     <input type="text" class="form-control" id="descripcion_concepto" name="descripcion_concepto"
                      placeholder="Descripción Concepto" [(ngModel)]="concepto.descripcion_concepto" #regdescripcion="ngModel" 
                      onkeyup="verif(this);mayus(this);" maxlength="100" [ngClass]="{ 'is-invalid': myForm.submitted && regdescripcion.invalid }" 
-                     pattern="^([A-ZÁÉÍÓÚa-zñáéíóú0-9]{1,100}[\s]*)+$" required>
+                     pattern="^([A-ZÁÉÍÓÚÑa-zñáéíóú0-9]{1,100}[\s]*)+$" required>
                      <div *ngIf="myForm.submitted && regdescripcion.invalid" class="invalid-feedback">
                       <div *ngIf="regdescripcion.errors.required">Campo Requerido</div>
                       <div *ngIf="regdescripcion.errors.pattern">Formato Incorrectos</div>
@@ -129,7 +129,7 @@
               </div><!--/.row-->       
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-danger" (click)="frmIngresos_hide('RO')"><span class="fa fa-times-circle"></span> Close</button>
+          <button type="button" class="btn btn-danger" (click)="frmConceptos_hide('N')"><span class="fa fa-times-circle"></span> Close</button>
           <button type="submit" class="btn btn-primary" ><span class="fa fa-save"></span> Guardar</button>
         </div>
       </form>

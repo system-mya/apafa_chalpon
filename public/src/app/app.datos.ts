@@ -231,6 +231,7 @@ export class Libro
     id_libro ?: number;
     titulo_libro ?: string;
     editorial_libro ?: string;
+    edicion_libro ?: string;
     id_grado ?: number;
     estado_libro ?: boolean;
 }

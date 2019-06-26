@@ -29,11 +29,11 @@ export class ConceptosComponent {
     this.DatoBusqueda = {
         datobusqueda: ''
       };
-    this.ListarComprasxPeriodo();
+    this.ListarConceptosxPeriodo();
   }
 
  DataConceptos: any = [];
- ListarComprasxPeriodo () {
+ ListarConceptosxPeriodo () {
   this.DatoBusqueda.datobusqueda = localStorage.getItem('_anhio');
   this._ConceptosServicios.Listar_todos_conceptos(this.DatoBusqueda).subscribe(
     data => {
@@ -51,6 +51,14 @@ export class ConceptosComponent {
     }
   );
 }
+
+applyFilter(filterValue: string) {
+  this.dataSource.filter = filterValue.trim().toLowerCase();
+  if (this.dataSource.paginator) {
+    this.dataSource.paginator.firstPage();
+  }
+}
+
 
 btnNuevo_Concepto(){
   this.NvoConceptoModal.show();
@@ -80,7 +88,7 @@ onSubmit(form: Concepto) {
               allowOutsideClick: false,
               allowEscapeKey: false
           })
-          this.ListarComprasxPeriodo();
+          this.ListarConceptosxPeriodo();
           this.NvoConceptoModal.hide();
           this.mytemplateForm.resetForm();
         } else {
@@ -104,7 +112,48 @@ onSubmit(form: Concepto) {
   });
 }
 
+frmConceptos_hide(opt){
+  if(opt=='N'){
+     this.NvoConceptoModal.hide();
+     this.mytemplateForm.resetForm();
+  }
+}
 
+btnEliminar_Concepto(idconcepto:number) {
+  swal({
+    title: '¿Esta seguro que desea eliminar concepto?',
+    type: 'question',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Si, Guardar!',
+    allowOutsideClick: false,
+    allowEscapeKey:false,
+  }).then((result) => {
+    //console.log(result.value);
+    if (result.value==true) {
+      this.DatoBusqueda.idbusqueda=idconcepto;
+        //console.log(this.DatoBusqueda.idbusqueda);
+        //this.DetUsuarioModal.show(); 
+          this._ConceptosServicios.eliminar_concepto(this.DatoBusqueda)
+          .then(data => {
+            if(data.status==1){
+              swal({
+                title: 'Aviso!',
+                text: data.message,
+                type: 'success',
+                allowOutsideClick: false,
+                allowEscapeKey:false
+            })
+            this.ListarConceptosxPeriodo();
+            }else{
+              this.toastr.error(data.message, 'Aviso!');
+             }
+          } )
+          .catch(err => console.log(err))
+    }
+  })
+}
 }
 
 

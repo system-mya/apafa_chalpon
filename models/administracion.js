@@ -522,12 +522,12 @@ nvo_libro(libro, res) {
 		}else{
         
 				
-					var query = "CALL pa_insertar_libro('"+ [libro.titulo_libro] +"','"+ [libro.editorial_libro] 
-                    + "',"+ [libro.id_grado] + ")";
-		
+					var query = "CALL pa_insertar_libro('"+ [libro.titulo_libro.toUpperCase()] 
+					+"','"+ [libro.editorial_libro.toUpperCase()] + "','"+[libro.edicion_libro]
+					+"',"+ [libro.id_grado] + ")";
                     con.query(query,(err, result) => {
                         if(err){
-                            res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                            res.send({status: 0, message: err.sqlMessage});
                         }else{
                             if (result.affectedRows == 1) {
                                 res.send({status: 1, message: 'Libro Registrado'});
@@ -546,14 +546,12 @@ update_libro(libro, res) {
 		if(err){
 			res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
 		}else{
-        
-				
-					var query = "CALL pa_update_libro('"+ [libro.titulo_libro] +"','"+ [libro.editorial_libro] 
-                    + "',"+ [libro.id_grado] + ")";
+                var query = "CALL pa_update_libro('"+ [libro.titulo_libro.toUpperCase()] +"','"+ [libro.editorial_libro.toUpperCase()] 
+                    + "','" +[libro.edicion_libro.toUpperCase()]+"'," + [libro.id_grado] + ","+[libro.id_libro]+")";
 		
-                    con.query(query,(err, result) => {
+                con.query(query,(err, result) => {
                         if(err){
-                            res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                            res.send({status: 0, message: err.sqlMessage});
                         }else{
                             if (result.affectedRows == 1) {
                                 res.send({status: 1, message: 'Libro Actualizado'});
@@ -588,6 +586,28 @@ eliminar_libro(libro, res) {
 		});
 		}
 	});
+};
+
+listar_libros_activos(res) {
+    connection.acquire((err, con) => {
+		if(err){
+			res.send({status: 0, message: err.sqlMessage});
+		}else{
+        con.query("CALL pa_listar_libros_activos()", (err, result) => {
+            con.release();
+            if(err){
+                res.send({status: 0, message: err.sqlMessage});
+			}else{
+				if (result[0].length == 0) {
+					res.send({status: 2, message: 'NO HAY DATOS EN LA TABLA LIBROS'});
+				} else {
+                    res.send({status: 1, message: 'CONSULTA EXITOSA',data:result[0]});
+                }
+			}
+           
+		});
+	}
+    });
 };
 
 //http://raquellorente.esy.es/nodejs/subir-y-bajar-archivos-del-servidor-con-express-y-node-js/

@@ -129,6 +129,12 @@ export const navAD: NavData[] = [
         url: '/administracion/grado_seccion',
         icon: 'icon-grid'
         
+      },
+      {
+        name: 'Libros',
+        url: '/administracion/libros',
+        icon: 'icon-layers'
+        
       }
     ]
   },  

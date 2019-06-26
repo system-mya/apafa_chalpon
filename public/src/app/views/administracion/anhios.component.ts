@@ -21,13 +21,11 @@ export class AnhiosComponent implements OnInit {
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  public loading : boolean;
   public anhiolectivo : Anhio_Lectivo ={};
   @ViewChild('myForm') myFormNvoAnhio : NgForm;
   constructor(private _AnhiosServicios:AnhiosService,private toastr: ToastrService) { 
     this.ListarAnhios();
     this.Anhios();
-    this.loading=true;
   }
 
   public year = new Date().getFullYear();
@@ -61,7 +59,6 @@ export class AnhiosComponent implements OnInit {
         this.dataSource = new MatTableDataSource(this.DataAnhios);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
-        this.loading=false;
         
       }
     )
