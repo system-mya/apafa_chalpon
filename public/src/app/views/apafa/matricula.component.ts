@@ -299,6 +299,7 @@ DataGrado : Grados;
          } )
          .catch(err => console.log(err))
   }
+  
   libro_matricula:Libro_Matricula={};
   Entregar_Libro(id_libro,id_grado){
       this.libro_matricula.id_libro=id_libro;

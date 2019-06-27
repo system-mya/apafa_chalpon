@@ -6,7 +6,7 @@ import { GradoSeccionService } from './grado-seccion.service';
 import 'rxjs/add/operator/map';
 import { ToastrService } from 'ngx-toastr';
 import {ModalDirective} from 'ngx-bootstrap/modal';
-import {Libro,Grados} from '../../app.datos';
+import {Libro,Grados, Busqueda} from '../../app.datos';
 declare var swal: any;
 
 
@@ -24,6 +24,7 @@ export class LibrosComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   public libro : Libro ={};
+  public DatoBusqueda : Busqueda = {};
   @ViewChild('myForm') myFormNvoLibro : NgForm;
   constructor(private _LibrosServicios:LibrosService,private toastr: ToastrService,
     private _GradoServicios:GradoSeccionService) { 
@@ -205,4 +206,40 @@ btnNuveo_Libro(){
       }
     })
   }
+
+  btnEliminar_Libro(idlibro) {
+    swal({
+      title: '¿Esta seguro que desea eliminar libro?',
+      type: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, Guardar!',
+      allowOutsideClick: false,
+      allowEscapeKey:false,
+    }).then((result) => {
+      //console.log(result.value);
+      if (result.value==true) {
+        this.DatoBusqueda.idbusqueda=idlibro;
+          //console.log(this.DatoBusqueda.idbusqueda);
+          //this.DetUsuarioModal.show(); 
+            this._LibrosServicios.eliminar_libro(this.DatoBusqueda)
+            .then(data => {
+              if(data.status==1){
+                swal({
+                  title: 'Aviso!',
+                  text: data.message,
+                  type: 'success',
+                  allowOutsideClick: false,
+                  allowEscapeKey:false
+              })
+              this.ListarLibrosActivos();
+              }else{
+                this.toastr.error(data.message, 'Aviso!');
+               }
+            } )
+            .catch(err => console.log(err))
+      }
+    })
+}
 }

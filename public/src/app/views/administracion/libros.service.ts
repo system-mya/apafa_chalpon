@@ -3,7 +3,7 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/delay';
 import { Http } from '@angular/http';
 import "rxjs/add/operator/map";
-import { Libro } from '../../app.datos';
+import { Libro,Busqueda } from '../../app.datos';
 @Injectable({
   providedIn: 'root'
 })
@@ -27,4 +27,11 @@ export class LibrosService {
     return this._http.post('/api/update_libro',libro)
      .map(data => data.json()).toPromise()
   }
+
+  // llamando al api ELIMINAR LIBRO
+public eliminar_libro(libro:Busqueda){
+  return this._http.post('/api/eliminar_libro',libro)
+   .map(data => data.json()).toPromise()
+}
+
 }

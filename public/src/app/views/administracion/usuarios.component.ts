@@ -468,7 +468,7 @@ btnDetalle_Usuario(idusuario){
                   .catch(err => console.log(err))
             }
           })
-        }
+   }
     
   
 }

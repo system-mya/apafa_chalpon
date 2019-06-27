@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 26-06-2019 a las 00:28:56
+-- Tiempo de generación: 27-06-2019 a las 00:24:19
 -- Versión del servidor: 5.7.14
 -- Versión de PHP: 5.6.25
 
@@ -351,7 +351,8 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_libros_xgrado` (IN `grado
 SELECT * FROM libro l WHERE NOT EXISTS 
 (SELECT * FROM libro_matricula lm WHERE lm.id_libro = l.id_libro
 AND lm.id_matricula=matricula)
-AND l.id_grado=grado$$
+AND l.id_grado=grado
+AND l.estado_libro=1$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_libros_xmatricula` (IN `matricula` SMALLINT)  NO SQL
 SELECT * FROM libro_matricula lm
@@ -443,10 +444,10 @@ INNER JOIN tipo_concepto tc ON tc.id_tconcepto=ca.id_tipo_concepto
 WHERE tc.cod_tconcepto='00'
 AND ca.id_anhio=(SELECT idanhio FROM anhio_lectivo WHERE condicion_anhio='A' AND estado_anhio=1 AND anhio=dato_anhio)$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_obtener_usuario` (IN `cod` INT)  NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_obtener_usuario` (IN `id` INT)  NO SQL
 SELECT * FROM usuario u
 INNER JOIN perfil_usuario pu ON pu.idperfil_usuario=u.idperfil_usuario
-WHERE u.idusuario=cod
+WHERE u.idusuario=id
 AND u.estado_usu=1
 AND u.fbaja_usu IS NULL$$
 
@@ -851,10 +852,10 @@ INSERT INTO `libro` (`id_libro`, `titulo_libro`, `editorial_libro`, `edicion_lib
 (1, 'LIBRO DE ACTIVDIADES MATEMATICA', 'NORMA', '2018', 1, b'1'),
 (2, 'LIBRO DE TEXTO MATEMATICA', 'NORMA', '2017', 1, b'1'),
 (3, 'LIBRO DE TRABAJO MATEMATICA 2', 'SANTILLANA', '2016', 1, b'1'),
-(4, 'LIBRO DE LECTURA MATEMATICA 2', 'SANTILLANA', '2016', 1, b'1'),
+(4, 'LIBRO DE LECTURA MATEMATICA 2', 'SANTILLANA', '2016', 2, b'1'),
 (5, 'LIBRO DE TRABAJO COMUNICACION', 'NORMA', '2017', 2, b'1'),
 (6, 'LIBRO DE LECTURA COMUNCIACION', 'NORMA', '2017', 2, b'1'),
-(7, 'CIENCIAS SOCIALES', 'NORMA', '2018', 2, b'1'),
+(7, 'CIENCIAS SOCIALES', 'NORMA', '2018', 2, b'0'),
 (8, 'ÑÑÑ', 'ÑÑÑ', '2010', 1, b'1');
 
 -- --------------------------------------------------------
@@ -874,7 +875,7 @@ CREATE TABLE `libro_matricula` (
 --
 
 INSERT INTO `libro_matricula` (`id_matricula`, `id_libro`, `devolvio_libro`) VALUES
-(31, 4, b'0');
+(32, 7, b'0');
 
 -- --------------------------------------------------------
 
