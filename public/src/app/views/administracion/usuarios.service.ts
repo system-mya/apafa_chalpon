@@ -57,4 +57,9 @@ public eliminar_usuario(user:Busqueda){
   return this._http.post('/api/eliminar_usuario',user)
    .map(data => data.json()).toPromise()
 }
+
+public update_clave(usuario:Busqueda){
+  return this._http.post('/api/update_clave',usuario)
+   .map(data => data.json()).toPromise()
+}
 }

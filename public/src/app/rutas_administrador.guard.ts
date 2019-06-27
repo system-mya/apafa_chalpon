@@ -14,7 +14,7 @@ export class Rutas_administrador implements CanActivate {
       if (localStorage.getItem('username')=='jjulca'){
         return true;
       }else{
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/principal']);
         return false;
       }
   }

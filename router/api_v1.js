@@ -59,6 +59,11 @@ app.post('/api/eliminar_usuario', (req, res) => {
     admin.eliminar_usuario(req.body, res);
 });
 
+//LLAMADA UPDATE CLAVE
+app.post('/api/update_clave', (req, res) => {
+    admin.update_clave(req.body, res);
+});
+
 // LLAMADO AL MODELO INSERTAR AÑO
 app.post('/api/insertar_anhio', (req, res) => {
     admin.nvo_anhio(req.body, res);

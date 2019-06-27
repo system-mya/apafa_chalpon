@@ -70,8 +70,8 @@ export const routes: Routes = [
         canActivate:[LoginGuard]
       },
       {
-        path: 'dashboard',
-        loadChildren: './views/dashboard/dashboard.module#DashboardModule',
+        path: 'principal',
+        loadChildren: './views/principal/principal.module#PrincipalModule',
         canActivate:[LoginGuard]
       },
       {

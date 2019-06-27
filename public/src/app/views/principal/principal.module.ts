@@ -3,19 +3,21 @@ import { ChartsModule } from 'ng2-charts/ng2-charts';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
 import { CommonModule } from '@angular/common';
-import { DashboardComponent } from './dashboard.component';
+import { InicialComponent } from './inicial.component';
 import { CuentaComponent } from './cuenta.component';
-import { DashboardRoutingModule } from './dashboard-routing.module';
+import { PrincipalRoutingModule } from './principal-routing.module';
 import { FormsModule } from '@angular/forms';
+import { ModalModule } from 'ngx-bootstrap/modal';
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
-    DashboardRoutingModule,
+    PrincipalRoutingModule,
     ChartsModule,
     BsDropdownModule,
-    ButtonsModule.forRoot()
+    ButtonsModule.forRoot(),
+    ModalModule.forRoot(),
   ],
-  declarations: [ DashboardComponent,CuentaComponent ]
+  declarations: [ InicialComponent,CuentaComponent ]
 })
-export class DashboardModule { }
+export class PrincipalModule { }

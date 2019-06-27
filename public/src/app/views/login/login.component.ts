@@ -39,7 +39,7 @@ export class LoginComponent implements OnInit {
           var encrypted = this._userServices.set('123456$#@$^@1ERF',data.data[0].idusuario);
           localStorage.setItem('ID',encrypted);
           var decrypted = this._userServices.get('123456$#@$^@1ERF', encrypted);
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/principal']);
         }else{
           this.toastr.error(data.message, 'Aviso!');
           this.username ="";

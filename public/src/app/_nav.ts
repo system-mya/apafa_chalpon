@@ -32,7 +32,7 @@ export interface NavData {
 export const navAD: NavData[] = [
   {
     name: 'Menu',
-    url: '/dashboard',
+    url: '/principal',
     icon: 'icon-speedometer'
   },
   {
@@ -81,8 +81,8 @@ export const navAD: NavData[] = [
     icon: 'icon-screen-tablet',
     children: [
       {
-        name: 'Pagos',
-        url: '/tesoreria/pagos',
+        name: 'Ingresos',
+        url: '/tesoreria/ingresos',
         icon: 'cui-note'
       },
       {

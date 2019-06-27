@@ -297,6 +297,31 @@ eliminar_usuario(user, res) {
 	});
 };
 
+update_clave(usuario, res) {
+	connection.acquire((err, con) => {
+		if(err){
+			res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+		}else{
+        
+				
+					var query = "CALL pa_update_clave('"+ [usuario.datobusqueda] 
+					+"',"+ [usuario.idbusqueda] + ")";
+                    con.query(query,(err, result) => {
+                        if(err){
+                            res.send({status: 0, message: err.sqlMessage});
+                        }else{
+                            if (result.affectedRows == 1) {
+                                res.send({status: 1, message: 'Clave Actualizada'});
+                            } else {
+                                res.send({status: 2, message: 'Clave No Actualizada'});
+                            }
+                        }
+                    });
+        
+		}
+	});
+};
+
 nvo_anhio(anhio, res) {
 	connection.acquire((err, con) => {
 		if(err){

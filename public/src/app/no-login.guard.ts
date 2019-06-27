@@ -13,7 +13,7 @@ export class NoLoginGuard implements CanActivate {
       if(localStorage.getItem("username")===null ){
         return true;
       }else{
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/principal']);
         return false;
       }
     
