@@ -25,6 +25,7 @@ export class ApoderdoComponent {
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild('myForm') mytemplateForm : NgForm;
   public DatoBusqueda : Busqueda;
+  public optAd : string;
   constructor(private _ApoderadoServicio:ApoderadoService,private toastr: ToastrService) {
     this.apoderado = {
       tdoc_apoderado:'',
@@ -38,6 +39,7 @@ export class ApoderdoComponent {
       idbusqueda:0
     }
     this.ListarApoderados();
+    this.optAd = localStorage.getItem('id_perfil');
   }
 
 

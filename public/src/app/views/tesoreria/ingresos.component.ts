@@ -48,6 +48,7 @@ export class IngresosComponent {
   public otro: Otro_Ingreso = {};
   public recibo : Recibo = {};
   public DataDeuda : Detalle_Deuda ={};
+  public optAd : string;
   constructor(private _IngresosServicios: IngresosService, 
     private _MatriculaServicios:MatriculaService,
     private _ApoderadoServicios : ApoderadoService,
@@ -58,6 +59,7 @@ export class IngresosComponent {
     };
     this.ListarIngresos();
     this.recibo.mtotal_recibo=0;
+    this.optAd = localStorage.getItem('id_perfil');
   }
 
 DataIngresos: any = [];

@@ -27,6 +27,7 @@ export class ComprasComponent {
   public panel_tabla_compras : boolean;
   public detalle_compra : any = [];
   public btnagregar : boolean;
+  public optAd : string;
   constructor(private toastr: ToastrService,private loadingBar: LoadingBarService,
     private _CompraServicios: ComprasService,
     @Inject(DOCUMENT) private document: Document,) { 
@@ -35,6 +36,7 @@ export class ComprasComponent {
       };
     this.panel_tabla_compras=true;
     this.ListarComprasxPeriodo();
+    this.optAd = localStorage.getItem('id_perfil');
   }
 
  DataCompras: any = [];

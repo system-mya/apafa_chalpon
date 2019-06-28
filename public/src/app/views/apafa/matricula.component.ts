@@ -27,6 +27,7 @@ export class MatriculaComponent {
   public DatoBusqueda : Busqueda;
   public panel_tabla : boolean;
   public panel_registro_libro : boolean;
+  public optAd : string;
   constructor(private _MatriculaServicios:MatriculaService,private toastr: ToastrService,
     private _GradoServicios:GradoSeccionService,private loadingBar: LoadingBarService) { 
     this.ListarMatriculados();
@@ -35,6 +36,7 @@ export class MatriculaComponent {
       idbusqueda:0,
       datobusqueda:''
     }
+    this.optAd = localStorage.getItem('id_perfil');
   }
 
  DataApoderados : any = [];

@@ -7,8 +7,8 @@ import { DefaultLayoutComponent } from './containers';
 import { P404Component } from './views/error/404.component';
 import { P500Component } from './views/error/500.component';
 import { LoginComponent } from './views/login/login.component';
-import { RegisterComponent } from './views/register/register.component';
 import { LoginGuard } from './login.guard';
+import { Rutas_administrador } from './rutas_administrador.guard';
 import { NoLoginGuard } from './no-login.guard';
 export const routes: Routes = [
   {
@@ -40,14 +40,6 @@ export const routes: Routes = [
     canActivate:[NoLoginGuard]
   },
   {
-    path: 'register',
-    component: RegisterComponent,
-    data: {
-      title: 'Register Page'
-    },
-    canActivate:[LoginGuard]
-  },
-  {
     path: '',
     component: DefaultLayoutComponent,
     data: {
@@ -65,11 +57,6 @@ export const routes: Routes = [
         canActivate:[LoginGuard]
       },
       {
-        path: 'charts',
-        loadChildren: './views/chartjs/chartjs.module#ChartJSModule',
-        canActivate:[LoginGuard]
-      },
-      {
         path: 'principal',
         loadChildren: './views/principal/principal.module#PrincipalModule',
         canActivate:[LoginGuard]
@@ -84,16 +71,6 @@ export const routes: Routes = [
         loadChildren: './views/tesoreria/tesoreria.module#TesoreriaModule',
         canActivate:[LoginGuard]
       },
-      {
-        path: 'theme',
-        loadChildren: './views/theme/theme.module#ThemeModule',
-        canActivate:[LoginGuard]
-      },
-      {
-        path: 'widgets',
-        loadChildren: './views/widgets/widgets.module#WidgetsModule',
-        canActivate:[LoginGuard]
-      }
     ]
   },
   { path: '**', component: P404Component }

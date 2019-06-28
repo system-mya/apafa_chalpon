@@ -11,7 +11,7 @@ export class Rutas_administrador implements CanActivate {
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
    
-      if (localStorage.getItem('username')=='jjulca'){
+      if (localStorage.getItem('id_perfil')=='AD'){
         return true;
       }else{
         this.router.navigate(['/principal']);

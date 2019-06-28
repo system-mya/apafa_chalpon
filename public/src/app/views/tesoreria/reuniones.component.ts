@@ -46,6 +46,7 @@ export class ReunionesComponent implements  OnInit {
   public panel_tabla:boolean;
   public panel_detalle:boolean;
   apoderado: string;
+  public optAd : string;
   constructor(private toastr: ToastrService,private loadingBar: LoadingBarService,
     private _ReunionesServicio: ReunionesService,
     private _ConceptosServicio: ConceptosService,
@@ -56,6 +57,7 @@ export class ReunionesComponent implements  OnInit {
       };
     this.ListarReunionesxPeriodo();
     this.panel_tabla=true;
+    this.optAd = localStorage.getItem('id_perfil');
   }
 
   ngOnInit() {

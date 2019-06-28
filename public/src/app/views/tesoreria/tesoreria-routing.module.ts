@@ -5,7 +5,7 @@ import { IngresosComponent } from './ingresos.component';
 import { ComprasComponent } from './compras.component';
 import { ReunionesComponent } from './reuniones.component';
 import { ConceptosComponent } from './conceptos.component';
-
+import { Rutas_administrador } from '../../rutas_administrador.guard';
 const routes: Routes = [
   {
     path: '',
@@ -43,7 +43,8 @@ const routes: Routes = [
         component: ConceptosComponent,
         data: {
           title: 'Conceptos'
-        }
+        },
+        canActivate:[Rutas_administrador]
       }
     ]
   }

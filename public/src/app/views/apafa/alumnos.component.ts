@@ -42,6 +42,7 @@ export class AlumnosComponent implements OnInit {
   public alumno : Alumno;
   public Editalumno : Alumno;
   public DatoBusqueda : Busqueda;
+  public optAd : string;
   constructor(private _AlumnosServicios:AlumnosService,
     private _MatriculaServicios:MatriculaService,private toastr: ToastrService,
     @Inject(DOCUMENT) private document: Document,private loadingBar: LoadingBarService) {
@@ -62,6 +63,7 @@ export class AlumnosComponent implements OnInit {
       correo_madre:''
       
     }
+    this.optAd = localStorage.getItem('id_perfil');
    }
   
   ngOnInit() {

@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
-import { navSE,navAD } from '../../_nav';
+import { navTS,navAD,navSE } from '../../_nav';
 import {Router} from '@angular/router';
 import { Location } from '@angular/common';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -39,7 +39,11 @@ export class DefaultLayoutComponent implements OnInit {
     if(localStorage.getItem('id_perfil')=='AD'){
       this.navItems=navAD;
     }else{
-      this.navItems=navSE;
+      if(localStorage.getItem('id_perfil')=='TS'){
+        this.navItems=navTS;
+      }else{
+        this.navItems=navSE;
+      }      
     }
   }
 
