@@ -1,7 +1,6 @@
 import { Component,OnInit,ViewChild,ViewEncapsulation,Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/platform-browser';
 import { AlumnosService } from './alumnos.service';
-import { IngresosService } from '../tesoreria/ingresos.service';
 import {MatPaginator, MatSort, MatTableDataSource,TooltipPosition} from '@angular/material';
 import {ModalDirective} from 'ngx-bootstrap/modal';
 import 'rxjs/add/operator/map';
