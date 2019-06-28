@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 28-06-2019 a las 00:51:53
+-- Tiempo de generación: 28-06-2019 a las 23:51:09
 -- Versión del servidor: 5.7.14
 -- Versión de PHP: 5.6.25
 
@@ -592,15 +592,8 @@ CREATE TABLE `alumno` (
 --
 
 INSERT INTO `alumno` (`id_alumno`, `tdoc_alumno`, `doc_alumno`, `apellidos_alumno`, `nombres_alumno`, `fnac_alumno`, `sexo_alumno`, `telefono_alumno`, `celular_alumno`, `direccion_alumno`, `correo_alumno`, `procedencia_alumno`, `apellidos_padre`, `nombres_padre`, `celular_padre`, `correo_padre`, `apellidos_madre`, `nombres_madre`, `celular_madre`, `correo_madre`, `estado_alumno`) VALUES
-(1, 'DNI', '71919582', 'Julca Vasquez', 'Jose Andersson', '2019-06-05', 'M', NULL, '978902579', 'Calle chiclayo # 114', NULL, NULL, 'Julca Zeña', 'Francisco Javier', NULL, NULL, 'Vasquez Delgado', 'Susana Esther', NULL, NULL, b'1'),
-(2, 'DNI', '16686223', 'Julca Zeña', 'Francisco Javier', '2019-03-06', 'M', NULL, '978989288', 'calle chiclayo # 114', NULL, NULL, 'Julca Venegas', 'Segundo', NULL, NULL, 'Zeña Orreaga', 'Alejandrina', NULL, NULL, b'1'),
-(3, 'OTR', '751654654M65484', 'Flores Aguilar', 'Diego', '2019-06-07', 'M', NULL, '312113313', 'La Posada SN', NULL, NULL, 'Fadad', 'Rqewwf', NULL, NULL, 'Fasdfasf', 'Radafasff', NULL, NULL, b'1'),
-(4, 'DNI', '73258572', 'Sanchez Velasquez', 'Marita Vanessa ', '1992-02-05', 'F', NULL, '979241872', 'VISTA ALEGRE MZ H LT 22', NULL, NULL, 'Sanchez Granados', 'Luis', NULL, NULL, 'Velasquez Torres', 'Lila', NULL, NULL, b'1'),
-(5, 'DNI', '16729503', 'Julca Vasquez', 'Alejandra Sayuri', '2019-06-07', 'F', NULL, '979013530', 'CALLE CHICALYO # 114', NULL, NULL, 'Julca Zeña', 'Francisco Javier', NULL, NULL, 'Vasquez Delgado', 'Susana', NULL, NULL, b'1'),
-(6, 'DNI', '21654684', 'Rubio Vasquez', 'Jose Alexander', '2019-01-02', 'M', NULL, '979416039', 'calle jose quinones # 54', NULL, NULL, 'Rubio Marin', 'Alex', NULL, NULL, 'Vasquez Delgado', 'Luz', NULL, NULL, b'1'),
-(7, 'DNI', '12412412', 'Dadad', 'Dadad', '2007-01-30', 'M', NULL, '325325325', 'sfasfasfsaf', NULL, NULL, 'Aadad', 'Aasad', NULL, NULL, 'Aad', 'Dadad', NULL, NULL, b'0'),
-(8, 'DNI', '13415315', 'Aasadad', 'Fadadad', '2019-06-06', 'M', NULL, '325326236', 'ADADAD', NULL, NULL, 'Aadada', 'Dadadad', NULL, NULL, 'Fadad', 'Aaadad', NULL, NULL, b'0'),
-(9, 'DNI', '34532532', 'Aadad', 'Fadad', '2019-06-14', 'M', NULL, '325325325', 'fasfsafsaf', NULL, NULL, 'Adadad', 'Fadad', NULL, NULL, 'Dadad', 'Fadad', NULL, NULL, b'0');
+(1, 'OTR', '751654654M65484', 'Flores Aguilar', 'Diego', '2019-06-11', 'M', NULL, '928282905', 'La Posada SN', NULL, NULL, 'Flores Abad', 'Adler Mauro', NULL, NULL, 'Aguilar Martinez', 'Rosa Luisa', NULL, NULL, b'1'),
+(2, 'DNI', '80717855', 'Rubio Vasquez', 'Jose Alexander', '2019-01-11', 'M', '458587', '987445673', 'calle jose quinones # 54', NULL, NULL, 'Rubio Abad', 'Samuel', NULL, NULL, 'Vasquez Delgado', 'Luz', NULL, NULL, b'1');
 
 -- --------------------------------------------------------
 
@@ -874,13 +867,6 @@ CREATE TABLE `libro_matricula` (
   `devolvio_libro` bit(1) NOT NULL DEFAULT b'0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Volcado de datos para la tabla `libro_matricula`
---
-
-INSERT INTO `libro_matricula` (`id_matricula`, `id_libro`, `devolvio_libro`) VALUES
-(32, 7, b'0');
-
 -- --------------------------------------------------------
 
 --
@@ -897,20 +883,6 @@ CREATE TABLE `matricula` (
   `id_tipo_relacion` smallint(6) NOT NULL,
   `estado_matricula` bit(1) NOT NULL DEFAULT b'1'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Volcado de datos para la tabla `matricula`
---
-
-INSERT INTO `matricula` (`id_matricula`, `fecha_matricula`, `id_apoderado`, `id_alumno`, `id_anhio`, `id_seccion`, `id_tipo_relacion`, `estado_matricula`) VALUES
-(28, '2019-06-17', 1, 1, 1, 1, 1, b'1'),
-(29, '2019-06-17', 1, 4, 1, 1, 1, b'1'),
-(31, '2019-06-17', 2, 1, 2, 5, 1, b'1'),
-(32, '2019-06-17', 2, 4, 2, 5, 2, b'1'),
-(33, '2019-06-21', 4, 3, 2, 11, 1, b'1'),
-(34, '2019-06-21', 2, 6, 2, 7, 3, b'1'),
-(35, '2019-06-25', 1, 5, 2, 8, 1, b'1'),
-(36, '2019-06-25', 3, 2, 2, 8, 4, b'1');
 
 -- --------------------------------------------------------
 
@@ -1128,7 +1100,8 @@ INSERT INTO `usuario` (`idusuario`, `nom_usu`, `clave_usu`, `dni_usu`, `nombres_
 -- Indices de la tabla `alumno`
 --
 ALTER TABLE `alumno`
-  ADD PRIMARY KEY (`id_alumno`);
+  ADD PRIMARY KEY (`id_alumno`),
+  ADD UNIQUE KEY `doc_alumno` (`doc_alumno`);
 
 --
 -- Indices de la tabla `anhio_lectivo`
@@ -1263,7 +1236,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `alumno`
 --
 ALTER TABLE `alumno`
-  MODIFY `id_alumno` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id_alumno` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT de la tabla `anhio_lectivo`
 --
