@@ -60,11 +60,11 @@ listar_perfiles(res) {
     });
 };
 
-
- consultar(user, res) {
+//CONSULTA PARA INICIAR SESION
+ iniciar_sesion(user, res) {
 	connection.acquire((err, con) => {
 		if(err){
-			res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+			res.send({status: 0, message: err.sqlMessage});
 		}else{
 		var query = "CALL pa_iniciar_sesion('"+ [user.username] +"','"+ [user.password] +"')";
 		//res.send("CALL INICIAR_SESION('"+ [user.username] +"','"+ [user.password] +"','"+ hoyFecha()+ "')");

@@ -8,8 +8,8 @@ class Connection {
             connectionLimit: 10,
             host: 'localhost',
             user: 'root',
-            password: '03071593',
-            database: 'apafa_chalpon',
+            password: '',
+            database: 'chalpon_apafa',
             debug: false,
         });
     }; 

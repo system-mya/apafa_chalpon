@@ -11,8 +11,10 @@ module.exports = {
     admin.get(res);
   });
 
-app.post('/api/users', (req, res) => {
-    admin.consultar(req.body, res);
+
+//POST PARA INICIAR SESION
+app.post('/api/administracion/iniciar_sesion', (req, res) => {
+    admin.iniciar_sesion(req.body, res);
 });
 
 app.post('/api/users/add', (req, res) => {

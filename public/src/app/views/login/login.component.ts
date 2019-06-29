@@ -24,7 +24,7 @@ export class LoginComponent implements OnInit {
         this.cargando = false;
       },3000)
       console.log("Login funcionando");
-      this._userServices.consultar(form.value)
+      this._userServices.iniciar_sesion(form.value)
       .then(data => {
         if(data.status==1){
           this.toastr.success('Bienvenido ' + data.data[0].nom_usu, 'Aviso!');

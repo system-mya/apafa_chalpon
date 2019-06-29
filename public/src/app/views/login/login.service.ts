@@ -9,8 +9,9 @@ export class LoginService {
 
   constructor(private _http:Http) { }
   
-  consultar(user:Usuario){
-    return this._http.post('/api/users',user)
+  //LLAMADO A LA API INICIAR SESION
+  iniciar_sesion(user:Usuario){
+    return this._http.post('/api/administracion/iniciar_sesion',user)
      .map(data => data.json()).toPromise()
  }
 
