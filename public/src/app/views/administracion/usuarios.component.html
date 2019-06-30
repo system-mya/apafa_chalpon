@@ -60,13 +60,7 @@
           <span matPrefix>Buscar Usuario: &nbsp;</span>
           <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Ingrese Dato">
         </mat-form-field>  
-        <table mat-table [dataSource]="dataSource" matSort id="tabla">
-          <ng-container matColumnDef="num_usu">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla"> N°. </th>
-            <td mat-cell *matCellDef="let element let i = index" style="text-align: center !important" > {{i+1}} </td>
-          </ng-container>
-           
-        
+        <table mat-table [dataSource]="dataSource" matSort id="tabla">        
           <ng-container matColumnDef="apellidos_usu">
             <th mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" nowrap > Apellidos y Nombres </th>
             <td mat-cell *matCellDef="let element" nowrap> {{element.apellidos_usu}} {{element.nombres_usu}} </td>
@@ -176,9 +170,6 @@
           </button>
         </div>
         <div class="modal-body">
-            <div *ngFor="let alert of alerts">
-                <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)" [dismissible]="dismissible">{{ alert.msg }}</alert>
-              </div>
            <div class="row">
               <div class="form-group col-sm-6">
                 <label for="nombres_usu" style="font-weight: bold;">Nombres Completos <i class="fa fa-certificate" style="color:red !important"></i> :</label>
@@ -423,9 +414,6 @@
           </button>
         </div>
         <div class="modal-body">
-            <div *ngFor="let alert of alerts">
-                <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)" [dismissible]="dismissible">{{ alert.msg }}</alert>
-              </div>
            <div class="row">
               <div class="form-group col-sm-6">
                 <label for="nombres_usu" style="font-weight: bold;">Nombres Completos <i class="fa fa-certificate" style="color:red !important"></i> :</label>

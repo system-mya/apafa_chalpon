@@ -12,12 +12,12 @@ export class UsuariosService {
   constructor(private _http:Http) { }
 
  public getListarUsiarios(){
-    return this._http.get('/api/listar_usuarios')
+    return this._http.get('/api/administracion/listar_usuarios')
      .map(res => res.json())
  }
 
  public getListarPerfiles(){
-  return this._http.get('/api/listar_perfiles')
+  return this._http.get('/api/administracion/listar_perfiles')
    .map(res => res.json())
 }
 
@@ -27,12 +27,12 @@ export class UsuariosService {
 }
 
 public detalle_usuario(user:Busqueda){
-  return this._http.post('/api/detalle_usuario',user)
+  return this._http.post('/api/administracion/detalle_usuario',user)
    .map(data => data.json()).toPromise()
 }
 
 public editar_usuario(user:Busqueda){
-  return this._http.post('/api/editar_usuario',user)
+  return this._http.post('/api/administracion/editar_usuario',user)
    .map(data => data.json()).toPromise()
 }
 

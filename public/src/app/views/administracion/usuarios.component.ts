@@ -23,7 +23,7 @@ export class UsuariosComponent implements OnInit {
   @ViewChild('EditUsuarioModal') public EditUsuarioModal: ModalDirective;
   DataArray : any = [];
   // columnsToDisplay = ['idusuario', 'nom_usu', 'nombres_usu', 'apellidos_usu'];
-  displayedColumns: string[] = ['num_usu','apellidos_usu', 'nom_usu', 'contacto_usu','perfil_usu','estado_usu','opciones_usu'];
+  displayedColumns: string[] = ['apellidos_usu', 'nom_usu', 'contacto_usu','perfil_usu','estado_usu','opciones_usu'];
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -36,7 +36,7 @@ export class UsuariosComponent implements OnInit {
   public usu_invalido : boolean = false;
   public  chooseView : string;
   constructor(private _UsuariosServicios:UsuariosService,private toastr: ToastrService) {
-    this.LoadTableData();
+    this.Listar_Usuario();
     this.usuario = {
       nom_usu:'',
       clave_usu:'',
@@ -80,29 +80,7 @@ export class UsuariosComponent implements OnInit {
     
     
   }
-  dismissible = true;
-  alert_msg_danger(msg): void {
-    this.alerts.push({
-      type: 'danger',
-      msg: msg,
-      timeout: 5000
-    });
-  }
-
-   onClosed(dismissedAlert: AlertComponent): void {
-    this.alerts = this.alerts.filter(alert => alert !== dismissedAlert);
-  }
-  // showSpinner() {
-  //   this.spinner.show(undefined,
-  //     {
-  //       type: 'square-spin',
-  //       size: 'medium',
-  //       bdColor: 'rgba(100,149,237, .8)',
-  //       color: 'white',
-  //       fullScreen: false
-  //     }
-  //   );
-  // }
+ 
 
   btnNuevo_Usuairo(){
     this.NvoUsuarioModal.show();    
@@ -150,7 +128,7 @@ export class UsuariosComponent implements OnInit {
                   allowOutsideClick: false,
                   allowEscapeKey:false
               })
-              this.LoadTableData();
+              this.Listar_Usuario();
               this.mytemplateForm.resetForm();
             }else{
               if(data.status==2){
@@ -202,13 +180,19 @@ export class UsuariosComponent implements OnInit {
   }
   
 
- LoadTableData (){
+ Listar_Usuario(){
    this._UsuariosServicios.getListarUsiarios().subscribe(
      data => {
-       this.DataArray = data;
+       if(data.status==1){
+        this.DataArray = data.data;
        this.dataSource = new MatTableDataSource(this.DataArray);
        this.dataSource.paginator = this.paginator;
        this.dataSource.sort = this.sort;
+       }else{
+         this.toastr.error(data.message, 'Aviso!',{
+           positionClass: 'toast-top-right'
+         });
+       }
      }
    )
  }
@@ -223,7 +207,6 @@ export class UsuariosComponent implements OnInit {
         this.toastr.error("Consulta Sin Exito", 'Aviso!',{
           positionClass: 'toast-top-right'
         });
-        this.alert_msg_danger(data.message);
       }
       
     }
@@ -278,7 +261,7 @@ btnDetalle_Usuario(idusuario){
 // }
 //  }
 
-  // LoadTableData (){
+  // Listar_Usuario (){
   //   this._UsuariosServicios.getListarUsiarios()
   //   .map(this.extractData)
   //   .subscribe(persons => {
@@ -315,7 +298,7 @@ btnDetalle_Usuario(idusuario){
                   allowOutsideClick: false,
                   allowEscapeKey:false
               })
-              this.LoadTableData();
+              this.Listar_Usuario();
               }else{
                 this.toastr.error(data.message, 'Aviso!');
                }
@@ -405,7 +388,7 @@ btnDetalle_Usuario(idusuario){
                   allowOutsideClick: false,
                   allowEscapeKey:false
               })
-              this.LoadTableData();
+              this.Listar_Usuario();
               this.mytemplateForm.resetForm();
             }else{
               if(data.status==2){
@@ -460,7 +443,7 @@ btnDetalle_Usuario(idusuario){
                         allowOutsideClick: false,
                         allowEscapeKey:false
                     })
-                    this.LoadTableData();
+                    this.Listar_Usuario();
                     }else{
                       this.toastr.error(data.message, 'Aviso!');
                      }

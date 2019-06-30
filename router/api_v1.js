@@ -5,13 +5,7 @@ var tesoreria = require('../models/tesoreria');
 //creamos el ruteo de la aplicación
 module.exports = {
    configure: (app) => {
-        //get users list from USERS table
-
-  app.get('/api/users', (req, res) => {
-    admin.get(res);
-  });
-
-
+ 
 //POST PARA INICIAR SESION
 app.post('/api/administracion/iniciar_sesion', (req, res) => {
     admin.iniciar_sesion(req.body, res);
@@ -27,19 +21,20 @@ app.post('/api/insertar_usuario', (req, res) => {
     admin.nvo_usuario(req.body, res);
 });
 
-app.get('/api/listar_usuarios', (req, res) => {
+//GET PARA LISTAR USUARIOS
+app.get('/api/administracion/listar_usuarios', (req, res) => {
     admin.listar_usuarios(res);
 });
 
-app.get('/api/listar_perfiles', (req, res) => {
+app.get('/api/administracion/listar_perfiles', (req, res) => {
     admin.listar_perfiles(res);
 });
 
-app.post('/api/detalle_usuario', (req, res) => {
+app.post('/api/administracion/detalle_usuario', (req, res) => {
     admin.detalle_usuario(req.body, res);
 });
 
-app.post('/api/editar_usuario', (req, res) => {
+app.post('/api/administracion/editar_usuario', (req, res) => {
     admin.editar_usuario(req.body, res);
 });
 

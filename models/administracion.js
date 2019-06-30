@@ -20,33 +20,40 @@ function hoyFecha(){
 }
 //creamos un objeto para ir almacenando todo lo que necesitemos
 class Administracion {
-  get(res) {
-        connection.acquire((err, con) => {
-            con.query('CALL LISTAR_DEPARTAMENTOS()', (err, result) => {
-                con.release();
-                res.send(result[0]);
-            });
-        });
- };
-
+ 
+ //LLAMADO AL PA_LISTAR_USUARIOS;
  listar_usuarios(res) {
-    connection.acquire((err, con) => {
+	connection.acquire((err, con) => {
+		if(err){
+			res.send({status: 0, message: err.sqlMessage});
+		}else{
         con.query('CALL pa_listar_usuarios()', (err, result) => {
             con.release();
-            res.send(result[0]);
-        });
+            if(err){
+                res.send({status: 0, message: err.sqlMessage});
+			}else{
+				if (result[0].length == 0) {
+					res.send({status: 2, message: 'NO HAY DATOS EN LA TABLA USUARIOS'});
+				} else {
+                    res.send({status: 1, message: 'CONSULTA EXITOSA',data:result[0]});
+                }
+			}
+           
+		});
+	}
     });
 };
 
+//LLAMADO AL PA_LISTAR_PERFIL_USUARIO
 listar_perfiles(res) {
     connection.acquire((err, con) => {
 		if(err){
-			res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+			res.send({status: 0, message: err.sqlMessage});
 		}else{
         con.query('CALL pa_listar_perfil_usuario()', (err, result) => {
             con.release();
             if(err){
-                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                res.send({status: 0, message: err.sqlMessage});
 			}else{
 				if (result[0].length == 0) {
 					res.send({status: 2, message: 'NO HAY DATOS EN LA TABLA PERFIL USUARIOS'});
@@ -137,17 +144,18 @@ nvo_usuario(user, res) {
 	});
 };
 
+//LLAMADO AL PA_DETALLE_USUARIO POR ID_USUARIO
 detalle_usuario(user, res) {
 	connection.acquire((err, con) => {
 		if(err){
-			res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+			res.send({status: 0, message: err.sqlMessage});
 		}else{
 		var query = "CALL pa_detalle_usuario("+ [user.idbusqueda] +")"; 
 		/* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
 		con.query(query,(err, result) => {
 			con.release();
 			if(err){
-                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                res.send({status: 0, message: err.sqlMessage});
 			}else{
 				if (result[0].length == 0) {
 					res.send({status: 2, message: 'Usuario No Existe'});

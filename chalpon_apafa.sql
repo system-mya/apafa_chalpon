@@ -1,20 +1,20 @@
 -- phpMyAdmin SQL Dump
--- version 3.5.1
--- http://www.phpmyadmin.net
+-- version 4.6.4
+-- https://www.phpmyadmin.net/
 --
--- Servidor: localhost
--- Tiempo de generación: 29-06-2019 a las 05:12:14
--- Versión del servidor: 5.5.24-log
--- Versión de PHP: 5.4.3
+-- Servidor: 127.0.0.1
+-- Tiempo de generación: 30-06-2019 a las 00:18:44
+-- Versión del servidor: 5.7.14
+-- Versión de PHP: 5.6.25
 
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Base de datos: `chalpon_apafa`
@@ -24,8 +24,20 @@ DELIMITER $$
 --
 -- Procedimientos
 --
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_iniciar_sesion`(IN `nom` VARCHAR(20), IN `clave` VARCHAR(10))
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_detalle_usuario` (IN `usuario` SMALLINT)  NO SQL
+SELECT u.idusuario,u.apellidos_usu,u.nombres_usu,
+u.dni_usu,u.celular_usu,
+(CASE 
+WHEN u.sexo_usu='M' THEN "MASCULINO"
+ELSE "FEMENINO" 
+END) as sexo_usu,u.direccion_usu,u.correo_usu,
+u.nom_usu,pu.nombre_perfil,u.fcreacion_usu,u.fbaja_usu,
+u.obser_usu FROM usuario u
+INNER JOIN perfil_usuario pu ON pu.idperfil_usuario=u.idperfil_usuario
+WHERE u.idusuario=usuario
+AND u.estado_usu=1$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_iniciar_sesion` (IN `nom` VARCHAR(20), IN `clave` VARCHAR(10))  NO SQL
 SELECT u.idusuario,u.nom_usu,pu.abrev_perfil,pu.nombre_perfil,
 (SELECT anhio from anhio_lectivo WHERE condicion_anhio='A' AND estado_anhio=1) AS anhio_lectivo FROM usuario u
 INNER JOIN perfil_usuario pu ON u.idperfil_usuario=pu.idperfil_usuario
@@ -33,8 +45,7 @@ WHERE u.nom_usu=nom
 AND u.clave_usu=SHA(clave)
 AND u.estado_usu=1$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_alumno`(IN `tdoc` CHAR(3), IN `doc` VARCHAR(15), IN `ape_alum` VARCHAR(60), IN `nom_alum` VARCHAR(50), IN `fnac` DATE, IN `sexo` CHAR(1), IN `tel_alum` CHAR(6), IN `cel_alum` CHAR(9), IN `dire_alum` VARCHAR(80), IN `correo_alum` VARCHAR(80), IN `proc_alum` VARCHAR(100), IN `ape_padre` VARCHAR(60), IN `nom_padre` VARCHAR(50), IN `cel_padre` CHAR(9), IN `correo_pa` VARCHAR(80), IN `ape_madre` VARCHAR(60), IN `nom_madre` VARCHAR(50), IN `cel_madre` CHAR(9), IN `correo_ma` VARCHAR(80))
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_alumno` (IN `tdoc` CHAR(3), IN `doc` VARCHAR(15), IN `ape_alum` VARCHAR(60), IN `nom_alum` VARCHAR(50), IN `fnac` DATE, IN `sexo` CHAR(1), IN `tel_alum` CHAR(6), IN `cel_alum` CHAR(9), IN `dire_alum` VARCHAR(80), IN `correo_alum` VARCHAR(80), IN `proc_alum` VARCHAR(100), IN `ape_padre` VARCHAR(60), IN `nom_padre` VARCHAR(50), IN `cel_padre` CHAR(9), IN `correo_pa` VARCHAR(80), IN `ape_madre` VARCHAR(60), IN `nom_madre` VARCHAR(50), IN `cel_madre` CHAR(9), IN `correo_ma` VARCHAR(80))  NO SQL
 INSERT INTO alumno(tdoc_alumno, 
 doc_alumno, apellidos_alumno,nombres_alumno,fnac_alumno, 
 sexo_alumno,telefono_alumno,celular_alumno, 
@@ -47,8 +58,18 @@ sexo,tel_alum,cel_alum,dire_alum,correo_alum,proc_alum,ape_padre,
 nom_padre,cel_padre,correo_pa,ape_madre,nom_madre,cel_madre,
 correo_ma)$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_usuario`(IN `perfil` TINYINT, IN `nom_usu` VARCHAR(20), IN `clave` VARCHAR(10), IN `dni` CHAR(8), IN `nombres` VARCHAR(45), IN `apellidos` VARCHAR(60), IN `sexo` CHAR(1), IN `celular` CHAR(9), IN `correo` VARCHAR(80), IN `direccion` VARCHAR(80), IN `fcreacion` DATE, IN `obser` VARCHAR(50))
-INSERT INTO usuario(idperfil_usuario,nom_usu, 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_anhio` (IN `anhio` CHAR(4), IN `finicio` DATE, IN `ffin` DATE, IN `descripcion` VARCHAR(150))  INSERT INTO anhio_lectivo(anhio_lectivo, finicio_anhio,
+ffin_anhio, descripcion_anhio) 
+VALUES (anhio,finicio,ffin,descripcion)$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_apoderado` (IN `tdoc_apod` CHAR(3), IN `doc_apod` VARCHAR(15), IN `ape_apod` VARCHAR(60), IN `nom_apod` VARCHAR(50), IN `sex_apod` CHAR(1), IN `cel_apod` CHAR(9), IN `direc_apod` VARCHAR(80), IN `cor_apod` VARCHAR(80))  NO SQL
+INSERT INTO apoderado(tdoc_apoderado, 
+doc_apoderado, apellidos_apoderado, nombres_apoderado,
+sexo_apoderado, celular_apoderado, direccion_apoderado,
+correo_apoderado) VALUES (tdoc_apod,doc_apod,
+ape_apod,nom_apod,sex_apod,cel_apod,direc_apod,cor_apod)$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_usuario` (IN `perfil` TINYINT, IN `nom_usu` VARCHAR(20), IN `clave` VARCHAR(10), IN `dni` CHAR(8), IN `nombres` VARCHAR(45), IN `apellidos` VARCHAR(60), IN `sexo` CHAR(1), IN `celular` CHAR(9), IN `correo` VARCHAR(80), IN `direccion` VARCHAR(80), IN `fcreacion` DATE, IN `obser` VARCHAR(50))  INSERT INTO usuario(idperfil_usuario,nom_usu, 
 clave_usu,dni_usu,nombres_usu,apellidos_usu, 
 sexo_usu,celular_usu,correo_usu,
 direccion_usu,fcreacion_usu,
@@ -56,8 +77,7 @@ obser_usu)
 VALUES (perfil,nom_usu,SHA(clave),dni,nombres,apellidos,sexo,
 celular,correo,direccion,fcreacion,obser)$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_alumnos`()
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_alumnos` ()  NO SQL
 SELECT id_alumno,apellidos_alumno,
 nombres_alumno,tdoc_alumno,doc_alumno,
 (CASE
@@ -67,6 +87,32 @@ nombres_alumno,tdoc_alumno,doc_alumno,
 WHERE estado_alumno=1
 ORDER BY apellidos_alumno$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_perfil_usuario` ()  NO SQL
+SELECT * FROM perfil_usuario
+WHERE estado_perfil=1$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_usuarios` ()  NO SQL
+SELECT u.idusuario,u.apellidos_usu,u.nombres_usu,
+u.nom_usu,u.celular_usu,pu.nombre_perfil,
+(CASE 
+WHEN u.fbaja_usu IS NULL THEN 'ACTIVO'
+ELSE 'INACTIVO'
+END ) AS estado_usu,
+(CASE 
+WHEN u.fbaja_usu IS NULL THEN '#2a7703'
+ELSE 'red'
+END) as color_estado FROM usuario u
+INNER JOIN perfil_usuario pu ON pu.idperfil_usuario=u.idperfil_usuario
+WHERE u.estado_usu=1
+ORDER BY u.apellidos_usu$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_obtener_usuario` (IN `id` INT)  NO SQL
+SELECT * FROM usuario u
+INNER JOIN perfil_usuario pu ON pu.idperfil_usuario=u.idperfil_usuario
+WHERE u.idusuario=id
+AND u.estado_usu=1
+AND u.fbaja_usu IS NULL$$
+
 DELIMITER ;
 
 -- --------------------------------------------------------
@@ -75,8 +121,8 @@ DELIMITER ;
 -- Estructura de tabla para la tabla `alumno`
 --
 
-CREATE TABLE IF NOT EXISTS `alumno` (
-  `id_alumno` smallint(6) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `alumno` (
+  `id_alumno` smallint(6) NOT NULL,
   `tdoc_alumno` char(3) NOT NULL,
   `doc_alumno` varchar(15) NOT NULL,
   `apellidos_alumno` varchar(60) NOT NULL,
@@ -96,10 +142,8 @@ CREATE TABLE IF NOT EXISTS `alumno` (
   `nombres_madre` varchar(50) NOT NULL,
   `celular_madre` char(9) DEFAULT NULL,
   `correo_madre` varchar(80) DEFAULT NULL,
-  `estado_alumno` bit(1) NOT NULL DEFAULT b'1',
-  PRIMARY KEY (`id_alumno`),
-  UNIQUE KEY `doc_alumno` (`doc_alumno`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=144 ;
+  `estado_alumno` bit(1) NOT NULL DEFAULT b'1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `alumno`
@@ -256,23 +300,230 @@ INSERT INTO `alumno` (`id_alumno`, `tdoc_alumno`, `doc_alumno`, `apellidos_alumn
 -- Estructura de tabla para la tabla `anhio_lectivo`
 --
 
-CREATE TABLE IF NOT EXISTS `anhio_lectivo` (
-  `idanhio` tinyint(4) NOT NULL AUTO_INCREMENT,
-  `anhio` char(4) NOT NULL,
+CREATE TABLE `anhio_lectivo` (
+  `idanhio` tinyint(4) NOT NULL,
+  `anhio_lectivo` char(4) NOT NULL,
   `finicio_anhio` date NOT NULL,
   `ffin_anhio` date NOT NULL,
   `descripcion_anhio` varchar(150) DEFAULT NULL,
   `condicion_anhio` char(1) NOT NULL DEFAULT 'A',
-  `estado_anhio` bit(1) NOT NULL DEFAULT b'1',
-  PRIMARY KEY (`idanhio`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+  `estado_anhio` bit(1) NOT NULL DEFAULT b'1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `anhio_lectivo`
 --
 
-INSERT INTO `anhio_lectivo` (`idanhio`, `anhio`, `finicio_anhio`, `ffin_anhio`, `descripcion_anhio`, `condicion_anhio`, `estado_anhio`) VALUES
-(1, '2019', '2019-01-31', '2019-12-31', NULL, 'A', b'1');
+INSERT INTO `anhio_lectivo` (`idanhio`, `anhio_lectivo`, `finicio_anhio`, `ffin_anhio`, `descripcion_anhio`, `condicion_anhio`, `estado_anhio`) VALUES
+(1, '2018', '2018-01-31', '2018-12-31', NULL, 'A', b'1'),
+(2, '2019', '2019-01-31', '2019-12-31', NULL, 'A', b'1');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `apoderado`
+--
+
+CREATE TABLE `apoderado` (
+  `id_apoderado` smallint(6) NOT NULL,
+  `tdoc_apoderado` char(3) NOT NULL,
+  `doc_apoderado` varchar(15) NOT NULL,
+  `apellidos_apoderado` varchar(60) NOT NULL,
+  `nombres_apoderado` varchar(50) NOT NULL,
+  `sexo_apoderado` char(1) NOT NULL,
+  `celular_apoderado` char(9) NOT NULL,
+  `direccion_apoderado` varchar(80) NOT NULL,
+  `correo_apoderado` varchar(80) DEFAULT NULL,
+  `estado_apoderado` bit(1) NOT NULL DEFAULT b'1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `apoderado`
+--
+
+INSERT INTO `apoderado` (`id_apoderado`, `tdoc_apoderado`, `doc_apoderado`, `apellidos_apoderado`, `nombres_apoderado`, `sexo_apoderado`, `celular_apoderado`, `direccion_apoderado`, `correo_apoderado`, `estado_apoderado`) VALUES
+(1, 'OTR', '751678654MVEN84', 'Flores Abad', 'Adler Mauro', 'M', '929151181', '', NULL, b'1'),
+(2, 'DNI', '17835487', 'Rubio Abad', 'Samuel', 'M', '983228426', '', NULL, b'1'),
+(3, 'DNI', '14853811', 'Arroyo Abanto', 'Edzon ', 'M', '965426036', '', NULL, b'1'),
+(4, 'DNI', '12662600', 'Carpio Abila', 'Melchor Rogelio', 'M', '904781140', '', NULL, b'1'),
+(5, 'DNI', '12799608', 'Caycho Accilio', 'Henry', 'M', '967191826', '', NULL, b'1'),
+(6, 'DNI', '10776514', 'Cieza Acharte', 'Jhonatan', 'M', '987130615', '', NULL, b'1'),
+(7, 'DNI', '13100972', 'Dumet Acosta', 'Fernando', 'M', '993977501', '', NULL, b'1'),
+(8, 'DNI', '16616475', 'Fujishima Abendaño', 'Nicolas', 'M', '918480901', '', NULL, b'1'),
+(9, 'DNI', '18259879', 'Longa Zuñiga', 'Miguel Angel', 'M', '977660792', '', NULL, b'1'),
+(10, 'DNI', '12945311', 'Miranda Aguirre', 'Dan Nefeg', 'M', '938701183', '', NULL, b'1'),
+(11, 'DNI', '15143793', 'Ramirez Aique', 'Enrique', 'M', '912774475', '', NULL, b'1'),
+(12, 'DNI', '13996271', 'Tapia Agüero', 'Neyl Paul', 'M', '947124162', '', NULL, b'1'),
+(13, 'DNI', '15980886', 'Tovar Alanya', 'Estiven Rafael', 'M', '942705196', '', NULL, b'1'),
+(14, 'DNI', '12572783', 'Vergara Alarcon', 'Luis', 'M', '906262108', '', NULL, b'1'),
+(15, 'DNI', '15428861', 'Aguado Baltazar', 'Wilfredo', 'M', '933540808', '', NULL, b'1'),
+(16, 'DNI', '12121792', 'Alberola Balderon', 'Jorge Silverio', 'M', '920214500', '', NULL, b'1'),
+(17, 'DNI', '11522078', 'Alonso Barros', 'Kevin', 'M', '965521963', '', NULL, b'1'),
+(18, 'DNI', '14865253', 'Álvarado Barboza', 'Michael', 'M', '972693949', '', NULL, b'1'),
+(19, 'DNI', '13495791', 'Arias Bardales', 'Christian Daeive', 'M', '947236763', '', NULL, b'1'),
+(20, 'DNI', '16984051', 'Bastida Bartolo', 'Jonas Darwin', 'M', '927903915', '', NULL, b'1'),
+(21, 'DNI', '10789251', 'Blasco Balvin', 'Neyer Ivan', 'M', '930392751', '', NULL, b'1'),
+(22, 'DNI', '13789955', 'Casas Barzola', 'Michael Willian', 'M', '987738404', '', NULL, b'1'),
+(23, 'DNI', '16346494', 'Chavez Bonilla', 'Mequias', 'M', '993488621', '', NULL, b'1'),
+(24, 'DNI', '12475496', 'Cruz Bocanegra', 'Junior Jhasiro', 'M', '922930427', '', NULL, b'1'),
+(25, 'DNI', '11028007', 'Talavera Diaz', 'Zulema', 'F', '989151779', '', NULL, b'1'),
+(26, 'DNI', '16617660', 'Cantillano Ocampo', 'Luzmelita', 'F', '941456123', '', NULL, b'1'),
+(27, 'DNI', '18241214', 'Blaya Arce', 'Dorali', 'F', '950632290', '', NULL, b'1'),
+(28, 'DNI', '17206881', 'Blaya Arce', 'Dorali', 'F', '950632290', '', NULL, b'1'),
+(29, 'DNI', '17686224', 'García Huaman', 'Clarita', 'F', '958031062', '', NULL, b'1'),
+(30, 'DNI', '15215578', 'Minchan Gutierrez', 'Luz Clarita', 'F', '933488368', '', NULL, b'1'),
+(31, 'DNI', '14293627', 'Martínez Paucar', 'Patricia', 'F', '920105997', '', NULL, b'1'),
+(32, 'DNI', '19801680', 'Nicolás Mesia', 'Blanca', 'F', '920940279', '', NULL, b'1'),
+(33, 'DNI', '13896705', 'Manzano Espinoza', 'Xiomara', 'F', '903717042', '', NULL, b'1'),
+(34, 'DNI', '13757095', 'Calvo Machado', 'Medally', 'F', '985538389', '', NULL, b'1'),
+(35, 'DNI', '14071687', 'García Lazaro', 'Isabel', 'F', '952909129', '', NULL, b'1'),
+(36, 'DNI', '19503417', 'Rueda Aranda', 'Maria Cecilia', 'F', '918634714', '', NULL, b'1'),
+(37, 'DNI', '10344890', 'Chavez Vasquez', 'Teresa', 'F', '938943931', '', NULL, b'1'),
+(38, 'DNI', '10285565', 'Guerrero Correa', 'Flor Isabel', 'F', '919557837', '', NULL, b'1'),
+(39, 'DNI', '11259346', 'Santisteban Ita', 'Milagros Magaly', 'F', '923234541', '', NULL, b'1'),
+(40, 'DNI', '18602094', 'Cervantes Malaspina', 'Lizbeth', 'F', '948165732', '', NULL, b'1'),
+(41, 'DNI', '17471469', 'Diaz Medina', 'Giselle', 'F', '950101407', '', NULL, b'1'),
+(42, 'DNI', '13609446', 'Gil Rocca', 'Fernanda Luisa', 'F', '997764600', '', NULL, b'1'),
+(43, 'DNI', '18316476', 'Marrufo Julcamoro', 'Teresa Isabel', 'F', '969063943', '', NULL, b'1'),
+(44, 'DNI', '13521095', 'Marrufo Minchon', 'Gianera', 'F', '932030645', '', NULL, b'1'),
+(45, 'DNI', '17175729', 'Reyna Perez', 'Mayra Patricia', 'F', '959483581', '', NULL, b'1'),
+(46, 'DNI', '13162843', 'Coronado Palma', 'Vanessa', 'F', '903158771', '', NULL, b'1'),
+(47, 'DNI', '18260042', 'Garcia Chavez', 'Sara', 'F', '989932141', '', NULL, b'1'),
+(48, 'DNI', '14043575', 'Pérez Roncal', 'Janny Patricia', 'F', '996257102', '', NULL, b'1'),
+(49, 'DNI', '13317705', 'Fernandez Flores', 'Adhely', 'F', '923397833', '', NULL, b'1'),
+(50, 'DNI', '10574796', 'Heredia Sanchez', 'Erika Luzmila', 'F', '947487935', '', NULL, b'1'),
+(51, 'DNI', '11612714', 'Espinoza Saavedra', 'Jackeline', 'F', '907717533', '', NULL, b'1'),
+(52, 'DNI', '18318943', 'Cervantes Ramos', 'Annyle Paola', 'F', '919338300', '', NULL, b'1'),
+(53, 'DNI', '11895529', 'Cervantes Ticeran', 'Angela', 'F', '995647047', '', NULL, b'1'),
+(54, 'DNI', '12417239', 'Leon Silva', 'Brenda', 'F', '997727840', '', NULL, b'1'),
+(55, 'DNI', '15545870', 'Abad Torres', 'Teresa De Jesus', 'F', '916005010', '', NULL, b'1'),
+(56, 'DNI', '17771572', 'Cholan Varas', 'Maria ', 'F', '992226814', '', NULL, b'1'),
+(57, 'DNI', '16884035', 'Davila Rojas', 'Ines', 'F', '902729380', '', NULL, b'1'),
+(58, 'DNI', '15827075', 'Hurtado Chavez', 'Ruth Rosa', 'F', '944850967', '', NULL, b'1'),
+(59, 'DNI', '19898606', 'Panta Caballero', 'Vanessa Dayam', 'F', '911481605', '', NULL, b'1'),
+(60, 'DNI', '14201438', 'Barragan Cortez', 'Dennys David', 'M', '941334712', '', NULL, b'1'),
+(61, 'DNI', '18950180', 'Barrantes Cotrina', 'Ruben', 'M', '991133414', '', NULL, b'1'),
+(62, 'DNI', '16065320', 'Barranzuela Justo', 'Huber', 'M', '938053028', '', NULL, b'1'),
+(63, 'DNI', '15882950', 'Barreto Deza', 'Roman Arturo', 'M', '918810196', '', NULL, b'1'),
+(64, 'DNI', '12556080', 'Cabanillas Davila', 'Ever', 'M', '957064924', '', NULL, b'1'),
+(65, 'DNI', '18614775', 'Cabanillas De La Calle', 'Vladimir', 'M', '910348500', '', NULL, b'1'),
+(66, 'DNI', '18079844', 'Cabanillas Bravo', 'Percy', 'M', '976259431', '', NULL, b'1'),
+(67, 'DNI', '14714922', 'Cabanillas Broncano', 'Rodolfo', 'M', '950296960', '', NULL, b'1'),
+(68, 'DNI', '13733114', 'Cáceres Cruz', 'Alejandro', 'M', '952735272', '', NULL, b'1'),
+(69, 'DNI', '11370623', 'Diaz Cabello', 'Carlos Edil', 'M', '969994784', '', NULL, b'1'),
+(70, 'DNI', '15840410', 'Delgado Cespedes', 'Yori Yoon', 'M', '936565222', '', NULL, b'1'),
+(71, 'DNI', '13533453', 'Fernandez Cheppe', 'Sixto Raul', 'M', '960364488', '', NULL, b'1'),
+(72, 'DNI', '18101053', 'Fernandez Zevallos', 'Sandro', 'M', '999284168', '', NULL, b'1'),
+(73, 'DNI', '19356895', 'Flores Matias', 'Julio', 'M', '956378834', '', NULL, b'1'),
+(74, 'DNI', '15643044', 'Flores Alejo', 'Federico Emerzon', 'M', '985194700', '', NULL, b'1'),
+(75, 'DNI', '12535726', 'Gabriel Figueredo', 'William', 'M', '988296184', '', NULL, b'1'),
+(76, 'DNI', '17049296', 'Gálvez Ponce', 'Héctor', 'M', '956230193', '', NULL, b'1'),
+(77, 'DNI', '11997506', 'Gil Diaz', 'Guillermo Renato', 'M', '954909516', '', NULL, b'1'),
+(78, 'DNI', '18873297', 'Gonzales Pozo', 'Luis Gustabo', 'M', '989829825', '', NULL, b'1'),
+(79, 'DNI', '17566004', 'Hernandez Vilca', 'Remigio', 'M', '900266981', '', NULL, b'1'),
+(80, 'DNI', '14994290', 'Herrera Jesus', 'Jerson', 'M', '918624186', '', NULL, b'1'),
+(81, 'DNI', '19820382', 'Huaman Santa', 'Jhosimar', 'M', '970933323', '', NULL, b'1'),
+(82, 'DNI', '11488705', 'Irigoin Gonzales', 'Fredy David', 'M', '952270660', '', NULL, b'1'),
+(83, 'DNI', '10912278', 'Inchaustegui Marrujo', 'Juan Carlos', 'M', '950490955', '', NULL, b'1'),
+(84, 'DNI', '14123305', 'Julian Falcón', 'Carlos Alberto', 'M', '930291179', '', NULL, b'1'),
+(85, 'DNI', '13003447', 'Julca Colqui', 'Olimpio', 'M', '951593002', '', NULL, b'1'),
+(86, 'DNI', '16260054', 'Jimenez Galindo', 'Roberto Carlos', 'M', '933172663', '', NULL, b'1'),
+(87, 'DNI', '10517284', 'Leon Dionicio', 'Javier', 'M', '940825607', '', NULL, b'1'),
+(88, 'DNI', '13176803', 'La Madrid Espinoza', 'Tony', 'M', '902321170', '', NULL, b'1'),
+(89, 'DNI', '11051074', 'Leon Alejandro', 'Hector Demetrio', 'M', '900280256', '', NULL, b'1'),
+(90, 'DNI', '15308806', 'Linares Bueno', 'Emerson', 'M', '940574368', '', NULL, b'1'),
+(91, 'DNI', '19054788', 'Macalupu Espíritu', 'Daniel Hermelindo', 'M', '936998020', '', NULL, b'1'),
+(92, 'DNI', '11740686', 'Malca Dominguez', 'Dare', 'M', '923909808', '', NULL, b'1'),
+(93, 'DNI', '10400791', 'Malca Gomez', 'Jaime', 'M', '986597170', '', NULL, b'1'),
+(94, 'DNI', '11507184', 'Mera Mariño', 'Joel', 'M', '921952701', '', NULL, b'1'),
+(95, 'DNI', '17039621', 'Melendez Duran', 'Jair ', 'M', '985619354', '', NULL, b'1'),
+(96, 'DNI', '13083314', 'Nuñez Palacios', 'Rufino Joel', 'M', '985176193', '', NULL, b'1'),
+(97, 'DNI', '11715070', 'Nuñez Mariño', 'Angel Gabriel', 'M', '962151887', '', NULL, b'1'),
+(98, 'DNI', '15562019', 'Oblitas Ramos', 'Lazaro Carlos', 'M', '969438786', '', NULL, b'1'),
+(99, 'DNI', '10148723', 'Obando Evaristo', 'Efrain', 'M', '950255564', '', NULL, b'1'),
+(100, 'DNI', '16098410', 'Ordoñez Castelo', 'Zenaida', 'F', '932358663', '', NULL, b'1'),
+(101, 'DNI', '13487371', 'Delgado Medina', 'Elgia', 'F', '972884151', '', NULL, b'1'),
+(102, 'DNI', '11659022', 'Pintado Vilca', 'Katerine', 'F', '923688687', '', NULL, b'1'),
+(103, 'DNI', '12160361', 'Vasquez Cosi', 'Yulissa', 'F', '990187127', '', NULL, b'1'),
+(104, 'DNI', '17893433', 'Vidarte Cabana', 'Rocio', 'F', '904061416', '', NULL, b'1'),
+(105, 'DNI', '11113637', 'Aguilar Montes', 'Sharon', 'F', '982797828', '', NULL, b'1'),
+(106, 'DNI', '12737797', 'Vigil Ojeda', 'Pierina', 'F', '907002269', '', NULL, b'1'),
+(107, 'DNI', '19980306', 'Torres Collazos', 'Antonina', 'F', '904162783', '', NULL, b'1'),
+(108, 'DNI', '10365986', 'Quispe Lima', 'Martha', 'F', '960629068', '', NULL, b'1'),
+(109, 'DNI', '14002639', 'Cajahuaringa Santillana', 'Alexandra', 'F', '932895470', '', NULL, b'1'),
+(110, 'DNI', '17553397', 'Cruz Cañazca', 'Solange', 'F', '966306829', '', NULL, b'1'),
+(111, 'DNI', '19838080', 'Delgado Del Carpio', 'Idalia', 'F', '955472585', '', NULL, b'1'),
+(112, 'DNI', '11717065', 'Abad Solis', 'Carmen', 'F', '913251919', '', NULL, b'1'),
+(113, 'DNI', '14268468', 'Leo Mojo', 'Candy', 'F', '973591530', '', NULL, b'1'),
+(114, 'DNI', '17198872', 'Aguilar Pauca', 'Karla Luz', 'F', '941267001', '', NULL, b'1'),
+(115, 'DNI', '16853284', 'Vicente Teves', 'Rosa Leydi', 'F', '935554463', '', NULL, b'1'),
+(116, 'DNI', '14368905', 'Pinedo Bautista', 'Maria', 'F', '968495018', '', NULL, b'1'),
+(117, 'DNI', '16783097', 'Cardozo Alarcon', 'Yovani', 'F', '974972078', '', NULL, b'1'),
+(118, 'DNI', '11319618', 'Hoyos Arevalo', 'Thalia', 'F', '997214740', '', NULL, b'1'),
+(119, 'DNI', '18066711', 'Rivera Contreras', 'Betty', 'F', '948806030', '', NULL, b'1'),
+(120, 'DNI', '18141237', 'Martinez Garcia', 'Yocani Rene', 'F', '951877430', '', NULL, b'1'),
+(121, 'DNI', '12507651', 'Marin Castro', 'Deysi', 'F', '929237907', '', NULL, b'1'),
+(122, 'DNI', '17852010', 'Flores Fernandez', 'Rosmery', 'F', '991595538', '', NULL, b'1'),
+(123, 'DNI', '17758113', 'Saavedra Jeri', 'Mayra ', 'F', '976729701', '', NULL, b'1'),
+(124, 'DNI', '12677883', 'Nuñez Huaman', 'Gina Marissa', 'F', '913319958', '', NULL, b'1'),
+(125, 'DNI', '16450817', 'Tenorio Hinostroza', 'Mayra', 'F', '938566441', '', NULL, b'1'),
+(126, 'DNI', '14753929', 'Rojas Felices', 'Maribel', 'F', '934057150', '', NULL, b'1'),
+(127, 'DNI', '17904666', 'Ramos Mauricio ', 'Elizabeth', 'F', '930579147', '', NULL, b'1'),
+(128, 'DNI', '18710745', 'Linares Montes', 'Antonia', 'F', '902475890', '', NULL, b'1'),
+(129, 'DNI', '11686012', 'Ruiz Carbajal', 'Zuleika', 'F', '932019461', '', NULL, b'1'),
+(130, 'DNI', '16353380', 'Guerrero Morales', 'Kendra', 'F', '994422459', '', NULL, b'1'),
+(131, 'DNI', '13511988', 'Guerrero Bautista', 'Manuela', 'F', '950871631', '', NULL, b'1'),
+(132, 'DNI', '19042873', 'Mayra Rimachi', 'Gloria', 'F', '996317502', '', NULL, b'1'),
+(133, 'DNI', '17769073', 'Davila Sanchez', 'Loida', 'F', '954121047', '', NULL, b'1'),
+(134, 'DNI', '11779993', 'Fernandez Vargas', 'Catherin', 'F', '955922193', '', NULL, b'1'),
+(135, 'DNI', '18994109', 'Terrones Gomez', 'Erika', 'F', '957486568', '', NULL, b'1'),
+(136, 'DNI', '19039428', 'Castro Gamboa', 'Silvia Sonia', 'F', '920794125', '', NULL, b'1'),
+(137, 'DNI', '12410826', 'Bellodas De La Cruz', 'Rocio', 'F', '978577615', '', NULL, b'1'),
+(138, 'DNI', '19737967', 'Herrera Leon', 'Maribel Rocio', 'F', '923342311', '', NULL, b'1'),
+(139, 'DNI', '16432341', 'Diaz Montoya', 'Nancy Elizabth', 'F', '979364374', '', NULL, b'1'),
+(140, 'DNI', '14142960', 'Perez Jimenez', 'Zoraida', 'F', '910852396', '', NULL, b'1'),
+(141, 'DNI', '12017303', 'Olano Medina', 'Leyda Madeli', 'F', '957631005', '', NULL, b'1'),
+(142, 'DNI', '12718589', 'Medina Galan', 'Lisset Vanesa', 'F', '931936960', '', NULL, b'1'),
+(143, 'DNI', '17400274', 'Reyna Perez', 'Laura Raquel', 'F', '945089569', '', NULL, b'1');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `grados`
+--
+
+CREATE TABLE `grados` (
+  `id_grado` tinyint(4) NOT NULL,
+  `descripcion_grado` varchar(40) NOT NULL,
+  `nivel_grado` char(1) NOT NULL,
+  `estado_grado` bit(1) NOT NULL DEFAULT b'1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `grados`
+--
+
+INSERT INTO `grados` (`id_grado`, `descripcion_grado`, `nivel_grado`, `estado_grado`) VALUES
+(1, 'PRIMER GRADO SECUNDARIA', 'S', b'1'),
+(2, 'SEGUNDO GRADO SECUNDARIA', 'S', b'1'),
+(3, 'TERCER GRADO SECUNDARIA', 'S', b'1'),
+(4, 'CUARTO GRADO SECUNDARIA', 'S', b'1'),
+(5, 'QUINTO GRADO SECUNDARIA', 'S', b'1');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `libro`
+--
+
+CREATE TABLE `libro` (
+  `id_libro` tinyint(4) NOT NULL,
+  `titulo_libro` varchar(80) NOT NULL,
+  `editorial_libro` varchar(20) NOT NULL,
+  `edicion_libro` char(4) NOT NULL,
+  `id_grado` tinyint(4) NOT NULL,
+  `estado_libro` bit(1) NOT NULL DEFAULT b'1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -280,13 +531,12 @@ INSERT INTO `anhio_lectivo` (`idanhio`, `anhio`, `finicio_anhio`, `ffin_anhio`, 
 -- Estructura de tabla para la tabla `perfil_usuario`
 --
 
-CREATE TABLE IF NOT EXISTS `perfil_usuario` (
-  `idperfil_usuario` tinyint(4) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `perfil_usuario` (
+  `idperfil_usuario` tinyint(4) NOT NULL,
   `nombre_perfil` varchar(25) NOT NULL,
   `abrev_perfil` char(2) NOT NULL,
-  `estado_perfil` bit(1) NOT NULL DEFAULT b'1',
-  PRIMARY KEY (`idperfil_usuario`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+  `estado_perfil` bit(1) NOT NULL DEFAULT b'1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `perfil_usuario`
@@ -301,11 +551,25 @@ INSERT INTO `perfil_usuario` (`idperfil_usuario`, `nombre_perfil`, `abrev_perfil
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `secciones`
+--
+
+CREATE TABLE `secciones` (
+  `id_seccion` tinyint(4) NOT NULL,
+  `nombre_seccion` varchar(20) NOT NULL,
+  `id_grado` tinyint(4) NOT NULL,
+  `turno_seccion` char(1) NOT NULL,
+  `estado_seccion` bit(1) NOT NULL DEFAULT b'1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `usuario`
 --
 
-CREATE TABLE IF NOT EXISTS `usuario` (
-  `idusuario` tinyint(4) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `usuario` (
+  `idusuario` tinyint(4) NOT NULL,
   `idperfil_usuario` tinyint(4) NOT NULL,
   `nom_usu` varchar(20) NOT NULL,
   `clave_usu` varchar(100) NOT NULL,
@@ -319,21 +583,136 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   `fcreacion_usu` date NOT NULL,
   `fbaja_usu` date DEFAULT NULL,
   `obser_usu` varchar(200) DEFAULT NULL,
-  `estado_usu` bit(1) NOT NULL DEFAULT b'1',
-  PRIMARY KEY (`idusuario`),
-  KEY `idperfil_usuario` (`idperfil_usuario`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+  `estado_usu` bit(1) NOT NULL DEFAULT b'1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `usuario`
 --
 
 INSERT INTO `usuario` (`idusuario`, `idperfil_usuario`, `nom_usu`, `clave_usu`, `dni_usu`, `nombres_usu`, `apellidos_usu`, `sexo_usu`, `celular_usu`, `correo_usu`, `direccion_usu`, `fcreacion_usu`, `fbaja_usu`, `obser_usu`, `estado_usu`) VALUES
-(1, 1, 'jjulcav', '5743b215fbe973ab57bd2e483f0a0116aab59c7e', '71919582', 'Jose Andersson', 'Julca Vásquez', 'M', '978902579', '', 'Calle Chiclayo # 114', '2019-06-28', NULL, '', b'1');
+(1, 1, 'jjulcav', 'd0c7366cd4b8ed80d5f28120c6be80ee89e93bbf', '71919582', 'Jose Andersson', 'Julca Vásquez', 'M', '978902579', 'piscis16931@hotmail.com', 'calle chiclayo # 114', '2019-06-28', NULL, NULL, b'1'),
+(2, 4, 'maritasv', 'a6b7354b8ec74b0550233c5cbf8773c6d28ceef4', '73258572', 'Marita Vanessa', 'Sanchez Velasquez', 'F', '979241872', 'vanesa_2808@hotmail.com', 'VISTA ALEGRE M H LT 22 CRUZ DE LA ESPERANZA', '2019-06-29', NULL, NULL, b'1'),
+(3, 2, 'rosafc', '2ef4d31ff48bb12b7c977be13909b5ae02683c7b', '14526398', 'Rosa Magaly ', 'Fernandez Cabrejos', 'F', '987445896', 'rosa_magaly@hotmail.com', 'calle motupe # 152', '2019-06-29', NULL, NULL, b'1'),
+(4, 3, 'lishyez', '1bfed3107236792f06717eb5424e58a91c8e4bb0', '45256389', 'Lishy Tatiana', 'Estela Zeña', 'F', '968574258', 'lishy_estelita@hotmail.com', 'calle tucume # 150', '2019-06-29', NULL, NULL, b'1');
 
+--
+-- Índices para tablas volcadas
+--
+
+--
+-- Indices de la tabla `alumno`
+--
+ALTER TABLE `alumno`
+  ADD PRIMARY KEY (`id_alumno`),
+  ADD UNIQUE KEY `doc_alumno` (`doc_alumno`);
+
+--
+-- Indices de la tabla `anhio_lectivo`
+--
+ALTER TABLE `anhio_lectivo`
+  ADD PRIMARY KEY (`idanhio`);
+
+--
+-- Indices de la tabla `apoderado`
+--
+ALTER TABLE `apoderado`
+  ADD PRIMARY KEY (`id_apoderado`),
+  ADD UNIQUE KEY `doc_apoderado` (`doc_apoderado`);
+
+--
+-- Indices de la tabla `grados`
+--
+ALTER TABLE `grados`
+  ADD PRIMARY KEY (`id_grado`);
+
+--
+-- Indices de la tabla `libro`
+--
+ALTER TABLE `libro`
+  ADD PRIMARY KEY (`id_libro`),
+  ADD KEY `id_grado` (`id_grado`);
+
+--
+-- Indices de la tabla `perfil_usuario`
+--
+ALTER TABLE `perfil_usuario`
+  ADD PRIMARY KEY (`idperfil_usuario`);
+
+--
+-- Indices de la tabla `secciones`
+--
+ALTER TABLE `secciones`
+  ADD PRIMARY KEY (`id_seccion`),
+  ADD KEY `id_grado` (`id_grado`);
+
+--
+-- Indices de la tabla `usuario`
+--
+ALTER TABLE `usuario`
+  ADD PRIMARY KEY (`idusuario`),
+  ADD UNIQUE KEY `dni_usu` (`dni_usu`),
+  ADD KEY `idperfil_usuario` (`idperfil_usuario`);
+
+--
+-- AUTO_INCREMENT de las tablas volcadas
+--
+
+--
+-- AUTO_INCREMENT de la tabla `alumno`
+--
+ALTER TABLE `alumno`
+  MODIFY `id_alumno` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=144;
+--
+-- AUTO_INCREMENT de la tabla `anhio_lectivo`
+--
+ALTER TABLE `anhio_lectivo`
+  MODIFY `idanhio` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+--
+-- AUTO_INCREMENT de la tabla `apoderado`
+--
+ALTER TABLE `apoderado`
+  MODIFY `id_apoderado` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=144;
+--
+-- AUTO_INCREMENT de la tabla `grados`
+--
+ALTER TABLE `grados`
+  MODIFY `id_grado` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+--
+-- AUTO_INCREMENT de la tabla `libro`
+--
+ALTER TABLE `libro`
+  MODIFY `id_libro` tinyint(4) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT de la tabla `perfil_usuario`
+--
+ALTER TABLE `perfil_usuario`
+  MODIFY `idperfil_usuario` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+--
+-- AUTO_INCREMENT de la tabla `secciones`
+--
+ALTER TABLE `secciones`
+  MODIFY `id_seccion` tinyint(4) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT de la tabla `usuario`
+--
+ALTER TABLE `usuario`
+  MODIFY `idusuario` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- Restricciones para tablas volcadas
 --
+
+--
+-- Filtros para la tabla `libro`
+--
+ALTER TABLE `libro`
+  ADD CONSTRAINT `grados_libro` FOREIGN KEY (`id_grado`) REFERENCES `grados` (`id_grado`);
+
+--
+-- Filtros para la tabla `secciones`
+--
+ALTER TABLE `secciones`
+  ADD CONSTRAINT `secciones_grados` FOREIGN KEY (`id_grado`) REFERENCES `grados` (`id_grado`);
 
 --
 -- Filtros para la tabla `usuario`
