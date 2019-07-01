@@ -8,13 +8,18 @@ import {Usuario,Busqueda} from '../../app.datos';
 import { ToastrService } from 'ngx-toastr';
 import { AlertComponent } from 'ngx-bootstrap/alert/alert.component';
 declare var swal: any;
-
+import * as jspdf from 'jspdf';
+import 'jspdf-autotable';
+function headRows() {
+  return [{id: 'ID', name: 'Name', email: 'Email', city: 'City', expenses: 'Sum'}];
+}
 
 @Component({
   templateUrl: 'usuarios.component.html',
   styleUrls: ['administracion.css'],
   encapsulation: ViewEncapsulation.None,
 })
+
 
 
 export class UsuariosComponent implements OnInit {
@@ -35,6 +40,7 @@ export class UsuariosComponent implements OnInit {
   public usu_valid : boolean = false;
   public usu_invalido : boolean = false;
   public  chooseView : string;
+  public body : any = [];
   constructor(private _UsuariosServicios:UsuariosService,private toastr: ToastrService) {
     this.Listar_Usuario();
     this.usuario = {
@@ -70,12 +76,65 @@ export class UsuariosComponent implements OnInit {
       idbusqueda:0
     }
 
-    
+
+    this.body = [
+      {
+       pname: "abc",
+       numbers: [{num:"123"},{num:"234"}]
+      },
+     {
+       pname: "mno",
+       numbers: [{num:"125"},{num:"237"}]
+      },
+      {
+        pname: "abc",
+        numbers: [{num:"123"},{num:"234"}]
+       },
+      {
+        pname: "mno",
+        numbers: [{num:"125"},{num:"237"}]
+       },
+       {
+        pname: "abc",
+        numbers: [{num:"123"},{num:"234"}]
+       },
+      {
+        pname: "mno",
+        numbers: [{num:"125"},{num:"237"}]
+       }]
   }
   alerts: any[] = [];
   positionOptions: TooltipPosition[] = ['after', 'before', 'above', 'below', 'left', 'right'];
   
-
+  public VerPDF()
+  {
+    var doc = new jspdf({orientation: 'portrait',unit: 'mm',format: 'A4'});
+    doc.setFontSize(12);
+    doc.setTextColor(0);
+    doc.setFontStyle('bold');
+    doc.text('Rowspan and colspan', 40, 50);
+     // From HTML
+    //  doc.autoTable({html: '.table', tableWidth: 'wrap',
+    //  theme: 'grid'});
+    var head = [{num:'N°'}];
+  
+    for(var j = 0; j < this.body.length; j++){
+      let body2 = this.body[j].numbers;
+      for (var i = 0; i < body2.length; i++) {
+         var row = body2[i];
+         row['pname'] = {rowSpan: body2.length, content: this.body[j].pname, styles: {valign: 'middle', halign: 'center'}};
+      }
+      doc.autoTable({
+        head: head,
+        body: body2,
+        theme: 'grid',
+        pageBreak: 'avoid',
+    });
+  
+    }
+  
+    doc.output('save', 'reporte.pdf');
+  }
   ngOnInit() {
     
     
@@ -131,23 +190,8 @@ export class UsuariosComponent implements OnInit {
               this.Listar_Usuario();
               this.mytemplateForm.resetForm();
             }else{
-              if(data.status==2){
                 this.toastr.error(data.message, 'Aviso!');
-              }else{
-                swal({
-                  title: 'Aviso!',
-                  html:
-                  '<span style="color:red">' +
-                  data.message +
-                  '</span>',
-                  type: 'error',
-                  allowOutsideClick: false,
-                  allowEscapeKey:false
-                })
-               
-              }
-              
-            }
+             }
           } )
           .catch(err => console.log(err))
         }

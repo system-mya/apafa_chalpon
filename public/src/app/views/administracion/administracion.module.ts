@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
-
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { AlertModule } from 'ngx-bootstrap/alert';
@@ -15,7 +14,7 @@ import { AnhiosComponent } from './anhios.component';
 
 // Buttons Routing
 import { AdministracionRoutingModule } from './administracion-routing.module';
-import { DataTablesModule } from 'angular-datatables';
+import { DataTableModule } from 'angular-6-datatable';
 import { NgxSpinnerModule } from 'ngx-spinner';
 
 // Angular
@@ -64,7 +63,7 @@ import { MatAutocompleteModule,
     AdministracionRoutingModule,
     BsDropdownModule.forRoot(),
     FormsModule,
-    DataTablesModule,
+    DataTableModule,
     [
       MatAutocompleteModule,
       MatBadgeModule,
@@ -107,7 +106,7 @@ import { MatAutocompleteModule,
     ModalModule.forRoot(),
     AlertModule.forRoot(),
     OwlDateTimeModule, OwlNativeDateTimeModule,
-    NgxSpinnerModule
+    NgxSpinnerModule,
 
   ],
   declarations: [

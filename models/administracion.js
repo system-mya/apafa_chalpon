@@ -113,18 +113,18 @@ nvo_usuario(user, res) {
         con.query(query_dni,(err, result) => {
             con.release();
 			if(err){
-                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                res.send({status: 0, message: err.sqlMessage});
 			}else{
 				if (result[0].length == 0) {
-					var query = "CALL pa_insertar_usuario('"+ [user.nom_usu] +"','"+ [user.dni_usu] 
+					var query = "CALL pa_insertar_usuario("+[user.perfil_usu]+",'"+ [user.nom_usu] +"','"+ [user.dni_usu] 
                     +"','"+ [user.dni_usu] + "','"+ [user.nombres_usu] + "','"+ [user.apellidos_usu]
                     + "','"+ [user.sexo_usu] + "','"+ [user.celular_usu] + "',"+ correo_usu
                     + ",'"+ [user.direccion_usu] + "','"+ [user.fecha_usu].toString().slice(0,10)
-                    + "',"+ obser_usu +","+ [user.perfil_usu] +")";
+                    + "',"+ obser_usu + ")";
 		
                     con.query(query,(err, result) => {
                         if(err){
-                            res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                            res.send({status: 0, message: err.sqlMessage});
                         }else{
                             if (result.affectedRows == 1) {
                                 res.send({status: 1, message: 'Usuario Registrado'});

@@ -22,7 +22,7 @@ export class UsuariosService {
 }
 
  public  nvo_usuario(user:Usuario){
-  return this._http.post('/api/insertar_usuario',user)
+  return this._http.post('/api/administracion/insertar_usuario',user)
    .map(data => data.json()).toPromise()
 }
 
