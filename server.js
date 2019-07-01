@@ -1,6 +1,6 @@
 //https://github.com/robertoganiani/mysql-express-angular-node
+//https://www.nodehispano.com/2012/01/express-el-framework-web-para-nodejs/
 'use strict';
-//setting up server
 let express = require('express'),
 multiparty = require('connect-multiparty'),
     bodyParser = require('body-parser'),
@@ -16,5 +16,5 @@ app.use(express.static(__dirname + '/public/dist'));
 connection.init();
 routes.configure(app);
 let server = app.listen(4200, () => {
-        console.log('Server running on port ' + server.address().port);
+        console.log('Servidor ejecutando en el Puerto: ' + server.address().port);
 });
