@@ -17,7 +17,8 @@ app.post('/api/users/add', (req, res) => {
     //console.log("hola");
 });
 
-app.post('/api/insertar_usuario', (req, res) => {
+//POST PARA INSERTAR NVO USUARIO
+app.post('/api/administracion/insertar_usuario', (req, res) => {
     admin.nvo_usuario(req.body, res);
 });
 
