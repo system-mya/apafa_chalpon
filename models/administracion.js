@@ -33,7 +33,7 @@ class Administracion {
                 res.send({status: 0, message: err.sqlMessage});
 			}else{
 				if (result[0].length == 0) {
-					res.send({status: 2, message: 'NO HAY DATOS EN LA TABLA USUARIOS'});
+					res.send({status: 1, message: 'NO HAY DATOS EN LA TABLA USUARIOS',data:result[0]});
 				} else {
                     res.send({status: 1, message: 'CONSULTA EXITOSA',data:result[0]});
                 }
@@ -328,7 +328,7 @@ update_clave(usuario, res) {
 nvo_anhio(anhio, res) {
 	connection.acquire((err, con) => {
 		if(err){
-			res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+			res.send({status: 0, message: err.sqlMessage});
 		}else{
         if ([anhio.descripcion_anhio]==''){
             var descripcion="NULL";
@@ -336,12 +336,12 @@ nvo_anhio(anhio, res) {
             descripcion="'"+[anhio.descripcion_anhio]+"'";
         }
 
-        var query_anhio = "CALL pa_verificar_anhio('"+ [anhio.anhio] +"')";
+        var query_anhio = "CALL pa_verificar_anhio('"+ [anhio.anhio_lectivo] +"')";
 
         con.query(query_anhio,(err, result) => {
             con.release();
 			if(err){
-                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                res.send({status: 0, message: err.sqlMessage});
 			}else{
 				if (result[0].length == 0) {
 					var query = "CALL pa_insertar_anhio('"+ [anhio.anhio_lectivo] +
@@ -349,7 +349,7 @@ nvo_anhio(anhio, res) {
 		         
                     con.query(query,(err, result) => {
                         if(err){
-                            res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                            res.send({status: 0, message: err.sqlMessage});
                         }else{
                             if (result.affectedRows == 1) {
                                 res.send({status: 1, message: 'Año Registrado'});
@@ -380,7 +380,7 @@ listar_anhio(res) {
                 res.send({status: 0, message: err.sqlMessage});
 			}else{
 				if (result[0].length == 0) {
-					res.send({status: 2, message: 'NO HAY DATOS EN LA TABLA AÑO'});
+					res.send({status: 1, message: 'NO HAY DATOS EN LA TABLA AÑO',data:result[0]});
 				} else {
                     res.send({status: 1, message: 'CONSULTA EXITOSA',data:result[0]});
                 }
@@ -396,28 +396,75 @@ update_anhio_xcriterio(anhio, res) {
 		if(err){
 			res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
 		}else{
-		var query = "CALL pa_update_anhio_xcriterio('"+[anhio.datobusqueda]+"',"+ [anhio.idbusqueda] +")"; 
-		/* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
-		con.query(query,(err, result) => {
-			con.release();
-			if(err){
-                res.send({status: 0, message: err.sqlMessage});
-			}else{
-				if (result.affectedRows == 0) {
-					res.send({status: 2, message: 'CAMBIOS NO REALIZADOS'});
-				} else {
-					if([anhio.datobusqueda]=='eliminar'){
-                        res.send({status: 1, message: 'AÑO LECTIVO ELIMINADO'});
-					}else{
-						if([anhio.datobusqueda]=='cerrar'){
-							res.send({status: 1, message: 'AÑO LECTIVO FINALIZADO'});
+		  if([anhio.datobusqueda]=='reaperturar'){
+            con.query('CALL pa_verificar_si_anhio_aperturado()', (err, result) => {
+				con.release();
+				if(err){
+					res.send({status: 0, message: err.sqlMessage});
+				}else{
+					if (result[0].length == 0) {
+						var query = "CALL pa_update_anhio_xcriterio('"+[anhio.datobusqueda]+"',"+ [anhio.idbusqueda] +")"; 
+						/* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
+						con.query(query,(err, result) => {
+							if(err){
+								res.send({status: 0, message: err.sqlMessage});
+							}else{
+								if (result.affectedRows == 0) {
+									res.send({status: 2, message: 'CAMBIOS NO REALIZADOS'});
+								} else {
+									con.query('CALL pa_verificar_si_anhio_aperturado()',(err, result) => {
+										if(err){
+											res.send({status: 0, message: err.sqlMessage});
+										}else{
+											if (result.affectedRows == 0) {
+												res.send({status: 3, message: 'AÑO LECTIVO NO APERTURADO'});
+											} else {												
+												res.send({status: 1, message: 'AÑO LECTIVO APERTURADO',data:result[0]});
+											}
+										}
+									});
+								}
+							}
+						});
+					} else {
+						res.send({status: 2, message: 'DEBE CERRAR AÑO APERTURADO'});
+					}
+				}
+			   
+			});
+		  }else{
+			var query = "CALL pa_update_anhio_xcriterio('"+[anhio.datobusqueda]+"',"+ [anhio.idbusqueda] +")"; 
+			/* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
+			con.query(query,(err, result) => {
+				con.release();
+				if(err){
+					res.send({status: 0, message: err.sqlMessage});
+				}else{
+					if (result.affectedRows == 0) {
+						res.send({status: 2, message: 'CAMBIOS NO REALIZADOS'});
+					} else {
+						if([anhio.datobusqueda]=='eliminar'){
+							con.query('CALL pa_verificar_si_anhio_aperturado()',(err, result) => {
+								if(err){
+									res.send({status: 0, message: err.sqlMessage});
+								}else{
+									if (result.affectedRows == 0) {
+										res.send({status: 3, message: 'AÑO LECTIVO NO APERTURADO'});
+									} else {												
+										res.send({status: 1, message: 'AÑO LECTIVO ELIMINADO',data:result[0]});
+									}
+								}
+							});
+							
 						}else{
-							res.send({status: 1, message: 'AÑO LECTIVO APERTURADO'});
+							if([anhio.datobusqueda]=='cerrar'){
+								res.send({status: 1, message: 'AÑO LECTIVO FINALIZADO'});
+							}
 						}
 					}
 				}
-			}
-		});
+			});
+		  }
 		}
 	});
 };

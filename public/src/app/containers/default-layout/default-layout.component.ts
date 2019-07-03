@@ -51,6 +51,7 @@ export class DefaultLayoutComponent implements OnInit {
     localStorage.removeItem('username');
     localStorage.removeItem('id_perfil');
     localStorage.removeItem('perfil');
+    localStorage.removeItem('_anhio');
     location.reload();
   }
 }

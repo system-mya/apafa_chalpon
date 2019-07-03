@@ -39,6 +39,7 @@ export class clsAnhio_Lectivo
     public finicio_anhio ?:string;
     public ffin_anhio ?:string;
     public descripcion_anhio ?:string;
+    public descripcion ?: string;
     public condicion_anhio ?:string;
     public estado_anhio ?:boolean;
 }

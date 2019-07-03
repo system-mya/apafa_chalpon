@@ -20,11 +20,6 @@
          <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Ingrese Dato">
        </mat-form-field>  
        <table mat-table [dataSource]="dataSource" matSort id="tabla">
-         <ng-container matColumnDef="num_anhio">
-           <th mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla"> N°. </th>
-           <td mat-cell *matCellDef="let element let i = index" style="text-align: center !important" > {{i+1}} </td>
-         </ng-container>
-          
        
          <ng-container matColumnDef="anhio">
            <th mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" nowrap > Año </th>
@@ -45,7 +40,7 @@
 
          <ng-container matColumnDef="descripcion">
              <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Descripcion </th>
-             <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.descripcion_anhio}} .....</td>
+             <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.descripcion}} .....</td>
          </ng-container>
 
          <ng-container matColumnDef="condicion">
@@ -60,7 +55,7 @@
               matTooltip="Detalle"
               matTooltipClass="tooltip-mensaje"
               [matTooltipPosition]="positionOptions[3]"
-              data-toggle="modal" (click)="btnDetalle_Usuario(element.idusuario)">
+              data-toggle="modal" (click)="btnDetalle_Anhio(element)">
             <span class="fa fa-address-card-o"></span></button>
             <button class="btn btn-pinterest btn-xs distancia_btn_opciones"
             matTooltip="Cerrar"
@@ -156,6 +151,39 @@
     </div><!-- /.modal-dialog -->
   </div>
   <!-- /.Fin Modal Nuevo Año Lectivo-->
-
+ <!--Modal Detalle Año Lectivo-->
+ <div bsModal #DetAnhioModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}">
+  <div class="modal-dialog modal-md modal-info" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Detalle Anhio Lectivo</h4>
+        <button type="button" class="close" (click)="frmAnhio_hide('D')" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="bd-example">
+          <dl class="row">
+            <dt class="col-sm-3">Año: </dt>
+            <dd class="col-sm-3 text-left" style="font-size: 16px;">{{DetAnhio.anhio}}</dd>
+            <dt class="col-sm-3">Condición: </dt>
+            <dd class="col-sm-3 text-left" style="font-size: 16px;">{{DetAnhio.condicion}}</dd>
+          </dl> 
+          <dl class="row">
+            <dt class="col-sm-3">Fecha Inicio: </dt>
+            <dd class="col-sm-3 text-left" style="font-size: 16px;">{{DetAnhio.finicio | date:'dd/MM/yyyy'}}</dd>
+            <dt class="col-sm-3">Fecha Fin: </dt>
+            <dd class="col-sm-3 text-left" style="font-size: 16px;">{{DetAnhio.ffin | date:'dd/MM/yyyy'}}</dd>
+          </dl>
+          <dl class="row">                
+            <dt class="col-sm-2">Descripción: </dt>
+            <dd class="col-sm-10">{{DetAnhio.descripcion}}</dd>
+          </dl>
+        </div>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
+<!-- /.Fin Modal Detalle Año Lectivo-->
  
 </div>

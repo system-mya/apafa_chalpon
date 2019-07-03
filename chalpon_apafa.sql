@@ -1,20 +1,20 @@
 -- phpMyAdmin SQL Dump
--- version 4.6.4
--- https://www.phpmyadmin.net/
+-- version 3.5.1
+-- http://www.phpmyadmin.net
 --
--- Servidor: 127.0.0.1
--- Tiempo de generación: 03-07-2019 a las 00:25:47
--- Versión del servidor: 5.7.14
--- Versión de PHP: 5.6.25
+-- Servidor: localhost
+-- Tiempo de generación: 03-07-2019 a las 05:11:02
+-- Versión del servidor: 5.5.24-log
+-- Versión de PHP: 5.4.3
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+/*!40101 SET NAMES utf8 */;
 
 --
 -- Base de datos: `chalpon_apafa`
@@ -24,7 +24,8 @@ DELIMITER $$
 --
 -- Procedimientos
 --
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_detalle_usuario` (IN `usuario` SMALLINT)  NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_detalle_usuario`(IN `usuario` SMALLINT)
+    NO SQL
 SELECT u.idusuario,u.apellidos_usu,u.nombres_usu,
 u.dni_usu,u.celular_usu,
 (CASE 
@@ -37,11 +38,13 @@ INNER JOIN perfil_usuario pu ON pu.idperfil_usuario=u.idperfil_usuario
 WHERE u.idusuario=usuario
 AND u.estado_usu=1$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_usuario` (IN `id_usu` TINYINT)  NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_usuario`(IN `id_usu` TINYINT)
+    NO SQL
 UPDATE usuario SET estado_usu=0
 WHERE idusuario=id_usu$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_iniciar_sesion` (IN `nom` VARCHAR(20), IN `clave` VARCHAR(10))  NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_iniciar_sesion`(IN `nom` VARCHAR(20), IN `clave` VARCHAR(10))
+    NO SQL
 SELECT u.idusuario,u.nom_usu,pu.abrev_perfil,pu.nombre_perfil,
 (SELECT anhio_lectivo from anhio_lectivo WHERE condicion_anhio='A' AND estado_anhio=1) AS anhio_lectivo FROM usuario u
 INNER JOIN perfil_usuario pu ON u.idperfil_usuario=pu.idperfil_usuario
@@ -49,7 +52,8 @@ WHERE u.nom_usu=nom
 AND u.clave_usu=SHA(clave)
 AND u.estado_usu=1$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_alumno` (IN `tdoc` CHAR(3), IN `doc` VARCHAR(15), IN `ape_alum` VARCHAR(60), IN `nom_alum` VARCHAR(50), IN `fnac` DATE, IN `sexo` CHAR(1), IN `tel_alum` CHAR(6), IN `cel_alum` CHAR(9), IN `dire_alum` VARCHAR(80), IN `correo_alum` VARCHAR(80), IN `proc_alum` VARCHAR(100), IN `ape_padre` VARCHAR(60), IN `nom_padre` VARCHAR(50), IN `cel_padre` CHAR(9), IN `correo_pa` VARCHAR(80), IN `ape_madre` VARCHAR(60), IN `nom_madre` VARCHAR(50), IN `cel_madre` CHAR(9), IN `correo_ma` VARCHAR(80))  NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_alumno`(IN `tdoc` CHAR(3), IN `doc` VARCHAR(15), IN `ape_alum` VARCHAR(60), IN `nom_alum` VARCHAR(50), IN `fnac` DATE, IN `sexo` CHAR(1), IN `tel_alum` CHAR(6), IN `cel_alum` CHAR(9), IN `dire_alum` VARCHAR(80), IN `correo_alum` VARCHAR(80), IN `proc_alum` VARCHAR(100), IN `ape_padre` VARCHAR(60), IN `nom_padre` VARCHAR(50), IN `cel_padre` CHAR(9), IN `correo_pa` VARCHAR(80), IN `ape_madre` VARCHAR(60), IN `nom_madre` VARCHAR(50), IN `cel_madre` CHAR(9), IN `correo_ma` VARCHAR(80))
+    NO SQL
 INSERT INTO alumno(tdoc_alumno, 
 doc_alumno, apellidos_alumno,nombres_alumno,fnac_alumno, 
 sexo_alumno,telefono_alumno,celular_alumno, 
@@ -62,18 +66,21 @@ sexo,tel_alum,cel_alum,dire_alum,correo_alum,proc_alum,ape_padre,
 nom_padre,cel_padre,correo_pa,ape_madre,nom_madre,cel_madre,
 correo_ma)$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_anhio` (IN `anhio` CHAR(4), IN `finicio` DATE, IN `ffin` DATE, IN `descripcion` VARCHAR(150))  INSERT INTO anhio_lectivo(anhio_lectivo, finicio_anhio,
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_anhio`(IN `anhio` CHAR(4), IN `finicio` DATE, IN `ffin` DATE, IN `descripcion` VARCHAR(150))
+INSERT INTO anhio_lectivo(anhio_lectivo, finicio_anhio,
 ffin_anhio, descripcion_anhio) 
 VALUES (anhio,finicio,ffin,descripcion)$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_apoderado` (IN `tdoc_apod` CHAR(3), IN `doc_apod` VARCHAR(15), IN `ape_apod` VARCHAR(60), IN `nom_apod` VARCHAR(50), IN `sex_apod` CHAR(1), IN `cel_apod` CHAR(9), IN `direc_apod` VARCHAR(80), IN `cor_apod` VARCHAR(80))  NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_apoderado`(IN `tdoc_apod` CHAR(3), IN `doc_apod` VARCHAR(15), IN `ape_apod` VARCHAR(60), IN `nom_apod` VARCHAR(50), IN `sex_apod` CHAR(1), IN `cel_apod` CHAR(9), IN `direc_apod` VARCHAR(80), IN `cor_apod` VARCHAR(80))
+    NO SQL
 INSERT INTO apoderado(tdoc_apoderado, 
 doc_apoderado, apellidos_apoderado, nombres_apoderado,
 sexo_apoderado, celular_apoderado, direccion_apoderado,
 correo_apoderado) VALUES (tdoc_apod,doc_apod,
 ape_apod,nom_apod,sex_apod,cel_apod,direc_apod,cor_apod)$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_usuario` (IN `perfil` TINYINT, IN `nom_usu` VARCHAR(20), IN `clave` VARCHAR(10), IN `dni` CHAR(8), IN `nombres` VARCHAR(45), IN `apellidos` VARCHAR(60), IN `sexo` CHAR(1), IN `celular` CHAR(9), IN `correo` VARCHAR(80), IN `direccion` VARCHAR(80), IN `fcreacion` DATE, IN `obser` VARCHAR(50))  INSERT INTO usuario(idperfil_usuario,nom_usu, 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_usuario`(IN `perfil` TINYINT, IN `nom_usu` VARCHAR(20), IN `clave` VARCHAR(10), IN `dni` CHAR(8), IN `nombres` VARCHAR(45), IN `apellidos` VARCHAR(60), IN `sexo` CHAR(1), IN `celular` CHAR(9), IN `correo` VARCHAR(80), IN `direccion` VARCHAR(80), IN `fcreacion` DATE, IN `obser` VARCHAR(50))
+INSERT INTO usuario(idperfil_usuario,nom_usu, 
 clave_usu,dni_usu,nombres_usu,apellidos_usu, 
 sexo_usu,celular_usu,correo_usu,
 direccion_usu,fcreacion_usu,
@@ -81,7 +88,8 @@ obser_usu)
 VALUES (perfil,nom_usu,SHA(clave),dni,nombres,apellidos,sexo,
 celular,correo,direccion,fcreacion,obser)$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_alumnos` ()  NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_alumnos`()
+    NO SQL
 SELECT id_alumno,apellidos_alumno,
 nombres_alumno,tdoc_alumno,doc_alumno,
 (CASE
@@ -91,9 +99,10 @@ nombres_alumno,tdoc_alumno,doc_alumno,
 WHERE estado_alumno=1
 ORDER BY apellidos_alumno$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_anhio` ()  NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_anhio`()
+    NO SQL
 SELECT idanhio,anhio_lectivo,finicio_anhio,ffin_anhio,
-LEFT(descripcion_anhio,20) as descripcion_anhio,
+LEFT(descripcion_anhio,20) as descripcion, descripcion_anhio,
 (CASE
   WHEN condicion_anhio='N' THEN 'NUEVO'
   WHEN condicion_anhio='A' THEN 'APERTURADO'
@@ -109,7 +118,8 @@ LEFT(descripcion_anhio,20) as descripcion_anhio,
   FROM anhio_lectivo
 WHERE estado_anhio=1$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_apoderados` ()  NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_apoderados`()
+    NO SQL
 SELECT id_apoderado,doc_apoderado,apellidos_apoderado,
 nombres_apoderado,(CASE WHEN sexo_apoderado='M' THEN 'MASCULINO' ELSE 'FEMENINO' END) AS sexo_apoderado,
 celular_apoderado
@@ -117,11 +127,13 @@ FROM apoderado
 WHERE estado_apoderado=1
 ORDER BY apellidos_apoderado$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_perfil_usuario` ()  NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_perfil_usuario`()
+    NO SQL
 SELECT * FROM perfil_usuario
 WHERE estado_perfil=1$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_usuarios` ()  NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_usuarios`()
+    NO SQL
 SELECT u.idusuario,u.apellidos_usu,u.nombres_usu,
 u.nom_usu,u.celular_usu,pu.nombre_perfil,
 (CASE 
@@ -136,18 +148,21 @@ INNER JOIN perfil_usuario pu ON pu.idperfil_usuario=u.idperfil_usuario
 WHERE u.estado_usu=1
 ORDER BY u.apellidos_usu$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_obtener_usuario` (IN `id` INT)  NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_obtener_usuario`(IN `id` INT)
+    NO SQL
 SELECT * FROM usuario u
 INNER JOIN perfil_usuario pu ON pu.idperfil_usuario=u.idperfil_usuario
 WHERE u.idusuario=id
 AND u.estado_usu=1
 AND u.fbaja_usu IS NULL$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_resetear_usuario` (IN `id_usu` TINYINT)  NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_resetear_usuario`(IN `id_usu` TINYINT)
+    NO SQL
 UPDATE usuario SET clave_usu=SHA('1A2B3C4D'),fbaja_usu=NULL
 WHERE idusuario=id_usu$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_anhio_xcriterio` (IN `criterio` VARCHAR(12), IN `id` TINYINT)  NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_anhio_xcriterio`(IN `criterio` VARCHAR(12), IN `id` TINYINT)
+    NO SQL
 IF criterio="cerrar" THEN
 UPDATE anhio_lectivo SET condicion_anhio='C'
 WHERE idanhio=id;
@@ -159,12 +174,30 @@ UPDATE anhio_lectivo SET estado_anhio=0
 WHERE idanhio=id;
 END IF$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_clave` (IN `clave` VARCHAR(10), IN `id` SMALLINT)  NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_clave`(IN `clave` VARCHAR(10), IN `id` SMALLINT)
+    NO SQL
 UPDATE usuario SET clave_usu=SHA(clave) 
 WHERE idusuario=id$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_usuario` (IN `idusu` TINYINT, IN `nom_usu` VARCHAR(20), IN `nombres` VARCHAR(45), IN `apellidos` VARCHAR(60), IN `sexo` CHAR(1), IN `celular` CHAR(9), IN `correo` VARCHAR(80), IN `direccion` VARCHAR(80), IN `fbaja` DATE, IN `obser` VARCHAR(50), IN `perfil` INT)  UPDATE usuario SET nom_usu=nom_usu,nombres_usu=nombres,apellidos_usu=apellidos,sexo_usu=sexo,celular_usu=celular,correo_usu=correo,direccion_usu=direccion,fbaja_usu=fbaja,obser_usu=obser,idperfil_usuario=perfil
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_usuario`(IN `idusu` TINYINT, IN `nom_usu` VARCHAR(20), IN `nombres` VARCHAR(45), IN `apellidos` VARCHAR(60), IN `sexo` CHAR(1), IN `celular` CHAR(9), IN `correo` VARCHAR(80), IN `direccion` VARCHAR(80), IN `fbaja` DATE, IN `obser` VARCHAR(50), IN `perfil` INT)
+UPDATE usuario SET nom_usu=nom_usu,nombres_usu=nombres,apellidos_usu=apellidos,sexo_usu=sexo,celular_usu=celular,correo_usu=correo,direccion_usu=direccion,fbaja_usu=fbaja,obser_usu=obser,idperfil_usuario=perfil
 WHERE idusuario=idusu$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_verificar_anhio`(IN `dato` CHAR(4))
+SELECT
+    anhio_lectivo,idanhio
+    FROM anhio_lectivo
+    WHERE anhio_lectivo=dato AND estado_anhio=1
+    UNION
+    SELECT 'AÑO LECTIVO AUN APERTURADO',NULL FROM DUAL
+    WHERE EXISTS
+    ( SELECT idanhio
+    FROM anhio_lectivo
+    WHERE condicion_anhio='A' AND estado_anhio=1)$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_verificar_si_anhio_aperturado`()
+SELECT * FROM anhio_lectivo
+WHERE condicion_anhio='A' AND estado_anhio=1$$
 
 DELIMITER ;
 
@@ -174,8 +207,8 @@ DELIMITER ;
 -- Estructura de tabla para la tabla `alumno`
 --
 
-CREATE TABLE `alumno` (
-  `id_alumno` smallint(6) NOT NULL,
+CREATE TABLE IF NOT EXISTS `alumno` (
+  `id_alumno` smallint(6) NOT NULL AUTO_INCREMENT,
   `tdoc_alumno` char(3) NOT NULL,
   `doc_alumno` varchar(15) NOT NULL,
   `apellidos_alumno` varchar(60) NOT NULL,
@@ -195,8 +228,10 @@ CREATE TABLE `alumno` (
   `nombres_madre` varchar(50) NOT NULL,
   `celular_madre` char(9) DEFAULT NULL,
   `correo_madre` varchar(80) DEFAULT NULL,
-  `estado_alumno` bit(1) NOT NULL DEFAULT b'1'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `estado_alumno` bit(1) NOT NULL DEFAULT b'1',
+  PRIMARY KEY (`id_alumno`),
+  UNIQUE KEY `doc_alumno` (`doc_alumno`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=144 ;
 
 --
 -- Volcado de datos para la tabla `alumno`
@@ -353,23 +388,28 @@ INSERT INTO `alumno` (`id_alumno`, `tdoc_alumno`, `doc_alumno`, `apellidos_alumn
 -- Estructura de tabla para la tabla `anhio_lectivo`
 --
 
-CREATE TABLE `anhio_lectivo` (
-  `idanhio` tinyint(4) NOT NULL,
+CREATE TABLE IF NOT EXISTS `anhio_lectivo` (
+  `idanhio` tinyint(4) NOT NULL AUTO_INCREMENT,
   `anhio_lectivo` char(4) NOT NULL,
   `finicio_anhio` date NOT NULL,
   `ffin_anhio` date NOT NULL,
   `descripcion_anhio` varchar(150) DEFAULT NULL,
   `condicion_anhio` char(1) NOT NULL DEFAULT 'A',
-  `estado_anhio` bit(1) NOT NULL DEFAULT b'1'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `estado_anhio` bit(1) NOT NULL DEFAULT b'1',
+  PRIMARY KEY (`idanhio`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=17 ;
 
 --
 -- Volcado de datos para la tabla `anhio_lectivo`
 --
 
 INSERT INTO `anhio_lectivo` (`idanhio`, `anhio_lectivo`, `finicio_anhio`, `ffin_anhio`, `descripcion_anhio`, `condicion_anhio`, `estado_anhio`) VALUES
-(1, '2018', '2018-01-31', '2018-12-31', NULL, 'C', b'1'),
-(2, '2019', '2019-01-31', '2019-12-31', NULL, 'A', b'1');
+(1, '2018', '2018-01-31', '2018-12-31', NULL, 'C', b'0'),
+(2, '2019', '2019-01-31', '2019-12-31', NULL, 'C', b'0'),
+(13, '2017', '2017-01-01', '2017-12-31', NULL, 'C', b'0'),
+(14, '2019', '2019-01-01', '2019-12-31', NULL, 'A', b'0'),
+(15, '2019', '2019-01-01', '2019-12-31', NULL, 'C', b'1'),
+(16, '2018', '2018-01-01', '2018-12-31', 'asfjasjf asjf asfjgask jagsfkjasf kjas  aksjfaskjfk g asfjkasgfkasjfg kjas gfaskjfgaskjfgaskjfasg agksjfasgfjaskfjasgf asjkf jaksfgasj asfgjaskgfaksjf', 'A', b'1');
 
 -- --------------------------------------------------------
 
@@ -377,8 +417,8 @@ INSERT INTO `anhio_lectivo` (`idanhio`, `anhio_lectivo`, `finicio_anhio`, `ffin_
 -- Estructura de tabla para la tabla `apoderado`
 --
 
-CREATE TABLE `apoderado` (
-  `id_apoderado` smallint(6) NOT NULL,
+CREATE TABLE IF NOT EXISTS `apoderado` (
+  `id_apoderado` smallint(6) NOT NULL AUTO_INCREMENT,
   `tdoc_apoderado` char(3) NOT NULL,
   `doc_apoderado` varchar(15) NOT NULL,
   `apellidos_apoderado` varchar(60) NOT NULL,
@@ -387,8 +427,10 @@ CREATE TABLE `apoderado` (
   `celular_apoderado` char(9) NOT NULL,
   `direccion_apoderado` varchar(80) NOT NULL,
   `correo_apoderado` varchar(80) DEFAULT NULL,
-  `estado_apoderado` bit(1) NOT NULL DEFAULT b'1'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `estado_apoderado` bit(1) NOT NULL DEFAULT b'1',
+  PRIMARY KEY (`id_apoderado`),
+  UNIQUE KEY `doc_apoderado` (`doc_apoderado`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=144 ;
 
 --
 -- Volcado de datos para la tabla `apoderado`
@@ -545,12 +587,13 @@ INSERT INTO `apoderado` (`id_apoderado`, `tdoc_apoderado`, `doc_apoderado`, `ape
 -- Estructura de tabla para la tabla `grados`
 --
 
-CREATE TABLE `grados` (
-  `id_grado` tinyint(4) NOT NULL,
+CREATE TABLE IF NOT EXISTS `grados` (
+  `id_grado` tinyint(4) NOT NULL AUTO_INCREMENT,
   `descripcion_grado` varchar(40) NOT NULL,
   `nivel_grado` char(1) NOT NULL,
-  `estado_grado` bit(1) NOT NULL DEFAULT b'1'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `estado_grado` bit(1) NOT NULL DEFAULT b'1',
+  PRIMARY KEY (`id_grado`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
 
 --
 -- Volcado de datos para la tabla `grados`
@@ -569,14 +612,16 @@ INSERT INTO `grados` (`id_grado`, `descripcion_grado`, `nivel_grado`, `estado_gr
 -- Estructura de tabla para la tabla `libro`
 --
 
-CREATE TABLE `libro` (
-  `id_libro` tinyint(4) NOT NULL,
+CREATE TABLE IF NOT EXISTS `libro` (
+  `id_libro` tinyint(4) NOT NULL AUTO_INCREMENT,
   `titulo_libro` varchar(80) NOT NULL,
   `editorial_libro` varchar(20) NOT NULL,
   `edicion_libro` char(4) NOT NULL,
   `id_grado` tinyint(4) NOT NULL,
-  `estado_libro` bit(1) NOT NULL DEFAULT b'1'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `estado_libro` bit(1) NOT NULL DEFAULT b'1',
+  PRIMARY KEY (`id_libro`),
+  KEY `id_grado` (`id_grado`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -584,12 +629,13 @@ CREATE TABLE `libro` (
 -- Estructura de tabla para la tabla `perfil_usuario`
 --
 
-CREATE TABLE `perfil_usuario` (
-  `idperfil_usuario` tinyint(4) NOT NULL,
+CREATE TABLE IF NOT EXISTS `perfil_usuario` (
+  `idperfil_usuario` tinyint(4) NOT NULL AUTO_INCREMENT,
   `nombre_perfil` varchar(25) NOT NULL,
   `abrev_perfil` char(2) NOT NULL,
-  `estado_perfil` bit(1) NOT NULL DEFAULT b'1'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `estado_perfil` bit(1) NOT NULL DEFAULT b'1',
+  PRIMARY KEY (`idperfil_usuario`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
 --
 -- Volcado de datos para la tabla `perfil_usuario`
@@ -607,13 +653,15 @@ INSERT INTO `perfil_usuario` (`idperfil_usuario`, `nombre_perfil`, `abrev_perfil
 -- Estructura de tabla para la tabla `secciones`
 --
 
-CREATE TABLE `secciones` (
-  `id_seccion` tinyint(4) NOT NULL,
+CREATE TABLE IF NOT EXISTS `secciones` (
+  `id_seccion` tinyint(4) NOT NULL AUTO_INCREMENT,
   `nombre_seccion` varchar(20) NOT NULL,
   `id_grado` tinyint(4) NOT NULL,
   `turno_seccion` char(1) NOT NULL,
-  `estado_seccion` bit(1) NOT NULL DEFAULT b'1'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `estado_seccion` bit(1) NOT NULL DEFAULT b'1',
+  PRIMARY KEY (`id_seccion`),
+  KEY `id_grado` (`id_grado`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -621,8 +669,8 @@ CREATE TABLE `secciones` (
 -- Estructura de tabla para la tabla `usuario`
 --
 
-CREATE TABLE `usuario` (
-  `idusuario` tinyint(4) NOT NULL,
+CREATE TABLE IF NOT EXISTS `usuario` (
+  `idusuario` tinyint(4) NOT NULL AUTO_INCREMENT,
   `idperfil_usuario` tinyint(4) NOT NULL,
   `nom_usu` varchar(20) NOT NULL,
   `clave_usu` varchar(100) NOT NULL,
@@ -636,8 +684,11 @@ CREATE TABLE `usuario` (
   `fcreacion_usu` date NOT NULL,
   `fbaja_usu` date DEFAULT NULL,
   `obser_usu` varchar(200) DEFAULT NULL,
-  `estado_usu` bit(1) NOT NULL DEFAULT b'1'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `estado_usu` bit(1) NOT NULL DEFAULT b'1',
+  PRIMARY KEY (`idusuario`),
+  UNIQUE KEY `dni_usu` (`dni_usu`),
+  KEY `idperfil_usuario` (`idperfil_usuario`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
 --
 -- Volcado de datos para la tabla `usuario`
@@ -649,108 +700,6 @@ INSERT INTO `usuario` (`idusuario`, `idperfil_usuario`, `nom_usu`, `clave_usu`, 
 (3, 2, 'rosafc', '2ef4d31ff48bb12b7c977be13909b5ae02683c7b', '14526398', 'Rosa Magaly ', 'Fernandez Cabrejos', 'F', '987445896', 'rosa_magaly@hotmail.com', 'calle motupe # 152', '2019-06-29', NULL, NULL, b'1'),
 (4, 3, 'lishyestelita', '994818b575472a3828b93e34456c400b1d7a20dd', '45256389', 'Lishy Tatiana', 'Estela Zeña', 'F', '968574258', NULL, 'calle tucume # 150', '2019-06-29', NULL, NULL, b'1');
 
---
--- Índices para tablas volcadas
---
-
---
--- Indices de la tabla `alumno`
---
-ALTER TABLE `alumno`
-  ADD PRIMARY KEY (`id_alumno`),
-  ADD UNIQUE KEY `doc_alumno` (`doc_alumno`);
-
---
--- Indices de la tabla `anhio_lectivo`
---
-ALTER TABLE `anhio_lectivo`
-  ADD PRIMARY KEY (`idanhio`);
-
---
--- Indices de la tabla `apoderado`
---
-ALTER TABLE `apoderado`
-  ADD PRIMARY KEY (`id_apoderado`),
-  ADD UNIQUE KEY `doc_apoderado` (`doc_apoderado`);
-
---
--- Indices de la tabla `grados`
---
-ALTER TABLE `grados`
-  ADD PRIMARY KEY (`id_grado`);
-
---
--- Indices de la tabla `libro`
---
-ALTER TABLE `libro`
-  ADD PRIMARY KEY (`id_libro`),
-  ADD KEY `id_grado` (`id_grado`);
-
---
--- Indices de la tabla `perfil_usuario`
---
-ALTER TABLE `perfil_usuario`
-  ADD PRIMARY KEY (`idperfil_usuario`);
-
---
--- Indices de la tabla `secciones`
---
-ALTER TABLE `secciones`
-  ADD PRIMARY KEY (`id_seccion`),
-  ADD KEY `id_grado` (`id_grado`);
-
---
--- Indices de la tabla `usuario`
---
-ALTER TABLE `usuario`
-  ADD PRIMARY KEY (`idusuario`),
-  ADD UNIQUE KEY `dni_usu` (`dni_usu`),
-  ADD KEY `idperfil_usuario` (`idperfil_usuario`);
-
---
--- AUTO_INCREMENT de las tablas volcadas
---
-
---
--- AUTO_INCREMENT de la tabla `alumno`
---
-ALTER TABLE `alumno`
-  MODIFY `id_alumno` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=144;
---
--- AUTO_INCREMENT de la tabla `anhio_lectivo`
---
-ALTER TABLE `anhio_lectivo`
-  MODIFY `idanhio` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
---
--- AUTO_INCREMENT de la tabla `apoderado`
---
-ALTER TABLE `apoderado`
-  MODIFY `id_apoderado` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=144;
---
--- AUTO_INCREMENT de la tabla `grados`
---
-ALTER TABLE `grados`
-  MODIFY `id_grado` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
---
--- AUTO_INCREMENT de la tabla `libro`
---
-ALTER TABLE `libro`
-  MODIFY `id_libro` tinyint(4) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT de la tabla `perfil_usuario`
---
-ALTER TABLE `perfil_usuario`
-  MODIFY `idperfil_usuario` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
---
--- AUTO_INCREMENT de la tabla `secciones`
---
-ALTER TABLE `secciones`
-  MODIFY `id_seccion` tinyint(4) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT de la tabla `usuario`
---
-ALTER TABLE `usuario`
-  MODIFY `idusuario` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- Restricciones para tablas volcadas
 --
