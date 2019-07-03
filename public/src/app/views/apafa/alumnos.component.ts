@@ -4,7 +4,7 @@ import { AlumnosService } from './alumnos.service';
 import {MatPaginator, MatSort, MatTableDataSource,TooltipPosition} from '@angular/material';
 import {ModalDirective} from 'ngx-bootstrap/modal';
 import 'rxjs/add/operator/map';
-import {Alumno,Busqueda} from '../../app.datos';
+import {clsAlumno,clsBusqueda} from '../../app.datos';
 import { ToastrService } from 'ngx-toastr';
 declare var swal: any;
 import { LoadingBarService } from '@ngx-loading-bar/core';
@@ -38,9 +38,9 @@ export class AlumnosComponent implements OnInit {
   public panel_registro : boolean;
   public panel_modificar : boolean;
   public panel_detalle : boolean;
-  public alumno : Alumno;
-  public Editalumno : Alumno;
-  public DatoBusqueda : Busqueda;
+  public alumno : clsAlumno;
+  public Editalumno : clsAlumno;
+  public DatoBusqueda : clsBusqueda;
   public optAd : string;
   constructor(private _AlumnosServicios:AlumnosService,
     private _MatriculaServicios:MatriculaService,private toastr: ToastrService,
@@ -133,7 +133,7 @@ export class AlumnosComponent implements OnInit {
     
   }
 
-  onSubmit(form:Alumno){    
+  onSubmit(form:clsAlumno){    
     swal({
       title: '¿Esta seguro que desea guardar?',
       type: 'question',
@@ -240,7 +240,7 @@ btnDetalle_Alumno(id){
     .catch(err => console.log(err))
   }
 
-  updateAlumno(form:Alumno){    
+  updateAlumno(form:clsAlumno){    
     swal({
       title: '¿Esta seguro que desea guardar?',
       type: 'question',

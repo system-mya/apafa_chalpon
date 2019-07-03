@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 30-06-2019 a las 00:18:44
+-- Tiempo de generación: 03-07-2019 a las 00:25:47
 -- Versión del servidor: 5.7.14
 -- Versión de PHP: 5.6.25
 
@@ -37,9 +37,13 @@ INNER JOIN perfil_usuario pu ON pu.idperfil_usuario=u.idperfil_usuario
 WHERE u.idusuario=usuario
 AND u.estado_usu=1$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_usuario` (IN `id_usu` TINYINT)  NO SQL
+UPDATE usuario SET estado_usu=0
+WHERE idusuario=id_usu$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_iniciar_sesion` (IN `nom` VARCHAR(20), IN `clave` VARCHAR(10))  NO SQL
 SELECT u.idusuario,u.nom_usu,pu.abrev_perfil,pu.nombre_perfil,
-(SELECT anhio from anhio_lectivo WHERE condicion_anhio='A' AND estado_anhio=1) AS anhio_lectivo FROM usuario u
+(SELECT anhio_lectivo from anhio_lectivo WHERE condicion_anhio='A' AND estado_anhio=1) AS anhio_lectivo FROM usuario u
 INNER JOIN perfil_usuario pu ON u.idperfil_usuario=pu.idperfil_usuario
 WHERE u.nom_usu=nom
 AND u.clave_usu=SHA(clave)
@@ -87,6 +91,32 @@ nombres_alumno,tdoc_alumno,doc_alumno,
 WHERE estado_alumno=1
 ORDER BY apellidos_alumno$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_anhio` ()  NO SQL
+SELECT idanhio,anhio_lectivo,finicio_anhio,ffin_anhio,
+LEFT(descripcion_anhio,20) as descripcion_anhio,
+(CASE
+  WHEN condicion_anhio='N' THEN 'NUEVO'
+  WHEN condicion_anhio='A' THEN 'APERTURADO'
+  WHEN condicion_anhio='R' THEN 'REAPERTURADO'
+  ELSE 'CERRADO'
+ END) as condicion,
+ (CASE
+  WHEN condicion_anhio='N' THEN '#0d28e8'
+  WHEN condicion_anhio='A' THEN '#2a7703'
+  WHEN condicion_anhio='R' THEN '#ff7600'
+  ELSE '#e4040e'
+ END) as color_condicion
+  FROM anhio_lectivo
+WHERE estado_anhio=1$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_apoderados` ()  NO SQL
+SELECT id_apoderado,doc_apoderado,apellidos_apoderado,
+nombres_apoderado,(CASE WHEN sexo_apoderado='M' THEN 'MASCULINO' ELSE 'FEMENINO' END) AS sexo_apoderado,
+celular_apoderado
+FROM apoderado
+WHERE estado_apoderado=1
+ORDER BY apellidos_apoderado$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_perfil_usuario` ()  NO SQL
 SELECT * FROM perfil_usuario
 WHERE estado_perfil=1$$
@@ -112,6 +142,29 @@ INNER JOIN perfil_usuario pu ON pu.idperfil_usuario=u.idperfil_usuario
 WHERE u.idusuario=id
 AND u.estado_usu=1
 AND u.fbaja_usu IS NULL$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_resetear_usuario` (IN `id_usu` TINYINT)  NO SQL
+UPDATE usuario SET clave_usu=SHA('1A2B3C4D'),fbaja_usu=NULL
+WHERE idusuario=id_usu$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_anhio_xcriterio` (IN `criterio` VARCHAR(12), IN `id` TINYINT)  NO SQL
+IF criterio="cerrar" THEN
+UPDATE anhio_lectivo SET condicion_anhio='C'
+WHERE idanhio=id;
+ELSEIF criterio="reaperturar" THEN
+UPDATE anhio_lectivo SET condicion_anhio='A'
+WHERE idanhio=id;
+ELSE
+UPDATE anhio_lectivo SET estado_anhio=0 
+WHERE idanhio=id;
+END IF$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_clave` (IN `clave` VARCHAR(10), IN `id` SMALLINT)  NO SQL
+UPDATE usuario SET clave_usu=SHA(clave) 
+WHERE idusuario=id$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_usuario` (IN `idusu` TINYINT, IN `nom_usu` VARCHAR(20), IN `nombres` VARCHAR(45), IN `apellidos` VARCHAR(60), IN `sexo` CHAR(1), IN `celular` CHAR(9), IN `correo` VARCHAR(80), IN `direccion` VARCHAR(80), IN `fbaja` DATE, IN `obser` VARCHAR(50), IN `perfil` INT)  UPDATE usuario SET nom_usu=nom_usu,nombres_usu=nombres,apellidos_usu=apellidos,sexo_usu=sexo,celular_usu=celular,correo_usu=correo,direccion_usu=direccion,fbaja_usu=fbaja,obser_usu=obser,idperfil_usuario=perfil
+WHERE idusuario=idusu$$
 
 DELIMITER ;
 
@@ -315,7 +368,7 @@ CREATE TABLE `anhio_lectivo` (
 --
 
 INSERT INTO `anhio_lectivo` (`idanhio`, `anhio_lectivo`, `finicio_anhio`, `ffin_anhio`, `descripcion_anhio`, `condicion_anhio`, `estado_anhio`) VALUES
-(1, '2018', '2018-01-31', '2018-12-31', NULL, 'A', b'1'),
+(1, '2018', '2018-01-31', '2018-12-31', NULL, 'C', b'1'),
 (2, '2019', '2019-01-31', '2019-12-31', NULL, 'A', b'1');
 
 -- --------------------------------------------------------
@@ -591,10 +644,10 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`idusuario`, `idperfil_usuario`, `nom_usu`, `clave_usu`, `dni_usu`, `nombres_usu`, `apellidos_usu`, `sexo_usu`, `celular_usu`, `correo_usu`, `direccion_usu`, `fcreacion_usu`, `fbaja_usu`, `obser_usu`, `estado_usu`) VALUES
-(1, 1, 'jjulcav', 'd0c7366cd4b8ed80d5f28120c6be80ee89e93bbf', '71919582', 'Jose Andersson', 'Julca Vásquez', 'M', '978902579', 'piscis16931@hotmail.com', 'calle chiclayo # 114', '2019-06-28', NULL, NULL, b'1'),
+(1, 1, 'jjulcav', 'd0c7366cd4b8ed80d5f28120c6be80ee89e93bbf', '71919582', 'Jose Andersson', 'Julca Vásquez', 'M', '978902579', '', 'CALLE CHICLAYO # 114', '2019-06-28', NULL, NULL, b'1'),
 (2, 4, 'maritasv', 'a6b7354b8ec74b0550233c5cbf8773c6d28ceef4', '73258572', 'Marita Vanessa', 'Sanchez Velasquez', 'F', '979241872', 'vanesa_2808@hotmail.com', 'VISTA ALEGRE M H LT 22 CRUZ DE LA ESPERANZA', '2019-06-29', NULL, NULL, b'1'),
 (3, 2, 'rosafc', '2ef4d31ff48bb12b7c977be13909b5ae02683c7b', '14526398', 'Rosa Magaly ', 'Fernandez Cabrejos', 'F', '987445896', 'rosa_magaly@hotmail.com', 'calle motupe # 152', '2019-06-29', NULL, NULL, b'1'),
-(4, 3, 'lishyez', '1bfed3107236792f06717eb5424e58a91c8e4bb0', '45256389', 'Lishy Tatiana', 'Estela Zeña', 'F', '968574258', 'lishy_estelita@hotmail.com', 'calle tucume # 150', '2019-06-29', NULL, NULL, b'1');
+(4, 3, 'lishyestelita', '994818b575472a3828b93e34456c400b1d7a20dd', '45256389', 'Lishy Tatiana', 'Estela Zeña', 'F', '968574258', NULL, 'calle tucume # 150', '2019-06-29', NULL, NULL, b'1');
 
 --
 -- Índices para tablas volcadas

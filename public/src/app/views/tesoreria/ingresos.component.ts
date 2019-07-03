@@ -2,7 +2,7 @@ import { Component, ViewChild, ViewEncapsulation, Inject  } from '@angular/core'
 import { NgForm } from '@angular/forms';
 import { DOCUMENT } from '@angular/platform-browser';
 import {MatPaginator, MatSort, MatTableDataSource, TooltipPosition} from '@angular/material';
-import {Busqueda, Otro_Ingreso,Recibo,Detalle_Deuda} from '../../app.datos';
+import {clsBusqueda,clsOtro_Ingreso,clsRecibo,clsDetalle_Deuda} from '../../app.datos';
 import { IngresosService } from './ingresos.service';
 import { MatriculaService } from '../apafa/matricula.service';
 import { ApoderadoService } from '../apafa/apoderado.service';
@@ -44,10 +44,10 @@ export class IngresosComponent {
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild('myForm') mytemplateForm: NgForm;
   @ViewChild('myRecibo') mytemplatemyRecibo: NgForm;
-  public DatoBusqueda: Busqueda;
-  public otro: Otro_Ingreso = {};
-  public recibo : Recibo = {};
-  public DataDeuda : Detalle_Deuda ={};
+  public DatoBusqueda: clsBusqueda;
+  public otro: clsOtro_Ingreso = {};
+  public recibo : clsRecibo = {};
+  public DataDeuda : clsDetalle_Deuda ={};
   public optAd : string;
   constructor(private _IngresosServicios: IngresosService, 
     private _MatriculaServicios:MatriculaService,
@@ -113,7 +113,7 @@ DataIngresos: any = [];
 
 
 
-  onSubmit(form: Otro_Ingreso) {
+  onSubmit(form: clsOtro_Ingreso) {
     swal({
       title: '¿Esta seguro que desea guardar?',
       type: 'question',
@@ -294,7 +294,7 @@ DataIngresos: any = [];
       .catch(err => console.log(err))
     }
 
-    public RegRecibo(form:Recibo){
+    public RegRecibo(form:clsRecibo){
       swal({
         title: '¿Esta seguro que desea guardar?',
         type: 'question',

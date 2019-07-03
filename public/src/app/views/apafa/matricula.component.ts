@@ -5,7 +5,7 @@ import { GradoSeccionService } from './../administracion/grado-seccion.service';
 import { ToastrService } from 'ngx-toastr';
 import {MatPaginator, MatSort, MatTableDataSource,TooltipPosition} from '@angular/material';
 import {ModalDirective} from 'ngx-bootstrap/modal';
-import {Matricula,Grados,Secciones,Tipo_Relacion, Busqueda,Libro,Libro_Matricula} from '../../app.datos';
+import {clsMatricula,clsGrados,clsSecciones,clsTipo_Relacion,clsBusqueda,clsLibro,clsLibro_Matricula} from '../../app.datos';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 declare var swal: any;
 
@@ -23,8 +23,8 @@ export class MatriculaComponent {
   public f = new Date();
   displayedColumns: string[] = ['doc_alumno', 'datos_alumno','grado','seccion','opciones_alumno'];
   positionOptions: TooltipPosition[] = ['after', 'before', 'above', 'below', 'left', 'right'];
-  public matricula : Matricula = {};
-  public DatoBusqueda : Busqueda;
+  public matricula : clsMatricula = {};
+  public DatoBusqueda : clsBusqueda;
   public panel_tabla : boolean;
   public panel_registro_libro : boolean;
   public optAd : string;
@@ -94,7 +94,7 @@ frmMat_hide(opc){
   }
 }
 
-DataGrado : Grados;
+DataGrado : clsGrados;
   ListarGrados (){
    this._GradoServicios.ListarGradosActivos().subscribe(
      data => {
@@ -110,7 +110,7 @@ DataGrado : Grados;
    )
  }
 
- DataRelaciones : Tipo_Relacion;
+ DataRelaciones : clsTipo_Relacion;
   ListarTipoRelacion (){
    this._MatriculaServicios.getListar_tipo_relacion().subscribe(
      data => {
@@ -126,7 +126,7 @@ DataGrado : Grados;
    )
  }
 
- DataSecciones : Secciones;
+ DataSecciones : clsSecciones;
  Listar_Secciones_xGrado(id){
   this.loadingBar.start();
       this.DatoBusqueda.idbusqueda=id;
@@ -186,7 +186,7 @@ DataGrado : Grados;
     .catch(err => console.log(err))
   }
 
-  onSubmit(form:Matricula){    
+  onSubmit(form:clsMatricula){    
     swal({
       title: '¿Esta seguro que desea guardar?',
       type: 'question',
@@ -230,7 +230,7 @@ DataGrado : Grados;
     })
   }
   
-  DataLibros : Libro;
+  DataLibros : clsLibro;
   nivel_libro : string;
   Listar_Libros(id_grado,id_matricula,nivel){
     this.loadingBar.start();
@@ -302,7 +302,7 @@ DataGrado : Grados;
          .catch(err => console.log(err))
   }
   
-  libro_matricula:Libro_Matricula={};
+  libro_matricula:clsLibro_Matricula={};
   Entregar_Libro(id_libro,id_grado){
       this.libro_matricula.id_libro=id_libro;
       this.libro_matricula.id_matricula=this.id_matriucla;

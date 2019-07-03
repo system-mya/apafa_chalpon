@@ -2,7 +2,7 @@ import { Component,ViewChild,ViewEncapsulation,Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/platform-browser';
 import { NgForm } from '@angular/forms';
 import {ModalDirective} from 'ngx-bootstrap/modal';
-import {Concepto,Detalle_Compra,Busqueda} from '../../app.datos';
+import {clsConcepto,clsBusqueda} from '../../app.datos';
 import {MatPaginator, MatSort, MatTableDataSource, TooltipPosition} from '@angular/material';
 import { ToastrService } from 'ngx-toastr';
 import { LoadingBarService } from '@ngx-loading-bar/core';
@@ -21,8 +21,8 @@ export class ConceptosComponent {
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild('myForm') mytemplateForm: NgForm;
   positionOptions: TooltipPosition[] = ['after', 'before', 'above', 'below', 'left', 'right'];
-  public DatoBusqueda: Busqueda;
-  public concepto : Concepto = {};
+  public DatoBusqueda: clsBusqueda;
+  public concepto : clsConcepto = {};
   constructor(private toastr: ToastrService,private loadingBar: LoadingBarService,
     private _ConceptosServicios: ConceptosService,
     @Inject(DOCUMENT) private document: Document,) { 
@@ -65,7 +65,7 @@ btnNuevo_Concepto(){
   this.concepto.tipo_concepto='';
 }
 
-onSubmit(form: Concepto) {
+onSubmit(form: clsConcepto) {
   swal({
     title: '¿Esta seguro que desea guardar?',
     type: 'question',

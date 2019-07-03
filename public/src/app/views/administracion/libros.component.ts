@@ -6,7 +6,7 @@ import { GradoSeccionService } from './grado-seccion.service';
 import 'rxjs/add/operator/map';
 import { ToastrService } from 'ngx-toastr';
 import {ModalDirective} from 'ngx-bootstrap/modal';
-import {Libro,Grados, Busqueda} from '../../app.datos';
+import {clsLibro,clsGrados,clsBusqueda} from '../../app.datos';
 declare var swal: any;
 
 
@@ -23,8 +23,8 @@ export class LibrosComponent implements OnInit {
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  public libro : Libro ={};
-  public DatoBusqueda : Busqueda = {};
+  public libro : clsLibro ={};
+  public DatoBusqueda : clsBusqueda = {};
   @ViewChild('myForm') myFormNvoLibro : NgForm;
   constructor(private _LibrosServicios:LibrosService,private toastr: ToastrService,
     private _GradoServicios:GradoSeccionService) { 
@@ -73,7 +73,7 @@ export class LibrosComponent implements OnInit {
   )
 }
 
-DataGrado : Grados;
+DataGrado : clsGrados;
 ListarGrados (){
  this._GradoServicios.ListarGrados().subscribe(
    data => {
@@ -109,7 +109,7 @@ btnNuveo_Libro(){
   }
 
 
-  onSubmit(form:Libro){    
+  onSubmit(form:clsLibro){    
     swal({
       title: '¿Esta seguro que desea guardar?',
       type: 'question',
@@ -164,7 +164,7 @@ btnNuveo_Libro(){
        this.EditLibroModal.show();
   }
 
-  Actualizar_Libro(form:Libro){    
+  Actualizar_Libro(form:clsLibro){    
     swal({
       title: '¿Esta seguro que desea guardar?',
       type: 'question',

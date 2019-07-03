@@ -1,7 +1,7 @@
 import { Component,ViewChild,ViewEncapsulation,Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/platform-browser';
 import {ModalDirective} from 'ngx-bootstrap/modal';
-import {Compras,Detalle_Compra,Busqueda} from '../../app.datos';
+import {clsCompras,clsDetalle_Compra,clsBusqueda} from '../../app.datos';
 import {MatPaginator, MatSort, MatTableDataSource, TooltipPosition} from '@angular/material';
 import { ToastrService } from 'ngx-toastr';
 import { LoadingBarService } from '@ngx-loading-bar/core';
@@ -20,9 +20,9 @@ export class ComprasComponent {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   positionOptions: TooltipPosition[] = ['after', 'before', 'above', 'below', 'left', 'right'];
-  public compra : Compras = {};
-  public DatoBusqueda: Busqueda;
-  public producto : Detalle_Compra = {};
+  public compra : clsCompras = {};
+  public DatoBusqueda: clsBusqueda;
+  public producto : clsDetalle_Compra = {};
   public panel_registro : boolean;
   public panel_tabla_compras : boolean;
   public detalle_compra : any = [];
@@ -100,7 +100,7 @@ export class ComprasComponent {
     }
   }
 
-  Agregar_NvaCompra(form:Compras){
+  Agregar_NvaCompra(form:clsCompras){
     console.log("this.detalle_compra.length");
     if(this.detalle_compra.length==0){
       this.toastr.success('No hay Detalle de la Compra', 'Aviso!',{positionClass: 'toast-top-right',timeOut: 500});
@@ -173,7 +173,7 @@ export class ComprasComponent {
   }
 
   public DetalleCompra:any=[];
-  public DetalleLista : Detalle_Compra;
+  public DetalleLista : clsDetalle_Compra;
   btnDetalle_Compra(dato){     
      this.DetalleCompra.tipo_compra = dato.tipo_compra;
      this.DetalleCompra.num_compra = dato.num_compra;

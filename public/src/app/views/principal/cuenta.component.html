@@ -253,7 +253,7 @@
                         onkeyup="verif(this)" maxlength="10" [ngClass]="{ 'is-invalid': myClave.submitted && regnvaclave.invalid }"  required>
               <div *ngIf="myClave.submitted && regnvaclave.invalid" class="invalid-feedback">
                 <div *ngIf="regnvaclave.errors.required">Campo requerido</div>
-                <div *ngIf="regnvaclave.errors.pattern">Formato letras minusculas,1 mayuscula,2 digitos</div>
+                <div *ngIf="regnvaclave.errors.pattern">Formato letras minusculas,1 mayuscula,1 digitos</div>
               </div>
              </div>
           </div>
@@ -265,7 +265,7 @@
                         onkeyup="verif(this)" maxlength="10" [ngClass]="{ 'is-invalid': myClave.submitted && regrepclave.invalid }"  required>
               <div *ngIf="myClave.submitted && regrepclave.invalid" class="invalid-feedback">
                 <div *ngIf="regrepclave.errors.required">Campo requerido</div>
-                <div *ngIf="regrepclave.errors.pattern">Formato letras minusculas,1 mayuscula,2 digitos</div>
+                <div *ngIf="regrepclave.errors.pattern">Formato letras minusculas,1 mayuscula,1 digitos</div>
               </div>
               <div *ngIf="clave_correcta && !regrepclave.invalid" class="valid-usu">
                 <div *ngIf="clave_correcta"><span class="fa fa-check"></span> Clave Coinciden</div>

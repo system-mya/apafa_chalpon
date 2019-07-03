@@ -4,7 +4,7 @@ import {MatPaginator, MatSort, MatTableDataSource,TooltipPosition} from '@angula
 import {ModalDirective} from 'ngx-bootstrap/modal';
 import 'rxjs/add/operator/map';
 import { UsuariosService } from './usuarios.service';
-import {Usuario,Busqueda} from '../../app.datos';
+import {clsUsuario,clsBusqueda} from '../../app.datos';
 import { ToastrService } from 'ngx-toastr';
 import { AlertComponent } from 'ngx-bootstrap/alert/alert.component';
 declare var swal: any;
@@ -34,9 +34,9 @@ export class UsuariosComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild('myForm') mytemplateForm : NgForm;
   public min = new Date();
-  public usuario : Usuario;
-  public DatoBusqueda : Busqueda;
-  public Editusuario : Usuario;
+  public usuario : clsUsuario;
+  public DatoBusqueda : clsBusqueda;
+  public Editusuario : clsUsuario;
   public usu_valid : boolean = false;
   public usu_invalido : boolean = false;
   public  chooseView : string;
@@ -278,12 +278,12 @@ btnDetalle_Usuario(idusuario){
 
   nomusu_original : string;
   btnEdit_Usuario(idusuario){
-    this.DatoBusqueda.idbusqueda=idusuario;
-    this.EditUsuarioModal.show(); 
-      this._UsuariosServicios.editar_usuario(this.DatoBusqueda)
+    this.DatoBusqueda.idbusqueda=idusuario;    
+      this._UsuariosServicios.obtener_usuario(this.DatoBusqueda)
       .then(data => {
         if(data.status==1){
           this.ListarPerfiles();
+          this.EditUsuarioModal.show(); 
           this.toastr.success(data.message, 'Aviso!',{positionClass: 'toast-top-right',timeOut: 500});
           this.Editusuario = data.data[0];
           this.Editusuario.perfil_usu = data.data[0].idperfil_usuario;
@@ -295,6 +295,9 @@ btnDetalle_Usuario(idusuario){
       } )
       .catch(err => console.log(err))
     }
+
+
+
 //  displayedColumns: Array<string>;
 //  expandedElement: Array<string>;
 // toggleRow(element) {
@@ -318,7 +321,7 @@ btnDetalle_Usuario(idusuario){
 
  btnReset_Usuario(idusuario) {
     swal({
-      title: '¿Esta seguro que desea resetear contraseña?',
+      title: '¿Esta seguro que desea resetear usuario?',
       type: 'question',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',

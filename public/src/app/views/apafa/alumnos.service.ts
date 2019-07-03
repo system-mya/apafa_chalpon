@@ -3,7 +3,7 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/delay';
 import { Http } from '@angular/http';
 import "rxjs/add/operator/map";
-import { Alumno,Busqueda } from '../../app.datos';
+import { clsAlumno,clsBusqueda } from '../../app.datos';
 
 @Injectable({
   providedIn: 'root'
@@ -17,28 +17,28 @@ export class AlumnosService {
      .map(res => res.json())
   }
 
-  public nvo_alumno(alumno:Alumno){
+  public nvo_alumno(alumno:clsAlumno){
     return this._http.post('/api/apafa/insertar_alumno',alumno)
      .map(data => data.json()).toPromise()
   }
 
-  public detalle_alumno(alumno:Busqueda){
+  public detalle_alumno(alumno:clsBusqueda){
     return this._http.post('/api/apafa/detalle_alumno',alumno)
      .map(data => data.json()).toPromise()
   }
 
   // llamando al api ELIMINAR ALUMNO
-public eliminar_alumno(alumno:Busqueda){
+public eliminar_alumno(alumno:clsBusqueda){
   return this._http.post('/api/apafa/eliminar_alumno',alumno)
    .map(data => data.json()).toPromise()
 }
 
-public update_alumno(alumno:Alumno){
+public update_alumno(alumno:clsAlumno){
   return this._http.post('/api/apafa/update_alumno',alumno)
    .map(data => data.json()).toPromise()
 }
 
-public historial_matricual(alumno:Busqueda){
+public historial_matricual(alumno:clsBusqueda){
   return this._http.post('/api/apafa/listar_historial_matricula',alumno)
    .map(data => data.json()).toPromise()
 }

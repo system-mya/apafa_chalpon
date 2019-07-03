@@ -5,7 +5,7 @@ import { AnhiosService } from './anhios.service';
 import 'rxjs/add/operator/map';
 import { ToastrService } from 'ngx-toastr';
 import {ModalDirective} from 'ngx-bootstrap/modal';
-import {Anhio_Lectivo} from '../../app.datos';
+import {clsAnhio_Lectivo,clsBusqueda} from '../../app.datos';
 declare var swal: any;
 
 
@@ -21,7 +21,8 @@ export class AnhiosComponent implements OnInit {
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  public anhiolectivo : Anhio_Lectivo ={};
+  public anhiolectivo : clsAnhio_Lectivo ={};
+  public DatoBusqueda : clsBusqueda = {};
   @ViewChild('myForm') myFormNvoAnhio : NgForm;
   constructor(private _AnhiosServicios:AnhiosService,private toastr: ToastrService) { 
     this.ListarAnhios();
@@ -51,14 +52,19 @@ export class AnhiosComponent implements OnInit {
   }
 
   DataAnhios : any = [];
-  ListarAnhios (){
-    
+  ListarAnhios (){    
     this._AnhiosServicios.getListarAnhios().subscribe(
       data => {
+        if(data.status==1){
         this.DataAnhios = data.data;
         this.dataSource = new MatTableDataSource(this.DataAnhios);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
+        }else{
+          this.toastr.error(data.message, 'Aviso!',{
+            positionClass: 'toast-top-right'
+          });
+        }
         
       }
     )
@@ -67,7 +73,7 @@ export class AnhiosComponent implements OnInit {
  btnNuevo_AnhioLectivo(){
   this.NvoAnhioModal.show();  
   this.anhiolectivo ={
-    anhio:'0',
+    anhio_lectivo:'0',
     condicion_anhio:'APERTURADO',
     descripcion_anhio:''
   }
@@ -87,15 +93,15 @@ export class AnhiosComponent implements OnInit {
   }
 
   obtener_fechas(){
-    if(this.anhiolectivo.anhio!=null){
-      var firstDay = new Date(parseInt(this.anhiolectivo.anhio), 0, 1); 
-      var lastDay = new Date(parseInt(this.anhiolectivo.anhio), 11 + 1, 0);
+    if(this.anhiolectivo.anhio_lectivo!=null){
+      var firstDay = new Date(parseInt(this.anhiolectivo.anhio_lectivo), 0, 1); 
+      var lastDay = new Date(parseInt(this.anhiolectivo.anhio_lectivo), 11 + 1, 0);
       this.anhiolectivo.finicio_anhio=firstDay.toISOString().substring(0, 10);
       this.anhiolectivo.ffin_anhio=lastDay.toISOString().substring(0, 10);
     }
   }
 
-  onSubmit(form:Anhio_Lectivo){    
+  onSubmit(form:clsAnhio_Lectivo){    
     swal({
       title: '¿Esta seguro que desea guardar?',
       type: 'question',
@@ -138,5 +144,42 @@ export class AnhiosComponent implements OnInit {
       }
     })
   }
+
+  btnUpdate_Anhio_Xcriterio(criterio,idanhio) {
+    swal({
+      title: '¿Esta seguro que desea ' + criterio + ' año lectivo?',
+      type: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, Guardar!',
+      allowOutsideClick: false,
+      allowEscapeKey:false,
+    }).then((result) => {
+      //console.log(result.value);
+      if (result.value==true) {
+        this.DatoBusqueda.datobusqueda=criterio;
+        this.DatoBusqueda.idbusqueda=idanhio;
+          //console.log(this.DatoBusqueda.idbusqueda);
+          //this.DetUsuarioModal.show(); 
+            this._AnhiosServicios.update_anhio_xcriterio(this.DatoBusqueda)
+            .then(data => {
+              if(data.status==1){
+                swal({
+                  title: 'Aviso!',
+                  text: data.message,
+                  type: 'success',
+                  allowOutsideClick: false,
+                  allowEscapeKey:false
+              })
+              this.ListarAnhios();
+              }else{
+                this.toastr.error(data.message, 'Aviso!');
+               }
+            } )
+            .catch(err => console.log(err))
+      }
+    })
+}
 
 }

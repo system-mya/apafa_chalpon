@@ -1,9 +1,9 @@
-export class Busqueda {
+export class clsBusqueda {
     idbusqueda ?: number;
     datobusqueda ?: string;
 }
 
-export class Usuario {
+export class clsUsuario {
     public idusuario ?: number
     public nom_usu ?: string;
     public clave_usu ?:string;
@@ -24,7 +24,7 @@ export class Usuario {
         
 }
 
-export class Perfiles {
+export class clsPerfiles {
     public idperfil : number;
     public nom_perfil : string;
     public abrev_perfil : string;
@@ -32,10 +32,10 @@ export class Perfiles {
     
 }
 
-export class Anhio_Lectivo
+export class clsAnhio_Lectivo
 {    
     public idanhio ?: number;
-    public anhio ?: string;
+    public anhio_lectivo ?: string;
     public finicio_anhio ?:string;
     public ffin_anhio ?:string;
     public descripcion_anhio ?:string;
@@ -43,7 +43,7 @@ export class Anhio_Lectivo
     public estado_anhio ?:boolean;
 }
 
-export class Grados
+export class clsGrados
 {
   public id_grado ?: number;
   public descripcion_grado ?: string;
@@ -53,7 +53,7 @@ export class Grados
   public total ?: number;
 }
 
-export class Secciones
+export class clsSecciones
 {
     public id_seccion ?: number;
     public nombre_seccion ?: string;
@@ -62,7 +62,7 @@ export class Secciones
     public estado_seccion ?: boolean;
 }
 
-export class Alumno
+export class clsAlumno
 {
     id_alumno ?: number;
     tdoc_alumno ?: string;
@@ -87,7 +87,7 @@ export class Alumno
     estado_alumno ?: boolean;
 }
 
-export class Apoderado
+export class clsApoderado
 {
     id_apoderado ?: number;
     tdoc_apoderado ?: string;
@@ -102,7 +102,7 @@ export class Apoderado
 
 }
 
-export class Matricula 
+export class clsMatricula 
 {
     id_matricula ?: number;
     fecha_matricula ?: string;
@@ -123,14 +123,14 @@ export class Matricula
     
 }
 
-export class Tipo_Relacion
+export class clsTipo_Relacion
 {
    id_tipo_relacion ?: number;
    nombre_relacion ?: string;
    estado_relacion ?: boolean;
 }
 
-export class Otro_Ingreso
+export class clsOtro_Ingreso
 {
     id_otro_ingres ?: number;
     descripcion_ingreso ?: string;
@@ -143,7 +143,7 @@ export class Otro_Ingreso
 }
 
 
-export class Recibo 
+export class clsRecibo 
 {
     id_recibo ?: number;
     id_apoderado ?: number;
@@ -158,11 +158,11 @@ export class Recibo
     num_recibo ?:string;
     ober_recibo ?: string;
     estado_recibo ?: boolean;
-    detalle ?: Detalle_Deuda;
+    detalle ?: clsDetalle_Deuda;
     contador ?: number;
 }
 
-export class Detalle_Deuda
+export class clsDetalle_Deuda
 {
     id_detalle_deuda ?: number;
     tipo_pago ?: string;
@@ -174,7 +174,7 @@ export class Detalle_Deuda
 }
 
 
-export class Compras 
+export class clsCompras 
 {
     id_compra ?: number;
     id_usuario ?: string;
@@ -193,7 +193,7 @@ export class Compras
     detalle ?: any ;
 }
 
-export class Detalle_Compra
+export class clsDetalle_Compra
 {
     id_detalle_compra ?: number;
     id_compra ?: number;
@@ -204,7 +204,7 @@ export class Detalle_Compra
 }
 
 
-export class Reunion
+export class clsReunion
 {
     id_reunion ?: number;
     motivo_reunion ?: string;
@@ -217,7 +217,7 @@ export class Reunion
     estado_reunion ?: boolean;
 }
 
-export class Concepto
+export class clsConcepto
 {
   id_concepto ?: number;
   tipo_concepto ?: string;
@@ -226,7 +226,7 @@ export class Concepto
   monto_concepto ?: number;
 }
 
-export class Libro
+export class clsLibro
 {
     id_libro ?: number;
     titulo_libro ?: string;
@@ -236,7 +236,7 @@ export class Libro
     estado_libro ?: boolean;
 }
 
-export class Libro_Matricula
+export class clsLibro_Matricula
 {
     id_libro ?: number;
     id_matricula ?: number;

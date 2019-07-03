@@ -35,8 +35,8 @@ app.post('/api/administracion/detalle_usuario', (req, res) => {
     admin.detalle_usuario(req.body, res);
 });
 
-app.post('/api/administracion/editar_usuario', (req, res) => {
-    admin.editar_usuario(req.body, res);
+app.post('/api/administracion/obtener_usuario', (req, res) => {
+    admin.obtener_usuario(req.body, res);
 });
 
 app.post('/api/nom_usuario', (req, res) => {
@@ -72,9 +72,9 @@ app.get('/api/listar_anhio', (req, res) => {
     admin.listar_anhio(res);
 });
 
-// LLAMADO AL MODELO ELIMINAR AÑO
-app.post('/api/eliminar_anhio', (req, res) => {
-    admin.eliminar_anhio(req.body, res);
+// LLAMADO AL MODELO UPDATE ANHIO X CRITERIO
+app.post('/api/administracion/update_anhio_xcriterio', (req, res) => {
+    admin.update_anhio_xcriterio(req.body, res);
 });
 
 app.get('/api/listar_grados', (req, res) => {

@@ -2,15 +2,15 @@
 <div class="animated fadeIn">
   <div class="card">
      <div class="card-header">
-      <strong>Usuarios Del Sistema</strong>
+    <h5><strong><i class="fa fa-align-justify"></i>&nbsp;&nbsp;Usuarios Del Sistema</strong>
       <span class="float-right">
         <button class="btn btn-success btn-xs"
             matTooltip="Agregar Usuario"
             matTooltipClass="tooltip-mensaje"
-            data-toggle="modal" (click)="VerPDF()">
+            data-toggle="modal" (click)="btnNuevo_Usuairo()">
           <span class="fa fa-plus-square"></span>
         </button>
-      </span>
+      </span></h5>
     </div>
     <div class="card-body">
       <!-- <mat-form-field>
@@ -54,7 +54,7 @@
       </table>
       <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
       </div> -->
-      <div id="customers">
+      <div id="customers" *ngIf="false">
       <table id="tab_customers" class="table"> 
           <thead>
           <tr>
@@ -160,8 +160,7 @@
                   matTooltip="Resetear"
                   matTooltipClass="tooltip-mensaje"
                   [matTooltipPosition]="positionOptions[3]"
-                  (click)="btnReset_Usuario(element.idusuario)"
-                  [disabled]="element.estado_usu=='INACTIVO'">
+                  (click)="btnReset_Usuario(element.idusuario)">
                 <span class="fa fa-refresh"></span></button>
                  <button class="btn btn-danger btn-xs distancia_btn_opciones"
                       matTooltip="Eliminar"

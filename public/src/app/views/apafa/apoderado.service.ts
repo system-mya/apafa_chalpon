@@ -3,7 +3,7 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/delay';
 import { Http } from '@angular/http';
 import "rxjs/add/operator/map";
-import { Apoderado,Busqueda } from '../../app.datos';
+import { clsApoderado,clsBusqueda } from '../../app.datos';
 
 @Injectable({
   providedIn: 'root'
@@ -17,22 +17,22 @@ export class ApoderadoService {
      .map(res => res.json())
  }
 
-  public nvo_apoderado(apoderado:Apoderado){
+  public nvo_apoderado(apoderado:clsApoderado){
     return this._http.post('/api/apafa/insertar_apoderado',apoderado)
      .map(data => data.json()).toPromise()
   }
 
-  public detalle_apoderado(apoderado:Busqueda){
+  public detalle_apoderado(apoderado:clsBusqueda){
     return this._http.post('/api/apafa/detalle_apoderado',apoderado)
      .map(data => data.json()).toPromise()
   }
 
-  public update_apoderado(apoderado:Apoderado){
+  public update_apoderado(apoderado:clsApoderado){
     return this._http.post('/api/apafa/update_apoderado',apoderado)
      .map(data => data.json()).toPromise()
   }
 
-  public eliminar_apoderado(apoderado:Busqueda){
+  public eliminar_apoderado(apoderado:clsBusqueda){
     return this._http.post('/api/apafa/eliminar_apoderado',apoderado)
      .map(data => data.json()).toPromise()
   }

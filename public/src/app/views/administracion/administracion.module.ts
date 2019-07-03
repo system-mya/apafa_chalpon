@@ -14,7 +14,6 @@ import { AnhiosComponent } from './anhios.component';
 
 // Buttons Routing
 import { AdministracionRoutingModule } from './administracion-routing.module';
-import { DataTableModule } from 'angular-6-datatable';
 import { NgxSpinnerModule } from 'ngx-spinner';
 
 // Angular
@@ -63,7 +62,7 @@ import { MatAutocompleteModule,
     AdministracionRoutingModule,
     BsDropdownModule.forRoot(),
     FormsModule,
-    DataTableModule,
+    
     [
       MatAutocompleteModule,
       MatBadgeModule,

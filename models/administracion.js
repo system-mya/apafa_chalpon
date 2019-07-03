@@ -91,6 +91,7 @@ listar_perfiles(res) {
 	});
 };
 
+//LLAMADO AL PA_INSERTAR_USUARIO
 nvo_usuario(user, res) {
 	connection.acquire((err, con) => {
 		if(err){
@@ -101,15 +102,12 @@ nvo_usuario(user, res) {
         }else{
             obser_usu="'"+[user.obser_usu]+"'";
         }
-
         if ([user.correo_usu]==''){
             var correo_usu="NULL";
         }else{
             correo_usu="'"+[user.correo_usu]+"'";
         }
-
         var query_dni = "CALL pa_buscar_dni_usuario('"+ [user.dni_usu] +"')";
-        
         con.query(query_dni,(err, result) => {
             con.release();
 			if(err){
@@ -137,9 +135,7 @@ nvo_usuario(user, res) {
 					res.send({status: 3, message: 'DNI DEL USUARIO YA REGISTRADO'});
 				}
 			}
-		});
-
-        
+		}); 
 		}
 	});
 };
@@ -168,17 +164,16 @@ detalle_usuario(user, res) {
 	});
 };
 
-editar_usuario(user, res) {
+obtener_usuario(user, res) {
 	connection.acquire((err, con) => {
 		if(err){
-			res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+			res.send({status: 0, message: err.sqlMessage});
 		}else{
 		var query = "CALL pa_obtener_usuario("+ [user.idbusqueda] +")"; 
-		/* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
 		con.query(query,(err, result) => {
 			con.release();
 			if(err){
-                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                res.send({status: 0, message: err.sqlMessage});
 			}else{
 				if (result[0].length == 0) {
 					res.send({status: 2, message: 'Usuario No Existe'});
@@ -262,14 +257,14 @@ update_usuario(user, res) {
 resetear_usuario(user, res) {
 	connection.acquire((err, con) => {
 		if(err){
-			res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+			res.send({status: 0, message: err.sqlMessage});
 		}else{
-		var query = "CALL pa_resetear_clave("+ [user.idbusqueda] +")"; 
+		var query = "CALL pa_resetear_usuario("+ [user.idbusqueda] +")"; 
 		/* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
 		con.query(query,(err, result) => {
 			con.release();
 			if(err){
-                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                res.send({status: 0, message: err.sqlMessage});
 			}else{
 				if (result.affectedRows == 0) {
 					res.send({status: 2, message: 'CAMBIOS NO REALIZADOS'});
@@ -349,7 +344,7 @@ nvo_anhio(anhio, res) {
                 res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
 			}else{
 				if (result[0].length == 0) {
-					var query = "CALL pa_insertar_anhio('"+ [anhio.anhio] +
+					var query = "CALL pa_insertar_anhio('"+ [anhio.anhio_lectivo] +
 					"','"+[anhio.finicio_anhio]+"','"+[anhio.ffin_anhio]+"',"+descripcion+")";
 		         
                     con.query(query,(err, result) => {
@@ -377,12 +372,12 @@ nvo_anhio(anhio, res) {
 listar_anhio(res) {
     connection.acquire((err, con) => {
 		if(err){
-			res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+			res.send({status: 0, message: err.sqlMessage});
 		}else{
           con.query('CALL pa_listar_anhio()', (err, result) => {
             con.release();
             if(err){
-                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                res.send({status: 0, message: err.sqlMessage});
 			}else{
 				if (result[0].length == 0) {
 					res.send({status: 2, message: 'NO HAY DATOS EN LA TABLA AÑO'});
@@ -396,22 +391,30 @@ listar_anhio(res) {
     });
 };
 
-eliminar_anhio(user, res) {
+update_anhio_xcriterio(anhio, res) {
 	connection.acquire((err, con) => {
 		if(err){
 			res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
 		}else{
-		var query = "CALL pa_eliminar_anhio("+ [user.idbusqueda] +")"; 
+		var query = "CALL pa_update_anhio_xcriterio('"+[anhio.datobusqueda]+"',"+ [anhio.idbusqueda] +")"; 
 		/* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
 		con.query(query,(err, result) => {
 			con.release();
 			if(err){
-                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                res.send({status: 0, message: err.sqlMessage});
 			}else{
 				if (result.affectedRows == 0) {
 					res.send({status: 2, message: 'CAMBIOS NO REALIZADOS'});
 				} else {
-					res.send({status: 1, message: 'AÑO ELIMINADO'});
+					if([anhio.datobusqueda]=='eliminar'){
+                        res.send({status: 1, message: 'AÑO LECTIVO ELIMINADO'});
+					}else{
+						if([anhio.datobusqueda]=='cerrar'){
+							res.send({status: 1, message: 'AÑO LECTIVO FINALIZADO'});
+						}else{
+							res.send({status: 1, message: 'AÑO LECTIVO APERTURADO'});
+						}
+					}
 				}
 			}
 		});

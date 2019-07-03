@@ -3,7 +3,7 @@ import { DOCUMENT } from '@angular/platform-browser';
 import {ModalDirective} from 'ngx-bootstrap/modal';
 import { ReunionesService } from './reuniones.service';
 import { ConceptosComponent } from './conceptos.component';
-import { Reunion,Busqueda,Concepto } from '../../app.datos';
+import { clsReunion,clsBusqueda } from '../../app.datos';
 import {MatPaginator, MatSort, MatTableDataSource, TooltipPosition} from '@angular/material';
 import { ToastrService } from 'ngx-toastr';
 import { LoadingBarService } from '@ngx-loading-bar/core';
@@ -41,8 +41,8 @@ export class ReunionesComponent implements  OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   positionOptions: TooltipPosition[] = ['after', 'before', 'above', 'below', 'left', 'right'];
-  public DatoBusqueda: Busqueda;
-  public reunion : Reunion = {};
+  public DatoBusqueda: clsBusqueda;
+  public reunion : clsReunion = {};
   public panel_tabla:boolean;
   public panel_detalle:boolean;
   apoderado: string;
@@ -136,7 +136,7 @@ searchString:string;
  }
 
 
-  onSubmit(form:Reunion){
+  onSubmit(form:clsReunion){
     this.loadingBar.start();    
     swal({
       title: '¿Esta seguro que desea guardar?',
@@ -333,7 +333,7 @@ searchString:string;
   }
 
   
-  public Detalle : Reunion = {};
+  public Detalle : clsReunion = {};
   public DataAsistentes : any = [];
   Detalle_Lista_Reunion(dato){
       this.Detalle.id_reunion=dato.id_reunion;

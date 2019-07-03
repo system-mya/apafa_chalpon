@@ -24,7 +24,6 @@ export class InicialComponent implements OnInit {
     this._AlumnosServicios.getListarAlumnos().subscribe(
       data => {
         this.contador_alumnos = data.data.length;
-        console.log('contador'+this.contador_alumnos);
       }
     )
   }
@@ -41,7 +40,7 @@ export class InicialComponent implements OnInit {
    Cargar_Usuarios (){
     this._UsuariosServicios.getListarUsiarios().subscribe(
       data => {
-        this.contador_usuarios = data.length;
+        this.contador_usuarios = data.data.length;
       }
     )
   }

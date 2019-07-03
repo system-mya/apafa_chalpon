@@ -2,7 +2,7 @@ import { Component,ViewChild,ViewEncapsulation } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import {MatPaginator, MatSort, MatTableDataSource,TooltipPosition} from '@angular/material';
 import {ModalDirective} from 'ngx-bootstrap/modal';
-import {Apoderado,Busqueda} from '../../app.datos';
+import {clsApoderado,clsBusqueda} from '../../app.datos';
 import { ApoderadoService } from './apoderado.service';
 import { ToastrService } from 'ngx-toastr';
 declare var swal: any;
@@ -18,13 +18,13 @@ export class ApoderdoComponent {
   @ViewChild('EditApoderadoModal') public EditApoderadoModal: ModalDirective;
   displayedColumns: string[] = ['doc_apoderado','apellidos_apoderado','sexo_apoderado','num_contacto','opciones_apoderado'];
   positionOptions: TooltipPosition[] = ['after', 'before', 'above', 'below', 'left', 'right'];
-  public apoderado : Apoderado;
-  public Editapoderado : Apoderado;
+  public apoderado : clsApoderado;
+  public Editapoderado : clsApoderado;
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild('myForm') mytemplateForm : NgForm;
-  public DatoBusqueda : Busqueda;
+  public DatoBusqueda : clsBusqueda;
   public optAd : string;
   constructor(private _ApoderadoServicio:ApoderadoService,private toastr: ToastrService) {
     this.apoderado = {
@@ -91,7 +91,7 @@ applyFilter(filterValue: string) {
     this.dataSource.paginator.firstPage();
   }
 }
-  onSubmit(form:Apoderado){    
+  onSubmit(form:clsApoderado){    
       swal({
         title: '¿Esta seguro que desea guardar?',
         type: 'question',
@@ -171,7 +171,7 @@ btnDetalle_Apoderado(id){
     .catch(err => console.log(err))
   }
 
-  updateApoderado(form:Apoderado){    
+  updateApoderado(form:clsApoderado){    
     swal({
       title: '¿Esta seguro que desea guardar?',
       type: 'question',

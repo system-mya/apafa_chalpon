@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
-import { Usuario } from '../../app.datos';
+import { clsUsuario } from '../../app.datos';
 import "rxjs/add/operator/map";
 import * as CryptoJS from 'crypto-js';
 @Injectable()
@@ -10,7 +10,7 @@ export class LoginService {
   constructor(private _http:Http) { }
   
   //LLAMADO A LA API INICIAR SESION
-  iniciar_sesion(user:Usuario){
+  iniciar_sesion(user:clsUsuario){
     return this._http.post('/api/administracion/iniciar_sesion',user)
      .map(data => data.json()).toPromise()
  }

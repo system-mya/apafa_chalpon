@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild,ViewEncapsulation } from '@angular/core';
 import { GradoSeccionService } from './grado-seccion.service';
 import { NgForm } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { Grados,Busqueda,Secciones } from '../../app.datos';
+import { clsGrados,clsBusqueda,clsSecciones } from '../../app.datos';
 import {TooltipPosition} from '@angular/material';
 import {ModalDirective} from 'ngx-bootstrap/modal';
 import 'rxjs/add/operator/map';
@@ -18,9 +18,9 @@ export class GradoSeccionComponent implements OnInit {
   @ViewChild('NvaSeccionModal') public NvaSeccionModal: ModalDirective;
   @ViewChild('myForm') myFormNvaSeccion : NgForm;
   positionOptions: TooltipPosition[] = ['after', 'before', 'above', 'below', 'left', 'right'];
-  public DatoBusqueda : Busqueda;
+  public DatoBusqueda : clsBusqueda;
   public grado : any = [];
-  public seccion : Secciones;
+  public seccion : clsSecciones;
   public id_grado : number;
   public nom_grado : string;
   constructor(private loadingBar: LoadingBarService,private _GradoServicios:GradoSeccionService,private toastr: ToastrService) {
@@ -42,7 +42,7 @@ export class GradoSeccionComponent implements OnInit {
     
   }
 
-  DataGrado : Grados;
+  DataGrado : clsGrados;
   ListarGrados (){
    this._GradoServicios.ListarGrados().subscribe(
      data => {
@@ -89,7 +89,7 @@ export class GradoSeccionComponent implements OnInit {
           .catch(err => console.log(err))
  }
 
- DataSecciones : Secciones;
+ DataSecciones : clsSecciones;
  btnregistrar : boolean;
  Listar_Secciones_xGrado(id,dato){
   this.grado.id_grado = id;
@@ -146,7 +146,7 @@ btnNueva_Seccion(id,dato){
       this.myFormNvaSeccion.resetForm();
   }
 
-  onSubmit(form:Secciones){    
+  onSubmit(form:clsSecciones){    
     swal({
       title: '¿Esta seguro que desea guardar?',
       type: 'question',
