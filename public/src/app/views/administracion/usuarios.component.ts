@@ -264,10 +264,16 @@ btnDetalle_Usuario(idusuario){
   this.DatoBusqueda.idbusqueda=idusuario;
   console.log(this.DatoBusqueda.idbusqueda);
   this.DetUsuarioModal.show(); 
-    this._UsuariosServicios.detalle_usuario(this.DatoBusqueda)
+    this._UsuariosServicios.obtener_usuario(this.DatoBusqueda)
     .then(data => {
       if(data.status==1){
         this.DataUsuario = data.data[0];
+        if(data.data[0].sexo_usu=='M'){
+          this.DataUsuario.sexo_usu='MASCULINO';
+        }else{
+          this.DataUsuario.sexo_usu='FEMENINO';
+        }
+        
         this.toastr.success(data.message, 'Aviso!',{positionClass: 'toast-top-right',timeOut: 500});
       }else{
         this.toastr.error(data.message, 'Aviso!');

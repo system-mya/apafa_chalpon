@@ -146,7 +146,7 @@ btnNueva_Seccion(id,dato){
       this.myFormNvaSeccion.resetForm();
   }
 
-  onSubmit(form:clsSecciones){    
+  btnRegistrar_Seccion(form:clsSecciones){    
     swal({
       title: '¿Esta seguro que desea guardar?',
       type: 'question',
@@ -195,4 +195,49 @@ btnNueva_Seccion(id,dato){
       }
     })
   }
+
+  btnEliminar_seccion(id){
+    swal({
+      title: '¿Esta seguro que desea eliminar?',
+      type: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, Guardar!',
+      allowOutsideClick: false,
+      allowEscapeKey:false,
+    }).then((result) => {
+      if (result.value==true) {
+        this.loadingBar.start();    
+        this.DatoBusqueda.idbusqueda=id;
+          //console.log(this.DatoBusqueda.idbusqueda);
+          //this.DetUsuarioModal.show(); 
+            this._GradoServicios.eliminar_seccion(this.DatoBusqueda)
+            .then(data => {
+              if(data.status==1){
+                swal({
+                  title: 'Aviso!',
+                  text: data.message,
+                  type: 'success',
+                  allowOutsideClick: false,
+                  allowEscapeKey:false
+                }) 
+                this.ListarGrados(); 
+                this.Listar_Secciones_xGrado(this.grado.id_grado,this.grado.descripcion_grado);
+              this.loadingBar.complete();
+              }else{
+                this.toastr.error(data.message, 'Aviso!',{
+                  positionClass: 'toast-top-right',
+                  timeOut: 500
+                });
+                this.ListarGrados();
+                this.Listar_Secciones_xGrado(this.grado.id_grado,this.grado.descripcion_grado);
+                this.loadingBar.complete();
+               }
+            } )
+            .catch(err => console.log(err))
+      }
+    })
+        
+   }
 }

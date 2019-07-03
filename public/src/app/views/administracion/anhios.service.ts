@@ -30,4 +30,7 @@ public update_anhio_xcriterio(anhio:clsBusqueda){
 }
 
 
+
+
+
 }

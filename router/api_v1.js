@@ -31,10 +31,6 @@ app.get('/api/administracion/listar_perfiles', (req, res) => {
     admin.listar_perfiles(res);
 });
 
-app.post('/api/administracion/detalle_usuario', (req, res) => {
-    admin.detalle_usuario(req.body, res);
-});
-
 app.post('/api/administracion/obtener_usuario', (req, res) => {
     admin.obtener_usuario(req.body, res);
 });
@@ -100,6 +96,12 @@ app.post('/api/listar_secciones_xgrados', (req, res) => {
 app.post('/api/insertar_seccion', (req, res) => {
     admin.nva_seccion(req.body, res);
 });
+
+// LLAMADO AL MODELO ELIMINAR SECCION
+app.post('/api/administracion/eliminar_seccion', (req, res) => {
+    admin.eliminar_seccion(req.body, res);
+});
+
 
 // LISTAR ALUMNOS
 app.get('/api/listaralumnos', (req, res) => {

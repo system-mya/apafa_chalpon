@@ -38,4 +38,10 @@ export class GradoSeccionService {
      .map(data => data.json()).toPromise()
   }
 
+  // LLAMADO AL API REST ELIMINAR_SECCION
+public eliminar_seccion(seccion:clsBusqueda){
+  return this._http.post('/api/administracion/eliminar_seccion',seccion)
+   .map(data => data.json()).toPromise()
+}
+
 }

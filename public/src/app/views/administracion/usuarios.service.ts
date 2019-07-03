@@ -26,11 +26,6 @@ public nvo_usuario(user:clsUsuario){
    .map(data => data.json()).toPromise()
 }
 
-public detalle_usuario(user:clsBusqueda){
-  return this._http.post('/api/administracion/detalle_usuario',user)
-   .map(data => data.json()).toPromise()
-}
-
 public obtener_usuario(user:clsBusqueda){
   return this._http.post('/api/administracion/obtener_usuario',user)
    .map(data => data.json()).toPromise()

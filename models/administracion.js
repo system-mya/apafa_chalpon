@@ -140,29 +140,6 @@ nvo_usuario(user, res) {
 	});
 };
 
-//LLAMADO AL PA_DETALLE_USUARIO POR ID_USUARIO
-detalle_usuario(user, res) {
-	connection.acquire((err, con) => {
-		if(err){
-			res.send({status: 0, message: err.sqlMessage});
-		}else{
-		var query = "CALL pa_detalle_usuario("+ [user.idbusqueda] +")"; 
-		/* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
-		con.query(query,(err, result) => {
-			con.release();
-			if(err){
-                res.send({status: 0, message: err.sqlMessage});
-			}else{
-				if (result[0].length == 0) {
-					res.send({status: 2, message: 'Usuario No Existe'});
-				} else {
-					res.send({status: 1, message: 'Datos Usuario',data:result[0]});
-				}
-			}
-		});
-		}
-	});
-};
 
 obtener_usuario(user, res) {
 	connection.acquire((err, con) => {
@@ -539,12 +516,12 @@ cambiar_estado_grado(grado, res) {
 listar_secciones_xgrados(grado,res) {
     connection.acquire((err, con) => {
 		if(err){
-			res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+			res.send({status: 0, message: err.sqlMessage});
 		}else{
         con.query("CALL pa_listar_secciones_xgrado("+ [grado.idbusqueda] +")", (err, result) => {
             con.release();
             if(err){
-                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                res.send({status: 0, message: err.sqlMessage});
 			}else{
 				if (result[0].length == 0) {
 					res.send({status: 2, message: 'NO HAY DATOS EN LA TABLA SECCIONES'});
@@ -594,6 +571,29 @@ nva_seccion(seccion, res) {
 		});
 
         
+		}
+	});
+};
+
+eliminar_seccion(seccion, res) {
+	connection.acquire((err, con) => {
+		if(err){
+			res.send({status: 0, message: err.sqlMessage});
+		}else{
+		var query = "CALL pa_eliminar_seccion("+ [seccion.idbusqueda] +")"; 
+		/* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
+		con.query(query,(err, result) => {
+			con.release();
+			if(err){
+                res.send({status: 0, message: err.sqlMessage});
+			}else{
+				if (result.affectedRows == 0) {
+					res.send({status: 2, message: 'SECCION NO ELIMINADA'});
+				} else {
+					res.send({status: 1, message: 'SECCION ELIMINADA'});
+				}
+			}
+		});
 		}
 	});
 };
@@ -651,14 +651,14 @@ update_libro(libro, res) {
 eliminar_libro(libro, res) {
 	connection.acquire((err, con) => {
 		if(err){
-			res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+			res.send({status: 0, message: err.sqlMessage});
 		}else{
 		var query = "CALL pa_eliminar_libro("+ [libro.idbusqueda] +")"; 
 		/* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
 		con.query(query,(err, result) => {
 			con.release();
 			if(err){
-                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                res.send({status: 0, message: err.sqlMessage});
 			}else{
 				if (result.affectedRows == 0) {
 					res.send({status: 2, message: 'LIBRO NO ELIMINADO'});
@@ -682,7 +682,7 @@ listar_libros_activos(res) {
                 res.send({status: 0, message: err.sqlMessage});
 			}else{
 				if (result[0].length == 0) {
-					res.send({status: 2, message: 'NO HAY DATOS EN LA TABLA LIBROS'});
+					res.send({status: 2, message: 'NO HAY DATOS EN LA TABLA LIBROS',data:result[0]});
 				} else {
                     res.send({status: 1, message: 'CONSULTA EXITOSA',data:result[0]});
                 }

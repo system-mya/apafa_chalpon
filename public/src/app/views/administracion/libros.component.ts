@@ -67,6 +67,10 @@ export class LibrosComponent implements OnInit {
         this.toastr.error(data.message, 'Aviso!',{
           positionClass: 'toast-top-right'
         });
+        this.DataLibros = data.data;
+        this.dataSource = new MatTableDataSource(this.DataLibros);
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
       }
       
     }

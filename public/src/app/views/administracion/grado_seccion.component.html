@@ -78,7 +78,7 @@
                           matTooltip="Eliminar"
                           matTooltipClass="tooltip-mensaje"
                           [matTooltipPosition]="positionOptions[3]"
-                          (click)="btnEliminar_Usuario(element.idusuario)">
+                          (click)="btnEliminar_seccion(item.id_seccion)">
                     <span class="fa fa-trash-o btn-xs"></span>
                     </button>
                   </td>
@@ -93,7 +93,7 @@
    <div bsModal #NvaSeccionModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}" >
     <div class="modal-dialog modal-sm modal-success" role="document">
       <div class="modal-content">
-        <form name="form" class="formulario" (ngSubmit)="myForm.form.valid && onSubmit(seccion)" #myForm="ngForm" novalidate autocomplete="off">
+        <form name="form" class="formulario" (ngSubmit)="myForm.form.valid && btnRegistrar_Seccion(seccion)" #myForm="ngForm" novalidate autocomplete="off">
         <div class="modal-header">
           <h4 class="modal-title">Nueva Sección</h4>
           <button type="button" class="close" (click)="frmSeccion_hide()" aria-label="Close">
@@ -108,9 +108,6 @@
                    placeholder="Nombre Sección" [(ngModel)]="seccion.nombre_seccion" #regnombre="ngModel" 
                    onkeyup="verif(this)" maxlength="20" [ngClass]="{ 'is-invalid': myForm.submitted && regnombre.invalid }" 
                    pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{0,25}[\s]*)+$" required>
-                   <!-- [A-ZÁÉÍÓÚ]{1} = obliga a que inicie con mayuscula
-                    [a-zñáéíóú]{1,24} = obliga que siga con una miniscula almenos 1 ves asta 24 .
-                    [\s]* = permite espacios enblanco tabulaciones etc muchas o ninguna vez -->
                    <div *ngIf="myForm.submitted && regnombre.invalid" class="invalid-feedback">
                     <div *ngIf="regnombre.errors.required">Nombre Sección campo requerido</div>
                     <div *ngIf="regnombre.errors.pattern">Formato de Nombre Sección incorrectos</div>
