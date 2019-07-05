@@ -197,7 +197,7 @@
                 <input type="text" class="form-control" id="nombres_usu" name="nombres_usu"
                  placeholder="Nombres Completos" [(ngModel)]="usuario.nombres_usu" #regnombres="ngModel" 
                  onkeyup="verif(this)" maxlength="50" [ngClass]="{ 'is-invalid': myForm.submitted && regnombres.invalid }" 
-                 pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,25}[\s]*)+$" required>
+                 pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,50}[\s]*)+$" required>
                  <!-- [A-ZÁÉÍÓÚ]{1} = obliga a que inicie con mayuscula
                   [a-zñáéíóú]{1,24} = obliga que siga con una miniscula almenos 1 ves asta 24 .
                   [\s]* = permite espacios enblanco tabulaciones etc muchas o ninguna vez -->
@@ -211,7 +211,7 @@
                   <input type="text" class="form-control" id="apellidos_usu" name="apellidos_usu" 
                   placeholder="Apellidos Completos" [(ngModel)]="usuario.apellidos_usu" #regapellidos="ngModel" 
                   onkeyup="verif(this)" maxlength="60" [ngClass]="{ 'is-invalid': myForm.submitted && regapellidos.invalid }" 
-                  pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,30}[\s]*)+$" required>
+                  pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,60}[\s]*)+$" required>
                   <div *ngIf="myForm.submitted && regapellidos.invalid" class="invalid-feedback">
                     <div *ngIf="regapellidos.errors.required">Apellidos Completos campo requerido</div>
                     <div *ngIf="regapellidos.errors.pattern">Formato de Apellidos Completos incorrectos</div>
@@ -288,10 +288,10 @@
                 <label for="nom_usu" style="font-weight: bold;">Nombre Usuario <i class="fa fa-certificate" style="color:red !important"></i> :</label>
                 <input type="text" class="form-control" id="nom_usu" name="nom_usu"
                 placeholder="Nombre Usuario" [(ngModel)]="usuario.nom_usu" #regnom="ngModel" (ngModelChange)="changeNomUsu('I',usuario.nom_usu)"
-                onkeyup="verif(this)" maxlength="20" pattern="^([a-z]+[0-9]{0,2}){5,20}$" [ngClass]="{ 'is-invalid': myForm.submitted && regnom.invalid}" required>
+                onkeyup="verif(this)" maxlength="20" pattern="^([a-z]+[0-9]{0,2}){8,20}$" [ngClass]="{ 'is-invalid': myForm.submitted && regnom.invalid}" required>
                 <div *ngIf="myForm.submitted && regnom.invalid" class="invalid-feedback">
                   <div *ngIf="regnom.errors.required">Nombre Usuario campo requerido</div>
-                  <div *ngIf="regnom.errors.pattern">Error Formato campo</div>
+                  <div *ngIf="regnom.errors.pattern">minimo 8 caracteres,minusculas,numeros</div>
                 </div>
                 <div *ngIf="usu_valid && !regnom.invalid" class="valid-usu">
                   <div *ngIf="usu_valid"><span class="fa fa-check"></span> Este será tu nombre de usuario</div>
@@ -443,7 +443,7 @@
                 <input type="text" class="form-control" id="nombres_usu" name="nombres_usu"
                  placeholder="Nombres Completos" [(ngModel)]="Editusuario.nombres_usu" #editnombres="ngModel" 
                  onkeyup="verif(this)" maxlength="50" [ngClass]="{ 'is-invalid': FormEdit.submitted && editnombres.invalid }" 
-                 pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,25}[\s]*)+$" required>
+                 pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,50}[\s]*)+$" required>
                  <div *ngIf="FormEdit.submitted && editnombres.invalid" class="invalid-feedback">
                   <div *ngIf="editnombres.errors.required">Nombres Completos campo requerido</div>
                   <div *ngIf="editnombres.errors.pattern">Formato de Nombres Completos incorrectos</div>
@@ -456,7 +456,7 @@
                   <input type="text" class="form-control" name="apellidos_usu" placeholder="Apellidos Completos" 
                   [(ngModel)]="Editusuario.apellidos_usu" #editapellidos="ngModel" 
                   onkeyup="verif(this)" maxlength="60" [ngClass]="{ 'is-invalid': FormEdit.submitted && editapellidos.invalid }" 
-                  pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,30}[\s]*)+$" required>
+                  pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,60}[\s]*)+$" required>
                   <div *ngIf="FormEdit.submitted && editapellidos.invalid" class="invalid-feedback">
                     <div *ngIf="editapellidos.errors.required">Apellidos Completos campo requerido</div>
                     <div *ngIf="editapellidos.errors.pattern">Formato de Apellidos Completos incorrectos</div>
@@ -528,10 +528,10 @@
                 <label for="nom_usu" style="font-weight: bold;">Nombre Usuario <i class="fa fa-certificate" style="color:red !important"></i> :</label>
                 <input type="text" class="form-control" id="nom_usu" name="nom_usu"
                 placeholder="Nombre Usuario" [(ngModel)]="Editusuario.nom_usu" #editnom="ngModel" (ngModelChange)="changeNomUsu('E',Editusuario.nom_usu)"
-                onkeyup="verif(this)" maxlength="20" pattern="^([a-z]+[0-9]{0,2}){5,20}$" [ngClass]="{ 'is-invalid': FormEdit.submitted && editnom.invalid }" required>
+                onkeyup="verif(this)" maxlength="20" pattern="^([a-z]+[0-9]{0,2}){8,20}$" [ngClass]="{ 'is-invalid': FormEdit.submitted && editnom.invalid }" required>
                 <div *ngIf="FormEdit.submitted && editnom.invalid" class="invalid-feedback">
                   <div *ngIf="editnom.errors.required">Nombre Usuario campo requerido</div>
-                  <div *ngIf="editnom.errors.pattern">Error Formato campo</div>
+                  <div *ngIf="editnom.errors.pattern">minimo 8 caracteres,minusculas,numeros</div>
                 </div>
                 <div *ngIf="usu_valid && !editnom.invalid" class="valid-usu">
                   <div *ngIf="usu_valid"><span class="fa fa-check"></span> Este será tu nombre de usuario</div>

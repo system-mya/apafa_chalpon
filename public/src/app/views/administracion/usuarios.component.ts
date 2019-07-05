@@ -190,7 +190,16 @@ export class UsuariosComponent implements OnInit {
               this.Listar_Usuario();
               this.mytemplateForm.resetForm();
             }else{
-                this.toastr.error(data.message, 'Aviso!');
+              swal({
+                title: 'Aviso!',
+                html:
+                '<span style="color:red">' +
+                data.message +
+                '</span>',
+                type: 'error',
+                allowOutsideClick: false,
+                allowEscapeKey:false
+              })
              }
           } )
           .catch(err => console.log(err))
@@ -233,9 +242,13 @@ export class UsuariosComponent implements OnInit {
        this.dataSource.paginator = this.paginator;
        this.dataSource.sort = this.sort;
        }else{
-         this.toastr.error(data.message, 'Aviso!',{
-           positionClass: 'toast-top-right'
-         });
+        this.toastr.error(data.message, 'Aviso!',{
+          positionClass: 'toast-top-right'
+        });
+        this.DataArray = data.data;
+        this.dataSource = new MatTableDataSource(this.DataArray);
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
        }
      }
    )
@@ -261,9 +274,7 @@ export class UsuariosComponent implements OnInit {
 DataUsuario : any =[];
 
 btnDetalle_Usuario(idusuario){
-  this.DatoBusqueda.idbusqueda=idusuario;
-  console.log(this.DatoBusqueda.idbusqueda);
-  this.DetUsuarioModal.show(); 
+  this.DatoBusqueda.idbusqueda=idusuario; 
     this._UsuariosServicios.obtener_usuario(this.DatoBusqueda)
     .then(data => {
       if(data.status==1){
@@ -273,7 +284,7 @@ btnDetalle_Usuario(idusuario){
         }else{
           this.DataUsuario.sexo_usu='FEMENINO';
         }
-        
+        this.DetUsuarioModal.show(); 
         this.toastr.success(data.message, 'Aviso!',{positionClass: 'toast-top-right',timeOut: 500});
       }else{
         this.toastr.error(data.message, 'Aviso!');

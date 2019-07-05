@@ -20,7 +20,7 @@ export class AnhiosComponent implements OnInit {
   @ViewChild('NvoAnhioModal') public NvoAnhioModal: ModalDirective;
   @ViewChild('DetAnhioModal') public DetAnhioModal: ModalDirective;
   positionOptions: TooltipPosition[] = ['after', 'before', 'above', 'below', 'left', 'right'];
-  displayedColumns: string[] = ['anhio','f_inicio','f_fin','descripcion','condicion','opciones'];
+  displayedColumns: string[] = ['anhio_lectivo','f_inicio','f_fin','descripcion','condicion','opciones'];
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -68,6 +68,10 @@ export class AnhiosComponent implements OnInit {
           this.toastr.error(data.message, 'Aviso!',{
             positionClass: 'toast-top-right'
           });
+          this.DataAnhios = data.data;
+          this.dataSource = new MatTableDataSource(this.DataAnhios);
+          this.dataSource.paginator = this.paginator;
+          this.dataSource.sort = this.sort;
         }
         
       }
@@ -107,7 +111,8 @@ export class AnhiosComponent implements OnInit {
     }
   }
 
-  onSubmit(form:clsAnhio_Lectivo){    
+  //BOTON REGISTRAR AÑO LECTIVO
+  btnRegistrar_AnhioLectivo(form:clsAnhio_Lectivo){    
     swal({
       title: '¿Esta seguro que desea guardar?',
       type: 'question',

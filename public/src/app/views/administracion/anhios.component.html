@@ -21,7 +21,7 @@
        </mat-form-field>  
        <table mat-table [dataSource]="dataSource" matSort id="tabla">
        
-         <ng-container matColumnDef="anhio">
+         <ng-container matColumnDef="anhio_lectivo">
            <th mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" nowrap > Año </th>
            <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.anhio_lectivo}}</td>
          </ng-container>
@@ -94,7 +94,7 @@
   <div bsModal #NvoAnhioModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}" >
     <div class="modal-dialog modal-md modal-success" role="document">
       <div class="modal-content">
-       <form name="form" class="formulario" (ngSubmit)="myForm.form.valid && onSubmit(anhiolectivo)" #myForm="ngForm" novalidate autocomplete="off">
+       <form name="form" class="formulario" (ngSubmit)="myForm.form.valid && btnRegistrar_AnhioLectivo(anhiolectivo)" #myForm="ngForm" novalidate autocomplete="off">
         <div class="modal-header">
           <h4 class="modal-title">Nuevo Año Lectivo</h4>
           <button type="button" class="close" (click)="frmAnhio_hide('N')" aria-label="Close">
@@ -111,7 +111,7 @@
                   <option value="0" selected disabled>-----Seleccionar Año------</option>
                   <option *ngFor="let y of years" value="{{y.id}}">{{y.id}}</option>
               </select>
-              <div *ngIf="myForm.submitted && anhiolectivo.anhio==0" style="
+              <div *ngIf="myForm.submitted && anhiolectivo.anhio_lectivo==0" style="
                  width: 100%;
                  margin-top: .25rem;
                  font-size: 80%;
@@ -156,7 +156,7 @@
   <div class="modal-dialog modal-md modal-info" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Detalle Anhio Lectivo</h4>
+        <h4 class="modal-title">Detalle Año Lectivo</h4>
         <button type="button" class="close" (click)="frmAnhio_hide('D')" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>

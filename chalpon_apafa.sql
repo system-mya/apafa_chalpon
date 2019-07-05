@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 03-07-2019 a las 23:43:57
+-- Tiempo de generación: 05-07-2019 a las 00:16:03
 -- Versión del servidor: 5.7.14
 -- Versión de PHP: 5.6.25
 
@@ -24,6 +24,11 @@ DELIMITER $$
 --
 -- Procedimientos
 --
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_buscar_dni_usuario` (IN `dni` CHAR(8))  NO SQL
+SELECT * FROM usuario
+WHERE dni_usu=dni
+AND estado_usu=1$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_cambiar_estado_grado` (IN `grado` TINYINT, IN `estado` BIT)  NO SQL
 UPDATE grados SET estado_grado=estado 
 WHERE id_grado=grado$$
@@ -45,7 +50,8 @@ SELECT u.idusuario,u.nom_usu,pu.abrev_perfil,pu.nombre_perfil,
 INNER JOIN perfil_usuario pu ON u.idperfil_usuario=pu.idperfil_usuario
 WHERE u.nom_usu=nom
 AND u.clave_usu=SHA(clave)
-AND u.estado_usu=1$$
+AND u.estado_usu=1
+AND u.fbaja_usu IS NULL$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_alumno` (IN `tdoc` CHAR(3), IN `doc` VARCHAR(15), IN `ape_alum` VARCHAR(60), IN `nom_alum` VARCHAR(50), IN `fnac` DATE, IN `sexo` CHAR(1), IN `tel_alum` CHAR(6), IN `cel_alum` CHAR(9), IN `dire_alum` VARCHAR(80), IN `correo_alum` VARCHAR(80), IN `proc_alum` VARCHAR(100), IN `ape_padre` VARCHAR(60), IN `nom_padre` VARCHAR(50), IN `cel_padre` CHAR(9), IN `correo_pa` VARCHAR(80), IN `ape_madre` VARCHAR(60), IN `nom_madre` VARCHAR(50), IN `cel_madre` CHAR(9), IN `correo_ma` VARCHAR(80))  NO SQL
 INSERT INTO alumno(tdoc_alumno, 
@@ -440,7 +446,8 @@ INSERT INTO `anhio_lectivo` (`idanhio`, `anhio_lectivo`, `finicio_anhio`, `ffin_
 (14, '2019', '2019-01-01', '2019-12-31', NULL, 'A', b'0'),
 (15, '2019', '2019-01-01', '2019-12-31', NULL, 'C', b'1'),
 (16, '2018', '2018-01-01', '2018-12-31', 'asfjasjf asjf asfjgask jagsfkjasf kjas  aksjfaskjfk g asfjkasgfkasjfg kjas gfaskjfgaskjfgaskjfasg agksjfasgfjaskfjasgf asjkf jaksfgasj asfgjaskgfaksjf', 'C', b'1'),
-(17, '2017', '2017-01-01', '2017-12-31', NULL, 'A', b'1');
+(17, '2017', '2017-01-01', '2017-12-31', NULL, 'C', b'1'),
+(18, '2016', '2016-01-01', '2016-12-31', NULL, 'A', b'1');
 
 -- --------------------------------------------------------
 
@@ -613,6 +620,62 @@ INSERT INTO `apoderado` (`id_apoderado`, `tdoc_apoderado`, `doc_apoderado`, `ape
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `concepto_apafa`
+--
+
+CREATE TABLE `concepto_apafa` (
+  `id_concepto` smallint(6) NOT NULL,
+  `descripcion_concepto` varchar(100) NOT NULL,
+  `tipo_concepto` char(1) NOT NULL,
+  `id_anhio` tinyint(4) NOT NULL,
+  `monto_concepto` float NOT NULL,
+  `estado_concepto` bit(1) NOT NULL DEFAULT b'1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `concepto_apafa`
+--
+
+INSERT INTO `concepto_apafa` (`id_concepto`, `descripcion_concepto`, `tipo_concepto`, `id_anhio`, `monto_concepto`, `estado_concepto`) VALUES
+(1, 'CONCEPTO APAFA 2019', 'A', 2, 59, b'0'),
+(2, 'CONCEPTO APAFA 2018', 'A', 1, 59, b'1'),
+(3, 'ASAMBLEA GENERAL APAFA', 'O', 2, 25, b'1'),
+(4, 'ASAMBLE DE ESCUELA DE PADRES', 'O', 2, 15, b'1'),
+(5, 'ASFASF', 'O', 2, 33, b'1'),
+(6, 'SVDSV', 'O', 2, 677, b'1'),
+(7, 'FDHNDF', 'O', 2, 42.52, b'1'),
+(8, 'DFDSG', 'A', 2, 54, b'1');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `detalle_deuda`
+--
+
+CREATE TABLE `detalle_deuda` (
+  `id_detalle_deuda` smallint(6) NOT NULL,
+  `id_concepto` smallint(6) NOT NULL,
+  `id_apoderado` smallint(6) NOT NULL,
+  `saldo_deuda` float NOT NULL,
+  `freg_deuda` date NOT NULL,
+  `fseg_deuda` datetime NOT NULL,
+  `estado_deuda` char(1) NOT NULL DEFAULT 'P'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `detalle_deuda`
+--
+
+INSERT INTO `detalle_deuda` (`id_detalle_deuda`, `id_concepto`, `id_apoderado`, `saldo_deuda`, `freg_deuda`, `fseg_deuda`, `estado_deuda`) VALUES
+(18, 2, 1, 0, '2019-06-17', '2019-06-19 16:40:36', 'C'),
+(19, 1, 2, 0, '2019-06-17', '2019-06-18 15:35:32', 'C'),
+(20, 1, 1, 10, '2019-06-05', '2019-06-22 16:16:15', 'P'),
+(21, 1, 4, 59, '2019-06-21', '2019-06-21 12:31:45', 'P'),
+(22, 8, 3, 54, '2019-06-25', '2019-06-25 15:25:16', 'P');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `grados`
 --
 
@@ -665,6 +728,23 @@ INSERT INTO `libro` (`id_libro`, `titulo_libro`, `editorial_libro`, `edicion_lib
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `matricula`
+--
+
+CREATE TABLE `matricula` (
+  `id_matricula` smallint(6) NOT NULL,
+  `fecha_matricula` date NOT NULL,
+  `id_apoderado` smallint(6) NOT NULL,
+  `id_alumno` smallint(6) NOT NULL,
+  `id_anhio` tinyint(4) NOT NULL,
+  `id_seccion` tinyint(4) NOT NULL,
+  `id_tipo_relacion` tinyint(4) NOT NULL,
+  `estado_matricula` bit(1) NOT NULL DEFAULT b'1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `perfil_usuario`
 --
 
@@ -684,6 +764,22 @@ INSERT INTO `perfil_usuario` (`idperfil_usuario`, `nombre_perfil`, `abrev_perfil
 (2, 'SECRETARIA', 'SE', b'1'),
 (3, 'TESORERIA', 'TS', b'1'),
 (4, 'DIRECTOR (A)', 'DI', b'1');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `recibo`
+--
+
+CREATE TABLE `recibo` (
+  `id_recibo` smallint(6) NOT NULL,
+  `id_apoderado` smallint(6) NOT NULL,
+  `id_usuario` tinyint(4) NOT NULL,
+  `mtotal_recibo` float NOT NULL,
+  `freg_recibo` datetime NOT NULL,
+  `num_recibo` varchar(20) NOT NULL,
+  `estado_recibo` bit(1) NOT NULL DEFAULT b'1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -708,6 +804,30 @@ INSERT INTO `secciones` (`id_seccion`, `nombre_seccion`, `id_grado`, `turno_secc
 (2, 'A', 1, 'T', b'0'),
 (3, 'A', 2, 'M', b'0'),
 (4, 'A', 1, 'M', b'0');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tipo_relacion`
+--
+
+CREATE TABLE `tipo_relacion` (
+  `id_tipo_relacion` tinyint(4) NOT NULL,
+  `nombre_relacion` varchar(20) NOT NULL,
+  `estado_relacion` bit(1) NOT NULL DEFAULT b'1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `tipo_relacion`
+--
+
+INSERT INTO `tipo_relacion` (`id_tipo_relacion`, `nombre_relacion`, `estado_relacion`) VALUES
+(1, 'PADRE', b'1'),
+(2, 'MADRE', b'1'),
+(3, 'TIO (A)', b'1'),
+(4, 'PRIMO (A)', b'1'),
+(5, 'ABUELO (A)', b'1'),
+(6, 'HERMANO (A)', b'1');
 
 -- --------------------------------------------------------
 
@@ -751,8 +871,7 @@ INSERT INTO `usuario` (`idusuario`, `idperfil_usuario`, `nom_usu`, `clave_usu`, 
 -- Indices de la tabla `alumno`
 --
 ALTER TABLE `alumno`
-  ADD PRIMARY KEY (`id_alumno`),
-  ADD UNIQUE KEY `doc_alumno` (`doc_alumno`);
+  ADD PRIMARY KEY (`id_alumno`);
 
 --
 -- Indices de la tabla `anhio_lectivo`
@@ -764,8 +883,22 @@ ALTER TABLE `anhio_lectivo`
 -- Indices de la tabla `apoderado`
 --
 ALTER TABLE `apoderado`
-  ADD PRIMARY KEY (`id_apoderado`),
-  ADD UNIQUE KEY `doc_apoderado` (`doc_apoderado`);
+  ADD PRIMARY KEY (`id_apoderado`);
+
+--
+-- Indices de la tabla `concepto_apafa`
+--
+ALTER TABLE `concepto_apafa`
+  ADD PRIMARY KEY (`id_concepto`),
+  ADD KEY `id_anhio` (`id_anhio`);
+
+--
+-- Indices de la tabla `detalle_deuda`
+--
+ALTER TABLE `detalle_deuda`
+  ADD PRIMARY KEY (`id_detalle_deuda`),
+  ADD KEY `id_concepto` (`id_concepto`),
+  ADD KEY `id_apoderado` (`id_apoderado`);
 
 --
 -- Indices de la tabla `grados`
@@ -781,10 +914,29 @@ ALTER TABLE `libro`
   ADD KEY `id_grado` (`id_grado`);
 
 --
+-- Indices de la tabla `matricula`
+--
+ALTER TABLE `matricula`
+  ADD PRIMARY KEY (`id_matricula`),
+  ADD KEY `id_tipo_relacion` (`id_tipo_relacion`),
+  ADD KEY `id_seccion` (`id_seccion`),
+  ADD KEY `id_anhio` (`id_anhio`),
+  ADD KEY `id_alumno` (`id_alumno`),
+  ADD KEY `id_apoderado` (`id_apoderado`);
+
+--
 -- Indices de la tabla `perfil_usuario`
 --
 ALTER TABLE `perfil_usuario`
   ADD PRIMARY KEY (`idperfil_usuario`);
+
+--
+-- Indices de la tabla `recibo`
+--
+ALTER TABLE `recibo`
+  ADD PRIMARY KEY (`id_recibo`),
+  ADD KEY `id_apoderado` (`id_apoderado`),
+  ADD KEY `id_usuario` (`id_usuario`);
 
 --
 -- Indices de la tabla `secciones`
@@ -794,11 +946,16 @@ ALTER TABLE `secciones`
   ADD KEY `id_grado` (`id_grado`);
 
 --
+-- Indices de la tabla `tipo_relacion`
+--
+ALTER TABLE `tipo_relacion`
+  ADD PRIMARY KEY (`id_tipo_relacion`);
+
+--
 -- Indices de la tabla `usuario`
 --
 ALTER TABLE `usuario`
   ADD PRIMARY KEY (`idusuario`),
-  ADD UNIQUE KEY `dni_usu` (`dni_usu`),
   ADD KEY `idperfil_usuario` (`idperfil_usuario`);
 
 --
@@ -814,12 +971,22 @@ ALTER TABLE `alumno`
 -- AUTO_INCREMENT de la tabla `anhio_lectivo`
 --
 ALTER TABLE `anhio_lectivo`
-  MODIFY `idanhio` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `idanhio` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 --
 -- AUTO_INCREMENT de la tabla `apoderado`
 --
 ALTER TABLE `apoderado`
   MODIFY `id_apoderado` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=144;
+--
+-- AUTO_INCREMENT de la tabla `concepto_apafa`
+--
+ALTER TABLE `concepto_apafa`
+  MODIFY `id_concepto` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+--
+-- AUTO_INCREMENT de la tabla `detalle_deuda`
+--
+ALTER TABLE `detalle_deuda`
+  MODIFY `id_detalle_deuda` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 --
 -- AUTO_INCREMENT de la tabla `grados`
 --
@@ -831,29 +998,74 @@ ALTER TABLE `grados`
 ALTER TABLE `libro`
   MODIFY `id_libro` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 --
+-- AUTO_INCREMENT de la tabla `matricula`
+--
+ALTER TABLE `matricula`
+  MODIFY `id_matricula` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+--
 -- AUTO_INCREMENT de la tabla `perfil_usuario`
 --
 ALTER TABLE `perfil_usuario`
   MODIFY `idperfil_usuario` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+--
+-- AUTO_INCREMENT de la tabla `recibo`
+--
+ALTER TABLE `recibo`
+  MODIFY `id_recibo` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT de la tabla `secciones`
 --
 ALTER TABLE `secciones`
   MODIFY `id_seccion` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
+-- AUTO_INCREMENT de la tabla `tipo_relacion`
+--
+ALTER TABLE `tipo_relacion`
+  MODIFY `id_tipo_relacion` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+--
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `idusuario` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `idusuario` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 --
 -- Restricciones para tablas volcadas
 --
+
+--
+-- Filtros para la tabla `concepto_apafa`
+--
+ALTER TABLE `concepto_apafa`
+  ADD CONSTRAINT `anhio_concepto` FOREIGN KEY (`id_anhio`) REFERENCES `anhio_lectivo` (`idanhio`);
+
+--
+-- Filtros para la tabla `detalle_deuda`
+--
+ALTER TABLE `detalle_deuda`
+  ADD CONSTRAINT `apoderado_deuda` FOREIGN KEY (`id_apoderado`) REFERENCES `apoderado` (`id_apoderado`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `concepto_deuda` FOREIGN KEY (`id_concepto`) REFERENCES `concepto_apafa` (`id_concepto`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `libro`
 --
 ALTER TABLE `libro`
   ADD CONSTRAINT `grados_libro` FOREIGN KEY (`id_grado`) REFERENCES `grados` (`id_grado`);
+
+--
+-- Filtros para la tabla `matricula`
+--
+ALTER TABLE `matricula`
+  ADD CONSTRAINT `alumno_matricula` FOREIGN KEY (`id_alumno`) REFERENCES `alumno` (`id_alumno`),
+  ADD CONSTRAINT `anhio_matricula` FOREIGN KEY (`id_anhio`) REFERENCES `anhio_lectivo` (`idanhio`),
+  ADD CONSTRAINT `apoderado_matricula` FOREIGN KEY (`id_apoderado`) REFERENCES `apoderado` (`id_apoderado`),
+  ADD CONSTRAINT `relacion_matricula` FOREIGN KEY (`id_tipo_relacion`) REFERENCES `tipo_relacion` (`id_tipo_relacion`),
+  ADD CONSTRAINT `seccion_matricula` FOREIGN KEY (`id_seccion`) REFERENCES `secciones` (`id_seccion`);
+
+--
+-- Filtros para la tabla `recibo`
+--
+ALTER TABLE `recibo`
+  ADD CONSTRAINT `apoderado_recibo` FOREIGN KEY (`id_apoderado`) REFERENCES `apoderado` (`id_apoderado`),
+  ADD CONSTRAINT `usuario_recibo` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`idusuario`);
 
 --
 -- Filtros para la tabla `secciones`

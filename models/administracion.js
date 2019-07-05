@@ -33,7 +33,7 @@ class Administracion {
                 res.send({status: 0, message: err.sqlMessage});
 			}else{
 				if (result[0].length == 0) {
-					res.send({status: 1, message: 'NO HAY DATOS EN LA TABLA USUARIOS',data:result[0]});
+					res.send({status: 2, message: 'NO HAY DATOS EN LA TABLA USUARIOS',data:result[0]});
 				} else {
                     res.send({status: 1, message: 'CONSULTA EXITOSA',data:result[0]});
                 }
@@ -189,7 +189,7 @@ nom_usuario(user, res) {
 update_usuario(user, res) {
 	connection.acquire((err, con) => {
 		if(err){
-			res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+			res.send({status: 0, message: err.sqlMessage});
 		}else{
         if ([user.obser_usu]==''){
             var obser_usu="NULL";
@@ -215,12 +215,12 @@ update_usuario(user, res) {
                     + ","+ obser_usu +","+ [user.perfil_usu] +")";
                     con.query(query,(err, result) => {
                         if(err){
-                            res.send({status: 0, message: 'ERROR EN LA BASE DE DATOSs'});
+                            res.send({status: 0, message: err.sqlMessage});
                         }else{
                             if (result.affectedRows == 1) {
-                                res.send({status: 1, message: 'Usuario Actualizado'});
+                                res.send({status: 1, message: 'USUARIO ACTUALIZADO'});
                             } else {
-                                res.send({status: 2, message: 'Usuario No Actualizado'});
+                                res.send({status: 2, message: 'USUARIO NO ACTUALIZADO'});
                             }
                         }
                     });
@@ -246,7 +246,7 @@ resetear_usuario(user, res) {
 				if (result.affectedRows == 0) {
 					res.send({status: 2, message: 'CAMBIOS NO REALIZADOS'});
 				} else {
-					res.send({status: 1, message: 'CLAVE RESETEADA'});
+					res.send({status: 1, message: 'USUARIO RESETEADO'});
 				}
 			}
 		});
@@ -257,17 +257,16 @@ resetear_usuario(user, res) {
 eliminar_usuario(user, res) {
 	connection.acquire((err, con) => {
 		if(err){
-			res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+			res.send({status: 0, message: err.sqlMessage});
 		}else{
 		var query = "CALL pa_eliminar_usuario("+ [user.idbusqueda] +")"; 
-		/* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
 		con.query(query,(err, result) => {
 			con.release();
 			if(err){
-                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                res.send({status: 0, message: err.sqlMessage});
 			}else{
 				if (result.affectedRows == 0) {
-					res.send({status: 2, message: 'CAMBIOS NO REALIZADOS'});
+					res.send({status: 2, message: 'USUARIO NO ELIMINADO'});
 				} else {
 					res.send({status: 1, message: 'USUARIO ELIMINADO'});
 				}
@@ -357,7 +356,7 @@ listar_anhio(res) {
                 res.send({status: 0, message: err.sqlMessage});
 			}else{
 				if (result[0].length == 0) {
-					res.send({status: 1, message: 'NO HAY DATOS EN LA TABLA AÑO',data:result[0]});
+					res.send({status: 2, message: 'NO HAY DATOS EN LA TABLA AÑO',data:result[0]});
 				} else {
                     res.send({status: 1, message: 'CONSULTA EXITOSA',data:result[0]});
                 }
@@ -371,7 +370,7 @@ listar_anhio(res) {
 update_anhio_xcriterio(anhio, res) {
 	connection.acquire((err, con) => {
 		if(err){
-			res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+			res.send({status: 0, message: err.sqlMessage});
 		}else{
 		  if([anhio.datobusqueda]=='reaperturar'){
             con.query('CALL pa_verificar_si_anhio_aperturado()', (err, result) => {
@@ -410,7 +409,7 @@ update_anhio_xcriterio(anhio, res) {
 			   
 			});
 		  }else{
-			var query = "CALL pa_update_anhio_xcriterio('"+[anhio.datobusqueda]+"',"+ [anhio.idbusqueda] +")"; 
+			var query = "CALL pa_update_anhio_xcriterios('"+[anhio.datobusqueda]+"',"+ [anhio.idbusqueda] +")"; 
 			/* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
 			con.query(query,(err, result) => {
 				con.release();
