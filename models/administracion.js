@@ -409,7 +409,7 @@ update_anhio_xcriterio(anhio, res) {
 			   
 			});
 		  }else{
-			var query = "CALL pa_update_anhio_xcriterios('"+[anhio.datobusqueda]+"',"+ [anhio.idbusqueda] +")"; 
+			var query = "CALL pa_update_anhio_xcriterio('"+[anhio.datobusqueda]+"',"+ [anhio.idbusqueda] +")"; 
 			/* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
 			con.query(query,(err, result) => {
 				con.release();
@@ -525,7 +525,7 @@ listar_secciones_xgrados(grado,res) {
 				if (result[0].length == 0) {
 					res.send({status: 2, message: 'NO HAY DATOS EN LA TABLA SECCIONES'});
 				} else {
-                    res.send({status: 1, message: 'CONSULTA EXITOSA',data:result[0]});
+                    res.send({status: 1, message: 'SECCIONES REGISTRADAS',data:result[0]});
                 }
 			}
            

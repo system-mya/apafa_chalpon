@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 05-07-2019 a las 00:16:03
+-- Tiempo de generación: 05-07-2019 a las 22:20:34
 -- Versión del servidor: 5.7.14
 -- Versión de PHP: 5.6.25
 
@@ -444,10 +444,15 @@ INSERT INTO `anhio_lectivo` (`idanhio`, `anhio_lectivo`, `finicio_anhio`, `ffin_
 (2, '2019', '2019-01-31', '2019-12-31', NULL, 'C', b'0'),
 (13, '2017', '2017-01-01', '2017-12-31', NULL, 'C', b'0'),
 (14, '2019', '2019-01-01', '2019-12-31', NULL, 'A', b'0'),
-(15, '2019', '2019-01-01', '2019-12-31', NULL, 'C', b'1'),
-(16, '2018', '2018-01-01', '2018-12-31', 'asfjasjf asjf asfjgask jagsfkjasf kjas  aksjfaskjfk g asfjkasgfkasjfg kjas gfaskjfgaskjfgaskjfasg agksjfasgfjaskfjasgf asjkf jaksfgasj asfgjaskgfaksjf', 'C', b'1'),
-(17, '2017', '2017-01-01', '2017-12-31', NULL, 'C', b'1'),
-(18, '2016', '2016-01-01', '2016-12-31', NULL, 'A', b'1');
+(15, '2019', '2019-01-01', '2019-12-31', NULL, 'C', b'0'),
+(16, '2018', '2018-01-01', '2018-12-31', 'asfjasjf asjf asfjgask jagsfkjasf kjas  aksjfaskjfk g asfjkasgfkasjfg kjas gfaskjfgaskjfgaskjfasg agksjfasgfjaskfjasgf asjkf jaksfgasj asfgjaskgfaksjf', 'C', b'0'),
+(17, '2017', '2017-01-01', '2017-12-31', NULL, 'C', b'0'),
+(18, '2016', '2016-01-01', '2016-12-31', NULL, 'C', b'0'),
+(19, '2015', '2015-01-01', '2015-12-31', NULL, 'C', b'0'),
+(20, '2014', '2014-01-01', '2014-12-31', NULL, 'A', b'0'),
+(21, '2013', '2013-01-01', '2013-12-31', NULL, 'C', b'0'),
+(22, '2018', '2018-01-01', '2018-12-31', NULL, 'C', b'1'),
+(23, '2019', '2019-01-01', '2019-12-31', NULL, 'A', b'1');
 
 -- --------------------------------------------------------
 
@@ -620,6 +625,28 @@ INSERT INTO `apoderado` (`id_apoderado`, `tdoc_apoderado`, `doc_apoderado`, `ape
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `compra`
+--
+
+CREATE TABLE `compra` (
+  `id_compra` smallint(6) NOT NULL,
+  `id_usuario` tinyint(4) NOT NULL,
+  `id_anhio` tinyint(4) NOT NULL,
+  `tipo_compra` char(1) NOT NULL,
+  `num_compra` varchar(10) NOT NULL,
+  `razon_social_compra` varchar(50) NOT NULL,
+  `ruc_compra` char(11) DEFAULT NULL,
+  `fecha_compra` date NOT NULL,
+  `freg_compra` datetime NOT NULL,
+  `doc_encargado_compra` varchar(15) NOT NULL,
+  `encargado_compra` varchar(80) NOT NULL,
+  `total_compra` float NOT NULL,
+  `estado_compra` bit(1) NOT NULL DEFAULT b'1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `concepto_apafa`
 --
 
@@ -645,6 +672,21 @@ INSERT INTO `concepto_apafa` (`id_concepto`, `descripcion_concepto`, `tipo_conce
 (6, 'SVDSV', 'O', 2, 677, b'1'),
 (7, 'FDHNDF', 'O', 2, 42.52, b'1'),
 (8, 'DFDSG', 'A', 2, 54, b'1');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `detalle_compra`
+--
+
+CREATE TABLE `detalle_compra` (
+  `id_detalle_compra` smallint(6) NOT NULL,
+  `id_compra` smallint(6) NOT NULL,
+  `nom_producto` varchar(30) NOT NULL,
+  `cantidad_compra` tinyint(4) NOT NULL,
+  `medida_compra` varchar(10) NOT NULL,
+  `punit_compra` float NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -676,6 +718,18 @@ INSERT INTO `detalle_deuda` (`id_detalle_deuda`, `id_concepto`, `id_apoderado`, 
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `detalle_recibo`
+--
+
+CREATE TABLE `detalle_recibo` (
+  `id_detalle_deuda` smallint(6) NOT NULL,
+  `id_recibo` smallint(6) NOT NULL,
+  `monto_detalle` float NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `grados`
 --
 
@@ -691,11 +745,11 @@ CREATE TABLE `grados` (
 --
 
 INSERT INTO `grados` (`id_grado`, `descripcion_grado`, `nivel_grado`, `estado_grado`) VALUES
-(1, 'PRIMER GRADO SECUNDARIA', 'S', b'1'),
-(2, 'SEGUNDO GRADO SECUNDARIA', 'S', b'1'),
-(3, 'TERCER GRADO SECUNDARIA', 'S', b'1'),
+(1, 'PRIMER GRADO SECUNDARIA', 'S', b'0'),
+(2, 'SEGUNDO GRADO SECUNDARIA', 'S', b'0'),
+(3, 'TERCER GRADO SECUNDARIA', 'S', b'0'),
 (4, 'CUARTO GRADO SECUNDARIA', 'S', b'0'),
-(5, 'QUINTO GRADO SECUNDARIA', 'S', b'1');
+(5, 'QUINTO GRADO SECUNDARIA', 'S', b'0');
 
 -- --------------------------------------------------------
 
@@ -728,6 +782,18 @@ INSERT INTO `libro` (`id_libro`, `titulo_libro`, `editorial_libro`, `edicion_lib
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `libro_matricula`
+--
+
+CREATE TABLE `libro_matricula` (
+  `id_matricula` smallint(6) NOT NULL,
+  `id_libro` tinyint(4) NOT NULL,
+  `devolvio_libro` bit(1) NOT NULL DEFAULT b'0'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `matricula`
 --
 
@@ -741,6 +807,32 @@ CREATE TABLE `matricula` (
   `id_tipo_relacion` tinyint(4) NOT NULL,
   `estado_matricula` bit(1) NOT NULL DEFAULT b'1'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `otro_ingreso`
+--
+
+CREATE TABLE `otro_ingreso` (
+  `id_otro_ingreso` smallint(6) NOT NULL,
+  `descripcion_ingreso` varchar(100) NOT NULL,
+  `monto_ingreso` float(10,2) NOT NULL,
+  `freg_ingreso` datetime NOT NULL,
+  `doc_encargado_ingreso` varchar(15) NOT NULL,
+  `datos_encargado_ingreso` varchar(100) NOT NULL,
+  `id_usuario` smallint(6) NOT NULL,
+  `estado_ingreso` bit(1) NOT NULL DEFAULT b'1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `otro_ingreso`
+--
+
+INSERT INTO `otro_ingreso` (`id_otro_ingreso`, `descripcion_ingreso`, `monto_ingreso`, `freg_ingreso`, `doc_encargado_ingreso`, `datos_encargado_ingreso`, `id_usuario`, `estado_ingreso`) VALUES
+(1, 'RIFA DEL DIA DEL PADRE', 2000.50, '2019-06-03 03:19:17', '565665666', 'Juan Carlos Rios Vasquez', 46, b'1'),
+(2, 'BINGO POR ANIVERSARIO', 5500.00, '2019-06-08 18:27:22', '15465465465', 'Julca Zeña Javier', 46, b'1'),
+(3, 'RIFA POR EL DIA DE LA MADRE', 1000.50, '2019-06-08 18:28:37', '9879989898', 'Susana Vasquez Delgado', 46, b'1');
 
 -- --------------------------------------------------------
 
@@ -784,6 +876,49 @@ CREATE TABLE `recibo` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `reunion`
+--
+
+CREATE TABLE `reunion` (
+  `id_reunion` smallint(6) NOT NULL,
+  `motivo_reunion` varchar(100) NOT NULL,
+  `fecha_reunion` date NOT NULL,
+  `hora_reunion` time NOT NULL,
+  `id_concepto` smallint(6) NOT NULL,
+  `lista_reunion` bit(1) NOT NULL DEFAULT b'0',
+  `estado_reunion` bit(1) NOT NULL DEFAULT b'1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `reunion`
+--
+
+INSERT INTO `reunion` (`id_reunion`, `motivo_reunion`, `fecha_reunion`, `hora_reunion`, `id_concepto`, `lista_reunion`, `estado_reunion`) VALUES
+(1, 'Asamblea General de padres', '2019-06-21', '14:30:00', 3, b'1', b'1');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `reunion_apoderado`
+--
+
+CREATE TABLE `reunion_apoderado` (
+  `id_reunion` smallint(6) NOT NULL,
+  `id_apoderado` smallint(6) NOT NULL,
+  `asistio_reunion` bit(1) NOT NULL DEFAULT b'0'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `reunion_apoderado`
+--
+
+INSERT INTO `reunion_apoderado` (`id_reunion`, `id_apoderado`, `asistio_reunion`) VALUES
+(1, 2, b'0'),
+(1, 4, b'0');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `secciones`
 --
 
@@ -803,7 +938,8 @@ INSERT INTO `secciones` (`id_seccion`, `nombre_seccion`, `id_grado`, `turno_secc
 (1, 'A', 1, 'M', b'0'),
 (2, 'A', 1, 'T', b'0'),
 (3, 'A', 2, 'M', b'0'),
-(4, 'A', 1, 'M', b'0');
+(4, 'A', 1, 'M', b'0'),
+(5, 'A', 1, 'M', b'1');
 
 -- --------------------------------------------------------
 
@@ -886,11 +1022,26 @@ ALTER TABLE `apoderado`
   ADD PRIMARY KEY (`id_apoderado`);
 
 --
+-- Indices de la tabla `compra`
+--
+ALTER TABLE `compra`
+  ADD PRIMARY KEY (`id_compra`),
+  ADD KEY `id_usuario` (`id_usuario`),
+  ADD KEY `id_anhio` (`id_anhio`);
+
+--
 -- Indices de la tabla `concepto_apafa`
 --
 ALTER TABLE `concepto_apafa`
   ADD PRIMARY KEY (`id_concepto`),
   ADD KEY `id_anhio` (`id_anhio`);
+
+--
+-- Indices de la tabla `detalle_compra`
+--
+ALTER TABLE `detalle_compra`
+  ADD PRIMARY KEY (`id_detalle_compra`),
+  ADD KEY `id_compra` (`id_compra`);
 
 --
 -- Indices de la tabla `detalle_deuda`
@@ -899,6 +1050,13 @@ ALTER TABLE `detalle_deuda`
   ADD PRIMARY KEY (`id_detalle_deuda`),
   ADD KEY `id_concepto` (`id_concepto`),
   ADD KEY `id_apoderado` (`id_apoderado`);
+
+--
+-- Indices de la tabla `detalle_recibo`
+--
+ALTER TABLE `detalle_recibo`
+  ADD KEY `id_recibo` (`id_recibo`),
+  ADD KEY `id_detalle_deuda` (`id_detalle_deuda`);
 
 --
 -- Indices de la tabla `grados`
@@ -914,6 +1072,13 @@ ALTER TABLE `libro`
   ADD KEY `id_grado` (`id_grado`);
 
 --
+-- Indices de la tabla `libro_matricula`
+--
+ALTER TABLE `libro_matricula`
+  ADD KEY `id_matricula` (`id_matricula`),
+  ADD KEY `id_libro` (`id_libro`);
+
+--
 -- Indices de la tabla `matricula`
 --
 ALTER TABLE `matricula`
@@ -923,6 +1088,12 @@ ALTER TABLE `matricula`
   ADD KEY `id_anhio` (`id_anhio`),
   ADD KEY `id_alumno` (`id_alumno`),
   ADD KEY `id_apoderado` (`id_apoderado`);
+
+--
+-- Indices de la tabla `otro_ingreso`
+--
+ALTER TABLE `otro_ingreso`
+  ADD PRIMARY KEY (`id_otro_ingreso`);
 
 --
 -- Indices de la tabla `perfil_usuario`
@@ -937,6 +1108,13 @@ ALTER TABLE `recibo`
   ADD PRIMARY KEY (`id_recibo`),
   ADD KEY `id_apoderado` (`id_apoderado`),
   ADD KEY `id_usuario` (`id_usuario`);
+
+--
+-- Indices de la tabla `reunion`
+--
+ALTER TABLE `reunion`
+  ADD PRIMARY KEY (`id_reunion`),
+  ADD KEY `id_concepto` (`id_concepto`);
 
 --
 -- Indices de la tabla `secciones`
@@ -971,17 +1149,27 @@ ALTER TABLE `alumno`
 -- AUTO_INCREMENT de la tabla `anhio_lectivo`
 --
 ALTER TABLE `anhio_lectivo`
-  MODIFY `idanhio` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `idanhio` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 --
 -- AUTO_INCREMENT de la tabla `apoderado`
 --
 ALTER TABLE `apoderado`
   MODIFY `id_apoderado` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=144;
 --
+-- AUTO_INCREMENT de la tabla `compra`
+--
+ALTER TABLE `compra`
+  MODIFY `id_compra` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+--
 -- AUTO_INCREMENT de la tabla `concepto_apafa`
 --
 ALTER TABLE `concepto_apafa`
   MODIFY `id_concepto` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+--
+-- AUTO_INCREMENT de la tabla `detalle_compra`
+--
+ALTER TABLE `detalle_compra`
+  MODIFY `id_detalle_compra` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 --
 -- AUTO_INCREMENT de la tabla `detalle_deuda`
 --
@@ -1003,6 +1191,11 @@ ALTER TABLE `libro`
 ALTER TABLE `matricula`
   MODIFY `id_matricula` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 --
+-- AUTO_INCREMENT de la tabla `otro_ingreso`
+--
+ALTER TABLE `otro_ingreso`
+  MODIFY `id_otro_ingreso` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+--
 -- AUTO_INCREMENT de la tabla `perfil_usuario`
 --
 ALTER TABLE `perfil_usuario`
@@ -1013,10 +1206,15 @@ ALTER TABLE `perfil_usuario`
 ALTER TABLE `recibo`
   MODIFY `id_recibo` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
+-- AUTO_INCREMENT de la tabla `reunion`
+--
+ALTER TABLE `reunion`
+  MODIFY `id_reunion` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+--
 -- AUTO_INCREMENT de la tabla `secciones`
 --
 ALTER TABLE `secciones`
-  MODIFY `id_seccion` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_seccion` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT de la tabla `tipo_relacion`
 --
@@ -1032,10 +1230,23 @@ ALTER TABLE `usuario`
 --
 
 --
+-- Filtros para la tabla `compra`
+--
+ALTER TABLE `compra`
+  ADD CONSTRAINT `anhio_compra` FOREIGN KEY (`id_anhio`) REFERENCES `anhio_lectivo` (`idanhio`),
+  ADD CONSTRAINT `usuario_compra` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`idusuario`);
+
+--
 -- Filtros para la tabla `concepto_apafa`
 --
 ALTER TABLE `concepto_apafa`
   ADD CONSTRAINT `anhio_concepto` FOREIGN KEY (`id_anhio`) REFERENCES `anhio_lectivo` (`idanhio`);
+
+--
+-- Filtros para la tabla `detalle_compra`
+--
+ALTER TABLE `detalle_compra`
+  ADD CONSTRAINT `compra_detalle` FOREIGN KEY (`id_compra`) REFERENCES `compra` (`id_compra`);
 
 --
 -- Filtros para la tabla `detalle_deuda`
@@ -1043,6 +1254,13 @@ ALTER TABLE `concepto_apafa`
 ALTER TABLE `detalle_deuda`
   ADD CONSTRAINT `apoderado_deuda` FOREIGN KEY (`id_apoderado`) REFERENCES `apoderado` (`id_apoderado`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `concepto_deuda` FOREIGN KEY (`id_concepto`) REFERENCES `concepto_apafa` (`id_concepto`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `detalle_recibo`
+--
+ALTER TABLE `detalle_recibo`
+  ADD CONSTRAINT `deuda_detalle_recibo` FOREIGN KEY (`id_detalle_deuda`) REFERENCES `detalle_deuda` (`id_detalle_deuda`),
+  ADD CONSTRAINT `recibo_detalle_recibo` FOREIGN KEY (`id_recibo`) REFERENCES `recibo` (`id_recibo`);
 
 --
 -- Filtros para la tabla `libro`
@@ -1066,6 +1284,12 @@ ALTER TABLE `matricula`
 ALTER TABLE `recibo`
   ADD CONSTRAINT `apoderado_recibo` FOREIGN KEY (`id_apoderado`) REFERENCES `apoderado` (`id_apoderado`),
   ADD CONSTRAINT `usuario_recibo` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`idusuario`);
+
+--
+-- Filtros para la tabla `reunion`
+--
+ALTER TABLE `reunion`
+  ADD CONSTRAINT `concepto_reunion` FOREIGN KEY (`id_concepto`) REFERENCES `concepto_apafa` (`id_concepto`);
 
 --
 -- Filtros para la tabla `secciones`
