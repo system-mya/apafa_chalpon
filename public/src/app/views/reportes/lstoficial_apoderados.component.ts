@@ -19,6 +19,7 @@ export class ListaOficialApoderadosComponent implements OnInit {
   public ffin_anhio:string;
   public body : any = [];
   public DatoBusqueda : clsBusqueda = {};
+  searchString:string;
   constructor(private _AnhiosServicios:AnhiosService,private toastr: ToastrService,
     private _ReportesServicios: ReportesService,private loadingBar: LoadingBarService) { 
     this.ListarAnhiosLectivos();

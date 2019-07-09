@@ -8,7 +8,7 @@ class Connection {
             connectionLimit: 10,
             host: 'localhost',
             user: 'root',
-            password: '03071593',
+            password: '',
             database: 'chalpon_apafa',
             debug: false,
         });

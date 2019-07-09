@@ -2,7 +2,6 @@ import { Component,ViewChild,ViewEncapsulation,Inject,OnInit } from '@angular/co
 import { DOCUMENT } from '@angular/platform-browser';
 import {ModalDirective} from 'ngx-bootstrap/modal';
 import { ReunionesService } from './reuniones.service';
-import { ConceptosComponent } from './conceptos.component';
 import { clsReunion,clsBusqueda } from '../../app.datos';
 import {MatPaginator, MatSort, MatTableDataSource, TooltipPosition} from '@angular/material';
 import { ToastrService } from 'ngx-toastr';

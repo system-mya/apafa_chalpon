@@ -5,7 +5,7 @@ import { ListaOficialApoderadosComponent } from './lstoficial_apoderados.compone
 import { FlagsComponent } from './flags.component';
 import { FontAwesomeComponent } from './font-awesome.component';
 import { SimpleLineIconsComponent } from './simple-line-icons.component';
-import { SortByPipe } from './datos-orderby.pipe';
+import { TableFilterPipe } from '../tesoreria/table-filter.pipe';
 import { ReportesRoutingModule } from './reportes-routing.module';
 
 @NgModule({
@@ -13,7 +13,7 @@ import { ReportesRoutingModule } from './reportes-routing.module';
     ReportesRoutingModule,FormsModule ],
   declarations: [
     ListaOficialApoderadosComponent,
-    SortByPipe,
+    TableFilterPipe,
     FlagsComponent,
     FontAwesomeComponent,
     SimpleLineIconsComponent
