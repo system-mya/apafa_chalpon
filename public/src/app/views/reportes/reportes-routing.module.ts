@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-
-import { CoreUIIconsComponent } from './coreui-icons.component';
+import { ListaOficialApoderadosComponent } from './lstoficial_apoderados.component';
 import { FlagsComponent } from './flags.component';
 import { FontAwesomeComponent } from './font-awesome.component';
 import { SimpleLineIconsComponent } from './simple-line-icons.component';
@@ -10,18 +9,18 @@ const routes: Routes = [
   {
     path: '',
     data: {
-      title: 'Icons'
+      title: 'Reportes'
     },
     children: [
       {
         path: '',
-        redirectTo: 'coreui-icons'
+        redirectTo: 'lstoficial_apoderados'
       },
       {
-        path: 'coreui-icons',
-        component: CoreUIIconsComponent,
+        path: 'lstoficial_apoderados',
+        component: ListaOficialApoderadosComponent,
         data: {
-          title: 'CoreUI Icons'
+          title: 'Listar Apoderados'
         }
       },
       {
@@ -53,4 +52,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class IconsRoutingModule {}
+export class ReportesRoutingModule {}

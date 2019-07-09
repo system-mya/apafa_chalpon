@@ -142,17 +142,13 @@ export const navAD: NavData[] = [
   },
   {
     name: 'Reportes',
-    url: '/icons',
+    url: '/reportes',
     icon: 'fa fa-file-text-o',
     children: [
       {
-        name: 'CoreUI Icons',
-        url: '/icons/coreui-icons',
-        icon: 'icon-star',
-        badge: {
-          variant: 'success',
-          text: 'NEW'
-        }
+        name: 'Lista Apoderados',
+        url: '/reportes/lstoficial_apoderados',
+        icon: 'cui-justify-center'
       },
       {
         name: 'Flags',

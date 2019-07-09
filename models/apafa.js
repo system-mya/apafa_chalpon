@@ -472,7 +472,7 @@ update_alumno(alumno, res) {
                         con.rollback(function() {
                             con.release();                                                                                                  
                         });
-                        res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'}); 
+                        res.send({status: 0, message: err.sqlMessage}); 
                     }
                     var query_matricula = "CALL pa_verificar_matricula_alumno("+[matricula.id_alumno]+",'"+ [matricula.anhio] +"')";
                     con.query(query_matricula, function(err, result) {
@@ -480,7 +480,7 @@ update_alumno(alumno, res) {
                         con.rollback(function() {
                             con.release();                                                                                                  
                         });
-                            res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                            res.send({status: 0, message: err.sqlMessage});
                       }else{
                         if (result[0].length == 0) {
                             var query_insert_matricula = "CALL pa_insertar_matricula('"+ [matricula.fecha_matricula]
@@ -494,7 +494,7 @@ update_alumno(alumno, res) {
                                     con.rollback(function() {
                                         con.release();                                                                                                  
                                     });
-                                  res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                                  res.send({status: 0, message: err.sqlMessage});
                                 }else{
                                     if (result.affectedRows == 1) {
                                         var query_apafa = "CALL pa_verificar_si_cuota_apafa_registrada("+[matricula.id_apoderado]+",'"+ [matricula.anhio] +"')";
@@ -503,7 +503,7 @@ update_alumno(alumno, res) {
                                             con.rollback(function() {
                                                 con.release();                                                                                                  
                                             });
-                                                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                                                res.send({status: 0, message: err.sqlMessage});
                                           }else{
                                             if (result[0].length == 0) {
                                                 var query_insert_apafa = "CALL pa_insertar_deuda_apafa("+ [matricula.id_apoderado] 
@@ -520,7 +520,7 @@ update_alumno(alumno, res) {
                                                             con.commit(function(err) {
                                                                 if (err) { 
                                                                   con.rollback(function() {
-                                                                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                                                                    res.send({status: 0, message: err.sqlMessage});
                                                                   });
                                                                 }else{
                                                                     res.send({status: 1, message: 'MATRICULA REGISTRADA'});
@@ -541,7 +541,7 @@ update_alumno(alumno, res) {
                                                 con.commit(function(err) {
                                                     if (err) { 
                                                       con.rollback(function() {
-                                                        res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                                                        res.send({status: 0, message: err.sqlMessage});
                                                       });
                                                     }else{
                                                         res.send({status: 1, message: 'MATRICULA REGISTRADA'});

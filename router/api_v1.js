@@ -2,6 +2,7 @@
 var admin = require('../models/administracion');
 var apafa = require('../models/apafa');
 var tesoreria = require('../models/tesoreria');
+var reportes = require('../models/reportes');
 //creamos el ruteo de la aplicación
 module.exports = {
    configure: (app) => {
@@ -312,7 +313,15 @@ app.post('/api/tesoreria/registrar_asistencia_reunion', (req, res) => {
     tesoreria.registrar_asistencia_reunion(req.body,res);
 });
 
+//LLAMADA LISTAR APODERADOS X AÑO
+app.post('/api/reportes/listar_apoderados_xanhio', (req, res) => {
+    reportes.listar_apoderados_xanhio(req.body,res);
+});
 
+//LLAMADA LISTAR ALUMNOS X APODERADO
+app.post('/api/reportes/listar_alumnos_xapoderado', (req, res) => {
+    reportes.listar_alumnos_xapoderado(req.body,res);
+});
 
 }
 

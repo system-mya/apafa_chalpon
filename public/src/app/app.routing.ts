@@ -62,8 +62,8 @@ export const routes: Routes = [
         canActivate:[LoginGuard]
       },
       {
-        path: 'icons',
-        loadChildren: './views/icons/icons.module#IconsModule',
+        path: 'reportes',
+        loadChildren: './views/reportes/reportes.module#ReportesModule',
         canActivate:[LoginGuard]
       },
       {

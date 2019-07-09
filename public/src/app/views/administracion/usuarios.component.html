@@ -53,30 +53,7 @@
         
       </table>
       <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
-      </div> -->
-      <div id="customers" *ngIf="false">
-      <table id="tab_customers" class="table"> 
-          <thead>
-          <tr>
-              <th>Apoderados</th>
-              <th>Alumnos Matriculados</th>
-            </tr>   
-          </thead>  
-          <tbody>
-        <ng-container *ngFor="let data of body">    
-            <tr>
-                <td [attr.rowspan]="data.numbers.length">{{data.pname}}</td>
-                <td>{{data.numbers[0].num}}</td>
-            </tr>
-            <ng-container *ngFor="let number of data.numbers; let i= index;">
-                <tr *ngIf="i!=0">
-                    <td>{{number.num}}</td>
-                </tr>
-            </ng-container>
-        </ng-container>
-      </tbody>  
-    </table>
-  </div>
+      </div> -->      
       <div class="mat-elevation-z8 table-responsive">
         <mat-form-field class="example-full-width" style="margin-left: 15px;">
           <span matPrefix>Buscar Usuario: &nbsp;</span>
