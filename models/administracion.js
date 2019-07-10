@@ -537,16 +537,16 @@ listar_secciones_xgrados(grado,res) {
 nva_seccion(seccion, res) {
 	connection.acquire((err, con) => {
 		if(err){
-			res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+			res.send({status: 0, message: err.sqlMessage});
 		}else{
 
-		var query_seccion = "CALL pa_verificar_seccion('"+ [seccion.nombre_seccion] +"','"
-	                       + [seccion.id_turno] +"',"+ [seccion.id_grado] +")";
+		var query_seccion = "CALL pa_verificar_seccion('"+ [seccion.nombre_seccion] +"',"
+	                       + [seccion.id_grado] +")";
         
         con.query(query_seccion,(err, result) => {
             con.release();
 			if(err){
-                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                res.send({status: 0, message: err.sqlMessage});
 			}else{
 				if (result[0].length == 0) {
 					var query = "CALL pa_insertar_seccion('"+ [seccion.nombre_seccion] 
@@ -554,7 +554,7 @@ nva_seccion(seccion, res) {
 		
                     con.query(query,(err, result) => {
                         if(err){
-                            res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                            res.send({status: 0, message: err.sqlMessage});
                         }else{
                             if (result.affectedRows == 1) {
                                 res.send({status: 1, message: 'Sección Registrada'});
