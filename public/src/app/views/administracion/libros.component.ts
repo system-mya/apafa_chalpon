@@ -114,47 +114,49 @@ btnNuveo_Libro(){
 
 
   onSubmit(form:clsLibro){    
-    swal({
-      title: '¿Esta seguro que desea guardar?',
-      type: 'question',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Si, Guardar!',
-      allowOutsideClick: false,
-      allowEscapeKey:false,
-    }).then((result) => {
-      if (result.value==true) {
-        this._LibrosServicios.nvo_libro(form)
-        .then(data => {
-          if(data.status==1){
-            this.NvoLibroModal.hide();
-            swal({
-                title: 'Aviso!',
-                text: data.message,
-                type: 'success',
-                allowOutsideClick: false,
-                allowEscapeKey:false
-            })            
-            this.ListarLibrosActivos();
-            this.myFormNvoLibro.resetForm();
-          }else{
-           
+    if(form.id_grado!=0){
+      swal({
+        title: '¿Esta seguro que desea guardar?',
+        type: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si, Guardar!',
+        allowOutsideClick: false,
+        allowEscapeKey:false,
+      }).then((result) => {
+        if (result.value==true) {
+          this._LibrosServicios.nvo_libro(form)
+          .then(data => {
+            if(data.status==1){
+              this.NvoLibroModal.hide();
               swal({
-                title: 'Aviso!',
-                html:
-                '<span style="color:red">' +
-                data.message +
-                '</span>',
-                type: 'error',
-                allowOutsideClick: false,
-                allowEscapeKey:false
-              })
-          }
-        } )
-        .catch(err => console.log(err))
-      }
-    })
+                  title: 'Aviso!',
+                  text: data.message,
+                  type: 'success',
+                  allowOutsideClick: false,
+                  allowEscapeKey:false
+              })            
+              this.ListarLibrosActivos();
+              this.myFormNvoLibro.resetForm();
+            }else{
+             
+                swal({
+                  title: 'Aviso!',
+                  html:
+                  '<span style="color:red">' +
+                  data.message +
+                  '</span>',
+                  type: 'error',
+                  allowOutsideClick: false,
+                  allowEscapeKey:false
+                })
+            }
+          } )
+          .catch(err => console.log(err))
+        }
+      })
+    }
   }
   
 

@@ -107,7 +107,7 @@
                   <input type="text" class="form-control" id="nombre_seccion" name="nombre_seccion"
                    placeholder="Nombre Sección" [(ngModel)]="seccion.nombre_seccion" #regnombre="ngModel" 
                    onkeyup="verif(this)" maxlength="20" [ngClass]="{ 'is-invalid': myForm.submitted && regnombre.invalid }" 
-                   pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,20}[\s]*)+$" required>
+                   pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{0,20}[\s]*)+$" required>
                    <div *ngIf="myForm.submitted && regnombre.invalid" class="invalid-feedback">
                     <div *ngIf="regnombre.errors.required">Nombre Sección campo requerido</div>
                     <div *ngIf="regnombre.errors.pattern">Formato de Nombre Sección incorrectos</div>

@@ -6,16 +6,9 @@ var reportes = require('../models/reportes');
 //creamos el ruteo de la aplicación
 module.exports = {
    configure: (app) => {
- 
 //POST PARA INICIAR SESION
 app.post('/api/administracion/iniciar_sesion', (req, res) => {
     admin.iniciar_sesion(req.body, res);
-});
-
-app.post('/api/users/add', (req, res) => {
-    admin.agregar(req.body, res);
-    //console.log(res);
-    //console.log("hola");
 });
 
 //POST PARA INSERTAR NVO USUARIO
@@ -36,36 +29,36 @@ app.post('/api/administracion/obtener_usuario', (req, res) => {
     admin.obtener_usuario(req.body, res);
 });
 
-app.post('/api/nom_usuario', (req, res) => {
+app.post('/api/administracion/nom_usuario', (req, res) => {
     admin.nom_usuario(req.body, res);
 });
 
-app.post('/api/update_usuario', (req, res) => {
+app.post('/api/administracion/update_usuario', (req, res) => {
     admin.update_usuario(req.body, res);
 });
 
 // LLAMADO AL MODELO RESETEAR CLAVE
-app.post('/api/resetear_usuario', (req, res) => {
+app.post('/api/administracion/resetear_usuario', (req, res) => {
     admin.resetear_usuario(req.body, res);
 });
 
 // LLAMADO AL MODELO ELIMINAR USUARIO
-app.post('/api/eliminar_usuario', (req, res) => {
+app.post('/api/administracion/eliminar_usuario', (req, res) => {
     admin.eliminar_usuario(req.body, res);
 });
 
 //LLAMADA UPDATE CLAVE
-app.post('/api/update_clave', (req, res) => {
+app.post('/api/administracion/update_clave', (req, res) => {
     admin.update_clave(req.body, res);
 });
 
 // LLAMADO AL MODELO INSERTAR AÑO
-app.post('/api/insertar_anhio', (req, res) => {
+app.post('/api/administracion/insertar_anhio', (req, res) => {
     admin.nvo_anhio(req.body, res);
 });
 
 // LLAMADO AL MODELO LISTAR AÑO
-app.get('/api/listar_anhio', (req, res) => {
+app.get('/api/administracion/listar_anhio', (req, res) => {
     admin.listar_anhio(res);
 });
 
@@ -74,27 +67,27 @@ app.post('/api/administracion/update_anhio_xcriterio', (req, res) => {
     admin.update_anhio_xcriterio(req.body, res);
 });
 
-app.get('/api/listar_grados', (req, res) => {
+app.get('/api/administracion/listar_grados', (req, res) => {
     admin.listar_grados(res);
 });
 
 //LISTAR GRADOS ACTIVOS
-app.get('/api/listar_grados_activos', (req, res) => {
+app.get('/api/administracion/listar_grados_activos', (req, res) => {
     admin.listar_grados_activos(res);
 });
 
 // CAMBIAR EL ESTADO DE GRADO
-app.post('/api/cambiar_estado_grado', (req, res) => {
+app.post('/api/administracion/cambiar_estado_grado', (req, res) => {
     admin.cambiar_estado_grado(req.body, res);
 });
 
 // LISTAR SECCIONES POR GRADO
-app.post('/api/listar_secciones_xgrados', (req, res) => {
+app.post('/api/administracion/listar_secciones_xgrados', (req, res) => {
     admin.listar_secciones_xgrados(req.body, res);
 });
 
 // LLAMADO AL MODELO INSERTAR SECCION
-app.post('/api/insertar_seccion', (req, res) => {
+app.post('/api/administracion/insertar_seccion', (req, res) => {
     admin.nva_seccion(req.body, res);
 });
 
@@ -103,31 +96,29 @@ app.post('/api/administracion/eliminar_seccion', (req, res) => {
     admin.eliminar_seccion(req.body, res);
 });
 
-
-// LISTAR ALUMNOS
-app.get('/api/listaralumnos', (req, res) => {
-    apafa.listar_alumnos(res);
+//LISTAR LIBROS ACTIVOS
+app.get('/api/administracion/listar_libros_activos', (req, res) => {
+    admin.listar_libros_activos(res);
 });
 
 //LLAMADA INSERTAR NUEVO LIBRO 
-app.post('/api/insertar_libro', (req, res) => {
+app.post('/api/administracion/insertar_libro', (req, res) => {
     admin.nvo_libro(req.body,res);
 })
 
 // LLAMADO AL MODELO ELIMINAR LIBRO
-app.post('/api/eliminar_libro', (req, res) => {
+app.post('/api/administracion/eliminar_libro', (req, res) => {
     admin.eliminar_libro(req.body, res);
 });
 
 //LLAMADA UPDATE LIBRO 
-app.post('/api/update_libro', (req, res) => {
+app.post('/api/administracion/update_libro', (req, res) => {
     admin.update_libro(req.body,res);
 })
 
-
-//LISTAR LIBROS ACTIVOS
-app.get('/api/listar_libros_activos', (req, res) => {
-    admin.listar_libros_activos(res);
+// LISTAR ALUMNOS
+app.get('/api/apafa/listaralumnos', (req, res) => {
+    apafa.listar_alumnos(res);
 });
 
 

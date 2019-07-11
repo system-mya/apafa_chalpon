@@ -76,7 +76,7 @@ class Apafa {
             con.query(query_doc,(err, result) => {
                 con.release();
                 if(err){
-                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                    res.send({status: 0, message: err.sqlMessage});
                 }else{
                     if (result[0].length == 0) {
                         var query = "CALL pa_insertar_alumno('"+ [alumno.tdoc_alumno] +"','"+ [alumno.doc_alumno] 
@@ -89,12 +89,12 @@ class Apafa {
                         
                         con.query(query,(err, result) => {
                             if(err){
-                                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                                res.send({status: 0, message: err.sqlMessage});
                             }else{
                                 if (result.affectedRows == 1) {
-                                    res.send({status: 1, message: 'Alumno Registrado'});
+                                    res.send({status: 1, message: 'ALUMNO REGISTRADO'});
                                 } else {
-                                    res.send({status: 2, message: 'Alumno No Registrado'});
+                                    res.send({status: 2, message: 'ALUMNO NO REGISTRADO'});
                                 }
                             }
                         });
@@ -112,14 +112,14 @@ class Apafa {
     obtener_alumno(alumno, res) {
         connection.acquire((err, con) => {
             if(err){
-                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                res.send({status: 0, message: err.sqlMessage});
             }else{
             var query = "CALL pa_detalle_alumno("+ [alumno.idbusqueda] +")"; 
             /* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
             con.query(query,(err, result) => {
                 con.release();
                 if(err){
-                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                    res.send({status: 0, message: err.sqlMessage});
                 }else{
                     if (result[0].length == 0) {
                         res.send({status: 2, message: 'Alumno No Existe'});
@@ -135,7 +135,7 @@ class Apafa {
 update_alumno(alumno, res) {
     connection.acquire((err, con) => {
         if(err){
-            res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+            res.send({status: 0, message: err.sqlMessage});
         }else{            
                 if ([alumno.telefono_alumno]==''){
                     var telefono_alumno="NULL";
@@ -190,7 +190,7 @@ update_alumno(alumno, res) {
                         + "'," + celular_madre + "," + correo_madre + ")";
                         con.query(query,(err, result) => {
                             if(err){
-                                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                                res.send({status: 0, message: err.sqlMessage});
                             }else{
                                 if (result.affectedRows == 1) {
                                     res.send({status: 1, message: 'ALUMNO ACTUALIZADO'});
@@ -208,17 +208,17 @@ update_alumno(alumno, res) {
     eliminar_alumno(alumno, res) {
         connection.acquire((err, con) => {
             if(err){
-                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                res.send({status: 0, message: err.sqlMessage});
             }else{
             var query = "CALL pa_eliminar_alumno("+ [alumno.idbusqueda] +")"; 
             /* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
             con.query(query,(err, result) => {
                 con.release();
                 if(err){
-                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                    res.send({status: 0, message: err.sqlMessage});
                 }else{
                     if (result.affectedRows == 0) {
-                        res.send({status: 2, message: 'CAMBIOS NO REALIZADOS'});
+                        res.send({status: 2, message: 'ALUMNO NO ELIMINADO'});
                     } else {
                         res.send({status: 1, message: 'ALUMNO ELIMINADO'});
                     }
@@ -358,17 +358,17 @@ update_alumno(alumno, res) {
     eliminar_apoderado(apoderado, res) {
         connection.acquire((err, con) => {
             if(err){
-                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                res.send({status: 0, message: err.sqlMessage});
             }else{
             var query = "CALL pa_eliminar_apoderado("+ [apoderado.idbusqueda] +")"; 
             /* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
             con.query(query,(err, result) => {
                 con.release();
                 if(err){
-                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                    res.send({status: 0, message: err.sqlMessage});
                 }else{
                     if (result.affectedRows == 0) {
-                        res.send({status: 2, message: 'CAMBIOS NO REALIZADOS'});
+                        res.send({status: 2, message: 'APODERADO NO ELIMINADO'});
                     } else {
                         res.send({status: 1, message: 'APODERADO ELIMINADO'});
                     }

@@ -32,29 +32,29 @@ public obtener_usuario(user:clsBusqueda){
 }
 
 public nom_usuario(user:clsBusqueda){
-  return this._http.post('/api/nom_usuario',user)
+  return this._http.post('/api/administracion/nom_usuario',user)
    .map(data => data.json()).toPromise()
 }
 
 public update_usuario(user:clsUsuario){
-  return this._http.post('/api/update_usuario',user)
+  return this._http.post('/api/administracion/update_usuario',user)
    .map(data => data.json()).toPromise()
 }
 
 // llamando al api resetear usuario
 public resetear_usuario(user:clsBusqueda){
-  return this._http.post('/api/resetear_usuario',user)
+  return this._http.post('/api/administracion/resetear_usuario',user)
    .map(data => data.json()).toPromise()
 }
 
 // llamando al api ELIMINAR usuario
 public eliminar_usuario(user:clsBusqueda){
-  return this._http.post('/api/eliminar_usuario',user)
+  return this._http.post('/api/administracion/eliminar_usuario',user)
    .map(data => data.json()).toPromise()
 }
 
 public update_clave(usuario:clsBusqueda){
-  return this._http.post('/api/update_clave',usuario)
+  return this._http.post('/api/administracion/update_clave',usuario)
    .map(data => data.json()).toPromise()
 }
 }

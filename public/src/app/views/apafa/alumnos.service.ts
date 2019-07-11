@@ -13,7 +13,7 @@ export class AlumnosService {
   constructor(private _http:Http) { }
 
   public getListarAlumnos(){
-    return this._http.get('/api/listaralumnos')
+    return this._http.get('/api/apafa/listaralumnos')
      .map(res => res.json())
   }
 

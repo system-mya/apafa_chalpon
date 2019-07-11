@@ -13,13 +13,13 @@ export class AnhiosService {
 
  //LISTAR AÑOS LECTIVOS
   public getListarAnhios(){
-   return this._http.get('/api/listar_anhio')
+   return this._http.get('/api/administracion/listar_anhio')
     .map(res => res.json())
  }
 
  //REGISTRAR NUEVO AÑO LECTIVO
  public nvo_anhio(anhio:clsAnhio_Lectivo){
-  return this._http.post('/api/insertar_anhio',anhio)
+  return this._http.post('/api/administracion/insertar_anhio',anhio)
    .map(data => data.json()).toPromise()
 }
 

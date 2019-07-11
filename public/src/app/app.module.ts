@@ -68,9 +68,11 @@ import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
     BrowserAnimationsModule,
     DataTablesModule,
     ToastrModule.forRoot({
-      timeOut: 3000,
-      positionClass: 'toast-bottom-right',
-      preventDuplicates: true,
+      timeOut: 1000,
+      preventDuplicates: false,
+      positionClass: 'toast-top-right',
+      progressBar:true,
+      closeButton:true
     }), // ToastrModule added
     NgxSpinnerModule,
     LoadingBarRouterModule

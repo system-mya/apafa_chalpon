@@ -116,7 +116,14 @@
             <div class="card-header">
               <h5><strong>
                 <i class="fa fa-edit"></i>&nbsp;&nbsp;Registrar Nuevo Alumno
-              </strong></h5>
+              </strong>
+              <span class="float-right">
+                <button type="button" class="btn btn-danger" style="margin: 0px 20px;"
+                        (click)="btnCancelar_Alumno('I')">
+                            <span class="fa fa-reply-all"></span>
+                        Regresar</button>
+              </span>
+            </h5>
               </div>
               <div class="car-body">
                   <div class="card-header estilo-cabecera">DATOS DEL ALUMNO</div>
@@ -167,7 +174,7 @@
                                     <input type="text" class="form-control" id="apellidos_alumno" name="apellidos_alumno" 
                                     placeholder="Apellidos Completos" [(ngModel)]="alumno.apellidos_alumno" #regapellidos="ngModel" 
                                     onkeyup="verif(this)" maxlength="60" [ngClass]="{ 'is-invalid': myForm.submitted && regapellidos.invalid }" 
-                                    pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,30}[\s]*)+$" required>
+                                    pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,60}[\s]*)+$" required>
                                     <div *ngIf="myForm.submitted && regapellidos.invalid" class="invalid-feedback">
                                       <div *ngIf="regapellidos.errors.required">Apellidos Completos campo requerido</div>
                                       <div *ngIf="regapellidos.errors.pattern">Formato de Apellidos Completos incorrectos</div>
@@ -178,7 +185,7 @@
                                     <input type="text" class="form-control" id="nombres_alumno" name="nombres_alumno"
                                      placeholder="Nombres Completos" [(ngModel)]="alumno.nombres_alumno" #regnombres="ngModel" 
                                      onkeyup="verif(this)" maxlength="50" [ngClass]="{ 'is-invalid': myForm.submitted && regnombres.invalid }" 
-                                     pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,25}[\s]*)+$" required>
+                                     pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,50}[\s]*)+$" required>
                                      <div *ngIf="myForm.submitted && regnombres.invalid" class="invalid-feedback">
                                       <div *ngIf="regnombres.errors.required">Nombres Completos campo requerido</div>
                                       <div *ngIf="regnombres.errors.pattern">Formato de Nombres Completos incorrectos</div>
@@ -292,7 +299,7 @@
                                     <input type="text" class="form-control" id="apellidos_padre" name="apellidos_padre" 
                                     placeholder="Apellidos Completos" [(ngModel)]="alumno.apellidos_padre" #regapellidos_padre="ngModel" 
                                     onkeyup="verif(this)" maxlength="60" [ngClass]="{ 'is-invalid': myForm.submitted && regapellidos_padre.invalid }" 
-                                    pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,30}[\s]*)+$" required>
+                                    pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,60}[\s]*)+$" required>
                                     <div *ngIf="myForm.submitted && regapellidos_padre.invalid" class="invalid-feedback">
                                       <div *ngIf="regapellidos_padre.errors.required">Apellidos Completos campo requerido</div>
                                       <div *ngIf="regapellidos_padre.errors.pattern">Formato de Apellidos Completos incorrectos</div>
@@ -303,7 +310,7 @@
                                     <input type="text" class="form-control" id="nombres_padre" name="nombres_padre"
                                      placeholder="Nombres Completos" [(ngModel)]="alumno.nombres_padre" #regnombres_padre="ngModel" 
                                      onkeyup="verif(this)" maxlength="50" [ngClass]="{ 'is-invalid': myForm.submitted && regnombres_padre.invalid }" 
-                                     pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,25}[\s]*)+$" required>
+                                     pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,50}[\s]*)+$" required>
                                      <div *ngIf="myForm.submitted && regnombres_padre.invalid" class="invalid-feedback">
                                       <div *ngIf="regnombres_padre.errors.required">Nombres Completos campo requerido</div>
                                       <div *ngIf="regnombres_padre.errors.pattern">Formato de Nombres Completos incorrectos</div>
@@ -345,7 +352,7 @@
                                       <input type="text" class="form-control" id="apellidos_madre" name="apellidos_madre" 
                                       placeholder="Apellidos Completos" [(ngModel)]="alumno.apellidos_madre" #regapellidos_madre="ngModel" 
                                       onkeyup="verif(this)" maxlength="60" [ngClass]="{ 'is-invalid': myForm.submitted && regapellidos_madre.invalid }" 
-                                      pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,30}[\s]*)+$" required>
+                                      pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,60}[\s]*)+$" required>
                                       <div *ngIf="myForm.submitted && regapellidos_madre.invalid" class="invalid-feedback">
                                         <div *ngIf="regapellidos_madre.errors.required">Apellidos Completos campo requerido</div>
                                         <div *ngIf="regapellidos_madre.errors.pattern">Formato de Apellidos Completos incorrectos</div>
@@ -356,7 +363,7 @@
                                       <input type="text" class="form-control" id="nombres_madre" name="nombres_madre"
                                        placeholder="Nombres Completos" [(ngModel)]="alumno.nombres_madre" #regnombres_madre="ngModel" 
                                        onkeyup="verif(this)" maxlength="50" [ngClass]="{ 'is-invalid': myForm.submitted && regnombres_madre.invalid }" 
-                                       pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,25}[\s]*)+$" required>
+                                       pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,50}[\s]*)+$" required>
                                        <div *ngIf="myForm.submitted && regnombres_madre.invalid" class="invalid-feedback">
                                         <div *ngIf="regnombres_madre.errors.required">Nombres Completos campo requerido</div>
                                         <div *ngIf="regnombres_madre.errors.pattern">Formato de Nombres Completos incorrectos</div>
@@ -489,7 +496,13 @@
         <div class="card-header">
           <h5><strong>
             <i class="fa fa-edit"></i>&nbsp;&nbsp;Modificar Datos Alumno
-          </strong></h5>
+          </strong>
+          <span class="float-right">
+            <button type="button" class="btn btn-danger" style="margin: 0px 20px;"
+                    (click)="btnCancelar_Alumno('A')">
+                        <span class="fa fa-reply-all"></span>
+                    Regresar</button>
+          </span></h5>
           </div>
           <div class="car-body">
               <div class="card-header estilo-cabecera">DATOS DEL ALUMNO</div>
@@ -501,7 +514,7 @@
                               <label for="tdoc_alumno" style="font-weight: bold;">Tipo Doc. <i class="fa fa-certificate" style="color:red !important"></i> :</label>
                               <select class="form-control" id="tdoc_alumno" name="tdoc_alumno"
                               placeholder="Selecionar Perfil" [(ngModel)]="Editalumno.tdoc_alumno" 
-                              #edittdco="ngModel" required readonly>
+                              #edittdco="ngModel" required disabled>
                                   <option value="" selected disabled>-----Tipo Documento------</option>
                                   <option value="DNI">DNI</option>
                                   <option value="OTR">OTROS</option>
@@ -543,7 +556,7 @@
                                 <input type="text" class="form-control" id="apellidos_alumno" name="apellidos_alumno" 
                                 placeholder="Apellidos Completos" [(ngModel)]="Editalumno.apellidos_alumno" #editapellidos="ngModel" 
                                 onkeyup="verif(this)" maxlength="60" [ngClass]="{ 'is-invalid': FormEdit.submitted && editapellidos.invalid }" 
-                                pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,30}[\s]*)+$" required>
+                                pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,60}[\s]*)+$" required>
                                 <div *ngIf="FormEdit.submitted && editapellidos.invalid" class="invalid-feedback">
                                   <div *ngIf="editapellidos.errors.required">Apellidos Completos campo requerido</div>
                                   <div *ngIf="editapellidos.errors.pattern">Formato de Apellidos Completos incorrectos</div>
@@ -554,7 +567,7 @@
                                 <input type="text" class="form-control" id="nombres_alumno" name="nombres_alumno"
                                  placeholder="Nombres Completos" [(ngModel)]="Editalumno.nombres_alumno" #editnombres="ngModel" 
                                  onkeyup="verif(this)" maxlength="50" [ngClass]="{ 'is-invalid': FormEdit.submitted && editnombres.invalid }" 
-                                 pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,25}[\s]*)+$" required>
+                                 pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,50}[\s]*)+$" required>
                                  <div *ngIf="FormEdit.submitted && editnombres.invalid" class="invalid-feedback">
                                   <div *ngIf="editnombres.errors.required">Nombres Completos campo requerido</div>
                                   <div *ngIf="editnombres.errors.pattern">Formato de Nombres Completos incorrectos</div>
@@ -668,7 +681,7 @@
                                 <input type="text" class="form-control" id="apellidos_padre" name="apellidos_padre" 
                                 placeholder="Apellidos Completos" [(ngModel)]="Editalumno.apellidos_padre" #editapellidos_padre="ngModel" 
                                 onkeyup="verif(this)" maxlength="60" [ngClass]="{ 'is-invalid': FormEdit.submitted && editapellidos_padre.invalid }" 
-                                pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,30}[\s]*)+$" required>
+                                pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,60}[\s]*)+$" required>
                                 <div *ngIf="FormEdit.submitted && editapellidos_padre.invalid" class="invalid-feedback">
                                   <div *ngIf="editapellidos_padre.errors.required">Apellidos Completos campo requerido</div>
                                   <div *ngIf="editapellidos_padre.errors.pattern">Formato de Apellidos Completos incorrectos</div>
@@ -679,7 +692,7 @@
                                 <input type="text" class="form-control" id="nombres_padre" name="nombres_padre"
                                  placeholder="Nombres Completos" [(ngModel)]="Editalumno.nombres_padre" #editnombres_padre="ngModel" 
                                  onkeyup="verif(this)" maxlength="50" [ngClass]="{ 'is-invalid': FormEdit.submitted && editnombres_padre.invalid }" 
-                                 pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,25}[\s]*)+$" required>
+                                 pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,50}[\s]*)+$" required>
                                  <div *ngIf="FormEdit.submitted && editnombres_padre.invalid" class="invalid-feedback">
                                   <div *ngIf="editnombres_padre.errors.required">Nombres Completos campo requerido</div>
                                   <div *ngIf="editnombres_padre.errors.pattern">Formato de Nombres Completos incorrectos</div>
@@ -721,7 +734,7 @@
                                   <input type="text" class="form-control" id="apellidos_madre" name="apellidos_madre" 
                                   placeholder="Apellidos Completos" [(ngModel)]="Editalumno.apellidos_madre" #editapellidos_madre="ngModel" 
                                   onkeyup="verif(this)" maxlength="60" [ngClass]="{ 'is-invalid': FormEdit.submitted && editapellidos_madre.invalid }" 
-                                  pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,30}[\s]*)+$" required>
+                                  pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,60}[\s]*)+$" required>
                                   <div *ngIf="FormEdit.submitted && editapellidos_madre.invalid" class="invalid-feedback">
                                     <div *ngIf="editapellidos_madre.errors.required">Apellidos Completos campo requerido</div>
                                     <div *ngIf="editapellidos_madre.errors.pattern">Formato de Apellidos Completos incorrectos</div>
@@ -732,7 +745,7 @@
                                   <input type="text" class="form-control" id="nombres_madre" name="nombres_madre"
                                    placeholder="Nombres Completos" [(ngModel)]="Editalumno.nombres_madre" #editnombres_madre="ngModel" 
                                    onkeyup="verif(this)" maxlength="50" [ngClass]="{ 'is-invalid': FormEdit.submitted && editnombres_madre.invalid }" 
-                                   pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,25}[\s]*)+$" required>
+                                   pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,50}[\s]*)+$" required>
                                    <div *ngIf="FormEdit.submitted && editnombres_madre.invalid" class="invalid-feedback">
                                     <div *ngIf="editnombres_madre.errors.required">Nombres Completos campo requerido</div>
                                     <div *ngIf="editnombres_madre.errors.pattern">Formato de Nombres Completos incorrectos</div>

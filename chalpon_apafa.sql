@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 08-07-2019 a las 23:51:47
+-- Tiempo de generación: 10-07-2019 a las 22:51:19
 -- Versión del servidor: 5.7.14
 -- Versión de PHP: 5.6.25
 
@@ -44,6 +44,18 @@ AND estado_apoderado=1$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_cambiar_estado_grado` (IN `grado` TINYINT, IN `estado` BIT)  NO SQL
 UPDATE grados SET estado_grado=estado 
 WHERE id_grado=grado$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_detalle_alumno` (IN `id` SMALLINT)  NO SQL
+SELECT id_alumno,(CASE WHEN tdoc_alumno='OTR' THEN 'OTROS' ELSE 'DNI' END) AS tdoc_alumno,doc_alumno,apellidos_alumno,
+nombres_alumno,fnac_alumno,(CASE WHEN sexo_alumno='M' THEN 'MASCULINO' ELSE 'FEMENINO' END) AS sexo_alumno,
+telefono_alumno,celular_alumno,direccion_alumno,correo_alumno,procedencia_alumno,apellidos_padre,
+nombres_padre,celular_padre,correo_padre,apellidos_madre,nombres_madre,celular_madre,correo_madre FROM alumno
+WHERE id_alumno=id
+AND estado_alumno=1$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_alumno` (IN `id` SMALLINT)  NO SQL
+UPDATE alumno SET estado_alumno=0
+WHERE id_alumno=id$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_libro` (IN `idlibro` TINYINT)  NO SQL
 UPDATE libro SET estado_libro=0 WHERE id_libro=idlibro$$
@@ -133,7 +145,7 @@ nombres_alumno,tdoc_alumno,doc_alumno,
    ELSE 'FEMENINO'
  END) as sexo_alumno,celular_alumno FROM alumno
 WHERE estado_alumno=1
-ORDER BY apellidos_alumno$$
+ORDER BY apellidos_alumno ASC$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_alumnos_xapoderado_matricula` (IN `anhio` TINYINT, IN `apo` SMALLINT)  NO SQL
 SELECT a.apellidos_alumno,a.nombres_alumno,g.descripcion_grado,s.nombre_seccion FROM matricula m
@@ -142,8 +154,7 @@ INNER JOIN secciones s ON s.id_seccion=m.id_seccion
 INNER JOIN grados g ON g.id_grado=s.id_grado
 WHERE m.estado_matricula=1
 AND m.id_anhio=anhio
-AND m.id_apoderado=apo
-ORDER BY g.descripcion_grado,s.nombre_seccion$$
+AND m.id_apoderado=apo$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_anhio` ()  NO SQL
 SELECT idanhio,anhio_lectivo,finicio_anhio,ffin_anhio,
@@ -177,7 +188,7 @@ INNER JOIN apoderado ap ON ap.id_apoderado=m.id_apoderado
 WHERE m.estado_matricula=1
 AND m.id_anhio=anhio
 GROUP BY m.id_apoderado
-ORDER BY ap.apellidos_apoderado,ap.nombres_apoderado$$
+ORDER BY ap.apellidos_apoderado,ap.nombres_apoderado ASC$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_grados` (IN `nivel` CHAR(1))  NO SQL
 SELECT g.id_grado,g.descripcion_grado,g.nivel_grado,
@@ -201,11 +212,29 @@ SELECT * FROM grados g
  WHERE g.nivel_grado=nivel
  AND g.estado_grado=1$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_historial_matricula` (IN `alumno` SMALLINT)  NO SQL
+SELECT m.id_matricula,g.descripcion_grado,s.nombre_seccion,a.anhio_lectivo, ap.id_apoderado,ap.apellidos_apoderado,ap.nombres_apoderado,ap.doc_apoderado,deuda.total FROM apoderado ap LEFT JOIN
+    (  SELECT id_apoderado, SUM(saldo_deuda) as total
+       FROM detalle_deuda GROUP BY id_apoderado
+    ) deuda ON ap.id_apoderado = deuda.id_apoderado
+ INNER JOIN matricula m ON m.id_apoderado=ap.id_apoderado
+ INNER JOIN secciones s ON s.id_seccion=m.id_seccion
+ INNER JOIN grados g ON g.id_grado=s.id_grado
+ INNER JOIN anhio_lectivo a ON a.idanhio=m.id_anhio
+ WHERE m.id_alumno=alumno
+ GROUP BY ap.id_apoderado,m.id_matricula,g.descripcion_grado,s.nombre_seccion,
+ a.anhio_lectivo$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_libros_activos` ()  NO SQL
 SELECT * FROM libro l 
 INNER JOIN grados g ON g.id_grado=l.id_grado
 WHERE l.estado_libro=1
-ORDER BY g.descripcion_grado ASC$$
+ORDER BY g.id_grado ASC$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_libros_xmatricula` (IN `matricula` SMALLINT)  NO SQL
+SELECT * FROM libro_matricula lm
+INNER JOIN libro l ON l.id_libro=lm.id_libro
+WHERE id_matricula=matricula$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_perfil_usuario` ()  NO SQL
 SELECT * FROM perfil_usuario
@@ -248,6 +277,19 @@ WHERE u.idusuario=id$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_resetear_usuario` (IN `id_usu` TINYINT)  NO SQL
 UPDATE usuario SET clave_usu=SHA('1A2B3C4D'),fbaja_usu=NULL
 WHERE idusuario=id_usu$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_alumno` (IN `id` SMALLINT, IN `ape_alum` VARCHAR(60), IN `nom_alum` VARCHAR(50), IN `fnac` DATE, IN `sex_alum` CHAR(1), IN `tel_alum` CHAR(6), IN `cel_alum` CHAR(9), IN `direc_alum` VARCHAR(80), IN `cor_alum` VARCHAR(80), IN `proc_alum` VARCHAR(100), IN `ape_padre` VARCHAR(60), IN `nom_padre` VARCHAR(50), IN `cel_padre` CHAR(9), IN `cor_padre` VARCHAR(80), IN `ape_madre` VARCHAR(60), IN `nom_madre` VARCHAR(50), IN `cel_madre` CHAR(9), IN `cor_madre` VARCHAR(80))  NO SQL
+UPDATE alumno SET apellidos_alumno=ape_alum,
+nombres_alumno=nom_alum,fnac_alumno=fnac,
+sexo_alumno=sex_alum,telefono_alumno=tel_alum,
+celular_alumno=cel_alum,direccion_alumno=direc_alum,
+correo_alumno=cor_alum,
+procedencia_alumno=proc_alum,
+apellidos_padre=ape_padre,nombres_padre=nom_padre,
+celular_padre=cel_padre,correo_padre=cor_padre,
+apellidos_madre=ape_madre,nombres_madre=nom_madre,
+celular_madre=cel_madre,correo_madre=cor_madre
+WHERE id_alumno=id$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_anhio_xcriterio` (IN `criterio` VARCHAR(12), IN `id` TINYINT)  NO SQL
 IF criterio="cerrar" THEN
@@ -295,10 +337,9 @@ WHERE m.id_alumno=alumno
 AND m.estado_matricula=1
 AND m.id_anhio=(SELECT idanhio FROM anhio_lectivo WHERE condicion_anhio='A' AND estado_anhio=1 AND anhio_lectivo=dato_anhio)$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_verificar_seccion` (IN `nombre` VARCHAR(20), IN `turno` CHAR(1), IN `grado` TINYINT)  NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_verificar_seccion` (IN `nombre` VARCHAR(20), IN `grado` TINYINT)  NO SQL
 SELECT * FROM secciones
 WHERE nombre_seccion=nombre
-AND turno_seccion=turno
 AND id_grado=grado
 AND estado_seccion=1$$
 
@@ -387,7 +428,7 @@ INSERT INTO `alumno` (`id_alumno`, `tdoc_alumno`, `doc_alumno`, `apellidos_alumn
 (34, 'DNI', '22699649', 'López Calvo', 'Rebeca', '2006-04-12', 'M', NULL, '934614768', '', NULL, NULL, 'López Caicedo', 'Remigio', NULL, '', 'Calvo Machado', 'Medally', '985538389', '', b'1'),
 (35, 'DNI', '30796276', 'López García', 'Andr?s', '2003-04-21', 'M', NULL, '978939666', '', NULL, NULL, 'López Cadillo', 'Javier', NULL, '', 'García Lazaro', 'Isabel', '952909129', '', b'1'),
 (36, 'DNI', '66637196', 'López Rueda', 'Jose Javier', '2004-06-02', 'M', NULL, '929572233', '', NULL, NULL, 'López Caldas', 'Alex', NULL, '', 'Rueda Aranda', 'Maria Cecilia', NULL, '', b'1'),
-(37, 'DNI', '61821438', 'Abad Chavez', ' Romar', '2006-10-28', 'M', NULL, '988325569', '', NULL, NULL, 'Abad Cajaleon', 'Jhans Carlos', NULL, '', 'Chavez Vasquez', 'Teresa', NULL, '', b'1'),
+(37, 'DNI', '61821438', 'Abad Chavez', 'Romar ', '2006-10-28', 'M', NULL, '988325569', 'Calle Motupe # 114', NULL, NULL, 'Abad Cajaleon', 'Jhans Carlos', NULL, NULL, 'Chavez Vasquez', 'Teresa', NULL, NULL, b'1'),
 (38, 'DNI', '70080533', 'Acha Guerrero', 'Yasanali', '2004-05-19', 'F', NULL, '988118327', '', NULL, NULL, 'Acha Casado', 'Juan Carlos', NULL, '', 'Guerrero Correa', 'Flor Isabel', NULL, '', b'1'),
 (39, 'DNI', '75797998', 'Acosta Santisteban', 'Maria Gisela', '2004-08-08', 'F', NULL, '907796793', '', NULL, NULL, 'Acosta Casimiro', 'Michael', NULL, '', 'Santisteban Ita', 'Milagros Magaly', NULL, '', b'1'),
 (40, 'DNI', '42179802', 'Acuña Cervantes', 'Elmer', '2006-11-15', 'M', '436223', '957923672', '', NULL, NULL, 'Acuña Casio', 'Emerson', NULL, '', 'Cervantes Malaspina', 'Lizbeth', NULL, '', b'1'),
@@ -817,10 +858,10 @@ CREATE TABLE `grados` (
 --
 
 INSERT INTO `grados` (`id_grado`, `descripcion_grado`, `nivel_grado`, `estado_grado`) VALUES
-(1, 'PRIMER GRADO SECUNDARIA', 'S', b'1'),
-(2, 'SEGUNDO GRADO SECUNDARIA', 'S', b'1'),
+(1, 'PRIMER GRADO SECUNDARIA', 'S', b'0'),
+(2, 'SEGUNDO GRADO SECUNDARIA', 'S', b'0'),
 (3, 'TERCER GRADO SECUNDARIA', 'S', b'0'),
-(4, 'CUARTO GRADO SECUNDARIA', 'S', b'0'),
+(4, 'CUARTO GRADO SECUNDARIA', 'S', b'1'),
 (5, 'QUINTO GRADO SECUNDARIA', 'S', b'0');
 
 -- --------------------------------------------------------
@@ -843,11 +884,11 @@ CREATE TABLE `libro` (
 --
 
 INSERT INTO `libro` (`id_libro`, `titulo_libro`, `editorial_libro`, `edicion_libro`, `id_grado`, `estado_libro`) VALUES
-(1, 'DFSSDFSF SFSF', 'FSF SF ', '2018', 1, b'0'),
-(2, 'DSF', 'DSF', '2019', 1, b'0'),
-(3, 'FDG', 'FRTH', '2018', 2, b'0'),
-(4, 'FDG', 'DFG', '2014', 1, b'0'),
-(5, 'GFH', 'JGFJ', '4564', 1, b'0'),
+(1, 'DFSSDFSF SFSF', 'FSF SF ', '2018', 1, b'1'),
+(2, 'DSF', 'DSF', '2019', 1, b'1'),
+(3, 'FDG', 'FRTH', '2018', 2, b'1'),
+(4, 'JG', 'HJ', '2014', 1, b'1'),
+(5, 'GFH', 'JGFJ', '4564', 1, b'1'),
 (6, 'DFBDFB FDH FD HDFH FDHFD DFH F HDFH DFHDFH DFHDF DFH DFH FDH DFH DFH F HDFH DFHD', 'ERGJGFJGJ GJ GJGF JG', '2001', 3, b'1'),
 (7, 'DSFDSF DSF DSF DSF DS FDS FDSF SDFDS DSF DSFSD WRFWQF QWF WQ FWFWQF WF WF WQ FWQ', 'WFQW FWQF WQFWQF WQF', '2015', 4, b'1');
 
@@ -1021,8 +1062,11 @@ INSERT INTO `secciones` (`id_seccion`, `nombre_seccion`, `id_grado`, `turno_secc
 (2, 'A', 1, 'T', b'0'),
 (3, 'A', 2, 'M', b'0'),
 (4, 'A', 1, 'M', b'0'),
-(5, 'A', 1, 'M', b'1'),
-(6, 'B', 2, 'M', b'1');
+(5, 'A', 1, 'M', b'0'),
+(6, 'B', 2, 'M', b'0'),
+(7, 'B', 2, 'T', b'0'),
+(8, 'B', 1, 'T', b'0'),
+(9, 'A', 1, 'M', b'1');
 
 -- --------------------------------------------------------
 
@@ -1227,7 +1271,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `alumno`
 --
 ALTER TABLE `alumno`
-  MODIFY `id_alumno` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=144;
+  MODIFY `id_alumno` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=146;
 --
 -- AUTO_INCREMENT de la tabla `anhio_lectivo`
 --
@@ -1242,7 +1286,7 @@ ALTER TABLE `apoderado`
 -- AUTO_INCREMENT de la tabla `compra`
 --
 ALTER TABLE `compra`
-  MODIFY `id_compra` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id_compra` smallint(6) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT de la tabla `concepto_apafa`
 --
@@ -1252,7 +1296,7 @@ ALTER TABLE `concepto_apafa`
 -- AUTO_INCREMENT de la tabla `detalle_compra`
 --
 ALTER TABLE `detalle_compra`
-  MODIFY `id_detalle_compra` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id_detalle_compra` smallint(6) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT de la tabla `detalle_deuda`
 --
@@ -1287,7 +1331,7 @@ ALTER TABLE `perfil_usuario`
 -- AUTO_INCREMENT de la tabla `recibo`
 --
 ALTER TABLE `recibo`
-  MODIFY `id_recibo` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_recibo` smallint(6) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT de la tabla `reunion`
 --
@@ -1297,7 +1341,7 @@ ALTER TABLE `reunion`
 -- AUTO_INCREMENT de la tabla `secciones`
 --
 ALTER TABLE `secciones`
-  MODIFY `id_seccion` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_seccion` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 --
 -- AUTO_INCREMENT de la tabla `tipo_relacion`
 --
@@ -1307,7 +1351,7 @@ ALTER TABLE `tipo_relacion`
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `idusuario` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `idusuario` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- Restricciones para tablas volcadas
 --

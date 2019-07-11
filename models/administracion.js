@@ -493,13 +493,13 @@ listar_grados_activos(res) {
 cambiar_estado_grado(grado, res) {
 	connection.acquire((err, con) => {
 		if(err){
-			res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+			res.send({status: 0, message: err.sqlMessage});
 		}else{
 		var query = "CALL pa_cambiar_estado_grado("+ [grado.idbusqueda] +","+ [grado.datobusqueda] +")"; 
 		con.query(query,(err, result) => {
 			con.release();
 			if(err){
-                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                res.send({status: 0, message: err.sqlMessage});
 			}else{
 				if (result.affectedRows == 0) {
 					res.send({status: 2, message: 'CAMBIOS NO REALIZADOS'});
@@ -597,6 +597,28 @@ eliminar_seccion(seccion, res) {
 	});
 };
 
+listar_libros_activos(res) {
+    connection.acquire((err, con) => {
+		if(err){
+			res.send({status: 0, message: err.sqlMessage});
+		}else{
+        con.query("CALL pa_listar_libros_activos()", (err, result) => {
+            con.release();
+            if(err){
+                res.send({status: 0, message: err.sqlMessage});
+			}else{
+				if (result[0].length == 0) {
+					res.send({status: 2, message: 'NO HAY DATOS EN LA TABLA LIBROS',data:result[0]});
+				} else {
+                    res.send({status: 1, message: 'CONSULTA EXITOSA',data:result[0]});
+                }
+			}
+           
+		});
+	}
+    });
+};
+
 nvo_libro(libro, res) {
 	connection.acquire((err, con) => {
 		if(err){
@@ -628,7 +650,7 @@ update_libro(libro, res) {
 		if(err){
 			res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
 		}else{
-                var query = "CALL pa_update_libro('"+ [libro.titulo_libro.toUpperCase()] +"','"+ [libro.editorial_libro.toUpperCase()] 
+                var query = "CALL pa_update_libros('"+ [libro.titulo_libro.toUpperCase()] +"','"+ [libro.editorial_libro.toUpperCase()] 
                     + "','" +[libro.edicion_libro.toUpperCase()]+"'," + [libro.id_grado] + ","+[libro.id_libro]+")";
 		
                 con.query(query,(err, result) => {
@@ -670,27 +692,7 @@ eliminar_libro(libro, res) {
 	});
 };
 
-listar_libros_activos(res) {
-    connection.acquire((err, con) => {
-		if(err){
-			res.send({status: 0, message: err.sqlMessage});
-		}else{
-        con.query("CALL pa_listar_libros_activos()", (err, result) => {
-            con.release();
-            if(err){
-                res.send({status: 0, message: err.sqlMessage});
-			}else{
-				if (result[0].length == 0) {
-					res.send({status: 2, message: 'NO HAY DATOS EN LA TABLA LIBROS',data:result[0]});
-				} else {
-                    res.send({status: 1, message: 'CONSULTA EXITOSA',data:result[0]});
-                }
-			}
-           
-		});
-	}
-    });
-};
+
 
 //http://raquellorente.esy.es/nodejs/subir-y-bajar-archivos-del-servidor-con-express-y-node-js/
 agregar(user, res) {

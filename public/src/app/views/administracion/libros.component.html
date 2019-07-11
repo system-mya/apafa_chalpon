@@ -23,13 +23,13 @@
        <table mat-table [dataSource]="dataSource" matSort id="tabla">          
        
          <ng-container matColumnDef="descripcion_grado">
-           <th width="20%" mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" nowrap > Grado </th>
+           <th width="25%" mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" nowrap > Grado </th>
            <td mat-cell *matCellDef="let element"> {{element.descripcion_grado}}</td>
          </ng-container>
      
      
          <ng-container matColumnDef="titulo_libro">
-           <th width="30%" mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" style="text-align: center !important" nowrap> Título </th>
+           <th width="25%" mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" style="text-align: center !important" nowrap> Título </th>
            <td mat-cell *matCellDef="let element"> {{element.titulo_libro}} </td>
          </ng-container>
      
@@ -163,7 +163,7 @@
             <div class="form-group col-sm-12">
               <label for="id_grado" style="font-weight: bold;">Año Lectivo <i class="fa fa-certificate" style="color:red !important"></i> :</label>
               <select class="form-control" id="id_grado" name="id_grado"
-              placeholder="Selecionar Perfil" [(ngModel)]="libro.id_grado" #editgrado="ngModel" required>
+              placeholder="Selecionar Perfil" [(ngModel)]="libro.id_grado" #editgrado="ngModel" disabled required>
                   <option value="0" selected disabled>-----Seleccionar Grado------</option>
                   <option *ngFor="let g of DataGrado" value="{{g.id_grado}}">{{g.descripcion_grado}}</option>
               </select>

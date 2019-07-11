@@ -45,7 +45,7 @@ export class AlumnosComponent implements OnInit {
   constructor(private _AlumnosServicios:AlumnosService,
     private _MatriculaServicios:MatriculaService,private toastr: ToastrService,
     @Inject(DOCUMENT) private document: Document,private loadingBar: LoadingBarService) {
-    this.LoadTableData();
+    this.ListarAlumnos();
     this.panel_tabla=true;
     this.panel_registro=false;
     this.DatoBusqueda = {
@@ -69,15 +69,21 @@ export class AlumnosComponent implements OnInit {
     
   }
 
-  LoadTableData (){
-    this.loadingBar.start();
+  ListarAlumnos(){
     this._AlumnosServicios.getListarAlumnos().subscribe(
       data => {
-        this.loadingBar.complete();
-        this.DataArray = data.data;
-        this.dataSource = new MatTableDataSource(this.DataArray);
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
+        if(data.status==1){   
+          this.DataArray = data.data;
+          this.dataSource = new MatTableDataSource(this.DataArray);
+          this.dataSource.paginator = this.paginator;
+          this.dataSource.sort = this.sort;
+        }else{
+          this.toastr.error(data.message, 'Aviso!');
+          this.DataArray = data.data;
+          this.dataSource = new MatTableDataSource(this.DataArray);
+          this.dataSource.paginator = this.paginator;
+          this.dataSource.sort = this.sort;
+        }
       }
     )
   }
@@ -114,19 +120,19 @@ export class AlumnosComponent implements OnInit {
     if(opt=='I'){
       this.panel_tabla=true;
       this.panel_registro=false;
-      this.LoadTableData();
+      this.ListarAlumnos();
     }else{
       if(opt=='D'){
         this.panel_tabla=true;
         this.panel_detalle=false;
-        this.LoadTableData(); 
+        this.ListarAlumnos(); 
       }else{
         if(opt=='LL'){
           this.ListadoLibrosModal.hide();  
         }else{
           this.panel_tabla=true;
           this.panel_modificar=false;
-          this.LoadTableData(); 
+          this.ListarAlumnos(); 
         }
       }     
     }
@@ -155,7 +161,7 @@ export class AlumnosComponent implements OnInit {
                 allowOutsideClick: false,
                 allowEscapeKey:false
             })            
-            this.LoadTableData();
+            this.ListarAlumnos();
             this.panel_registro=false;
             this.panel_tabla=true;
           }else{
@@ -184,19 +190,22 @@ export class AlumnosComponent implements OnInit {
 
 DataAlumno : any = [];
 btnDetalle_Alumno(id){
+  this.loadingBar.start();
   this.DatoBusqueda.idbusqueda=id;
   this.document.documentElement.scrollTop = 0;
   this._AlumnosServicios.detalle_alumno(this.DatoBusqueda)
     .then(data => {
       if(data.status==1){
+        this.loadingBar.complete();
         this.DataAlumno = data.data[0];
         this.DataAlumno.fnac_alumno = data.data[0].fnac_alumno.toString().slice(0,10);
         //this.DataAlumno.sexo_alumno = data.data[0].sexo_alumno.charAt(0);
         this.Listar_Historial_Matricula(data.data[0].id_alumno);
         this.panel_detalle=true; 
         this.panel_tabla=false;
-        this.toastr.success(data.message, 'Aviso!',{positionClass: 'toast-top-right',timeOut: 500});
+        this.toastr.success(data.message, 'Aviso!');
       }else{
+        this.loadingBar.complete();   
         this.toastr.error(data.message, 'Aviso!');
        }
     } )
@@ -219,21 +228,22 @@ btnDetalle_Alumno(id){
 
   btnEdit_Alumno(id){
     this.loadingBar.start();
-    this.panel_tabla=false;
-    this.panel_modificar=true;
     this.DatoBusqueda.idbusqueda=id;
     this.document.documentElement.scrollTop = 0;
     this._AlumnosServicios.detalle_alumno(this.DatoBusqueda)
     .then(data => {
       if(data.status==1){
-        this.loadingBar.complete();
+        this.loadingBar.complete();        
+        this.panel_tabla=false;
+        this.panel_modificar=true;
         this.Editalumno = data.data[0];
         this.Editalumno.id_alumno = data.data[0].id_alumno;
         this.Editalumno.sexo_alumno = data.data[0].sexo_alumno.charAt(0);
         this.Editalumno.tdoc_alumno = data.data[0].tdoc_alumno.substr(0,3);
         this.Editalumno.fnac_alumno = data.data[0].fnac_alumno.toString().slice(0,10);
-        this.toastr.success(data.message, 'Aviso!',{positionClass: 'toast-top-right',timeOut: 500});
+        this.toastr.success(data.message, 'Aviso!');
       }else{
+        this.loadingBar.complete();   
         this.toastr.error(data.message, 'Aviso!');
        }
     } )
@@ -262,7 +272,7 @@ btnDetalle_Alumno(id){
                 allowOutsideClick: false,
                 allowEscapeKey:false
             })            
-            this.LoadTableData();
+            this.ListarAlumnos();
             this.panel_modificar=false;
             this.panel_tabla=true;
           }else{
@@ -309,7 +319,7 @@ btnDetalle_Alumno(id){
                   allowOutsideClick: false,
                   allowEscapeKey:false
               })
-              this.LoadTableData();
+              this.ListarAlumnos();
               }else{
                 this.toastr.error(data.message, 'Aviso!');
                }
@@ -333,17 +343,11 @@ btnDetalle_Alumno(id){
             this.loadingBar.complete();
            }else{
               if(data.status==2){
-                this.toastr.info(data.message, 'Aviso!',{
-                  positionClass: 'toast-top-right',
-                  timeOut: 700
-                });
+                this.toastr.info(data.message, 'Aviso!');
                 this.DataMisLibros=null;
                 this.loadingBar.complete();
               }else{
-                this.toastr.error(data.message, 'Aviso!',{
-                  positionClass: 'toast-top-right',
-                  timeOut: 700
-                });
+                this.toastr.error(data.message, 'Aviso!');
               }
             }
          } )
