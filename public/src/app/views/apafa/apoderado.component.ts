@@ -5,6 +5,7 @@ import {ModalDirective} from 'ngx-bootstrap/modal';
 import {clsApoderado,clsBusqueda} from '../../app.datos';
 import { ApoderadoService } from './apoderado.service';
 import { ToastrService } from 'ngx-toastr';
+import { LoadingBarService } from '@ngx-loading-bar/core';
 declare var swal: any;
 
 @Component({
@@ -26,7 +27,8 @@ export class ApoderdoComponent {
   @ViewChild('myForm') mytemplateForm : NgForm;
   public DatoBusqueda : clsBusqueda;
   public optAd : string;
-  constructor(private _ApoderadoServicio:ApoderadoService,private toastr: ToastrService) {
+  constructor(private _ApoderadoServicio:ApoderadoService,private toastr: ToastrService,
+    private loadingBar: LoadingBarService) {
     this.apoderado = {
       tdoc_apoderado:'',
       correo_apoderado:''
@@ -76,9 +78,11 @@ DataApoderados : any = [];
        this.dataSource.paginator = this.paginator;
        this.dataSource.sort = this.sort;
       }else{
-        this.toastr.error(data.message, 'Aviso!',{
-          positionClass: 'toast-top-right'
-        });
+        this.toastr.error(data.message, 'Aviso!');
+        this.DataApoderados = data.data;
+       this.dataSource = new MatTableDataSource(this.DataApoderados);
+       this.dataSource.paginator = this.paginator;
+       this.dataSource.sort = this.sort;
       }
       
     }
@@ -91,6 +95,7 @@ applyFilter(filterValue: string) {
     this.dataSource.paginator.firstPage();
   }
 }
+
   onSubmit(form:clsApoderado){    
       swal({
         title: '¿Esta seguro que desea guardar?',
@@ -137,16 +142,19 @@ applyFilter(filterValue: string) {
 
 DetApoderado : any = [];
 btnDetalle_Apoderado(id){
+  this.loadingBar.start();
   this.DatoBusqueda.idbusqueda=id;
   console.log(this.DatoBusqueda.idbusqueda);
-  this.DetApoderadoModal.show(); 
-    this._ApoderadoServicio.detalle_apoderado(this.DatoBusqueda)
+  this._ApoderadoServicio.detalle_apoderado(this.DatoBusqueda)
     .then(data => {
       if(data.status==1){
+        this.loadingBar.complete();
+        this.DetApoderadoModal.show(); 
         this.DetApoderado = data.data[0];
         //this.DataAlumno.sexo_alumno = data.data[0].sexo_alumno.charAt(0);
         this.toastr.success(data.message, 'Aviso!',{positionClass: 'toast-top-right',timeOut: 500});
       }else{
+        this.loadingBar.complete();
         this.toastr.error(data.message, 'Aviso!');
        }
     } )

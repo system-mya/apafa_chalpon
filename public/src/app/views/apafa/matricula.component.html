@@ -4,17 +4,23 @@
             <h5><strong>
                 <i class="fa fa-align-justify"></i>&nbsp;&nbsp;Lista de Matriculados
               </strong>
+              <div class="card-header-actions">
+                  <i class="fa fa-plus-square btn btn-success btn-xs" aria-hidden="true" matTooltip="Agregar Matricula"
+                  matTooltipClass="tooltip-mensaje" style="cursor: pointer;margin-top: -15px;margin-right: 10px;"
+                  data-toggle="modal" (click)="btnNueva_Matricula()"></i>
+                <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true" style="color: red;cursor: pointer;"
+                  matTooltip="Imprimir Padrón"
+                  matTooltipClass="tooltip-mensaje"
+                (click)="VerPDF()" *ngIf="panel_tabla"></i>
+             </div>
               <span class="float-right">
-                <button class="btn btn-success btn-xs" 
-                matTooltip="Agregar Matricula"
-                matTooltipClass="tooltip-mensaje"
-                data-toggle="modal" (click)="btnNueva_Matricula()">
-                  <span class="fa fa-plus-square"></span>
-                </button>
-              </span></h5>
+                
+              </span>
+              </h5>
        </div>
        <div class="card-body">
           <div class="mat-elevation-z8 table-responsive">
+            {{DataGradosActivos}}
               <mat-form-field class="example-full-width" style="margin-left: 15px;">
                 <span matPrefix>Buscar Alumno: &nbsp;</span>
                 <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Ingrese Dato">
@@ -48,12 +54,12 @@
                                 [matTooltipPosition]="positionOptions[3]"
                                 data-toggle="modal" (click)="Listar_Libros(element.id_grado,element.id_matricula,element.grado)">
                               <span class="fa fa-archive"></span></button>
-                          <button class="btn btn-success btn-xs distancia_btn_opciones"
-                              matTooltip="Editar"
+                          <button class="btn btn-primary btn-xs distancia_btn_opciones"
+                              matTooltip="Conceptos"
                               matTooltipClass="tooltip-mensaje"
                               [matTooltipPosition]="positionOptions[3]"
                               data-toggle="modal" (click)="btnEdit_Alumno(element.id_alumno)">
-                            <span class="fa fa-edit"></span></button>
+                            <span class="fa fa-file-text-o"></span></button>
                            <button class="btn btn-danger btn-xs distancia_btn_opciones"
                                 matTooltip="Eliminar"
                                 matTooltipClass="tooltip-mensaje"

@@ -231,12 +231,12 @@ update_alumno(alumno, res) {
     listar_apoderados(res) {
         connection.acquire((err, con) => {
             if(err){
-                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                res.send({status: 0, message: err.sqlMessage});
             }else{
             con.query("CALL pa_listar_apoderados()", (err, result) => {
                 con.release();
                 if(err){
-                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                    res.send({status: 0, message: err.sqlMessage});
                 }else{
                     if (result[0].length == 0) {
                         res.send({status: 2, message: 'NO HAY DATOS EN LA TABLA APODERADOS'});
@@ -253,7 +253,7 @@ update_alumno(alumno, res) {
     nvo_apoderado(apoderado, res) {
         connection.acquire((err, con) => {
             if(err){
-                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                res.send({status: 0, message: err.sqlMessage});
             }else{
     
             if ([apoderado.correo_apoderado]==''){
@@ -267,7 +267,7 @@ update_alumno(alumno, res) {
             con.query(query_doc,(err, result) => {
                 con.release();
                 if(err){
-                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS1'});
+                    res.send({status: 0, message: err.sqlMessage});
                 }else{
                     if (result[0].length == 0) {
                         var query = "CALL pa_insertar_apoderado('"+ [apoderado.tdoc_apoderado] +"','"+ [apoderado.doc_apoderado] 
@@ -277,7 +277,7 @@ update_alumno(alumno, res) {
                         
                         con.query(query,(err, result) => {
                             if(err){
-                                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS2'});
+                                res.send({status: 0, message: err.sqlMessage});
                             }else{
                                 if (result.affectedRows == 1) {
                                     res.send({status: 1, message: 'APODERADO REGISTRADO'});
@@ -300,14 +300,14 @@ update_alumno(alumno, res) {
     obtener_apoderado(apoderado, res) {
         connection.acquire((err, con) => {
             if(err){
-                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                res.send({status: 0, message: err.sqlMessage});
             }else{
             var query = "CALL pa_detalle_apoderado("+ [apoderado.idbusqueda] +")"; 
             /* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
             con.query(query,(err, result) => {
                 con.release();
                 if(err){
-                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                    res.send({status: 0, message: err.sqlMessage});
                 }else{
                     if (result[0].length == 0) {
                         res.send({status: 2, message: 'Apoderado No Existe'});
@@ -323,7 +323,7 @@ update_alumno(alumno, res) {
     update_apoderado(apoderado, res) {
         connection.acquire((err, con) => {
             if(err){
-                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                res.send({status: 0, message: err.sqlMessage});
             }else{
             
                 if ([apoderado.correo_apoderado]==''){
@@ -340,7 +340,7 @@ update_alumno(alumno, res) {
                         + "'," + correo_apoderado + ")";
                         con.query(query,(err, result) => {
                             if(err){
-                                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOSs'});
+                                res.send({status: 0, message: err.sqlMessage});
                             }else{
                                 if (result.affectedRows == 1) {
                                     res.send({status: 1, message: 'APODERADO ACTUALIZADO'});
@@ -381,12 +381,12 @@ update_alumno(alumno, res) {
     listar_matriculados(res) {
         connection.acquire((err, con) => {
             if(err){
-                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                res.send({status: 0, message: err.sqlMessage});
             }else{
             con.query("CALL pa_listar_matriculados()", (err, result) => {
                 con.release();
                 if(err){
-                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                    res.send({status: 0, message: err.sqlMessage});
                 }else{
                     if (result[0].length == 0) {
                         res.send({status: 2, message: 'NO HAY DATOS EN LA TABLA MATRICULA'});
@@ -582,14 +582,14 @@ update_alumno(alumno, res) {
     listar_historial_matricula(alumno, res) {
         connection.acquire((err, con) => {
             if(err){
-                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                res.send({status: 0, message: err.sqlMessage});
             }else{
             var query = "CALL pa_listar_historial_matricula("+ [alumno.idbusqueda] +")"; 
             /* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
             con.query(query,(err, result) => {
                 con.release();
                 if(err){
-                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                    res.send({status: 0, message: err.sqlMessage});
                 }else{
                     if (result[0].length == 0) {
                         res.send({status: 2, message: 'Historial No Existe'});

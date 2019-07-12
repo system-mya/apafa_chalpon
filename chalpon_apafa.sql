@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 10-07-2019 a las 22:51:19
+-- Tiempo de generación: 12-07-2019 a las 01:16:46
 -- Versión del servidor: 5.7.14
 -- Versión de PHP: 5.6.25
 
@@ -53,9 +53,17 @@ nombres_padre,celular_padre,correo_padre,apellidos_madre,nombres_madre,celular_m
 WHERE id_alumno=id
 AND estado_alumno=1$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_detalle_apoderado` (IN `id` SMALLINT)  NO SQL
+SELECT id_apoderado, (CASE WHEN tdoc_apoderado='OTR' THEN 'OTROS' ELSE 'DNI' END) AS tdoc_apoderado, doc_apoderado, apellidos_apoderado,nombres_apoderado,(CASE WHEN sexo_apoderado='M' THEN 'MASCULINO' ELSE 'FEMENINO' END) AS sexo_apoderado, celular_apoderado, direccion_apoderado, correo_apoderado FROM apoderado
+WHERE id_apoderado=id
+AND estado_apoderado=1$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_alumno` (IN `id` SMALLINT)  NO SQL
 UPDATE alumno SET estado_alumno=0
 WHERE id_alumno=id$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_apoderado` (IN `id_apo` SMALLINT)  NO SQL
+UPDATE apoderado SET estado_apoderado=0 WHERE id_apoderado=id_apo$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_libro` (IN `idlibro` TINYINT)  NO SQL
 UPDATE libro SET estado_libro=0 WHERE id_libro=idlibro$$
@@ -180,7 +188,7 @@ nombres_apoderado,(CASE WHEN sexo_apoderado='M' THEN 'MASCULINO' ELSE 'FEMENINO'
 celular_apoderado
 FROM apoderado
 WHERE estado_apoderado=1
-ORDER BY apellidos_apoderado$$
+ORDER BY apellidos_apoderado ASC$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_apoderados_xanhio` (IN `anhio` TINYINT)  NO SQL
 SELECT m.id_apoderado,ap.apellidos_apoderado,ap.nombres_apoderado,ap.doc_apoderado,ap.celular_apoderado FROM matricula m
@@ -235,6 +243,18 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_libros_xmatricula` (IN `m
 SELECT * FROM libro_matricula lm
 INNER JOIN libro l ON l.id_libro=lm.id_libro
 WHERE id_matricula=matricula$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_matriculados` ()  NO SQL
+SELECT a.id_alumno,a.doc_alumno,CONCAT(a.apellidos_alumno,' ',a.nombres_alumno) as datos_alumno,m.id_matricula,
+g.descripcion_grado as grado,g.id_grado,s.nombre_seccion as seccion FROM matricula m 
+INNER JOIN apoderado ap ON m.id_apoderado=ap.id_apoderado
+INNER JOIN alumno a ON a.id_alumno=m.id_alumno
+INNER JOIN anhio_lectivo an ON an.idanhio=m.id_anhio
+INNER JOIN secciones s ON s.id_seccion=m.id_seccion
+INNER JOIN grados g ON g.id_grado=s.id_grado
+INNER JOIN tipo_relacion tr ON tr.id_tipo_relacion=m.id_tipo_relacion
+WHERE m.estado_matricula=1
+AND m.id_anhio=(SELECT idanhio FROM anhio_lectivo WHERE condicion_anhio='A' AND estado_anhio=1)$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_perfil_usuario` ()  NO SQL
 SELECT * FROM perfil_usuario
@@ -302,6 +322,13 @@ ELSE
 UPDATE anhio_lectivo SET estado_anhio=0 
 WHERE idanhio=id;
 END IF$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_apoderado` (IN `id_apo` SMALLINT, IN `ape_apod` VARCHAR(60), IN `nom_apod` VARCHAR(50), IN `sex_apod` CHAR(1), IN `cel_apod` CHAR(9), IN `dir_apod` VARCHAR(80), IN `cor_apod` VARCHAR(80))  NO SQL
+UPDATE apoderado SET apellidos_apoderado=ape_apod,
+nombres_apoderado=nom_apod,sexo_apoderado=sex_apod,
+celular_apoderado=cel_apod,
+direccion_apoderado=dir_apod,correo_apoderado=cor_apod
+WHERE id_apoderado=id_apo$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_clave` (IN `clave` VARCHAR(10), IN `id` SMALLINT)  NO SQL
 UPDATE usuario SET clave_usu=SHA(clave) 
@@ -706,7 +733,7 @@ INSERT INTO `apoderado` (`id_apoderado`, `tdoc_apoderado`, `doc_apoderado`, `ape
 (109, 'DNI', '14002639', 'Cajahuaringa Santillana', 'Alexandra', 'F', '932895470', '', NULL, b'1'),
 (110, 'DNI', '17553397', 'Cruz Cañazca', 'Solange', 'F', '966306829', '', NULL, b'1'),
 (111, 'DNI', '19838080', 'Delgado Del Carpio', 'Idalia', 'F', '955472585', '', NULL, b'1'),
-(112, 'DNI', '11717065', 'Abad Solis', 'Carmen', 'F', '913251919', '', NULL, b'1'),
+(112, 'DNI', '11717065', 'Abad Solis', 'Carmen', 'F', '913251919', 'dAD # 114', NULL, b'1'),
 (113, 'DNI', '14268468', 'Leo Mojo', 'Candy', 'F', '973591530', '', NULL, b'1'),
 (114, 'DNI', '17198872', 'Aguilar Pauca', 'Karla Luz', 'F', '941267001', '', NULL, b'1'),
 (115, 'DNI', '16853284', 'Vicente Teves', 'Rosa Leydi', 'F', '935554463', '', NULL, b'1'),
@@ -737,7 +764,8 @@ INSERT INTO `apoderado` (`id_apoderado`, `tdoc_apoderado`, `doc_apoderado`, `ape
 (140, 'DNI', '14142960', 'Perez Jimenez', 'Zoraida', 'F', '910852396', '', NULL, b'1'),
 (141, 'DNI', '12017303', 'Olano Medina', 'Leyda Madeli', 'F', '957631005', '', NULL, b'1'),
 (142, 'DNI', '12718589', 'Medina Galan', 'Lisset Vanesa', 'F', '931936960', '', NULL, b'1'),
-(143, 'DNI', '17400274', 'Reyna Perez', 'Laura Raquel', 'F', '945089569', '', NULL, b'1');
+(143, 'DNI', '17400274', 'Reyna Perez', 'Laura Raquel', 'F', '945089569', '', NULL, b'1'),
+(144, 'DNI', '11111111', 'Dadd', 'Eadad', 'M', '546436456', 'dfdsfdsf', NULL, b'1');
 
 -- --------------------------------------------------------
 
@@ -858,7 +886,7 @@ CREATE TABLE `grados` (
 --
 
 INSERT INTO `grados` (`id_grado`, `descripcion_grado`, `nivel_grado`, `estado_grado`) VALUES
-(1, 'PRIMER GRADO SECUNDARIA', 'S', b'0'),
+(1, 'PRIMER GRADO SECUNDARIA', 'S', b'1'),
 (2, 'SEGUNDO GRADO SECUNDARIA', 'S', b'0'),
 (3, 'TERCER GRADO SECUNDARIA', 'S', b'0'),
 (4, 'CUARTO GRADO SECUNDARIA', 'S', b'1'),
@@ -929,7 +957,8 @@ INSERT INTO `matricula` (`id_matricula`, `fecha_matricula`, `id_apoderado`, `id_
 (38, '2019-07-08', 112, 37, 23, 5, 2, b'1'),
 (39, '2019-07-08', 112, 38, 23, 5, 2, b'1'),
 (40, '2019-07-08', 55, 39, 23, 5, 2, b'1'),
-(41, '2019-07-08', 112, 40, 23, 6, 2, b'1');
+(41, '2019-07-08', 112, 40, 23, 6, 2, b'1'),
+(42, '2019-07-11', 112, 41, 23, 9, 1, b'1');
 
 -- --------------------------------------------------------
 
@@ -1281,7 +1310,7 @@ ALTER TABLE `anhio_lectivo`
 -- AUTO_INCREMENT de la tabla `apoderado`
 --
 ALTER TABLE `apoderado`
-  MODIFY `id_apoderado` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=144;
+  MODIFY `id_apoderado` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=145;
 --
 -- AUTO_INCREMENT de la tabla `compra`
 --
@@ -1316,7 +1345,7 @@ ALTER TABLE `libro`
 -- AUTO_INCREMENT de la tabla `matricula`
 --
 ALTER TABLE `matricula`
-  MODIFY `id_matricula` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `id_matricula` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 --
 -- AUTO_INCREMENT de la tabla `otro_ingreso`
 --

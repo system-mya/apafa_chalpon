@@ -8,6 +8,22 @@ import {ModalDirective} from 'ngx-bootstrap/modal';
 import {clsMatricula,clsGrados,clsSecciones,clsTipo_Relacion,clsBusqueda,clsLibro,clsLibro_Matricula} from '../../app.datos';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 declare var swal: any;
+import * as jspdf from 'jspdf';
+import 'jspdf-autotable';
+function bodyRows(rowCount) {
+  rowCount = rowCount || 10;
+  let body = [];
+  for (var j = 1; j <= rowCount; j++) {
+      body.push({
+          id: j,
+          name: 'faker.name.findName()',
+          email: 'faker.internet.email()',
+          city: 'faker.address.city()',
+          expenses: 'faker.finance.amount()',
+      });
+  }
+  return body;
+}
 
 @Component({
   templateUrl: 'matricula.component.html',
@@ -28,6 +44,7 @@ export class MatriculaComponent {
   public panel_tabla : boolean;
   public panel_registro_libro : boolean;
   public optAd : string;
+  public DataGradosActivos:any=[];
   constructor(private _MatriculaServicios:MatriculaService,private toastr: ToastrService,
     private _GradoServicios:GradoSeccionService,private loadingBar: LoadingBarService) { 
     this.ListarMatriculados();
@@ -49,9 +66,7 @@ export class MatriculaComponent {
        this.dataSource.paginator = this.paginator;
        this.dataSource.sort = this.sort;
       }else{
-        this.toastr.error(data.message, 'Aviso!',{
-          positionClass: 'toast-top-right'
-        });
+        this.toastr.error(data.message, 'Aviso!');
       }
       
     }
@@ -101,9 +116,7 @@ DataGrado : clsGrados;
        if(data.status==1){
          this.DataGrado = data.data;
        }else{
-         this.toastr.error("Consulta Sin Exito", 'Aviso!',{
-           positionClass: 'toast-top-right'
-         });
+         this.toastr.error("Consulta Sin Exito", 'Aviso!');
        }
        
      }
@@ -117,9 +130,7 @@ DataGrado : clsGrados;
        if(data.status==1){
          this.DataRelaciones = data.data;
        }else{
-         this.toastr.error("Consulta Sin Exito", 'Aviso!',{
-           positionClass: 'toast-top-right'
-         });
+         this.toastr.error("Consulta Sin Exito", 'Aviso!');
        }
        
      }
@@ -140,24 +151,19 @@ DataGrado : clsGrados;
             this.matricula.id_seccion=0;
            }else{
              if(data.status==2){
-              this.toastr.error(data.message, 'Aviso!',{
-                positionClass: 'toast-top-right',
-                timeOut: 500
-              });
+              this.toastr.error(data.message, 'Aviso!');
               this.DataSecciones=null;
               this.loadingBar.complete();
              }else{
-              this.toastr.error(data.message, 'Aviso!',{
-                positionClass: 'toast-top-right',
-                timeOut: 500
-              });
+              this.toastr.error(data.message, 'Aviso!');
               this.DataSecciones=null;
               this.loadingBar.complete();
              }
+             this.matricula.id_seccion=0;
             }
-         } )
+         })
          .catch(err => console.log(err))
-}
+ }
 
   btnBuscar_xDoc(id:number,dato:string){
   this.DatoBusqueda.idbusqueda=id;
@@ -187,47 +193,49 @@ DataGrado : clsGrados;
   }
 
   onSubmit(form:clsMatricula){    
-    swal({
-      title: '¿Esta seguro que desea guardar?',
-      type: 'question',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Si, Guardar!',
-      allowOutsideClick: false,
-      allowEscapeKey:false,
-    }).then((result) => {
-      if (result.value==true) {
-        form.anhio=localStorage.getItem('_anhio');
-        this._MatriculaServicios.nva_matricula(form)
-        .then(data => {
-          if(data.status==1){
-            swal({
-                title: 'Aviso!',
-                text: data.message,
-                type: 'success',
-                allowOutsideClick: false,
-                allowEscapeKey:false
-            })            
-            this.ListarMatriculados();
-            this.NvaMatriculaModal.hide();
-            this.mytemplateForm.resetForm();
-          }else{
+    if(form.id_tipo_relacion!=0 && form.id_grado!=0 && form.id_seccion!=0){
+      swal({
+        title: '¿Esta seguro que desea guardar?',
+        type: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si, Guardar!',
+        allowOutsideClick: false,
+        allowEscapeKey:false,
+      }).then((result) => {
+        if (result.value==true) {
+          form.anhio=localStorage.getItem('_anhio');
+          this._MatriculaServicios.nva_matricula(form)
+          .then(data => {
+            if(data.status==1){
               swal({
-                title: 'Aviso!',
-                html:
-                '<span style="color:red">' +
-                data.message +
-                '</span>',
-                type: 'error',
-                allowOutsideClick: false,
-                allowEscapeKey:false
-              })
-          }
-        } )
-        .catch(err => console.log(err))
-      }
-    })
+                  title: 'Aviso!',
+                  text: data.message,
+                  type: 'success',
+                  allowOutsideClick: false,
+                  allowEscapeKey:false
+              })            
+              this.ListarMatriculados();
+              this.NvaMatriculaModal.hide();
+              this.mytemplateForm.resetForm();
+            }else{
+                swal({
+                  title: 'Aviso!',
+                  html:
+                  '<span style="color:red">' +
+                  data.message +
+                  '</span>',
+                  type: 'error',
+                  allowOutsideClick: false,
+                  allowEscapeKey:false
+                })
+            }
+          } )
+          .catch(err => console.log(err))
+        }
+      })
+    }
   }
   
   DataLibros : clsLibro;
@@ -411,5 +419,65 @@ DataGrado : clsGrados;
              }
           })
           .catch(err => console.log(err))
+  }
+ 
+  public VerPDF()
+  {
+    var doc = new jspdf({orientation: 'portrait',unit: 'mm',format: 'A4'});
+    var totalPagesExp = "{total_pages_count_string}";
+    var img = new Image();
+    img.src = 'assets/img/cabecera_recibos.png'
+    doc.addImage(img,'png',25,10,150,40);
+    doc.setFontSize(12);
+    doc.setFont('helvetica');
+    doc.setFontType('bold');
+    doc.text(70, 60, 'LISTA GENERAL DE APODERADOS');
+    this.DataGradosActivos = this._GradoServicios.ListarGradosActivos().subscribe(
+      data => {
+        if(data.status==1){
+          console.log(data.data);  
+          return data.data;
+        }else{
+          this.toastr.error("Consulta Sin Exito", 'Aviso!');
+        }
+        
+      });
+      var headRows = [{id: 'ID', name: 'Name', email: 'Email', city: 'City', expenses: 'Sum'}];
+      console.log(this.DataGradosActivos);
+      for (var j = 0; j < this.DataGradosActivos.length; j++) {
+        console.log(j);
+        doc.text(130, 60, 'N° de Recibo: ' + this.DataGradosActivos[j].id_grado);
+        doc.autoTable({
+            head: headRows, 
+            body: bodyRows(10),
+            startY: 110, 
+          showHead: 'firstPage',
+          theme: 'grid',
+          headStyles: {
+            cellWidth: 'wrap',
+         },
+            didDrawPage: function (data) {
+              // Footer
+              var str = "Página " + doc.internal.getNumberOfPages()
+              // Total page number plugin only available in jspdf v1.0+
+              if (typeof doc.putTotalPages === 'function') {
+                  str = str + " de " + totalPagesExp;
+              }
+              doc.setFontSize(10);
+        
+              // jsPDF 1.4+ uses getWidth, <1.4 uses .width
+              var pageSize = doc.internal.pageSize;
+              var pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
+              doc.text(str, data.settings.margin.left, pageHeight - 10);
+          }
+        });
+    }
+  
+  if (typeof doc.putTotalPages === 'function') {
+    doc.putTotalPages(totalPagesExp);
+}
+    
+  
+    doc.output('save', 'padron_matriculados.pdf');
   }
 }

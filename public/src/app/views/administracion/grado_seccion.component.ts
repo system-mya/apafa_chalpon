@@ -49,9 +49,7 @@ export class GradoSeccionComponent implements OnInit {
        if(data.status==1){
          this.DataGrado = data.data;
        }else{
-         this.toastr.error("Consulta Sin Exito", 'Aviso!',{
-           positionClass: 'toast-top-right'
-         });
+         this.toastr.error("Consulta Sin Exito", 'Aviso!');
        }
        
      }
