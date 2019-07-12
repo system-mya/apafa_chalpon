@@ -101,25 +101,16 @@ export class GradoSeccionComponent implements OnInit {
            if(data.status==1){
             this.DataSecciones = data.data;
             this.loadingBar.complete();
-             this.toastr.success(data.message, 'Aviso!',{
-               positionClass: 'toast-top-right',
-               timeOut: 500
-             });
+             this.toastr.success(data.message, 'Aviso!');
              this.btnregistrar=true;
            }else{
              if(data.status==2){
-              this.toastr.error(data.message, 'Aviso!',{
-                positionClass: 'toast-top-right',
-                timeOut: 500
-              });
+              this.toastr.error(data.message, 'Aviso!');
               this.DataSecciones=null;
               this.loadingBar.complete();
               this.btnregistrar=true;
              }else{
-              this.toastr.error(data.message, 'Aviso!',{
-                positionClass: 'toast-top-right',
-                timeOut: 500
-              });
+              this.toastr.error(data.message, 'Aviso!');
               this.DataSecciones=null;
               this.loadingBar.complete();
               this.btnregistrar=false;

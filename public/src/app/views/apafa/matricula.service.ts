@@ -57,4 +57,9 @@ public registrar_devolucion_libro(dato:clsBusqueda){
    .map(data => data.json()).toPromise()
 }
 
+public listar_matriculados_xgrado(grado:clsBusqueda){
+  return this._http.post('/api/apafa/listar_matriculados_xgrado',grado)
+   .map(data => data.json()).toPromise()
+}
+
 }

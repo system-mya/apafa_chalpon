@@ -188,6 +188,11 @@ app.post('/api/apafa/insertar_matricula', (req, res) => {
     apafa.nva_matricula(req.body, res);
 });
 
+//LLAMADA LISTA MATRICULADOS X GRADO
+app.post('/api/apafa/listar_matriculados_xgrado', (req, res) => {
+    apafa.listar_matriculados_xgrado(req.body,res);
+});
+
 //LLAMADA LISTA DE INGRESOS
 app.post('/api/apafa/listar_historial_matricula', (req, res) => {
     apafa.listar_historial_matricula(req.body,res);

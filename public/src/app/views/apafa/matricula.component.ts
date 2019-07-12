@@ -10,16 +10,16 @@ import { LoadingBarService } from '@ngx-loading-bar/core';
 declare var swal: any;
 import * as jspdf from 'jspdf';
 import 'jspdf-autotable';
-function bodyRows(rowCount) {
-  rowCount = rowCount || 10;
+function bodyRows(data,rowCount) {
+  rowCount = rowCount;
   let body = [];
-  for (var j = 1; j <= rowCount; j++) {
+  for (var j = 0; j < rowCount; j++) {
       body.push({
-          id: j,
-          name: 'faker.name.findName()',
-          email: 'faker.internet.email()',
-          city: 'faker.address.city()',
-          expenses: 'faker.finance.amount()',
+          id: j+1,
+          doc_alumno: data[j].doc_alumno,
+          apellidos_alumno: data[j].apellidos_alumno,
+          nombres_alumno: data[j].nombres_alumno,
+          seccion: data[j].nombre_seccion,
       });
   }
   return body;
@@ -431,53 +431,75 @@ DataGrado : clsGrados;
     doc.setFontSize(12);
     doc.setFont('helvetica');
     doc.setFontType('bold');
-    doc.text(70, 60, 'LISTA GENERAL DE APODERADOS');
-    this.DataGradosActivos = this._GradoServicios.ListarGradosActivos().subscribe(
+    doc.text(70, 60, 'LISTA GENERAL DE MATRICULADOS');
+   this._GradoServicios.ListarGrados().subscribe(
       data => {
         if(data.status==1){
-          console.log(data.data);  
-          return data.data;
+          this.DatoBusqueda.idbusqueda=data.data[0].id_grado;
+          doc.text(data.data[0].descripcion_grado, 20, 78); 
+          this._MatriculaServicios.listar_matriculados_xgrado(this.DatoBusqueda).then(
+            data_matriculados => {              
+              if(data_matriculados.status==1){
+                var headRows = [{id: 'N°', doc_alumno: 'Doc. Alumno', apellidos_alumno: 'Apellidos Completos', nombres_alumno: 'Nombres Completos', seccion: 'Seccion'}];
+              var contador= data_matriculados.data.length;
+                doc.autoTable({
+                  head: headRows,
+                  body: bodyRows(data_matriculados.data,contador),
+                  startY: 80,
+                  showHead: 'firstPage',
+                  theme: 'grid',
+              });
+             console.log(bodyRows(data_matriculados.data,contador));
+              for (var j = 1; j < data.data.length; j++) {  
+                doc.text(data.data[j].descripcion_grado, 20, doc.autoTable.previous.finalY + 10);          
+                doc.autoTable({
+                    head: headRows, 
+                    body: bodyRows(data_matriculados.data,contador),
+                    startY: doc.autoTable.previous.finalY + 12,  
+                  showHead: 'firstPage',
+                  theme: 'grid',
+                  headStyles: {
+                    cellWidth: 'wrap',
+                 },
+                    didDrawPage: function (data) {
+                      // Footer
+                      var str = "Página " + doc.internal.getNumberOfPages()
+                      // Total page number plugin only available in jspdf v1.0+
+                      if (typeof doc.putTotalPages === 'function') {
+                          str = str + " de " + totalPagesExp;
+                      }
+                      doc.setFontSize(10);
+                
+                      // jsPDF 1.4+ uses getWidth, <1.4 uses .width
+                      var pageSize = doc.internal.pageSize;
+                      var pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
+                      doc.text(str, data.settings.margin.left, pageHeight - 10);
+                  }
+                });
+                
+            }
+          
+          if (typeof doc.putTotalPages === 'function') {
+            doc.putTotalPages(totalPagesExp);
+        }
+        doc.output('save', 'padron_matriculados.pdf');
+                }else{
+                  this.toastr.error(data_matriculados.message, 'Aviso!');
+                }
+              })
+          
+          
+          
+          
+        
         }else{
           this.toastr.error("Consulta Sin Exito", 'Aviso!');
         }
         
-      });
-      var headRows = [{id: 'ID', name: 'Name', email: 'Email', city: 'City', expenses: 'Sum'}];
-      console.log(this.DataGradosActivos);
-      for (var j = 0; j < this.DataGradosActivos.length; j++) {
-        console.log(j);
-        doc.text(130, 60, 'N° de Recibo: ' + this.DataGradosActivos[j].id_grado);
-        doc.autoTable({
-            head: headRows, 
-            body: bodyRows(10),
-            startY: 110, 
-          showHead: 'firstPage',
-          theme: 'grid',
-          headStyles: {
-            cellWidth: 'wrap',
-         },
-            didDrawPage: function (data) {
-              // Footer
-              var str = "Página " + doc.internal.getNumberOfPages()
-              // Total page number plugin only available in jspdf v1.0+
-              if (typeof doc.putTotalPages === 'function') {
-                  str = str + " de " + totalPagesExp;
-              }
-              doc.setFontSize(10);
         
-              // jsPDF 1.4+ uses getWidth, <1.4 uses .width
-              var pageSize = doc.internal.pageSize;
-              var pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
-              doc.text(str, data.settings.margin.left, pageHeight - 10);
-          }
-        });
-    }
+      });
+     
   
-  if (typeof doc.putTotalPages === 'function') {
-    doc.putTotalPages(totalPagesExp);
-}
     
-  
-    doc.output('save', 'padron_matriculados.pdf');
   }
 }

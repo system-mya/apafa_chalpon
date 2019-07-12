@@ -151,9 +151,9 @@ export const navAD: NavData[] = [
         icon: 'cui-justify-center'
       },
       {
-        name: 'Flags',
-        url: '/icons/flags',
-        icon: 'icon-star'
+        name: 'Lista Matriculados',
+        url: '/reportes/lstmatriculados',
+        icon: 'cui-justify-center'
       },
       {
         name: 'Font Awesome',

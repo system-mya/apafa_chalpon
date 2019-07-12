@@ -16,7 +16,6 @@ import { formatDate } from '@angular/common';
 
 function bodyRows(data,rowCount) {
   rowCount = rowCount;
-  console.log(data);
   let body = [];
   for (var j = 0; j < rowCount; j++) {
       body.push({

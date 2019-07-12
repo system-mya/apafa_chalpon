@@ -10,25 +10,31 @@
           <div class="card-body">
               <div class="row">
                   <div class="col-sm-12 col-md-5 col-lg-3">
+                      <div class="form-group">
                       <select class="form-control" id="anhio_lectivo" name="anhio_lectivo"
                         [(ngModel)]="anhio_lectivo" #reganhio_lectivo="ngModel" (change)="BuscarListaApoderados(anhio_lectivo)">
                         <option value="0" selected disabled>---Seleccionar Año Lectivo----</option>
                         <option *ngFor="let a of DataAnhios" value="{{a.idanhio}}">Año Lectivo {{a.anhio_lectivo}}</option>
                       </select>
+                    </div>
                   </div>
                   <div class="col-sm-12 col-md-5 col-lg-3">
-                      <input type="text" class="form-control" id="finicio_anhio" name="finicio_anhio" 
+                      <div class="form-group">
+                    <input type="text" class="form-control" id="finicio_anhio" name="finicio_anhio" 
                         placeholder="Fecha Inicio" [(ngModel)]="finicio_anhio" 
                         maxlength="60" readonly required style="background-color: #ffffff;
                         opacity: 1;
                         color: #080808;">
+                        </div>
                   </div>
                   <div class="col-sm-12 col-md-5 col-lg-3">
+                      <div class="form-group">
                       <input type="text" class="form-control" id="ffin_anhio" name="ffin_anhio" 
                         placeholder="Fecha Fin" [(ngModel)]="ffin_anhio" 
                         maxlength="60" readonly required style="background-color: #ffffff;
                         opacity: 1;
                         color: #080808;">
+                      </div>
                   </div>
               </div>
           </div>

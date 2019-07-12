@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ListaOficialApoderadosComponent } from './lstoficial_apoderados.component';
-import { FlagsComponent } from './flags.component';
+import { ListaMatriculadosComponent } from './lstmatriculados.component';
 import { FontAwesomeComponent } from './font-awesome.component';
 import { SimpleLineIconsComponent } from './simple-line-icons.component';
 
@@ -24,10 +24,10 @@ const routes: Routes = [
         }
       },
       {
-        path: 'flags',
-        component: FlagsComponent,
+        path: 'lstmatriculados',
+        component: ListaMatriculadosComponent,
         data: {
-          title: 'Flags'
+          title: 'Listar Matriculados'
         }
       },
       {

@@ -38,9 +38,7 @@ export class ListaOficialApoderadosComponent implements OnInit {
        if(data.status==1){
          this.DataAnhios = data.data;
        }else{
-         this.toastr.error("Consulta Sin Exito", 'Aviso!',{
-           positionClass: 'toast-top-right'
-         });
+         this.toastr.error("Consulta Sin Exito", 'Aviso!');
        }
        
      }
