@@ -12,17 +12,18 @@
                     <div class="col-sm-12 col-md-5 col-lg-3">
                         <div class="form-group">
                         <select class="form-control" id="anhio_lectivo" name="anhio_lectivo"
-                          [(ngModel)]="anhio_lectivo" (change)="BuscarListaApoderados(anhio_lectivo)">
+                          [(ngModel)]="anhio_lectivo" (change)="ListarGrados(anhio_lectivo)">
                           <option value="0" selected disabled>---Seleccionar Año Lectivo----</option>
-                          <option *ngFor="let a of DataAnhios" value="{{a.idanhio}}">Año Lectivo {{a.anhio_lectivo}}</option>
+                          <option *ngFor="let a of DataAnhios" value="{{a.idanhio}}">AÑO LECTIVO {{a.anhio_lectivo}}</option>
                         </select>
                       </div>
                     </div>
                     <div class="col-sm-12 col-md-5 col-lg-4">
                         <div class="form-group">
                         <select class="form-control" id="grado" name="grado"
-                        [(ngModel)]="grado" (change)="Listar_Secciones_xGrado(grado)">
-                        <option value="0" selected disabled>-----Seleccionar Grado------</option>
+                        [(ngModel)]="grado" (change)="Listar_Secciones_xGrado(grado)" [disabled]="grado==-1">
+                        <option value="-1" selected disabled>-----SELECCIONAR GRADOS------</option>
+                        <option value="0" selected>-----TODOS LOS GRADOS------</option>
                         <option *ngFor="let g of DataGrado" value="{{g.id_grado}}">{{g.descripcion_grado}}</option>
                         </select>
                       </div>
@@ -30,63 +31,68 @@
                     <div class="col-sm-12 col-md-5 col-lg-3">
                         <div class="form-group">
                         <select class="form-control" id="seccion" name="seccion"
-                          [(ngModel)]="seccion">
-                          <option value="0" selected disabled>-----Seleccionar Sección------</option>
+                          [(ngModel)]="seccion" [disabled]="seccion==-1">
+                          <option value="-1" selected disabled>-----SELECCIONAR SECCION------</option>
+                          <option value="0" selected>-----TODAS LAS SECCIONES------</option>
                           <option *ngFor="let s of DataSecciones" value="{{s.id_seccion}}">{{s.nombre_seccion}}</option>
                         </select>
                       </div>
                     </div>
                     <div class="col-sm-12 col-md-5 col-lg-1">
                         <div class="form-group">
-                        <button class="btn btn-success form-control" (click)="Generar_Lista()">
+                        <button class="btn btn-success" (click)="Generar_Lista()">
                             <span class="fa fa-search"></span>
                         </button>
                       </div>
                       </div>
                 </div>
             </div>
-            <div class="card-header estilo-cabecera">APODERADOS Y ALUMNOS MATRICULADOS
+            <div class="card-header estilo-cabecera">ALUMNOS MATRICULADOS
                 <div class="card-header-actions">
                    <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true" style="color: red;cursor: pointer;"
                    (click)="VerPDF()" *ngIf="panel_tabla"></i>
                 </div>
             </div>
             <div class="card-body">
-                <div id="customers" class="table-responsive" *ngIf="panel_tabla">
-                    <div class="form-group col-sm-6">
-                            <label for="monto_concepto" style="font-weight: bold;">Buscar Apoderado:</label>
-                          <input type="text" class="form-control" name="searchString" placeholder="Ingrese Datos Apoderado" [(ngModel)]="searchString">
-                        </div>
-                    <table id="tab_customers" class="table"> 
-                        <thead>
-                        <tr>
-                            <th>Apoderados</th>
-                            <th>Alumnos Matriculados</th>
-                            <th>Grado</th>
-                            <th>Sección</th>
-                            <th width="10%">Firma</th>
-                          </tr>   
-                        </thead>  
-                        <tbody>
-                      <ng-container *ngFor="let data of body | filter : 'pname' : searchString;let indice=index;">    
-                          <tr>
-                              <td [attr.rowspan]="data.numbers.length">{{data.pname}}<br><strong>Doc. Identidad: </strong>{{data.doc}}<br><strong>Num. Contacto: </strong>{{data.celular}}</td>
-                              <td>{{data.numbers[0].apellidos_alumno}} {{data.numbers[0].nombres_alumno}}</td>
-                              <td>{{data.numbers[0].descripcion_grado}}</td>
-                              <td>{{data.numbers[0].nombre_seccion}}</td>
-                              <td [attr.rowspan]="data.numbers.length"> </td>
-                          </tr>
-                          <ng-container *ngFor="let number of data.numbers; let i= index;">
-                              <tr *ngIf="i!=0">
-                                  <td>{{number.apellidos_alumno}} {{number.nombres_alumno}}</td>
-                                  <td>{{number.descripcion_grado}}</td>
-                                  <td>{{number.nombre_seccion}}</td>
-                              </tr>
-                          </ng-container>
-                      </ng-container>
-                    </tbody>  
-                  </table>
-                </div>
+              <div class="mat-elevation-z8 table-responsive" *ngIf="panel_tabla">
+                <mat-form-field class="example-full-width" style="margin-left: 15px;">
+                  <span matPrefix>Buscar Libro: &nbsp;</span>
+                  <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Ingrese Dato">
+                </mat-form-field>  
+                <table mat-table [dataSource]="dataSource" matSort id="tabla">          
+                
+                  <ng-container matColumnDef="doc_alumno">
+                    <th width="10%" mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap > Doc. Identidad </th>
+                    <td mat-cell *matCellDef="let element"> {{element.doc_alumno}}</td>
+                  </ng-container>
+              
+              
+                  <ng-container matColumnDef="apellidos_alumno">
+                    <th width="30%" mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" style="text-align: center !important" nowrap> Apellidos Alumno </th>
+                    <td mat-cell *matCellDef="let element"> {{element.apellidos_alumno}} </td>
+                  </ng-container>
+              
+                  <ng-container matColumnDef="nombres_alumno">
+                   <th width="30%" mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Nombres Alumno </th>
+                   <td mat-cell *matCellDef="let element"> {{element.nombres_alumno}} </td>
+                 </ng-container>
+         
+                  <ng-container matColumnDef="descripcion_grado">
+                    <th width="20%" mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Grado </th>
+                    <td mat-cell *matCellDef="let element"> {{element.descripcion_grado}} </td>
+                  </ng-container>
+         
+                  <ng-container matColumnDef="nombre_seccion">
+                    <th width="10%" mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Sección </th>
+                    <td mat-cell *matCellDef="let element" style="text-align: center !important"> {{element.nombre_seccion}} </td>
+                  </ng-container>
+
+                  <tr mat-header-row *matHeaderRowDef="displayedColumns" style="background-color: #b6b9d0 !important;"></tr>
+                  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+              
+                <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+              </div>
             </div>
         </div>
       </div>

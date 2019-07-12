@@ -22,4 +22,14 @@ export class ReportesService {
      .map(data => data.json()).toPromise()
   }
 
+  public listar_grados_xmatricula(anhio:clsBusqueda){
+    return this._http.post('/api/reportes/listar_grados_xmatricula',anhio)
+     .map(data => data.json()).toPromise()
+  }
+
+  public pa_listar_matriculados_xanhio(anhio:clsBusqueda){
+    return this._http.post('/api/reportes/pa_listar_matriculados_xanhio',anhio)
+    .map(res => res.json())
+  }
+
 }

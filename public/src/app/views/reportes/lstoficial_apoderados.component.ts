@@ -122,12 +122,12 @@ export class ListaOficialApoderadosComponent implements OnInit {
     doc.text(70, 60, 'LISTA GENERAL DE APODERADOS');
     // From HTML
      doc.autoTable({html: '.table',
-     styles: {overflow: 'linebreak', columnWidth:'wrap'},
+     styles: {overflow: 'linebreak', cellWidth:'wrap'},
      columnStyles:{
-       1: {columnWidth: 30},
-       2: {columnWidth: 40},
-       3: {halign: 'center',columnWidth: 15},
-       4: {columnWidth: 25}
+       1: {cellWidth: 30},
+       2: {cellWidth: 40},
+       3: {halign: 'center',cellWidth: 15},
+       4: {cellWidth: 25}
       },
      theme: 'grid',showHead: 'firstPage',startY: 70,
      didDrawPage: function (data) {

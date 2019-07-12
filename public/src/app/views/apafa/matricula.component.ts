@@ -437,7 +437,7 @@ DataGrado : clsGrados;
         if(data.status==1){
           this.DatoBusqueda.idbusqueda=data.data[0].id_grado;
           doc.text(data.data[0].descripcion_grado, 20, 78); 
-          this._MatriculaServicios.listar_matriculados_xgrado(this.DatoBusqueda).then(
+          this._MatriculaServicios.listar_matriculados_xgrado(this.DatoBusqueda).subscribe(
             data_matriculados => {              
               if(data_matriculados.status==1){
                 var headRows = [{id: 'N°', doc_alumno: 'Doc. Alumno', apellidos_alumno: 'Apellidos Completos', nombres_alumno: 'Nombres Completos', seccion: 'Seccion'}];

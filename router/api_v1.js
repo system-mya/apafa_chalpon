@@ -319,6 +319,16 @@ app.post('/api/reportes/listar_alumnos_xapoderado', (req, res) => {
     reportes.listar_alumnos_xapoderado(req.body,res);
 });
 
+//LLAMADA LISTAR GRADOS X MATRICULA
+app.post('/api/reportes/listar_grados_xmatricula', (req, res) => {
+    reportes.listar_grados_xmatricula(req.body,res);
+});
+
+//LLAMADA LISTAR MATRICULADOS X ANHIO
+app.post('/api/reportes/pa_listar_matriculados_xanhio', (req, res) => {
+    reportes.pa_listar_matriculados_xanhio(req.body,res);
+});
+
 }
 
 }

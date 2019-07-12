@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 12-07-2019 a las 01:16:46
+-- Tiempo de generación: 12-07-2019 a las 22:17:37
 -- Versión del servidor: 5.7.14
 -- Versión de PHP: 5.6.25
 
@@ -220,6 +220,15 @@ SELECT * FROM grados g
  WHERE g.nivel_grado=nivel
  AND g.estado_grado=1$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_grados_xmatricula` (IN `anhio` TINYINT)  NO SQL
+SELECT g.id_grado,g.descripcion_grado FROM matricula m 
+INNER JOIN secciones s ON s.id_seccion=m.id_seccion
+INNER JOIN grados g ON g.id_grado=s.id_grado
+WHERE m.estado_matricula=1
+AND m.id_anhio=anhio
+GROUP BY g.id_grado,g.descripcion_grado
+ORDER BY g.id_grado$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_historial_matricula` (IN `alumno` SMALLINT)  NO SQL
 SELECT m.id_matricula,g.descripcion_grado,s.nombre_seccion,a.anhio_lectivo, ap.id_apoderado,ap.apellidos_apoderado,ap.nombres_apoderado,ap.doc_apoderado,deuda.total FROM apoderado ap LEFT JOIN
     (  SELECT id_apoderado, SUM(saldo_deuda) as total
@@ -255,6 +264,24 @@ INNER JOIN grados g ON g.id_grado=s.id_grado
 INNER JOIN tipo_relacion tr ON tr.id_tipo_relacion=m.id_tipo_relacion
 WHERE m.estado_matricula=1
 AND m.id_anhio=(SELECT idanhio FROM anhio_lectivo WHERE condicion_anhio='A' AND estado_anhio=1)$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_matriculados_xanhio` (IN `anhio` TINYINT)  NO SQL
+SELECT a.doc_alumno,a.apellidos_alumno,a.nombres_alumno,g.descripcion_grado,s.nombre_seccion FROM matricula m 
+INNER JOIN alumno a ON a.id_alumno=m.id_alumno
+INNER JOIN secciones s ON s.id_seccion=m.id_seccion
+INNER JOIN grados g ON g.id_grado=s.id_grado
+WHERE m.id_anhio=anhio
+AND m.estado_matricula=1
+ORDER BY g.id_grado,s.nombre_seccion,a.apellidos_alumno,a.nombres_alumno ASC$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_matriculados_xgrado` (IN `grado` TINYINT)  SELECT a.doc_alumno,a.apellidos_alumno,a.nombres_alumno,s.nombre_seccion FROM matricula m 
+INNER JOIN alumno a ON a.id_alumno=m.id_alumno
+INNER JOIN secciones s ON s.id_seccion=m.id_seccion
+INNER JOIN grados g ON s.id_grado=g.id_grado
+WHERE g.id_grado=grado
+AND m.id_anhio=(SELECT idanhio FROM anhio_lectivo WHERE condicion_anhio='A' AND estado_anhio=1)
+AND m.estado_matricula=1
+ORDER BY a.apellidos_alumno,a.nombres_alumno,s.nombre_seccion ASC$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_perfil_usuario` ()  NO SQL
 SELECT * FROM perfil_usuario
@@ -455,7 +482,7 @@ INSERT INTO `alumno` (`id_alumno`, `tdoc_alumno`, `doc_alumno`, `apellidos_alumn
 (34, 'DNI', '22699649', 'López Calvo', 'Rebeca', '2006-04-12', 'M', NULL, '934614768', '', NULL, NULL, 'López Caicedo', 'Remigio', NULL, '', 'Calvo Machado', 'Medally', '985538389', '', b'1'),
 (35, 'DNI', '30796276', 'López García', 'Andr?s', '2003-04-21', 'M', NULL, '978939666', '', NULL, NULL, 'López Cadillo', 'Javier', NULL, '', 'García Lazaro', 'Isabel', '952909129', '', b'1'),
 (36, 'DNI', '66637196', 'López Rueda', 'Jose Javier', '2004-06-02', 'M', NULL, '929572233', '', NULL, NULL, 'López Caldas', 'Alex', NULL, '', 'Rueda Aranda', 'Maria Cecilia', NULL, '', b'1'),
-(37, 'DNI', '61821438', 'Abad Chavez', 'Romar ', '2006-10-28', 'M', NULL, '988325569', 'Calle Motupe # 114', NULL, NULL, 'Abad Cajaleon', 'Jhans Carlos', NULL, NULL, 'Chavez Vasquez', 'Teresa', NULL, NULL, b'1'),
+(37, 'DNI', '61821438', 'Abad Chavez Abad Chavez Abad Chavez', 'Romar Abad Chavez Abad Chavez Abad Chavez', '2006-10-28', 'M', NULL, '988325569', 'Calle Motupe # 114', NULL, NULL, 'Abad Cajaleon', 'Jhans Carlos', NULL, NULL, 'Chavez Vasquez', 'Teresa', NULL, NULL, b'1'),
 (38, 'DNI', '70080533', 'Acha Guerrero', 'Yasanali', '2004-05-19', 'F', NULL, '988118327', '', NULL, NULL, 'Acha Casado', 'Juan Carlos', NULL, '', 'Guerrero Correa', 'Flor Isabel', NULL, '', b'1'),
 (39, 'DNI', '75797998', 'Acosta Santisteban', 'Maria Gisela', '2004-08-08', 'F', NULL, '907796793', '', NULL, NULL, 'Acosta Casimiro', 'Michael', NULL, '', 'Santisteban Ita', 'Milagros Magaly', NULL, '', b'1'),
 (40, 'DNI', '42179802', 'Acuña Cervantes', 'Elmer', '2006-11-15', 'M', '436223', '957923672', '', NULL, NULL, 'Acuña Casio', 'Emerson', NULL, '', 'Cervantes Malaspina', 'Lizbeth', NULL, '', b'1'),
