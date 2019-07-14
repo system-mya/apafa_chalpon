@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 12-07-2019 a las 22:17:37
+-- Tiempo de generación: 13-07-2019 a las 23:59:23
 -- Versión del servidor: 5.7.14
 -- Versión de PHP: 5.6.25
 
@@ -57,6 +57,11 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_detalle_apoderado` (IN `id` SMAL
 SELECT id_apoderado, (CASE WHEN tdoc_apoderado='OTR' THEN 'OTROS' ELSE 'DNI' END) AS tdoc_apoderado, doc_apoderado, apellidos_apoderado,nombres_apoderado,(CASE WHEN sexo_apoderado='M' THEN 'MASCULINO' ELSE 'FEMENINO' END) AS sexo_apoderado, celular_apoderado, direccion_apoderado, correo_apoderado FROM apoderado
 WHERE id_apoderado=id
 AND estado_apoderado=1$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_devolver_libro` (IN `matricula` SMALLINT, IN `libro` SMALLINT, IN `estado` BIT(1))  NO SQL
+UPDATE libro_matricula SET devolvio_libro=estado
+WHERE id_matricula=matricula
+AND id_libro=libro$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_alumno` (IN `id` SMALLINT)  NO SQL
 UPDATE alumno SET estado_alumno=0
@@ -123,6 +128,10 @@ AND a.estado_anhio=1 AND ca.estado_concepto=1),CURDATE(),NOW())$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_libro` (IN `titulo_lib` VARCHAR(80), IN `edit_lib` VARCHAR(20), IN `edicion` CHAR(4), IN `grado` TINYINT)  NO SQL
 INSERT INTO libro (titulo_libro, editorial_libro,edicion_libro,id_grado ) 
 VALUES (titulo_lib,edit_lib,edicion,grado)$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_libro_xmatricula` (IN `matricula` SMALLINT, IN `libro` TINYINT)  NO SQL
+INSERT INTO libro_matricula(id_matricula, id_libro) 
+VALUES (matricula,libro)$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_matricula` (IN `fecha` DATE, IN `idapo` SMALLINT, IN `idalum` SMALLINT, IN `idseccion` TINYINT, IN `idrelacion` TINYINT, IN `codanhio` CHAR(4))  NO SQL
 INSERT INTO matricula(fecha_matricula, 
@@ -248,6 +257,13 @@ INNER JOIN grados g ON g.id_grado=l.id_grado
 WHERE l.estado_libro=1
 ORDER BY g.id_grado ASC$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_libros_xgrado` (IN `grado` TINYINT, IN `matricula` SMALLINT)  NO SQL
+SELECT * FROM libro l WHERE NOT EXISTS 
+(SELECT * FROM libro_matricula lm WHERE lm.id_libro = l.id_libro
+AND lm.id_matricula=matricula)
+AND l.id_grado=grado
+AND l.estado_libro=1$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_libros_xmatricula` (IN `matricula` SMALLINT)  NO SQL
 SELECT * FROM libro_matricula lm
 INNER JOIN libro l ON l.id_libro=lm.id_libro
@@ -320,6 +336,11 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_obtener_usuario` (IN `id` INT)  
 SELECT * FROM usuario u
 INNER JOIN perfil_usuario pu ON pu.idperfil_usuario=u.idperfil_usuario
 WHERE u.idusuario=id$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_quitar_entrega_libro` (IN `matricula` SMALLINT, IN `libro` TINYINT)  NO SQL
+DELETE FROM libro_matricula
+WHERE id_matricula=matricula
+AND id_libro=libro$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_resetear_usuario` (IN `id_usu` TINYINT)  NO SQL
 UPDATE usuario SET clave_usu=SHA('1A2B3C4D'),fbaja_usu=NULL
@@ -939,7 +960,7 @@ CREATE TABLE `libro` (
 --
 
 INSERT INTO `libro` (`id_libro`, `titulo_libro`, `editorial_libro`, `edicion_libro`, `id_grado`, `estado_libro`) VALUES
-(1, 'DFSSDFSF SFSF', 'FSF SF ', '2018', 1, b'1'),
+(1, 'DFSSDFSF SFSF G DSG DSG DS GDSG DSG SDG DSG ', 'FSF SF  DSFDS F DSFS', '2018', 1, b'1'),
 (2, 'DSF', 'DSF', '2019', 1, b'1'),
 (3, 'FDG', 'FRTH', '2018', 2, b'1'),
 (4, 'JG', 'HJ', '2014', 1, b'1'),
@@ -958,6 +979,16 @@ CREATE TABLE `libro_matricula` (
   `id_libro` tinyint(4) NOT NULL,
   `devolvio_libro` bit(1) NOT NULL DEFAULT b'0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `libro_matricula`
+--
+
+INSERT INTO `libro_matricula` (`id_matricula`, `id_libro`, `devolvio_libro`) VALUES
+(38, 2, b'1'),
+(38, 1, b'1'),
+(38, 4, b'1'),
+(38, 5, b'0');
 
 -- --------------------------------------------------------
 
@@ -1327,7 +1358,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `alumno`
 --
 ALTER TABLE `alumno`
-  MODIFY `id_alumno` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=146;
+  MODIFY `id_alumno` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=144;
 --
 -- AUTO_INCREMENT de la tabla `anhio_lectivo`
 --

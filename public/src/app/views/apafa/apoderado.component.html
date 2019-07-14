@@ -21,18 +21,18 @@
           </mat-form-field>  
           <table mat-table [dataSource]="dataSource" matSort id="tabla">          
             <ng-container matColumnDef="doc_apoderado">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" nowrap > Doc. Identidad </th>
-              <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.doc_apoderado}} </td>
+              <th width="15%" mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" nowrap > Doc. Identidad </th>
+              <td mat-cell *matCellDef="let element" style="text-align: center !important"> {{element.doc_apoderado}} </td>
             </ng-container>
         
         
             <ng-container matColumnDef="apellidos_apoderado">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" nowrap> Apellidos y Nombres </th>
-              <td mat-cell *matCellDef="let element" nowrap> {{element.apellidos_apoderado}} {{element.nombres_apoderado}}</td>
+              <th width="30%" mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" nowrap> Apellidos y Nombres </th>
+              <td mat-cell *matCellDef="let element"> {{element.apellidos_apoderado}} {{element.nombres_apoderado}}</td>
             </ng-container>
             
             <ng-container matColumnDef="sexo_apoderado">
-                <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Sexo </th>
+                <th width="20%" mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Sexo </th>
                 <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.sexo_apoderado}} </td>
               </ng-container>
 

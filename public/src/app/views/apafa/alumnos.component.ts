@@ -354,4 +354,24 @@ btnDetalle_Alumno(id){
          .catch(err => console.log(err))
   }
 
+  Devolucion_Libro(detalle,dato){
+    this.loadingBar.start();
+    if(dato[0]==1){
+     this.DatoBusqueda.datobusqueda='0'+'-'+detalle.id_libro;
+    }else{
+     this.DatoBusqueda.datobusqueda='1'+'-'+detalle.id_libro;
+    }
+       this.DatoBusqueda.idbusqueda=detalle.id_matricula;
+       this._MatriculaServicios.registrar_devolucion_libro(this.DatoBusqueda)
+           .then(data => {
+             if(data.status==1){
+               this.toastr.success(data.message, 'Aviso!');
+             }else{
+               this.toastr.error(data.message, 'Aviso!');
+              }
+              this.loadingBar.complete();
+           })
+           .catch(err => console.log(err))
+   }
+
 }

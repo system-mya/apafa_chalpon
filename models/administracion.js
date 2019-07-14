@@ -650,7 +650,7 @@ update_libro(libro, res) {
 		if(err){
 			res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
 		}else{
-                var query = "CALL pa_update_libros('"+ [libro.titulo_libro.toUpperCase()] +"','"+ [libro.editorial_libro.toUpperCase()] 
+                var query = "CALL pa_update_libro('"+ [libro.titulo_libro.toUpperCase()] +"','"+ [libro.editorial_libro.toUpperCase()] 
                     + "','" +[libro.edicion_libro.toUpperCase()]+"'," + [libro.id_grado] + ","+[libro.id_libro]+")";
 		
                 con.query(query,(err, result) => {

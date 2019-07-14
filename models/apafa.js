@@ -628,14 +628,14 @@ update_alumno(alumno, res) {
     listar_libros_xgrado(dato, res) {
         connection.acquire((err, con) => {
             if(err){
-                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                res.send({status: 0, message: err.sqlMessage});
             }else{
             var query = "CALL pa_listar_libros_xgrado("+ [dato.idbusqueda] +","+parseInt([dato.datobusqueda])+")"; 
             /* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
             con.query(query,(err, result) => {
                 con.release();
                 if(err){
-                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                    res.send({status: 0, message: err.sqlMessage});
                 }else{
                     if (result[0].length == 0) {
                         res.send({status: 2, message: 'ENTREGA COMPLETA'});
@@ -680,6 +680,7 @@ update_alumno(alumno, res) {
                         var query = "CALL pa_insertar_libro_xmatricula("+ [libro.id_matricula] 
                             + "," + [libro.id_libro] +")";
                             con.query(query,(err, result) => {
+                                con.release();
                                 if(err){
                                     res.send({status: 0, message: err.sqlMessage});
                                 }else{
@@ -689,9 +690,8 @@ update_alumno(alumno, res) {
                                         res.send({status: 2, message: 'LIBRO NO AGREGADO'});
                                     }
                                 }
-                            });
-        
-                
+                            });      
+                            
                 }
             });
         };
@@ -714,7 +714,7 @@ update_alumno(alumno, res) {
                             res.send({status: 1, message: 'LIBRO DEVUELTO A LISTA'});
                         }
                     }
-                });
+                });                
                 }
             });
         };

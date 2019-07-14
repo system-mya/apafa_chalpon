@@ -245,8 +245,6 @@ DataGrado : clsGrados;
       this.DatoBusqueda.idbusqueda=id_grado;
       this.DatoBusqueda.datobusqueda=id_matricula;
       this.nivel_libro=nivel;
-       //console.log(this.DatoBusqueda.idbusqueda);
-       //this.DetUsuarioModal.show(); 
          this._MatriculaServicios.libros_xgrado(this.DatoBusqueda)
          .then(data => {
            if(data.status==1){
@@ -254,24 +252,18 @@ DataGrado : clsGrados;
             this.panel_tabla=false;
             this.panel_registro_libro=true;
             this.DataLibros = data.data;
-            console.log(this.DataLibros);
             this.loadingBar.complete();
            }else{
               if(data.status==2){
-                this.toastr.info(data.message, 'Aviso!',{
-                  positionClass: 'toast-top-right',
-                  timeOut: 700
-                });
+                this.toastr.info(data.message, 'Aviso!');
                 this.DataLibros=null;
                 this.Listar_Libros_xMatricula(id_matricula);
                 this.panel_tabla=false;
                 this.panel_registro_libro=true;
                 this.loadingBar.complete();
               }else{
-                this.toastr.error(data.message, 'Aviso!',{
-                  positionClass: 'toast-top-right',
-                  timeOut: 700
-                });
+                this.toastr.error(data.message, 'Aviso!');
+                this.loadingBar.complete();
               }
             }
          } )
@@ -293,17 +285,11 @@ DataGrado : clsGrados;
             this.loadingBar.complete();
            }else{
               if(data.status==2){
-                this.toastr.info(data.message, 'Aviso!',{
-                  positionClass: 'toast-top-right',
-                  timeOut: 700
-                });
                 this.DataMisLibros=null;
                 this.loadingBar.complete();
               }else{
-                this.toastr.error(data.message, 'Aviso!',{
-                  positionClass: 'toast-top-right',
-                  timeOut: 700
-                });
+                this.toastr.error(data.message, 'Aviso!');
+                this.loadingBar.complete();
               }
             }
          } )
@@ -326,16 +312,7 @@ DataGrado : clsGrados;
             })            
             this.Listar_Libros(id_grado,this.id_matriucla,this.nivel_libro);
           }else{
-              swal({
-                title: 'Aviso!',
-                html:
-                '<span style="color:red">' +
-                data.message +
-                '</span>',
-                type: 'error',
-                allowOutsideClick: false,
-                allowEscapeKey:false
-              })
+              this.toastr.error(data.message, 'Aviso!');
               this.Listar_Libros(id_grado,this.id_matriucla,this.nivel_libro);
           }
         } )
@@ -358,7 +335,8 @@ DataGrado : clsGrados;
     this.iconCollapse_mislibros = this.isCollapsed_mislibros ? 'icon-arrow-down' : 'icon-arrow-up';
   }
   
-  btnquitar_libro(dato){
+  btnquitar_libro(dato){    
+    this.loadingBar.start();
     swal({
       title: '¿Esta seguro que desea quitar libro?',
       type: 'question',
@@ -385,12 +363,16 @@ DataGrado : clsGrados;
                   allowOutsideClick: false,
                   allowEscapeKey:false
               })
-              this.Listar_Libros(dato.id_grado,dato.id_matricula,this.nivel_libro)
+              this.Listar_Libros(dato.id_grado,dato.id_matricula,this.nivel_libro);
+              this.loadingBar.complete();
               }else{
                 this.toastr.error(data.message, 'Aviso!');
+                this.loadingBar.complete();
                }
             } )
             .catch(err => console.log(err))
+      }else{
+        this.loadingBar.complete();
       }
     })
   }
@@ -405,16 +387,10 @@ DataGrado : clsGrados;
       this._MatriculaServicios.registrar_devolucion_libro(this.DatoBusqueda)
           .then(data => {
             if(data.status==1){
-              this.toastr.success(data.message, 'Aviso!',{
-                positionClass: 'toast-top-right',
-                timeOut: 600
-              });
+              this.toastr.success(data.message, 'Aviso!');
               this.Listar_Libros(detalle.id_grado,detalle.id_matricula,this.nivel_libro);
             }else{
-              this.toastr.error(data.message, 'Aviso!',{
-                positionClass: 'toast-top-right',
-                timeOut: 600
-              });
+              this.toastr.error(data.message, 'Aviso!');
               this.Listar_Libros(detalle.id_grado,detalle.id_matricula,this.nivel_libro);
              }
           })
