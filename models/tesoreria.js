@@ -755,7 +755,7 @@ class Tesoreria {
     nvo_concepto(concepto, res) {
         connection.acquire((err, con) => {
             if(err){
-                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                res.send({status: 0, message: err.sqlMessage});
             }else{
                 if([concepto.tipo_concepto]=='A'){
                     var query_doc = "CALL pa_verificar_cuota_apafa_xanhio('"+ [concepto.anhio] +"')";
@@ -790,6 +790,7 @@ class Tesoreria {
                     + "','"+ [concepto.tipo_concepto] + "','"+[concepto.anhio]+"','"+[concepto.monto_concepto]+"')";
         
                     con.query(query,(err, result) => {
+                        con.release();
                         if(err){
                             res.send({status: 0, message: err.sqlMessage});
                         }else{
@@ -804,6 +805,32 @@ class Tesoreria {
              }
         });
     };
+
+    update_concepto(concepto, res) {
+        connection.acquire((err, con) => {
+            if(err){
+                res.send({status: 0, message: err.sqlMessage});
+            }else{
+                var query = "CALL pa_update_concepto("+[concepto.id_concepto]+",'"+ [concepto.descripcion_concepto.toUpperCase()]  
+                +"','"+[concepto.monto_concepto]+"')";
+    
+                con.query(query,(err, result) => {
+                    con.release();
+                    if(err){
+                        res.send({status: 0, message: err.sqlMessage});
+                    }else{
+                        if (result.affectedRows == 1) {
+                            res.send({status: 1, message: 'Concepto Actualizado'});
+                        } else {
+                            res.send({status: 2, message: 'Concepto No Actualizado'});
+                        }
+                    }
+                });
+            }
+
+        })
+
+    }
 
     eliminar_concepto(concepto, res) {
         connection.acquire((err, con) => {

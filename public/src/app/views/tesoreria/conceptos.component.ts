@@ -15,11 +15,13 @@ declare var swal: any;
 })
 export class ConceptosComponent {
   @ViewChild('NvoConceptoModal') public NvoConceptoModal: ModalDirective;
+  @ViewChild('EditConceptoModal') public EditConceptoModal: ModalDirective;
   displayedColumns: string[] = ['descripcion_concepto', 'tipo_concepto', 'monto_concepto','opciones'];
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild('myForm') mytemplateForm: NgForm;
+  @ViewChild('myEdit') myEditForm: NgForm;
   positionOptions: TooltipPosition[] = ['after', 'before', 'above', 'below', 'left', 'right'];
   public DatoBusqueda: clsBusqueda;
   public concepto : clsConcepto = {};
@@ -116,6 +118,9 @@ frmConceptos_hide(opt){
   if(opt=='N'){
      this.NvoConceptoModal.hide();
      this.mytemplateForm.resetForm();
+  }else{
+    this.EditConceptoModal.hide();
+    this.myEditForm.resetForm();
   }
 }
 
@@ -153,6 +158,59 @@ btnEliminar_Concepto(idconcepto:number) {
           .catch(err => console.log(err))
     }
   })
+}
+
+btnEditar_Concepto(dato){
+  this.concepto.id_concepto=dato.id_concepto;
+  this.concepto.descripcion_concepto=dato.descripcion_concepto;
+  this.concepto.tipo_concepto=dato.tipo_concepto.charAt(0);
+  this.concepto.monto_concepto=dato.monto_concepto;
+  this.EditConceptoModal.show();
+  console.log(dato);
+}
+
+Update_Concepto(form: clsConcepto) {
+  swal({
+    title: '¿Esta seguro que desea guardar?',
+    type: 'question',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Si, Guardar!',
+    allowOutsideClick: false,
+    allowEscapeKey: false,
+  }).then((result) => {
+    if (result.value == true) {
+      form.anhio = localStorage.getItem('_anhio');
+      this._ConceptosServicios.update_concepto(form)
+      .then(data => {
+        if (data.status == 1) {
+          swal({
+              title: 'Aviso!',
+              text: data.message,
+              type: 'success',
+              allowOutsideClick: false,
+              allowEscapeKey: false
+          })
+          this.ListarConceptosxPeriodo();
+          this.EditConceptoModal.hide();
+          this.myEditForm.resetForm();
+        } else {         
+            swal({
+              title: 'Aviso!',
+              html:
+              '<span style="color:red">' +
+              data.message +
+              '</span>',
+              type: 'error',
+              allowOutsideClick: false,
+              allowEscapeKey: false
+            });          
+        }
+      } )
+      .catch(err => console.log(err));
+    }
+  });
 }
 }
 

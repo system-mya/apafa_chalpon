@@ -348,6 +348,7 @@ btnDetalle_Alumno(id){
                 this.loadingBar.complete();
               }else{
                 this.toastr.error(data.message, 'Aviso!');
+                this.loadingBar.complete();
               }
             }
          } )

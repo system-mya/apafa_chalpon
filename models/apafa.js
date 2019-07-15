@@ -653,7 +653,7 @@ update_alumno(alumno, res) {
             if(err){
                 res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
             }else{
-            var query = "CALL pa_listar_libros_xmatricula("+ [dato.idbusqueda] +")"; 
+            var query = "CALL pa_listar_libros_xmatriculaSS("+ [dato.idbusqueda] +")"; 
             /* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
             con.query(query,(err, result) => {
                 con.release();

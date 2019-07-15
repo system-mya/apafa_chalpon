@@ -27,6 +27,11 @@ export class ConceptosService {
      .map(data => data.json()).toPromise()
   }
 
+  public update_concepto(concepto:clsConcepto){
+    return this._http.post('/api/tesoreria/update_concepto',concepto)
+     .map(data => data.json()).toPromise()
+  }
+
   public eliminar_concepto(concepto:clsBusqueda){
     return this._http.post('/api/tesoreria/eliminar_concepto',concepto)
     .map(data => data.json()).toPromise()

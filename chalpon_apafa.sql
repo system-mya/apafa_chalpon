@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 13-07-2019 a las 23:59:23
+-- Tiempo de generación: 14-07-2019 a las 23:50:53
 -- Versión del servidor: 5.7.14
 -- Versión de PHP: 5.6.25
 
@@ -317,6 +317,15 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_tipo_relacion` ()  NO SQL
 SELECT * FROM tipo_relacion
 WHERE estado_relacion=1$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_todos_conceptos` (IN `anhio` CHAR(4))  NO SQL
+SELECT id_concepto,descripcion_concepto,(CASE WHEN tipo_concepto='A'
+THEN 'APAFA' ELSE 'OTROS' END) AS tipo_concepto,id_anhio,
+monto_concepto FROM concepto_apafa c
+INNER JOIN anhio_lectivo al ON al.idanhio=c.id_anhio
+WHERE al.anhio_lectivo=anhio
+AND c.estado_concepto=1
+ORDER BY c.tipo_concepto$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_usuarios` ()  NO SQL
 SELECT u.idusuario,u.apellidos_usu,u.nombres_usu,
 u.nom_usu,u.celular_usu,pu.nombre_perfil,
@@ -381,6 +390,10 @@ WHERE id_apoderado=id_apo$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_clave` (IN `clave` VARCHAR(10), IN `id` SMALLINT)  NO SQL
 UPDATE usuario SET clave_usu=SHA(clave) 
 WHERE idusuario=id$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_concepto` (IN `id` SMALLINT, IN `descripcion` VARCHAR(100), IN `monto` FLOAT)  NO SQL
+UPDATE concepto_apafa SET descripcion_concepto=descripcion,monto_concepto=monto
+WHERE id_concepto=id$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_libro` (IN `t_libro` VARCHAR(80), IN `edit_libro` VARCHAR(20), IN `edicion` CHAR(4), IN `grado` TINYINT, IN `idlibro` TINYINT)  NO SQL
 UPDATE libro SET titulo_libro=t_libro,editorial_libro=edit_libro,edicion_libro=edicion,id_grado=grado WHERE id_libro=idlibro$$
@@ -862,7 +875,7 @@ INSERT INTO `concepto_apafa` (`id_concepto`, `descripcion_concepto`, `tipo_conce
 (5, 'ASFASF', 'O', 2, 33, b'1'),
 (6, 'SVDSV', 'O', 2, 677, b'1'),
 (7, 'FDHNDF', 'O', 2, 42.52, b'1'),
-(8, 'DFDSG', 'A', 23, 54, b'1');
+(8, 'CUOTA DE APAFA 2019', 'A', 23, 54, b'1');
 
 -- --------------------------------------------------------
 
@@ -985,10 +998,8 @@ CREATE TABLE `libro_matricula` (
 --
 
 INSERT INTO `libro_matricula` (`id_matricula`, `id_libro`, `devolvio_libro`) VALUES
-(38, 2, b'1'),
-(38, 1, b'1'),
-(38, 4, b'1'),
-(38, 5, b'0');
+(38, 2, b'0'),
+(38, 4, b'0');
 
 -- --------------------------------------------------------
 

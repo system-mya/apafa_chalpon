@@ -284,6 +284,11 @@ app.post('/api/tesoreria/insertar_nvo_concepto', (req, res) => {
     tesoreria.nvo_concepto(req.body,res);
 });
 
+//LLAMADA UPDATE CONCEPTO
+app.post('/api/tesoreria/update_concepto', (req, res) => {
+    tesoreria.update_concepto(req.body,res);
+});
+
 // LLAMADO AL MODELO ELIMINAR CONCEPTO
 app.post('/api/tesoreria/eliminar_concepto', (req, res) => {
     tesoreria.eliminar_concepto(req.body, res);
