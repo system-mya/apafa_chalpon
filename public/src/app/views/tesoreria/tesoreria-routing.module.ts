@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { IngresosComponent } from './ingresos.component';
-import { ComprasComponent } from './compras.component';
+import { EgresosComponent } from './egresos.component';
 import { ReunionesComponent } from './reuniones.component';
 import { ConceptosComponent } from './conceptos.component';
 import { Rutas_administrador } from '../../rutas_administrador.guard';
@@ -25,10 +25,10 @@ const routes: Routes = [
         }
       },
       {
-        path: 'compras',
-        component: ComprasComponent,
+        path: 'egresos',
+        component: EgresosComponent,
         data: {
-          title: 'Compras'
+          title: 'Egresos'
         }
       },
       {

@@ -82,8 +82,8 @@ export const navAD: NavData[] = [
         icon: 'cui-note'
       },
       {
-        name: 'Compras',
-        url: '/tesoreria/compras',
+        name: 'Egresos',
+        url: '/tesoreria/egresos',
         icon: 'icon-basket'
       },
       {

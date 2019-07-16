@@ -66,6 +66,7 @@ function hoyFecha(){
                       console.log(query_insert);
                          con.query(query_insert ,function(err,result_insert) {
                             if (err) { 
+                                console.log(err.sqlMessage);
                                 malos=malos+1;
                                 console.log("malos: " +malos);
                                 return reject(malos);
@@ -133,24 +134,20 @@ function hoyFecha(){
                                   
                            }
                       });   
-             
-    }
-    
-})
-
-    
-  }
+                  }  
+            })
+ }
   
 class Tesoreria {
     listar_ingresos_xperiodo(anhio,res) {
         connection.acquire((err, con) => {
             if(err){
-                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                res.send({status: 0, message: err.sqlMessage});
             }else{
             con.query("CALL pa_listar_ingresos_xperiodo('"+[anhio.datobusqueda]+"')", (err, result) => {
                 con.release();
                 if(err){
-                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                    res.send({status: 0, message: err.sqlMessage});
                 }else{
                     if (result[0].length == 0) {
                         res.send({status: 2, message: 'NO HAY DATOS EN LA TABLA INGRESOS'});
@@ -192,14 +189,14 @@ class Tesoreria {
     listar_detalle_deuda(recibo, res) {
         connection.acquire((err, con) => {
             if(err){
-                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                res.send({status: 0, message: err.sqlMessage});
             }else{
             var query = "CALL pa_listar_detalle_deuda_pendientes("+[recibo.id_apoderado]+")"; 
             /* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
             con.query(query,(err, result) => {
                 con.release();
                 if(err){
-                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                    res.send({status: 0, message: err.sqlMessage});
                 }else{
                     if (result[0].length == 0) {
                         res.send({status: 2, message: 'No Registra Deuda'});
@@ -210,21 +207,19 @@ class Tesoreria {
             });
             }
         });
-    };
-
-    
+    };    
 
     nvo_recibo(recibo, res) {
         connection.acquire((err, con) => {
              if(err){
-                 res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                 res.send({status: 0, message: err.sqlMessage});
              }else{    
                  con.beginTransaction(function(err) {
                      if (err) {  
                          con.rollback(function() {
                              con.release();                                                                                                  
                          });
-                         res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'}); 
+                         res.send({status: 0, message: err.sqlMessage}); 
                      }
                      var query_ultimo_recibo = "CALL pa_ultimo_recibo_ingresado('"+[recibo.anhio]+"')";
                      con.query(query_ultimo_recibo, function(err, result) {
@@ -232,7 +227,7 @@ class Tesoreria {
                          con.rollback(function() {
                              con.release();                                                                                                  
                          });
-                             res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                             res.send({status: 0, message: err.sqlMessage});
                        }else{
                          if (result[0].length == 0) {
                             var num_recibo = [recibo.doc_apoderado][0].substr(0,4) + "-" + hoyFecha() + "-1";
@@ -244,7 +239,7 @@ class Tesoreria {
                                 con.rollback(function() {
                                     con.release();                                                                                                  
                                 });
-                                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                                    res.send({status: 0, message: err.sqlMessage});
                             }else{           
                                 if (result.affectedRows == 1) {
                                     var query_obtener_recibo = "CALL pa_ultimo_recibo_ingresado('"+[recibo.anhio]+"')";
@@ -253,7 +248,7 @@ class Tesoreria {
                                         con.rollback(function() {
                                             con.release();                                                                                                  
                                         });
-                                            res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                                            res.send({status: 0, message: err.sqlMessage});
                                       }else{
                                         if (result[0].length > 0) {
                                         var id_recibo = result[0][0].id_recibo;
@@ -261,18 +256,18 @@ class Tesoreria {
                                         var cantidad = [recibo.detalle.length];
                                         var resultad;
                                         resultad = update_deuda(recibo,con,cantidad,id_recibo);
-                                        resultad.then(function(valule1){
-                                            if(valule1>0){
+                                        console.log(resultad);
+                                        resultad.then(function(value){
+                                            if(value>0){
                                                console.log("nu hubo error");
                                                con.commit(function(err) {
                                                 if (err) { 
                                                   con.rollback(function() {
-                                                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                                                    res.send({status: 0, message: err.sqlMessage});
                                                   });
                                                 }else{
                                                     res.send({status: 1, message: 'RECIBO REGISTRADO',data:[num_recibo,[recibo.id_apoderado],freg_recibo]});
                                                 }                                                      
-                                                
                                               });
                                             }
                                         }     
@@ -285,9 +280,7 @@ class Tesoreria {
                                                 res.send({status: 2, message: 'RECIBO NO REGISTRADO'});                                                                                                  
                                             });
                                             }
-                                        }                                     
-                                            
-                                            );   
+                                        });   
                                         }else{
                                             con.rollback(function() {
                                                 con.release();                                                                                                  
@@ -316,7 +309,7 @@ class Tesoreria {
                                 con.rollback(function() {
                                     con.release();                                                                                                  
                                 });
-                                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                                    res.send({status: 0, message: err.sqlMessage});
                             }else{           
                                 if (result.affectedRows == 1) {
                                     var query_obtener_recibo = "CALL pa_ultimo_recibo_ingresado('"+[recibo.anhio]+"')";
@@ -325,7 +318,7 @@ class Tesoreria {
                                         con.rollback(function() {
                                             con.release();                                                                                                  
                                         });
-                                            res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                                            res.send({status: 0, message: err.sqlMessage});
                                       }else{
                                         if (result[0].length > 0) {
                                         var id_recibo = result[0][0].id_recibo;
@@ -333,8 +326,8 @@ class Tesoreria {
                                         var cantidad = [recibo.detalle.length];
                                         var resultad;
                                         resultad = update_deuda(recibo,con,cantidad,id_recibo);
-                                        resultad.then(function(valule1){
-                                            if(valule1>0){
+                                        resultad.then(function(value){
+                                            if(value>0){
                                                console.log("nu hubo error");
                                                con.commit(function(err) {
                                                 if (err) { 
@@ -347,9 +340,7 @@ class Tesoreria {
                                                 
                                               });
                                             }
-                                        }     
-                                            )
-                                        .catch(function(value){
+                                        }).catch(function(value){
                                             if(value>0){
                                                console.log("hubo error");
                                                con.rollback(function() {
@@ -395,12 +386,12 @@ class Tesoreria {
     obtener_detalle_recibo(recibo,res) {
         connection.acquire((err, con) => {
             if(err){
-                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                res.send({status: 0, message: err.sqlMessage});
             }else{
-            con.query("CALL pa_obtener_detalle_recibo('"+[recibo.datobusqueda]+"')", (err, result) => {
+            con.query("CALL pa_obtener_detalle_recibo("+[recibo.idbusqueda]+")", (err, result) => {
                 con.release();
                 if(err){
-                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                    res.send({status: 0, message: err.sqlMessage});
                 }else{
                     if (result[0].length == 0) {
                         res.send({status: 2, message: 'NO HAY DATOS EN LA TABLA DETALLE RECIBO'});
@@ -835,14 +826,13 @@ class Tesoreria {
     eliminar_concepto(concepto, res) {
         connection.acquire((err, con) => {
             if(err){
-                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                res.send({status: 0, message: err.sqlMessage});
             }else{
-            var query = "CALL pa_eliminar_concepto("+ [concepto.idbusqueda] +")"; 
-            /* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
+            var query = "CALL pa_eliminar_concepto("+ [concepto.idbusqueda] +")";
             con.query(query,(err, result) => {
                 con.release();
                 if(err){
-                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                    res.send({status: 0, message: err.sqlMessage});
                 }else{
                     if (result.affectedRows == 0) {
                         res.send({status: 2, message: 'CONCEPTO NO ELIMINADO'});

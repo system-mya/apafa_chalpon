@@ -5,7 +5,7 @@ import { ListaOficialApoderadosComponent } from './lstoficial_apoderados.compone
 import { ListaMatriculadosComponent } from './lstmatriculados.component';
 import { FontAwesomeComponent } from './font-awesome.component';
 import { SimpleLineIconsComponent } from './simple-line-icons.component';
-import { TableFilterPipe } from '../tesoreria/table-filter.pipe';
+import { TableFilterPipe } from './table-filter.pipe';
 import { ReportesRoutingModule } from './reportes-routing.module';
 import { MatAutocompleteModule,
   MatBadgeModule,

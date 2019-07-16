@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 14-07-2019 a las 23:50:53
+-- Tiempo de generación: 16-07-2019 a las 00:30:40
 -- Versión del servidor: 5.7.14
 -- Versión de PHP: 5.6.25
 
@@ -70,6 +70,10 @@ WHERE id_alumno=id$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_apoderado` (IN `id_apo` SMALLINT)  NO SQL
 UPDATE apoderado SET estado_apoderado=0 WHERE id_apoderado=id_apo$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_concepto` (IN `id` SMALLINT)  NO SQL
+UPDATE concepto_apafa SET estado_concepto=0
+WHERE id_concepto=id$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_libro` (IN `idlibro` TINYINT)  NO SQL
 UPDATE libro SET estado_libro=0 WHERE id_libro=idlibro$$
 
@@ -114,6 +118,13 @@ sexo_apoderado, celular_apoderado, direccion_apoderado,
 correo_apoderado) VALUES (tdoc_apod,doc_apod,
 ape_apod,nom_apod,sex_apod,cel_apod,direc_apod,cor_apod)$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_concepto_apafa` (IN `des_concepto` VARCHAR(100), IN `tipo` CHAR(1), IN `anhio` CHAR(4), IN `monto` FLOAT(10,2))  NO SQL
+INSERT INTO concepto_apafa (descripcion_concepto, tipo_concepto, id_anhio, monto_concepto) 
+VALUES (des_concepto,tipo,(SELECT idanhio FROM anhio_lectivo WHERE anhio_lectivo=anhio AND condicion_anhio='A' AND estado_anhio=1),monto)$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_detalle_recibo` (IN `id_detalle` SMALLINT, IN `recibo` SMALLINT, IN `monto` FLOAT(10,2))  NO SQL
+INSERT INTO detalle_recibo(id_detalle_deuda, id_recibo, monto_detalle) VALUES (id_detalle,recibo,monto)$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_deuda_apafa` (IN `apoderado` SMALLINT, IN `dato_anhio` CHAR(4))  NO SQL
 INSERT INTO detalle_deuda(id_concepto,id_apoderado,saldo_deuda,freg_deuda,fseg_deuda) 
 VALUES ((SELECT ca.id_concepto FROM concepto_apafa ca 
@@ -141,6 +152,10 @@ VALUES (fecha,idapo,idalum,(SELECT idanhio from
 anhio_lectivo WHERE condicion_anhio='A' 
 AND estado_anhio=1
 AND anhio_lectivo=codanhio),idseccion,idrelacion)$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_nvo_recibo` (IN `apo` SMALLINT, IN `usu` SMALLINT, IN `mtotal` FLOAT, IN `num` VARCHAR(20))  NO SQL
+INSERT INTO recibo(id_apoderado,id_usuario,mtotal_recibo,freg_recibo, num_recibo) 
+VALUES (apo,usu,mtotal,NOW(),num)$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_seccion` (IN `nombre` VARCHAR(20), IN `grado` TINYINT, IN `turno` CHAR(1))  NO SQL
 INSERT INTO secciones(nombre_seccion,id_grado,turno_seccion) 
@@ -207,6 +222,15 @@ AND m.id_anhio=anhio
 GROUP BY m.id_apoderado
 ORDER BY ap.apellidos_apoderado,ap.nombres_apoderado ASC$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_detalle_deuda_pendientes` (IN `apo` SMALLINT)  NO SQL
+SELECT de.id_detalle_deuda,ca.descripcion_concepto,de.saldo_deuda,
+(CASE WHEN de.estado_deuda='P' THEN 'PENDIENTE'
+ELSE 'PAGADO' END) AS estado_deuda,'' as tipo_pago,0 as monto FROM detalle_deuda de 
+INNER JOIN concepto_apafa ca ON ca.id_concepto=de.id_concepto
+WHERE de.id_apoderado=apo
+AND de.estado_deuda!='E'
+AND de.estado_deuda='P'$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_grados` (IN `nivel` CHAR(1))  NO SQL
 SELECT g.id_grado,g.descripcion_grado,g.nivel_grado,
 (CASE 
@@ -250,6 +274,22 @@ SELECT m.id_matricula,g.descripcion_grado,s.nombre_seccion,a.anhio_lectivo, ap.i
  WHERE m.id_alumno=alumno
  GROUP BY ap.id_apoderado,m.id_matricula,g.descripcion_grado,s.nombre_seccion,
  a.anhio_lectivo$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_ingresos_xperiodo` (IN `anhio` CHAR(4))  NO SQL
+SELECT r.id_recibo AS id_ingreso,'R' AS tipo,a.id_apoderado as id_apoderado,r.num_recibo AS doc_ingreso, 
+CONCAT(a.apellidos_apoderado,' ',a.nombres_apoderado) as descripcion_ingreso,r.mtotal_recibo AS monto_ingreso, 
+r.freg_recibo AS freg_ingreso
+FROM recibo r
+INNER JOIN apoderado a ON a.id_apoderado=r.id_apoderado
+WHERE r.estado_recibo =1 AND YEAR(r.freg_recibo)=anhio
+UNION ALL 
+SELECT id_otro_ingreso AS id_ingreso,'O' AS tipo,'' AS id_apoderdo, 
+doc_encargado_ingreso AS doc_ingreso, 
+descripcion_ingreso as descripcion_ingreso,
+monto_ingreso AS monto_ingreso, freg_ingreso AS freg_ingreso
+FROM otro_ingreso
+WHERE estado_ingreso =1 AND YEAR(freg_ingreso)=anhio
+ORDER BY freg_ingreso DESC$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_libros_activos` ()  NO SQL
 SELECT * FROM libro l 
@@ -341,6 +381,14 @@ INNER JOIN perfil_usuario pu ON pu.idperfil_usuario=u.idperfil_usuario
 WHERE u.estado_usu=1
 ORDER BY u.apellidos_usu$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_obtener_detalle_recibo` (IN `id` SMALLINT)  NO SQL
+SELECT c.descripcion_concepto,convert(dr.monto_detalle, decimal(10,2)) as monto_detalle FROM detalle_recibo dr 
+INNER JOIN detalle_deuda d ON dr.id_detalle_deuda=d.id_detalle_deuda
+INNER JOIN recibo r ON r.id_recibo=dr.id_recibo
+INNER JOIN concepto_apafa c ON c.id_concepto=d.id_concepto
+WHERE r.id_recibo=id
+AND r.estado_recibo=1$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_obtener_usuario` (IN `id` INT)  NO SQL
 SELECT * FROM usuario u
 INNER JOIN perfil_usuario pu ON pu.idperfil_usuario=u.idperfil_usuario
@@ -354,6 +402,14 @@ AND id_libro=libro$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_resetear_usuario` (IN `id_usu` TINYINT)  NO SQL
 UPDATE usuario SET clave_usu=SHA('1A2B3C4D'),fbaja_usu=NULL
 WHERE idusuario=id_usu$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_ultimo_recibo_ingresado` (IN `anhio` CHAR(4))  NO SQL
+SELECT *
+  FROM recibo
+  WHERE estado_recibo=1
+  AND YEAR(freg_recibo)=anhio
+ ORDER BY id_recibo DESC
+  limit 1$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_alumno` (IN `id` SMALLINT, IN `ape_alum` VARCHAR(60), IN `nom_alum` VARCHAR(50), IN `fnac` DATE, IN `sex_alum` CHAR(1), IN `tel_alum` CHAR(6), IN `cel_alum` CHAR(9), IN `direc_alum` VARCHAR(80), IN `cor_alum` VARCHAR(80), IN `proc_alum` VARCHAR(100), IN `ape_padre` VARCHAR(60), IN `nom_padre` VARCHAR(50), IN `cel_padre` CHAR(9), IN `cor_padre` VARCHAR(80), IN `ape_madre` VARCHAR(60), IN `nom_madre` VARCHAR(50), IN `cel_madre` CHAR(9), IN `cor_madre` VARCHAR(80))  NO SQL
 UPDATE alumno SET apellidos_alumno=ape_alum,
@@ -394,6 +450,11 @@ WHERE idusuario=id$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_concepto` (IN `id` SMALLINT, IN `descripcion` VARCHAR(100), IN `monto` FLOAT)  NO SQL
 UPDATE concepto_apafa SET descripcion_concepto=descripcion,monto_concepto=monto
 WHERE id_concepto=id$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_deuda` (IN `id` SMALLINT, IN `monto` FLOAT, IN `estado` CHAR(1))  NO SQL
+UPDATE detalle_deuda SET saldo_deuda=saldo_deuda-monto,
+fseg_deuda=NOW(),estado_deuda=estado
+WHERE id_detalle_deuda=id$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_libro` (IN `t_libro` VARCHAR(80), IN `edit_libro` VARCHAR(20), IN `edicion` CHAR(4), IN `grado` TINYINT, IN `idlibro` TINYINT)  NO SQL
 UPDATE libro SET titulo_libro=t_libro,editorial_libro=edit_libro,edicion_libro=edicion,id_grado=grado WHERE id_libro=idlibro$$
@@ -870,12 +931,14 @@ CREATE TABLE `concepto_apafa` (
 --
 
 INSERT INTO `concepto_apafa` (`id_concepto`, `descripcion_concepto`, `tipo_concepto`, `id_anhio`, `monto_concepto`, `estado_concepto`) VALUES
-(3, 'ASAMBLEA GENERAL APAFA', 'O', 2, 25, b'1'),
-(4, 'ASAMBLE DE ESCUELA DE PADRES', 'O', 2, 15, b'1'),
-(5, 'ASFASF', 'O', 2, 33, b'1'),
-(6, 'SVDSV', 'O', 2, 677, b'1'),
-(7, 'FDHNDF', 'O', 2, 42.52, b'1'),
-(8, 'CUOTA DE APAFA 2019', 'A', 23, 54, b'1');
+(3, 'ASAMBLEA GENERAL APAFA', 'O', 2, 25, b'0'),
+(4, 'ASAMBLE DE ESCUELA DE PADRES', 'O', 2, 15, b'0'),
+(5, 'ASFASF', 'O', 2, 33, b'0'),
+(6, 'SVDSV', 'O', 2, 677, b'0'),
+(7, 'FDHNDF', 'O', 2, 42.52, b'0'),
+(8, 'CUOTA DE APAFA 2019', 'A', 23, 54, b'0'),
+(9, 'CUOTA DE APAFA 2019', 'A', 23, 54.5, b'1'),
+(10, 'ASAMBLEA GENERAL DE PADRE DE FAMILIA DIA LUNES ', 'O', 23, 34.25, b'1');
 
 -- --------------------------------------------------------
 
@@ -914,7 +977,7 @@ CREATE TABLE `detalle_deuda` (
 
 INSERT INTO `detalle_deuda` (`id_detalle_deuda`, `id_concepto`, `id_apoderado`, `saldo_deuda`, `freg_deuda`, `fseg_deuda`, `estado_deuda`) VALUES
 (22, 8, 3, 54, '2019-06-25', '2019-06-25 15:25:16', 'P'),
-(23, 8, 112, 54, '2019-07-08', '2019-07-08 13:00:40', 'P'),
+(23, 8, 112, 6, '2019-07-08', '2019-07-15 19:28:04', 'P'),
 (24, 8, 55, 54, '2019-07-08', '2019-07-08 16:08:58', 'P');
 
 -- --------------------------------------------------------
@@ -928,6 +991,13 @@ CREATE TABLE `detalle_recibo` (
   `id_recibo` smallint(6) NOT NULL,
   `monto_detalle` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `detalle_recibo`
+--
+
+INSERT INTO `detalle_recibo` (`id_detalle_deuda`, `id_recibo`, `monto_detalle`) VALUES
+(23, 20, 24);
 
 -- --------------------------------------------------------
 
@@ -1093,6 +1163,14 @@ CREATE TABLE `recibo` (
   `num_recibo` varchar(20) NOT NULL,
   `estado_recibo` bit(1) NOT NULL DEFAULT b'1'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `recibo`
+--
+
+INSERT INTO `recibo` (`id_recibo`, `id_apoderado`, `id_usuario`, `mtotal_recibo`, `freg_recibo`, `num_recibo`, `estado_recibo`) VALUES
+(20, 112, 1, 24, '2019-07-15 19:26:06', '1171-20190715-1', b'1'),
+(21, 112, 1, 24, '2019-07-15 19:28:04', '1171-20190715-2', b'1');
 
 -- --------------------------------------------------------
 
@@ -1389,7 +1467,7 @@ ALTER TABLE `compra`
 -- AUTO_INCREMENT de la tabla `concepto_apafa`
 --
 ALTER TABLE `concepto_apafa`
-  MODIFY `id_concepto` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_concepto` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 --
 -- AUTO_INCREMENT de la tabla `detalle_compra`
 --
@@ -1429,7 +1507,7 @@ ALTER TABLE `perfil_usuario`
 -- AUTO_INCREMENT de la tabla `recibo`
 --
 ALTER TABLE `recibo`
-  MODIFY `id_recibo` smallint(6) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_recibo` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 --
 -- AUTO_INCREMENT de la tabla `reunion`
 --

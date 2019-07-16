@@ -72,9 +72,11 @@ DataIngresos: any = [];
        this.dataSource.paginator = this.paginator;
        this.dataSource.sort = this.sort;
       } else {
-        this.toastr.error(data.message, 'Aviso!', {
-          positionClass: 'toast-top-right'
-        });
+        this.toastr.error(data.message, 'Aviso!');
+        this.DataIngresos = data.data;
+        this.dataSource = new MatTableDataSource(this.DataIngresos);
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
       }
 
     }
@@ -400,6 +402,7 @@ DetApoderado : any = [];
 public monto_pagado;
 btnDetalle_Pago(dato){
   this.DatoBusqueda.idbusqueda=dato.id_apoderado;
+  console.log(dato.id_ingreso);
     this._ApoderadoServicios.detalle_apoderado(this.DatoBusqueda)
     .then(data => {
       if(data.status==1){        
@@ -407,8 +410,8 @@ btnDetalle_Pago(dato){
         this.DetApoderado = data.data[0];
         this.DetApoderado.doc_ingreso=dato.doc_ingreso;
         this.DetApoderado.fecha_registro=dato.freg_ingreso;
-        this.toastr.success(data.message, 'Aviso!',{positionClass: 'toast-top-right',timeOut: 500});
-        this.DatoBusqueda.datobusqueda=dato.doc_ingreso;
+        this.toastr.success(data.message, 'Aviso!');
+        this.DatoBusqueda.idbusqueda=dato.id_ingreso;        
         this._IngresosServicios.get_obtener_detalle_recibo(this.DatoBusqueda).subscribe(
         data_recibo => {
           if (data_recibo.status === 1) {

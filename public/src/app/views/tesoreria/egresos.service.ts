@@ -8,7 +8,7 @@ import { clsCompras,clsBusqueda } from '../../app.datos';
 @Injectable({
   providedIn: 'root'
 })
-export class ComprasService {
+export class EgresosService {
 
   constructor(private _http:Http) { }
 

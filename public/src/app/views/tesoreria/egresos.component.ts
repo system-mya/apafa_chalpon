@@ -5,14 +5,14 @@ import {clsCompras,clsDetalle_Compra,clsBusqueda} from '../../app.datos';
 import {MatPaginator, MatSort, MatTableDataSource, TooltipPosition} from '@angular/material';
 import { ToastrService } from 'ngx-toastr';
 import { LoadingBarService } from '@ngx-loading-bar/core';
-import { ComprasService } from './compras.service';
+import { EgresosService } from './egresos.service';
 declare var swal: any;
 @Component({
-  templateUrl: 'compras.component.html',
+  templateUrl: 'egresos.component.html',
   styleUrls: ['tesoreria.css'],
   encapsulation: ViewEncapsulation.None,
 })
-export class ComprasComponent {
+export class EgresosComponent {
   @ViewChild('NvaCompraModal') public NvaCompraModal: ModalDirective;
   @ViewChild('DetalleCompraModal') public DetalleCompraModal: ModalDirective;
   displayedColumns: string[] = ['tipo_compra', 'num_compra', 'razon_social_compra', 'fecha_compra', 'total_compra','opciones'];
@@ -24,17 +24,17 @@ export class ComprasComponent {
   public DatoBusqueda: clsBusqueda;
   public producto : clsDetalle_Compra = {};
   public panel_registro : boolean;
-  public panel_tabla_compras : boolean;
+  public panel_tabla_egresos : boolean;
   public detalle_compra : any = [];
   public btnagregar : boolean;
   public optAd : string;
   constructor(private toastr: ToastrService,private loadingBar: LoadingBarService,
-    private _CompraServicios: ComprasService,
+    private _CompraServicios: EgresosService,
     @Inject(DOCUMENT) private document: Document,) { 
     this.DatoBusqueda = {
         datobusqueda: ''
       };
-    this.panel_tabla_compras=true;
+    this.panel_tabla_egresos=true;
     this.ListarComprasxPeriodo();
     this.optAd = localStorage.getItem('id_perfil');
   }
@@ -50,9 +50,7 @@ export class ComprasComponent {
        this.dataSource.paginator = this.paginator;
        this.dataSource.sort = this.sort;
       } else {
-        this.toastr.error(data.message, 'Aviso!', {
-          positionClass: 'toast-top-right'
-        });
+        this.toastr.error(data.message, 'Aviso!');
       }
 
     }
@@ -61,7 +59,7 @@ export class ComprasComponent {
 
   btnNueva_Compra() {
     this.panel_registro=true;
-    this.panel_tabla_compras=false;
+    this.panel_tabla_egresos=false;
     this.compra.ruc_compra='';
     this.compra.tipo_compra='';
     this.producto.nom_producto='';
@@ -132,7 +130,7 @@ export class ComprasComponent {
                 allowOutsideClick: false,
                 allowEscapeKey:false
               }) 
-              this.panel_tabla_compras=true;
+              this.panel_tabla_egresos=true;
               this.panel_registro=false;
               this.loadingBar.complete();
               this.document.documentElement.scrollTop = 0;
@@ -163,7 +161,7 @@ export class ComprasComponent {
   frmCompras_hide(opt){
       if(opt=='R'){
            this.panel_registro=false;
-           this.panel_tabla_compras=true;
+           this.panel_tabla_egresos=true;
            this.document.documentElement.scrollTop = 0;
            this.ListarComprasxPeriodo();
 
@@ -191,10 +189,7 @@ export class ComprasComponent {
            this.DetalleLista = data.data;
            this.DetalleCompraModal.show();
         } else {
-          this.toastr.error(data.message, 'Aviso!', {
-            positionClass: 'toast-top-right',
-            timeOut: 500
-          });
+          this.toastr.error(data.message, 'Aviso!');
         }
   
       }

@@ -6,7 +6,7 @@ import { NgModule } from '@angular/core';
 // Alert Component
 import { AlertModule } from 'ngx-bootstrap/alert';
 import { IngresosComponent } from './ingresos.component';
-import { ComprasComponent } from './compras.component';
+import { EgresosComponent } from './egresos.component';
 import { ConceptosComponent } from './conceptos.component';
 
 // Modal Component
@@ -101,7 +101,7 @@ import { MatAutocompleteModule,
   ],
   declarations: [
     IngresosComponent,
-    ComprasComponent,
+    EgresosComponent,
     ReunionesComponent,
     TableFilterPipe,
     ConceptosComponent
