@@ -47,12 +47,9 @@ function hoyFecha(){
               }
               console.log(recibo.detalle[i].id_detalle_deuda);        
                   var query="CALL pa_update_deuda("+recibo.detalle[i].id_detalle_deuda+",'"+recibo.detalle[i].monto+"','"+estado+"')";
-                  console.log(query);
-                  console.log("X AKI" + recibo.detalle[i].id_detalle_deuda); 
-                     con.query(query ,function(err,result_update) {                     
+                 con.query(query ,function(err,result_update) {                     
                         if (err) { 
                             malos=malos+1;
-                            console.log("malos: " +malos);
                             return reject(malos);
                         }else{
                              if (result_update.affectedRows == 1) {                                 
@@ -61,14 +58,26 @@ function hoyFecha(){
                               }
                                   
                            }
-                      });
-                      var query_insert="CALL pa_insertar_detalle_recibo("+recibo.detalle[i].id_detalle_deuda+","+id_recibo+",'"+recibo.detalle[i].monto+"')";
-                      console.log(query_insert);
-                         con.query(query_insert ,function(err,result_insert) {
+                      });   
+        }
+             
+    }
+    
+})
+
+    
+  }
+
+  function insertar_detalle_recibo(recibo,con,cantidad,id_recibo) {
+    var buenas=0;
+    var malos=0;
+    return new Promise(function (resolve, reject) {
+    for(i=0;i<cantidad;i++){
+        if(parseFloat(recibo.detalle[i].monto)>0){
+            var query_insert="CALL pa_insertar_detalle_recibo("+recibo.detalle[i].id_detalle_deuda+","+id_recibo+",'"+recibo.detalle[i].monto+"')";
+            con.query(query_insert ,function(err,result_insert) {
                             if (err) { 
-                                console.log(err.sqlMessage);
                                 malos=malos+1;
-                                console.log("malos: " +malos);
                                 return reject(malos);
                             }else{
                                  if (result_insert.affectedRows == 1) {
@@ -259,16 +268,33 @@ class Tesoreria {
                                         console.log(resultad);
                                         resultad.then(function(value){
                                             if(value>0){
-                                               console.log("nu hubo error");
-                                               con.commit(function(err) {
-                                                if (err) { 
-                                                  con.rollback(function() {
-                                                    res.send({status: 0, message: err.sqlMessage});
-                                                  });
-                                                }else{
-                                                    res.send({status: 1, message: 'RECIBO REGISTRADO',data:[num_recibo,[recibo.id_apoderado],freg_recibo]});
-                                                }                                                      
-                                              });
+                                                var detalle_recibo;
+                                                detalle_recibo = insertar_detalle_recibo(recibo,con,cantidad,id_recibo);
+                                                detalle_recibo.then(function(value){
+                                                   if(value>0){
+                                                    console.log("nu hubo error");
+                                                    con.commit(function(err) {
+                                                     if (err) { 
+                                                       con.rollback(function() {
+                                                         res.send({status: 0, message: err.sqlMessage});
+                                                       });
+                                                     }else{
+                                                         res.send({status: 1, message: 'RECIBO REGISTRADO',data:[num_recibo,[recibo.id_apoderado,id_recibo],freg_recibo]});
+                                                     }                                                      
+                                                   });
+                                                   }
+                                                }).catch(function(value){
+                                                    if(value>0){
+                                                        console.log("hubo error");
+                                                        con.rollback(function() {
+                                                         con.release();
+                                                         res.send({status: 2, message: 'RECIBO NO REGISTRADO'});                                                                                                  
+                                                     });
+                                                     }
+                                                    
+                                                })
+                                               
+                                               
                                             }
                                         }     
                                             )
@@ -328,17 +354,31 @@ class Tesoreria {
                                         resultad = update_deuda(recibo,con,cantidad,id_recibo);
                                         resultad.then(function(value){
                                             if(value>0){
-                                               console.log("nu hubo error");
-                                               con.commit(function(err) {
-                                                if (err) { 
-                                                  con.rollback(function() {
-                                                    res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
-                                                  });
-                                                }else{
-                                                    res.send({status: 1, message: 'RECIBO REGISTRADO',data:[num_recibo,[recibo.id_apoderado],freg_recibo]});
-                                                }                                                      
-                                                
-                                              });
+                                                var detalle_recibo;
+                                                detalle_recibo = insertar_detalle_recibo(recibo,con,cantidad,id_recibo);
+                                                detalle_recibo.then(function(value){
+                                                   if(value>0){
+                                                    console.log("nu hubo error");
+                                                    con.commit(function(err) {
+                                                     if (err) { 
+                                                       con.rollback(function() {
+                                                         res.send({status: 0, message: err.sqlMessage});
+                                                       });
+                                                     }else{
+                                                         res.send({status: 1, message: 'RECIBO REGISTRADO',data:[num_recibo,[recibo.id_apoderado,id_recibo],freg_recibo]});
+                                                     }                                                      
+                                                   });
+                                                   }
+                                                }).catch(function(value){
+                                                    if(value>0){
+                                                        console.log("hubo error x aki");
+                                                        con.rollback(function() {
+                                                         con.release();
+                                                         res.send({status: 2, message: 'RECIBO NO REGISTRADO'});                                                                                                  
+                                                     });
+                                                     }
+                                                    
+                                                })
                                             }
                                         }).catch(function(value){
                                             if(value>0){

@@ -9,6 +9,7 @@ import { ApoderadoService } from '../apafa/apoderado.service';
 import { ToastrService } from 'ngx-toastr';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { LoadingBarService } from '@ngx-loading-bar/core';
+import { NgxSpinnerService } from 'ngx-spinner';
 declare var swal: any;
 import * as jspdf from 'jspdf';
 import 'jspdf-autotable';
@@ -52,7 +53,8 @@ export class IngresosComponent {
     private _MatriculaServicios:MatriculaService,
     private _ApoderadoServicios : ApoderadoService,
     @Inject(DOCUMENT) private document: Document,
-    private toastr: ToastrService,private loadingBar: LoadingBarService) {
+    private toastr: ToastrService,private loadingBar: LoadingBarService,
+    private spinner: NgxSpinnerService) {
     this.DatoBusqueda = {
       datobusqueda: ''
     };
@@ -165,11 +167,12 @@ DataIngresos: any = [];
   
 
   public detalle_recibo;
-  public VerPrimeroPDF(id,num,fecha)
+  public VerPrimeroPDF(id_apoderado,id_ingreso,num,fecha)
   {
   this.loadingBar.start();
+  this.spinner.show();
   const doc = new jspdf({orientation: 'portrait',unit: 'mm',format: 'A5'});
-    this.DatoBusqueda.idbusqueda=id;
+    this.DatoBusqueda.idbusqueda=id_apoderado;
     this._ApoderadoServicios.detalle_apoderado(this.DatoBusqueda)
     .then(data => {
       if(data.status==1){
@@ -189,7 +192,7 @@ DataIngresos: any = [];
            var splitTitle = doc.splitTextToSize('Dirección: ' + data.data[0].direccion_apoderado, 160);
            doc.text(25, 90, splitTitle);
         
-        this.DatoBusqueda.datobusqueda=num;
+        this.DatoBusqueda.idbusqueda=id_ingreso; 
         this._IngresosServicios.get_obtener_detalle_recibo(this.DatoBusqueda).subscribe(
         data_recibo => {
           if (data_recibo.status === 1) {
@@ -232,12 +235,14 @@ DataIngresos: any = [];
               if (typeof doc.putTotalPages === 'function') {
                   doc.putTotalPages(totalPagesExp);
               }
-
+              setTimeout(() => {
               doc.output('save', num+'.pdf');
               this.toastr.success('Recibo Generado', 'Aviso!',{positionClass: 'toast-top-right',timeOut: 500});
               this.DetallePago.hide();
               this.loadingBar.complete();
+              this.spinner.hide();
               this.document.documentElement.scrollTop = 0;
+            }, 5000);
             }else{
             this.toastr.error(data_recibo.message, 'Aviso!');
           }
@@ -329,8 +334,8 @@ DataIngresos: any = [];
                   allowOutsideClick: false,
                   allowEscapeKey: false
               }).then((result) => {
-                if (result.value == true) {
-                  this.VerPrimeroPDF(data.data[1][0],data.data[0],data.data[2]);
+                if (result.value == true) {                  
+                  this.VerPrimeroPDF(data.data[1][0],data.data[1][1],data.data[0],data.data[2]);
                   
                 }
               })
@@ -401,28 +406,31 @@ DataIngresos: any = [];
 DetApoderado : any = [];
 public monto_pagado;
 btnDetalle_Pago(dato){
+  this.loadingBar.start();
   this.DatoBusqueda.idbusqueda=dato.id_apoderado;
-  console.log(dato.id_ingreso);
     this._ApoderadoServicios.detalle_apoderado(this.DatoBusqueda)
     .then(data => {
-      if(data.status==1){        
-        this.DetallePago.show(); 
+      if(data.status==1){    
         this.DetApoderado = data.data[0];
         this.DetApoderado.doc_ingreso=dato.doc_ingreso;
-        this.DetApoderado.fecha_registro=dato.freg_ingreso;
-        this.toastr.success(data.message, 'Aviso!');
+        this.DetApoderado.fecha_registro=dato.freg_ingreso;        
         this.DatoBusqueda.idbusqueda=dato.id_ingreso;        
         this._IngresosServicios.get_obtener_detalle_recibo(this.DatoBusqueda).subscribe(
         data_recibo => {
-          if (data_recibo.status === 1) {
+          if (data_recibo.status === 1) {   
+            this.loadingBar.complete();             
+            this.DetallePago.show(); 
+            this.toastr.success(data_recibo.message, 'Aviso!');
             this.detalle_recibo = data_recibo.data;
             this.monto_pagado=dato.monto_ingreso;
           }else{
             this.toastr.error(data_recibo.message, 'Aviso!');
+            this.loadingBar.complete();
           }
         })
       }else{
         this.toastr.error(data.message, 'Aviso!');
+        this.loadingBar.complete();
        }
     } )
     .catch(err => console.log(err))

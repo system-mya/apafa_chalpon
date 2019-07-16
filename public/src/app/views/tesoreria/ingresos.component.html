@@ -1,3 +1,10 @@
+<ngx-spinner
+bdColor = "rgba(62,58,58,0.49)"
+size = "medium"
+color = "#e80606"
+type = "ball-clip-rotate-multiple">
+<p style="color: #e80606" > Espere Cargando....... </p>
+</ngx-spinner>
 <div class="animated fadeIn">
   <div class="card">
     <div class="card-header">
@@ -65,7 +72,7 @@
                     matTooltip="Imprimir"
                     matTooltipClass="tooltip-mensaje"
                     [matTooltipPosition]="positionOptions[3]"
-                    data-toggle="modal" (click)="VerPrimeroPDF(element.id_apoderado,element.doc_ingreso,element.freg_ingreso)">
+                    data-toggle="modal" (click)="VerPrimeroPDF(element.id_apoderado,element.id_ingreso,element.doc_ingreso,element.freg_ingreso)">
                   <span class="fa fa-print"></span></button>
                  <button class="btn btn-danger btn-xs distancia_btn_opciones"
                       matTooltip="Eliminar"
@@ -436,10 +443,6 @@
         </div>
         
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-danger" (click)="frmIngresos_hide('D')"><span class="fa fa-times-circle"></span> Cerrar</button>
-        <button type="button" class="btn btn-warning" (click)="generatePDF(DetApoderado)"><span class="fa fa-print"></span> Imprimir</button>
-  </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div>
