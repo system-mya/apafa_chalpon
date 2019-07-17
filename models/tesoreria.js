@@ -445,6 +445,28 @@ class Tesoreria {
         });
     };
 
+    obtener_detalle_movimiento(recibo,res) {
+        connection.acquire((err, con) => {
+            if(err){
+                res.send({status: 0, message: err.sqlMessage});
+            }else{
+            con.query("CALL pa_obtener_detalle_movimiento("+[recibo.idbusqueda]+",'"+[recibo.datobusqueda]+"')", (err, result) => {
+                con.release();
+                if(err){
+                    res.send({status: 0, message: err.sqlMessage});
+                }else{
+                    if (result[0].length == 0) {
+                        res.send({status: 2, message: 'NO HAY DATOS EN LA TABLA DETALLE MOVIMIENTO'});
+                    } else {
+                        res.send({status: 1, message: 'CONSULTA EXITOSA',data:result[0]});
+                    }
+                }
+               
+            });
+        }
+        });
+    };
+
     nva_compra(compra, res) {
         connection.acquire((err, con) => {
             if(err){

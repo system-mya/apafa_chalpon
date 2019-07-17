@@ -12,7 +12,7 @@ export class IngresosService {
 
   constructor(private _http:Http) { }
 
-  public getLista_Ingresos(anhio:clsBusqueda){
+  public Lista_Ingresos(anhio:clsBusqueda){
     return this._http.post('/api/tesoreria/listar_ingresos_xperiodo',anhio)
     .map(res => res.json())
   }
@@ -32,9 +32,14 @@ export class IngresosService {
      .map(data => data.json()).toPromise()
   }
 
-  public get_obtener_detalle_recibo(recibo:clsBusqueda){
+  public obtener_detalle_recibo(recibo:clsBusqueda){
     return this._http.post('/api/tesoreria/obtener_detalle_recibo',recibo)
     .map(res => res.json())
+  }
+
+  public obtener_detalle_movimiento(recibo:clsBusqueda){
+    return this._http.post('/api/tesoreria/obtener_detalle_movimiento',recibo)
+    .map(res => res.json()).toPromise()
   }
 
 

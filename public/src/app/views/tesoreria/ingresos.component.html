@@ -58,7 +58,7 @@ type = "ball-clip-rotate-multiple">
                       matTooltip="Detalle"
                       matTooltipClass="tooltip-mensaje"
                       [matTooltipPosition]="positionOptions[3]"
-                      data-toggle="modal" (click)="btnDetalle_Pago(element)">
+                      data-toggle="modal" (click)="btnDetalle_Ingreso(element)">
                     <span class="fa fa-address-card-o"></span></button>
                 <button class="btn btn-warning btn-xs distancia_btn_opciones"
                     matTooltip="Imprimir"
@@ -405,4 +405,53 @@ type = "ball-clip-rotate-multiple">
     </div><!-- /.modal-dialog -->
   </div>
 <!-- /.Fin Modal Detalle Pago-->
+<!--Modal Detalle Ingreso-->
+<div bsModal #DetalleIngreso="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}">
+  <div class="modal-dialog modal-lg modal-success" role="document">
+    <div class="modal-content" style="border-style: solid; border-width: 5px; border-radius: 2rem !important;">
+        <div class="modal-header"  style="color: #020202 !important;background-color: #ffffff !important;border-top-left-radius: 2rem !important;
+        border-top-right-radius: 2rem !important;">
+          <h4 class="modal-title">Detalle Movimiento</h4>
+          <button type="button" class="close" (click)="frmIngresos_hide('DI')" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      <div class="modal-body">
+         <div class="row">
+          <div class="col-sm-4 col-lg-4">
+            <p style="margin-bottom: 1px !important;"><strong>Doc. Responsable: </strong></p><h6>{{DetIngreso.doc_encargado_movimiento}}</h6>
+            <p style="margin-bottom: 1px !important;"><strong>Responsable Ingreso: </strong></p><h6>{{DetIngreso.datos_encargado_movimiento}}</h6>
+            <p style="margin-bottom: 1px !important;"><strong>Fecha Registro: </strong></p><h6>{{DetIngreso.freg_movimiento | date:'dd/MM/yyyy HH:mm:ss'}} </h6>
+        </div><br>
+        <div class="col-sm-8 col-lg-8">
+          <p style="margin-bottom: 1px !important;"><strong>DETALLE DE INGRESO</strong></p><br>
+          <!-- <div class="progress progress-xs"><div aria-valuemax="100" aria-valuemin="0" aria-valuenow="95" class="progress-bar bg-danger" role="progressbar" style="width: 100%"></div></div><br> -->
+          <div class="table-responsive">
+            <table class="table ">
+              <thead>
+                <tr>
+                    <th nowrap>Descripción Ingreso</th>
+                    <th nowrap>Monto</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                    <td nowrap>
+                        {{DetIngreso.descripcion_movimiento}}
+                      </td>
+                      <td nowrap>
+                        {{DetIngreso.monto_movimiento | number : '.2-2'}}
+                      </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div> 
+         </div>  
+        
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
+<!-- /.Fin Modal Detalle Ingreso-->
 </div>

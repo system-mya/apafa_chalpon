@@ -37,6 +37,7 @@ export class IngresosComponent {
   @ViewChild('NvoOtroIngresoModal') public NvoOtroIngresoModal: ModalDirective;
   @ViewChild('NvoPagoModal') public NvoPagoModal: ModalDirective;
   @ViewChild('DetallePago') public DetallePago: ModalDirective;
+  @ViewChild('DetalleIngreso') public DetalleIngreso: ModalDirective;
   displayedColumns: string[] = ['doc_ingreso', 'descripcion_ingreso', 'monto_ingreso', 'freg_ingreso', 'opciones_ingreso'];
   positionOptions: TooltipPosition[] = ['after', 'before', 'above', 'below', 'left', 'right'];
   dataSource: MatTableDataSource<any>;
@@ -66,7 +67,7 @@ export class IngresosComponent {
 DataIngresos: any = [];
  ListarIngresos () {
   this.DatoBusqueda.datobusqueda = localStorage.getItem('_anhio');
-  this._IngresosServicios.getLista_Ingresos(this.DatoBusqueda).subscribe(
+  this._IngresosServicios.Lista_Ingresos(this.DatoBusqueda).subscribe(
     data => {
       if (data.status === 1) {
        this.DataIngresos = data.data;
@@ -109,6 +110,8 @@ DataIngresos: any = [];
       } else {
         if (opc == 'D') {
           this.DetallePago.hide();
+        }else{
+          this.DetalleIngreso.hide();
         }
       }
     }
@@ -193,7 +196,7 @@ DataIngresos: any = [];
            doc.text(25, 90, splitTitle);
         
         this.DatoBusqueda.idbusqueda=id_ingreso; 
-        this._IngresosServicios.get_obtener_detalle_recibo(this.DatoBusqueda).subscribe(
+        this._IngresosServicios.obtener_detalle_recibo(this.DatoBusqueda).subscribe(
         data_recibo => {
           if (data_recibo.status === 1) {
             this.detalle_recibo = data_recibo.data;
@@ -403,8 +406,9 @@ DataIngresos: any = [];
     }
   
 DetApoderado : any = [];
+DetIngreso : any = [];
 public monto_pagado;
-btnDetalle_Pago(dato){
+btnDetalle_Ingreso(dato){
   console.log(dato);
   this.loadingBar.start();
   if(dato.tipo=='R'){
@@ -416,7 +420,7 @@ btnDetalle_Pago(dato){
         this.DetApoderado.doc_ingreso=dato.doc_ingreso;
         this.DetApoderado.fecha_registro=dato.freg_ingreso;        
         this.DatoBusqueda.idbusqueda=dato.id_ingreso;        
-        this._IngresosServicios.get_obtener_detalle_recibo(this.DatoBusqueda).subscribe(
+        this._IngresosServicios.obtener_detalle_recibo(this.DatoBusqueda).subscribe(
         data_recibo => {
           if (data_recibo.status === 1) {   
             this.loadingBar.complete();             
@@ -436,7 +440,21 @@ btnDetalle_Pago(dato){
     } )
     .catch(err => console.log(err))
   }else{
-    this.loadingBar.complete();
+    this.DatoBusqueda.idbusqueda=dato.id_ingreso;
+    this.DatoBusqueda.datobusqueda='I';
+    this._IngresosServicios.obtener_detalle_movimiento(this.DatoBusqueda)
+    .then(data => {
+      if(data.status==1){    
+        this.toastr.success(data.message, 'Aviso!');
+        this.DetIngreso = data.data[0];
+        this.loadingBar.complete();
+        this.DetalleIngreso.show();
+      }else{
+        this.toastr.error(data.message, 'Aviso!');
+        this.loadingBar.complete();
+       }
+    } )
+    .catch(err => console.log(err))
   }
   }
     
