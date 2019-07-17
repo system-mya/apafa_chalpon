@@ -204,11 +204,10 @@ DataIngresos: any = [];
               startY: 110, 
               showHead: 'firstPage',
               theme: 'grid',
-              headStyles: {
-                cellWidth: 'wrap',
-             },
-             bodyStyles: {
-              halign: 'justify'
+              columnStyles:{
+                id: {halign: 'center',cellWidth: 8},
+                descripcion_concepto: {cellWidth: 82},
+                monto_detalle: {halign: 'center',cellWidth: 10}
                },
               didDrawPage: function (data) {
                 // Footer
@@ -406,8 +405,10 @@ DataIngresos: any = [];
 DetApoderado : any = [];
 public monto_pagado;
 btnDetalle_Pago(dato){
+  console.log(dato);
   this.loadingBar.start();
-  this.DatoBusqueda.idbusqueda=dato.id_apoderado;
+  if(dato.tipo=='R'){
+    this.DatoBusqueda.idbusqueda=dato.id_apoderado;
     this._ApoderadoServicios.detalle_apoderado(this.DatoBusqueda)
     .then(data => {
       if(data.status==1){    
@@ -434,6 +435,9 @@ btnDetalle_Pago(dato){
        }
     } )
     .catch(err => console.log(err))
+  }else{
+    this.loadingBar.complete();
+  }
   }
     
 }

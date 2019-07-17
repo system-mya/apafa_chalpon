@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 16-07-2019 a las 00:30:40
+-- Tiempo de generación: 17-07-2019 a las 00:27:29
 -- Versión del servidor: 5.7.14
 -- Versión de PHP: 5.6.25
 
@@ -855,7 +855,7 @@ INSERT INTO `apoderado` (`id_apoderado`, `tdoc_apoderado`, `doc_apoderado`, `ape
 (109, 'DNI', '14002639', 'Cajahuaringa Santillana', 'Alexandra', 'F', '932895470', '', NULL, b'1'),
 (110, 'DNI', '17553397', 'Cruz Cañazca', 'Solange', 'F', '966306829', '', NULL, b'1'),
 (111, 'DNI', '19838080', 'Delgado Del Carpio', 'Idalia', 'F', '955472585', '', NULL, b'1'),
-(112, 'DNI', '11717065', 'Abad Solis', 'Carmen', 'F', '913251919', 'dAD # 114', NULL, b'1'),
+(112, 'DNI', '11717065', 'Abad Solis', 'Carmen', 'F', '913251919', 'calle chiclayo # 114 MOTUPE LAMBAYEQUE CHICLAYO', NULL, b'1'),
 (113, 'DNI', '14268468', 'Leo Mojo', 'Candy', 'F', '973591530', '', NULL, b'1'),
 (114, 'DNI', '17198872', 'Aguilar Pauca', 'Karla Luz', 'F', '941267001', '', NULL, b'1'),
 (115, 'DNI', '16853284', 'Vicente Teves', 'Rosa Leydi', 'F', '935554463', '', NULL, b'1'),
@@ -938,7 +938,9 @@ INSERT INTO `concepto_apafa` (`id_concepto`, `descripcion_concepto`, `tipo_conce
 (7, 'FDHNDF', 'O', 2, 42.52, b'0'),
 (8, 'CUOTA DE APAFA 2019', 'A', 23, 54, b'0'),
 (9, 'CUOTA DE APAFA 2019', 'A', 23, 54.5, b'1'),
-(10, 'ASAMBLEA GENERAL DE PADRE DE FAMILIA DIA LUNES ', 'O', 23, 34.25, b'1');
+(10, 'ASAMBLEA GENERAL DE PADRE DE FAMILIA DIA LUNES ', 'O', 23, 34.25, b'1'),
+(11, 'ASAMBLEA DIA DE LA MADRE', 'O', 23, 15, b'1'),
+(12, 'ESCUELA DE PADRES', 'O', 23, 10, b'1');
 
 -- --------------------------------------------------------
 
@@ -977,8 +979,11 @@ CREATE TABLE `detalle_deuda` (
 
 INSERT INTO `detalle_deuda` (`id_detalle_deuda`, `id_concepto`, `id_apoderado`, `saldo_deuda`, `freg_deuda`, `fseg_deuda`, `estado_deuda`) VALUES
 (22, 8, 3, 54, '2019-06-25', '2019-06-25 15:25:16', 'P'),
-(23, 8, 112, 6, '2019-07-08', '2019-07-15 19:28:04', 'P'),
-(24, 8, 55, 54, '2019-07-08', '2019-07-08 16:08:58', 'P');
+(23, 8, 112, 20, '2019-07-08', '2019-07-16 18:38:57', 'P'),
+(24, 8, 55, 54, '2019-07-08', '2019-07-08 16:08:58', 'P'),
+(25, 10, 112, 10, '2019-07-16', '2019-07-16 18:38:57', 'P'),
+(26, 11, 112, 10, '2019-07-16', '2019-07-16 18:38:57', 'P'),
+(27, 12, 112, 5, '2019-07-16', '2019-07-16 18:38:57', 'P');
 
 -- --------------------------------------------------------
 
@@ -997,7 +1002,11 @@ CREATE TABLE `detalle_recibo` (
 --
 
 INSERT INTO `detalle_recibo` (`id_detalle_deuda`, `id_recibo`, `monto_detalle`) VALUES
-(23, 20, 24);
+(23, 23, 24),
+(23, 24, 10),
+(25, 24, 24.25),
+(26, 24, 5),
+(27, 24, 5);
 
 -- --------------------------------------------------------
 
@@ -1169,8 +1178,8 @@ CREATE TABLE `recibo` (
 --
 
 INSERT INTO `recibo` (`id_recibo`, `id_apoderado`, `id_usuario`, `mtotal_recibo`, `freg_recibo`, `num_recibo`, `estado_recibo`) VALUES
-(20, 112, 1, 24, '2019-07-15 19:26:06', '1171-20190715-1', b'1'),
-(21, 112, 1, 24, '2019-07-15 19:28:04', '1171-20190715-2', b'1');
+(23, 112, 1, 24, '2019-07-16 17:59:34', '1171-20190716-1', b'1'),
+(24, 112, 1, 44.25, '2019-07-16 18:38:57', '1171-20190716-2', b'1');
 
 -- --------------------------------------------------------
 
@@ -1467,7 +1476,7 @@ ALTER TABLE `compra`
 -- AUTO_INCREMENT de la tabla `concepto_apafa`
 --
 ALTER TABLE `concepto_apafa`
-  MODIFY `id_concepto` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_concepto` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 --
 -- AUTO_INCREMENT de la tabla `detalle_compra`
 --
@@ -1477,7 +1486,7 @@ ALTER TABLE `detalle_compra`
 -- AUTO_INCREMENT de la tabla `detalle_deuda`
 --
 ALTER TABLE `detalle_deuda`
-  MODIFY `id_detalle_deuda` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id_detalle_deuda` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 --
 -- AUTO_INCREMENT de la tabla `grados`
 --
@@ -1507,7 +1516,7 @@ ALTER TABLE `perfil_usuario`
 -- AUTO_INCREMENT de la tabla `recibo`
 --
 ALTER TABLE `recibo`
-  MODIFY `id_recibo` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id_recibo` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 --
 -- AUTO_INCREMENT de la tabla `reunion`
 --

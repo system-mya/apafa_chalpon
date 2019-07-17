@@ -115,6 +115,19 @@
     z-index: 10;
   }
 
+  .secciones-detalle-recibo {
+    height: 250px !important;
+    overflow: auto;
+  }
+  
+  .secciones-detalle-recibo th {
+    position: sticky;
+    position: -webkit-sticky;
+    top: 0;
+    background: white;
+    z-index: 10;
+  }
+
   .secciones-detalle-compra {
     height: 250px !important;
     overflow: auto;

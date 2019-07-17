@@ -10,25 +10,17 @@ type = "ball-clip-rotate-multiple">
     <div class="card-header">
         <h5><strong>
             <i class="fa fa-align-justify"></i>&nbsp;&nbsp;Lista de Ingresos
-          </strong>          
-          <span class="float-right">
-            <button class="btn btn-success btn-xs" 
-            matTooltip="Agregar Nuevo Ingreso"
-            matTooltipClass="tooltip-mensaje"
-            data-toggle="modal" (click)="btnNuevo_OtroIngreso()">
-              <span class="fa fa-plus-square"></span>
-              OTROS INGRESOS
-            </button>
-          </span>
-          <span class="float-right">
-            <button class="btn btn-primary btn-xs" style="margin: 0px 20px;"
-            matTooltip="Agregar Nuevo Recibo"
-            matTooltipClass="tooltip-mensaje"
-            data-toggle="modal" (click)="btnNuevo_Recibo()">
-              <span class="fa fa-plus-square"></span>
-              PAGO APAFA
-            </button>
-          </span></h5>
+          </strong>       
+          <div class="card-header-actions">
+              <i class="fa fa-plus-square fa-2x btn btn-primary btn-xs" aria-hidden="true"
+              matTooltip="Agregar Nuevo Recibo"
+              matTooltipClass="tooltip-mensaje" style="cursor: pointer;"
+              data-toggle="modal" (click)="btnNuevo_Recibo()"> PAGO APAFA</i>
+              <i class="fa fa-plus-square fa-2x btn btn-success btn-xs" aria-hidden="true"
+              matTooltip="Agregar Nuevo Ingreso"
+              matTooltipClass="tooltip-mensaje" style="cursor: pointer;"
+              data-toggle="modal" (click)="btnNuevo_OtroIngreso()"> OTROS INGRESOS</i>
+         </div></h5>
    </div>
    <div class="card-body">
       <div class="mat-elevation-z8 table-responsive">
@@ -40,14 +32,14 @@ type = "ball-clip-rotate-multiple">
              
           
             <ng-container matColumnDef="doc_ingreso">
-              <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap > Documento </th>
-              <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.doc_ingreso}} </td>
+              <th width="20%" mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap > Documento </th>
+              <td mat-cell *matCellDef="let element" style="text-align: center !important"> {{element.doc_ingreso}} </td>
             </ng-container>
         
         
             <ng-container matColumnDef="descripcion_ingreso">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" nowrap> Descripcion </th>
-              <td mat-cell *matCellDef="let element" nowrap> {{element.	descripcion_ingreso}}</td>
+              <th width="30%" mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" nowrap> Descripcion </th>
+              <td mat-cell *matCellDef="let element"> {{element.	descripcion_ingreso}}</td>
             </ng-container>
             
             <ng-container matColumnDef="monto_ingreso">
@@ -275,7 +267,7 @@ type = "ball-clip-rotate-multiple">
                                 </thead>
                                 <tbody>
                                   <tr *ngFor="let item of DataDeuda;index as i">
-                                      <td nowrap>
+                                      <td width="35%">
                                         {{item.descripcion_concepto}}
                                       </td>
                                       <td nowrap>
@@ -354,97 +346,63 @@ type = "ball-clip-rotate-multiple">
 <!-- /.Fin Modal Nuevo Pago-->
 <!--Modal Detalle Pago-->
 <div bsModal #DetallePago="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}">
-  <div class="modal-dialog modal-lg modal-info" role="document">
-    <div class="modal-content" style="border-style: solid; border-width: 5px; border-radius: 2rem !important;">
-      <div class="modal-header"  style="color: #020202 !important;background-color: #ffffff !important;border-top-left-radius: 2rem !important;
-      border-top-right-radius: 2rem !important;">
-        <h4 class="modal-title">Detalle Pago</h4>
-        <button type="button" class="close" (click)="frmIngresos_hide('D')" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="bd-example">
-          <dl class="row">
-                <dt class="col-sm-3">Num. Recibo:</dt>
-                <dd class="col-sm-3 text-rigth"><em style="font-size: 16px;">{{DetApoderado.doc_ingreso}}</em></dd>
-                <dt class="col-sm-3">Fecha Registro:</dt>
-                <dd class="col-sm-3 text-left"><em style="font-size: 16px;">{{DetApoderado.fecha_registro | date:'dd/MM/yyyy HH:mm:ss'}}</em></dd>
-          </dl> 
-          <dl class="row">
-            <dt class="col-sm-4">Sr(a) Apoderado(a): </dt>
-            <dd class="col-sm-3 text-rigth"><em style="font-size: 16px;">{{DetApoderado.apellidos_apoderado}}</em></dd>
-            <dd class="col-sm-3 text-left"><em style="font-size: 16px;">{{DetApoderado.nombres_apoderado}}</em></dd>
-          </dl> 
-          <dl class="row">
-            <dt class="col-sm-2">Tipo Doc.: </dt>
-            <dd class="col-sm-1">{{DetApoderado.tdoc_apoderado}}</dd>
-            <dt class="col-sm-2">Doc. Identidad: </dt>
-            <dd class="col-sm-2">{{DetApoderado.doc_apoderado}}</dd>
-            <dt class="col-sm-3">Num. Contacto: </dt>
-            <dd class="col-sm-2 text-left">{{DetApoderado.celular_apoderado}}</dd>              
-          </dl>
-          <dl class="row">
-            <dt class="col-sm-2">Dirección: </dt>
-            <dd class="col-sm-10">{{DetApoderado.direccion_apoderado}}</dd>
-          </dl>
-          <dl class="row">
-            <div class="secciones-deuda table-responsive">
+    <div class="modal-dialog modal-lg modal-success" role="document">
+      <div class="modal-content" style="border-style: solid; border-width: 5px; border-radius: 2rem !important;">
+          <div class="modal-header"  style="color: #020202 !important;background-color: #ffffff !important;border-top-left-radius: 2rem !important;
+          border-top-right-radius: 2rem !important;">
+            <h4 class="modal-title">Detalle Pago</h4>
+            <button type="button" class="close" (click)="frmIngresos_hide('D')" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        <div class="modal-body">
+           <div class="row">
+            <div class="col-sm-4 col-lg-4">
+              <p style="margin-bottom: 1px !important;"><strong>Num. Recibo: </strong></p><h6>{{DetApoderado.doc_ingreso}}</h6>
+              <p style="margin-bottom: 1px !important;"><strong>Fecha Registro: </strong></p><h6>{{DetApoderado.fecha_registro | date:'dd/MM/yyyy HH:mm:ss'}}</h6>
+              <p style="margin-bottom: 1px !important;"><strong>Sr(a) Apoderado: </strong></p><h6>{{DetApoderado.apellidos_apoderado}} {{DetApoderado.nombres_apoderado}}</h6>
+              <p style="margin-bottom: 1px !important;"><strong>Tipo Doc.: </strong></p><h6>{{DetApoderado.tdoc_apoderado}}</h6>
+              <p style="margin-bottom: 1px !important;"><strong>Doc. Identidad: </strong></p><h6>{{DetApoderado.doc_apoderado}}</h6>
+              <p style="margin-bottom: 1px !important;"><strong>Num. Contacto: </strong></p><h6>{{DetApoderado.celular_apoderado}}</h6>
+              <p style="margin-bottom: 1px !important;"><strong>Dirección: </strong></p><h6>{{DetApoderado.direccion_apoderado}}</h6>
+          </div><br>
+          <div class="col-sm-8 col-lg-8">
+            <p style="margin-bottom: 1px !important;"><strong>DETALLE DE RECIBO</strong></p><br>
+            <!-- <div class="progress progress-xs"><div aria-valuemax="100" aria-valuemin="0" aria-valuenow="95" class="progress-bar bg-danger" role="progressbar" style="width: 100%"></div></div><br> -->
+            <div class="secciones-detalle-recibo table-responsive">
               <table class="table ">
                 <thead>
                   <tr>
-                    <th nowrap>Descripción Concepto</th>
-                    <th nowrap>Monto</th>
+                      <th nowrap>Descripción Concepto</th>
+                      <th nowrap>Monto</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr *ngFor="let item of detalle_recibo;index as i">
                       <td nowrap>
-                        {{item.descripcion_concepto}}
-                      </td>
-                      <td nowrap>
-                        {{item.monto_detalle | number : '.2-2'}}
-                      </td>
+                          {{item.descripcion_concepto}}
+                        </td>
+                        <td nowrap>
+                          {{item.monto_detalle | number : '.2-2'}}
+                        </td>
                   </tr>
                 </tbody>
               </table>
             </div>
-          </dl>
-          <dl class="row" style="margin-bottom: -10px !important;">
-            <dd class="col-sm-6"></dd>
-            <dd class="col-sm-6">
-                <dl class="row">
-                  <dt class="col-sm-12">Total Pagado: {{monto_pagado | number : '.2-2'}}</dt>
-               </dl>
-           </dd>
-          </dl>
-          <!-- <dl class="row">
-              <dt class="col-sm-3">Datos del Padre: </dt>
-              <dd class="col-sm-3 text-left"><em style="font-size: 16px;">{{DataAlumno.apellidos_padre}}</em></dd>
-              <dd class="col-sm-3 text-left"><em style="font-size: 16px;">{{DataAlumno.nombres_padre}}</em></dd>
-          </dl>
-          <dl class="row">
-            <dt class="col-sm-2">N° Celular: </dt>
-            <dd class="col-sm-2">{{DataAlumno.celular_padre}}</dd>
-            <dt class="col-sm-5">Correo Electronico: </dt>
-            <dd class="col-sm-2">{{DataAlumno.correo_padre}}</dd>
-          </dl>
-          <dl class="row">
-            <dt class="col-sm-3">Datos de la Madre: </dt>
-            <dd class="col-sm-3 text-left"><em style="font-size: 16px;">{{DataAlumno.apellidos_madre}}</em></dd>
-            <dd class="col-sm-3 text-left"><em style="font-size: 16px;">{{DataAlumno.nombres_madre}}</em></dd>
-        </dl>
-        <dl class="row">
-          <dt class="col-sm-2">N° Celular: </dt>
-          <dd class="col-sm-2">{{DataAlumno.celular_madre}}</dd>
-          <dt class="col-sm-5">Correo Electronico: </dt>
-          <dd class="col-sm-2">{{DataAlumno.correo_madre}}</dd>
-        </dl> -->
+            <dl class="row" style="margin-bottom: -10px !important;">
+              <dd class="col-sm-6"></dd>
+              <dd class="col-sm-6">
+                  <dl class="row">
+                    <dt class="col-sm-12">Total Pagado: {{monto_pagado | number : '.2-2'}}</dt>
+                 </dl>
+             </dd>
+            </dl>
+          </div> 
+           </div>  
+          
         </div>
-        
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div>
 <!-- /.Fin Modal Detalle Pago-->
 </div>
