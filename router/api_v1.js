@@ -188,6 +188,22 @@ app.post('/api/apafa/insertar_matricula', (req, res) => {
     apafa.nva_matricula(req.body, res);
 });
 
+//LLAMADO OBTENER DETALLE MATRICULA
+app.post('/api/apafa/detalle_matricula', (req, res) => {
+    apafa.detalle_matricula(req.body, res);
+});
+
+//LLAMADO ELIMINAR MATRICULA
+app.post('/api/apafa/eliminar_matricula', (req, res) => {
+    apafa.eliminar_matricula(req.body, res);
+});
+
+//LLAMADA INSERTAR NUEVA DEUDA APODERADO
+app.post('/api/apafa/insertar_deuda_apoderado', (req, res) => {
+    apafa.nva_deuda_apoderado(req.body, res);
+});
+
+
 //LLAMADA LISTA MATRICULADOS X GRADO
 app.post('/api/apafa/listar_matriculados_xgrado', (req, res) => {
     apafa.listar_matriculados_xgrado(req.body,res);
@@ -231,7 +247,7 @@ app.post('/api/tesoreria/listar_ingresos_xperiodo', (req, res) => {
 
 //INSERTAR NUEVO INGRESO
 app.post('/api/tesoreria/insertar_ingreso', (req, res) => {
-    tesoreria.nvo_otro_ingreso(req.body, res);
+    tesoreria.nvo_movimiento(req.body, res);
 });
 
 //LLAMADA LISTA DE INGRESOS
@@ -268,6 +284,11 @@ app.post('/api/tesoreria/listar_compras_xperiodo', (req, res) => {
 //LLAMADA LISTA DE DETALLE X COMPRA
 app.post('/api/tesoreria/listar_detalle_compra', (req, res) => {
     tesoreria.listar_detalle_compra(req.body,res);
+});
+
+//LLAMADA ELIMINAR MOVIMEINTO X CRITERIO
+app.post('/api/tesoreria/eliminar_ingreso_egreso', (req, res) => {
+    tesoreria.eliminar_movimiento(req.body,res);
 });
 
 //LLAMADA LISTA DE REUNIONES X PERIODO

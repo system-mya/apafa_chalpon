@@ -127,3 +127,17 @@ th.mat-header-cell {
   .switch-label .switch-slider::after{
     width: 70% !important;
   }
+
+
+  .secciones-detalle-recibo {
+    height: 250px !important;
+    overflow: auto;
+  }
+  
+  .secciones-detalle-recibo th {
+    position: sticky;
+    position: -webkit-sticky;
+    top: 0;
+    background: white;
+    z-index: 10;
+  }

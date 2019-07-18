@@ -1,20 +1,20 @@
 -- phpMyAdmin SQL Dump
--- version 3.5.1
--- http://www.phpmyadmin.net
+-- version 4.6.4
+-- https://www.phpmyadmin.net/
 --
--- Servidor: localhost
--- Tiempo de generación: 17-07-2019 a las 05:40:13
--- Versión del servidor: 5.5.24-log
--- Versión de PHP: 5.4.3
+-- Servidor: 127.0.0.1
+-- Tiempo de generación: 18-07-2019 a las 00:43:11
+-- Versión del servidor: 5.7.14
+-- Versión de PHP: 5.6.25
 
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Base de datos: `chalpon_apafa`
@@ -24,33 +24,28 @@ DELIMITER $$
 --
 -- Procedimientos
 --
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_buscar_dni_usuario`(IN `dni` CHAR(8))
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_buscar_dni_usuario` (IN `dni` CHAR(8))  NO SQL
 SELECT * FROM usuario
 WHERE dni_usu=dni
 AND estado_usu=1$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_buscar_doc_alumno`(IN `doc` VARCHAR(15))
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_buscar_doc_alumno` (IN `doc` VARCHAR(15))  NO SQL
 SELECT id_alumno,apellidos_alumno,nombres_alumno,
 (CASE WHEN sexo_alumno='M' THEN 'MASCULINO' ELSE 'FEMENINO' END)
 AS sexo_alumno FROM alumno
 WHERE doc_alumno=doc
 AND estado_alumno=1$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_buscar_doc_apoderado`(IN `doc` VARCHAR(15))
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_buscar_doc_apoderado` (IN `doc` VARCHAR(15))  NO SQL
 SELECT * FROM apoderado
 WHERE doc_apoderado=doc
 AND estado_apoderado=1$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_cambiar_estado_grado`(IN `grado` TINYINT, IN `estado` BIT)
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_cambiar_estado_grado` (IN `grado` TINYINT, IN `estado` BIT)  NO SQL
 UPDATE grados SET estado_grado=estado 
 WHERE id_grado=grado$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_detalle_alumno`(IN `id` SMALLINT)
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_detalle_alumno` (IN `id` SMALLINT)  NO SQL
 SELECT id_alumno,(CASE WHEN tdoc_alumno='OTR' THEN 'OTROS' ELSE 'DNI' END) AS tdoc_alumno,doc_alumno,apellidos_alumno,
 nombres_alumno,fnac_alumno,(CASE WHEN sexo_alumno='M' THEN 'MASCULINO' ELSE 'FEMENINO' END) AS sexo_alumno,
 telefono_alumno,celular_alumno,direccion_alumno,correo_alumno,procedencia_alumno,apellidos_padre,
@@ -58,48 +53,66 @@ nombres_padre,celular_padre,correo_padre,apellidos_madre,nombres_madre,celular_m
 WHERE id_alumno=id
 AND estado_alumno=1$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_detalle_apoderado`(IN `id` SMALLINT)
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_detalle_apoderado` (IN `id` SMALLINT)  NO SQL
 SELECT id_apoderado, (CASE WHEN tdoc_apoderado='OTR' THEN 'OTROS' ELSE 'DNI' END) AS tdoc_apoderado, doc_apoderado, apellidos_apoderado,nombres_apoderado,(CASE WHEN sexo_apoderado='M' THEN 'MASCULINO' ELSE 'FEMENINO' END) AS sexo_apoderado, celular_apoderado, direccion_apoderado, correo_apoderado FROM apoderado
 WHERE id_apoderado=id
 AND estado_apoderado=1$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_devolver_libro`(IN `matricula` SMALLINT, IN `libro` SMALLINT, IN `estado` BIT(1))
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_detalle_matricula` (IN `id` SMALLINT)  NO SQL
+SELECT a.doc_alumno,a.apellidos_alumno,a.nombres_alumno,a.direccion_alumno,
+ap.doc_apoderado,ap.apellidos_apoderado,ap.nombres_apoderado,tr.nombre_relacion,
+g.descripcion_grado,s.nombre_seccion,
+(CASE WHEN s.turno_seccion='M' THEN 'MAÑANA' ELSE 'TARDE' END) as turno_seccion
+FROM matricula m
+INNER JOIN alumno a ON a.id_alumno=m.id_alumno
+INNER JOIN apoderado ap ON ap.id_apoderado=m.id_apoderado
+INNER JOIN tipo_relacion tr ON tr.id_tipo_relacion=m.id_tipo_relacion
+INNER JOIN secciones s ON s.id_seccion=m.id_seccion
+INNER JOIN grados g ON g.id_grado=s.id_grado
+WHERE m.id_matricula=id
+AND m.estado_matricula=1$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_devolver_libro` (IN `matricula` SMALLINT, IN `libro` SMALLINT, IN `estado` BIT(1))  NO SQL
 UPDATE libro_matricula SET devolvio_libro=estado
 WHERE id_matricula=matricula
 AND id_libro=libro$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_alumno`(IN `id` SMALLINT)
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_alumno` (IN `id` SMALLINT)  NO SQL
 UPDATE alumno SET estado_alumno=0
 WHERE id_alumno=id$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_apoderado`(IN `id_apo` SMALLINT)
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_apoderado` (IN `id_apo` SMALLINT)  NO SQL
 UPDATE apoderado SET estado_apoderado=0 WHERE id_apoderado=id_apo$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_concepto`(IN `id` SMALLINT)
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_concepto` (IN `id` SMALLINT)  NO SQL
 UPDATE concepto_apafa SET estado_concepto=0
 WHERE id_concepto=id$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_libro`(IN `idlibro` TINYINT)
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_ingreso_egreso` (IN `criterio` CHAR(1), IN `id` SMALLINT)  NO SQL
+IF criterio="M" THEN
+        UPDATE otros_movimientos SET estado_movimiento=0
+        WHERE id_movimiento=id;
+ELSEIF criterio="R" THEN
+        UPDATE recibo SET estado_recibo=0
+        WHERE id_recibo=id;
+END IF$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_libro` (IN `idlibro` TINYINT)  NO SQL
 UPDATE libro SET estado_libro=0 WHERE id_libro=idlibro$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_seccion`(IN `id` TINYINT)
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_matricula` (IN `id` SMALLINT)  NO SQL
+UPDATE matricula SET estado_matricula=0
+WHERE id_matricula=id$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_seccion` (IN `id` TINYINT)  NO SQL
 UPDATE secciones SET estado_seccion=0
 WHERE id_seccion=id$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_usuario`(IN `id_usu` TINYINT)
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_usuario` (IN `id_usu` TINYINT)  NO SQL
 UPDATE usuario SET estado_usu=0
 WHERE idusuario=id_usu$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_iniciar_sesion`(IN `nom` VARCHAR(20), IN `clave` VARCHAR(10))
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_iniciar_sesion` (IN `nom` VARCHAR(20), IN `clave` VARCHAR(10))  NO SQL
 SELECT u.idusuario,u.nom_usu,pu.abrev_perfil,pu.nombre_perfil,
 (SELECT anhio_lectivo from anhio_lectivo WHERE condicion_anhio='A' AND estado_anhio=1) AS anhio_lectivo FROM usuario u
 INNER JOIN perfil_usuario pu ON u.idperfil_usuario=pu.idperfil_usuario
@@ -108,8 +121,7 @@ AND u.clave_usu=SHA(clave)
 AND u.estado_usu=1
 AND u.fbaja_usu IS NULL$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_alumno`(IN `tdoc` CHAR(3), IN `doc` VARCHAR(15), IN `ape_alum` VARCHAR(60), IN `nom_alum` VARCHAR(50), IN `fnac` DATE, IN `sexo` CHAR(1), IN `tel_alum` CHAR(6), IN `cel_alum` CHAR(9), IN `dire_alum` VARCHAR(80), IN `correo_alum` VARCHAR(80), IN `proc_alum` VARCHAR(100), IN `ape_padre` VARCHAR(60), IN `nom_padre` VARCHAR(50), IN `cel_padre` CHAR(9), IN `correo_pa` VARCHAR(80), IN `ape_madre` VARCHAR(60), IN `nom_madre` VARCHAR(50), IN `cel_madre` CHAR(9), IN `correo_ma` VARCHAR(80))
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_alumno` (IN `tdoc` CHAR(3), IN `doc` VARCHAR(15), IN `ape_alum` VARCHAR(60), IN `nom_alum` VARCHAR(50), IN `fnac` DATE, IN `sexo` CHAR(1), IN `tel_alum` CHAR(6), IN `cel_alum` CHAR(9), IN `dire_alum` VARCHAR(80), IN `correo_alum` VARCHAR(80), IN `proc_alum` VARCHAR(100), IN `ape_padre` VARCHAR(60), IN `nom_padre` VARCHAR(50), IN `cel_padre` CHAR(9), IN `correo_pa` VARCHAR(80), IN `ape_madre` VARCHAR(60), IN `nom_madre` VARCHAR(50), IN `cel_madre` CHAR(9), IN `correo_ma` VARCHAR(80))  NO SQL
 INSERT INTO alumno(tdoc_alumno, 
 doc_alumno, apellidos_alumno,nombres_alumno,fnac_alumno, 
 sexo_alumno,telefono_alumno,celular_alumno, 
@@ -122,30 +134,25 @@ sexo,tel_alum,cel_alum,dire_alum,correo_alum,proc_alum,ape_padre,
 nom_padre,cel_padre,correo_pa,ape_madre,nom_madre,cel_madre,
 correo_ma)$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_anhio`(IN `anhio` CHAR(4), IN `finicio` DATE, IN `ffin` DATE, IN `descripcion` VARCHAR(150))
-INSERT INTO anhio_lectivo(anhio_lectivo, finicio_anhio,
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_anhio` (IN `anhio` CHAR(4), IN `finicio` DATE, IN `ffin` DATE, IN `descripcion` VARCHAR(150))  INSERT INTO anhio_lectivo(anhio_lectivo, finicio_anhio,
 ffin_anhio, descripcion_anhio) 
 VALUES (anhio,finicio,ffin,descripcion)$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_apoderado`(IN `tdoc_apod` CHAR(3), IN `doc_apod` VARCHAR(15), IN `ape_apod` VARCHAR(60), IN `nom_apod` VARCHAR(50), IN `sex_apod` CHAR(1), IN `cel_apod` CHAR(9), IN `direc_apod` VARCHAR(80), IN `cor_apod` VARCHAR(80))
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_apoderado` (IN `tdoc_apod` CHAR(3), IN `doc_apod` VARCHAR(15), IN `ape_apod` VARCHAR(60), IN `nom_apod` VARCHAR(50), IN `sex_apod` CHAR(1), IN `cel_apod` CHAR(9), IN `direc_apod` VARCHAR(80), IN `cor_apod` VARCHAR(80))  NO SQL
 INSERT INTO apoderado(tdoc_apoderado, 
 doc_apoderado, apellidos_apoderado, nombres_apoderado,
 sexo_apoderado, celular_apoderado, direccion_apoderado,
 correo_apoderado) VALUES (tdoc_apod,doc_apod,
 ape_apod,nom_apod,sex_apod,cel_apod,direc_apod,cor_apod)$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_concepto_apafa`(IN `des_concepto` VARCHAR(100), IN `tipo` CHAR(1), IN `anhio` CHAR(4), IN `monto` FLOAT(10,2))
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_concepto_apafa` (IN `des_concepto` VARCHAR(100), IN `tipo` CHAR(1), IN `anhio` CHAR(4), IN `monto` FLOAT(10,2))  NO SQL
 INSERT INTO concepto_apafa (descripcion_concepto, tipo_concepto, id_anhio, monto_concepto) 
 VALUES (des_concepto,tipo,(SELECT idanhio FROM anhio_lectivo WHERE anhio_lectivo=anhio AND condicion_anhio='A' AND estado_anhio=1),monto)$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_detalle_recibo`(IN `id_detalle` SMALLINT, IN `recibo` SMALLINT, IN `monto` FLOAT(10,2))
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_detalle_recibo` (IN `id_detalle` SMALLINT, IN `recibo` SMALLINT, IN `monto` FLOAT(10,2))  NO SQL
 INSERT INTO detalle_recibo(id_detalle_deuda, id_recibo, monto_detalle) VALUES (id_detalle,recibo,monto)$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_deuda_apafa`(IN `apoderado` SMALLINT, IN `dato_anhio` CHAR(4))
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_deuda_apafa` (IN `apoderado` SMALLINT, IN `dato_anhio` CHAR(4))  NO SQL
 INSERT INTO detalle_deuda(id_concepto,id_apoderado,saldo_deuda,freg_deuda,fseg_deuda) 
 VALUES ((SELECT ca.id_concepto FROM concepto_apafa ca 
 INNER JOIN anhio_lectivo a ON a.idanhio=ca.id_anhio 
@@ -156,18 +163,19 @@ INNER JOIN anhio_lectivo a ON a.idanhio=ca.id_anhio
 WHERE ca.tipo_concepto='A' AND a.anhio_lectivo=dato_anhio AND a.condicion_anhio='A' 
 AND a.estado_anhio=1 AND ca.estado_concepto=1),CURDATE(),NOW())$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_libro`(IN `titulo_lib` VARCHAR(80), IN `edit_lib` VARCHAR(20), IN `edicion` CHAR(4), IN `grado` TINYINT)
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_deuda_apoderado` (IN `concepto` SMALLINT, IN `apoderado` SMALLINT, IN `saldo` FLOAT, IN `descripcion` VARCHAR(100))  NO SQL
+INSERT INTO detalle_deuda(id_concepto,id_apoderado, saldo_deuda, descripcion_deuda,freg_deuda,fseg_deuda) 
+VALUES (concepto,apoderado,saldo,descripcion,CURDATE(),NOW())$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_libro` (IN `titulo_lib` VARCHAR(80), IN `edit_lib` VARCHAR(20), IN `edicion` CHAR(4), IN `grado` TINYINT)  NO SQL
 INSERT INTO libro (titulo_libro, editorial_libro,edicion_libro,id_grado ) 
 VALUES (titulo_lib,edit_lib,edicion,grado)$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_libro_xmatricula`(IN `matricula` SMALLINT, IN `libro` TINYINT)
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_libro_xmatricula` (IN `matricula` SMALLINT, IN `libro` TINYINT)  NO SQL
 INSERT INTO libro_matricula(id_matricula, id_libro) 
 VALUES (matricula,libro)$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_matricula`(IN `fecha` DATE, IN `idapo` SMALLINT, IN `idalum` SMALLINT, IN `idseccion` TINYINT, IN `idrelacion` TINYINT, IN `codanhio` CHAR(4))
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_matricula` (IN `fecha` DATE, IN `idapo` SMALLINT, IN `idalum` SMALLINT, IN `idseccion` TINYINT, IN `idrelacion` TINYINT, IN `codanhio` CHAR(4))  NO SQL
 INSERT INTO matricula(fecha_matricula, 
 id_apoderado, id_alumno,id_anhio, 
 id_seccion,id_tipo_relacion) 
@@ -176,18 +184,19 @@ anhio_lectivo WHERE condicion_anhio='A'
 AND estado_anhio=1
 AND anhio_lectivo=codanhio),idseccion,idrelacion)$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_nvo_recibo`(IN `apo` SMALLINT, IN `usu` SMALLINT, IN `mtotal` FLOAT, IN `num` VARCHAR(20))
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_movimientos` (IN `tipo` CHAR(1), IN `descripcion` VARCHAR(100), IN `monto` FLOAT(10,2), IN `doc` VARCHAR(15), IN `datos` VARCHAR(100), IN `usu` TINYINT)  NO SQL
+INSERT INTO otros_movimientos(tipo_movimiento, descripcion_movimiento, monto_movimiento, freg_movimiento,doc_encargado_movimiento, datos_encargado_movimiento, id_usuario) VALUES (tipo,descripcion,
+monto,NOW(),doc,datos,usu)$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_nvo_recibo` (IN `apo` SMALLINT, IN `usu` SMALLINT, IN `mtotal` FLOAT, IN `num` VARCHAR(20))  NO SQL
 INSERT INTO recibo(id_apoderado,id_usuario,mtotal_recibo,freg_recibo, num_recibo) 
 VALUES (apo,usu,mtotal,NOW(),num)$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_seccion`(IN `nombre` VARCHAR(20), IN `grado` TINYINT, IN `turno` CHAR(1))
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_seccion` (IN `nombre` VARCHAR(20), IN `grado` TINYINT, IN `turno` CHAR(1))  NO SQL
 INSERT INTO secciones(nombre_seccion,id_grado,turno_seccion) 
 VALUES (nombre,grado,turno)$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_usuario`(IN `perfil` TINYINT, IN `nom_usu` VARCHAR(20), IN `clave` VARCHAR(10), IN `dni` CHAR(8), IN `nombres` VARCHAR(45), IN `apellidos` VARCHAR(60), IN `sexo` CHAR(1), IN `celular` CHAR(9), IN `correo` VARCHAR(80), IN `direccion` VARCHAR(80), IN `fcreacion` DATE, IN `obser` VARCHAR(50))
-INSERT INTO usuario(idperfil_usuario,nom_usu, 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_usuario` (IN `perfil` TINYINT, IN `nom_usu` VARCHAR(20), IN `clave` VARCHAR(10), IN `dni` CHAR(8), IN `nombres` VARCHAR(45), IN `apellidos` VARCHAR(60), IN `sexo` CHAR(1), IN `celular` CHAR(9), IN `correo` VARCHAR(80), IN `direccion` VARCHAR(80), IN `fcreacion` DATE, IN `obser` VARCHAR(50))  INSERT INTO usuario(idperfil_usuario,nom_usu, 
 clave_usu,dni_usu,nombres_usu,apellidos_usu, 
 sexo_usu,celular_usu,correo_usu,
 direccion_usu,fcreacion_usu,
@@ -195,8 +204,7 @@ obser_usu)
 VALUES (perfil,nom_usu,SHA(clave),dni,nombres,apellidos,sexo,
 celular,correo,direccion,fcreacion,obser)$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_alumnos`()
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_alumnos` ()  NO SQL
 SELECT id_alumno,apellidos_alumno,
 nombres_alumno,tdoc_alumno,doc_alumno,
 (CASE
@@ -206,8 +214,7 @@ nombres_alumno,tdoc_alumno,doc_alumno,
 WHERE estado_alumno=1
 ORDER BY apellidos_alumno ASC$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_alumnos_xapoderado_matricula`(IN `anhio` TINYINT, IN `apo` SMALLINT)
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_alumnos_xapoderado_matricula` (IN `anhio` TINYINT, IN `apo` SMALLINT)  NO SQL
 SELECT a.apellidos_alumno,a.nombres_alumno,g.descripcion_grado,s.nombre_seccion FROM matricula m
 INNER JOIN alumno a ON a.id_alumno=m.id_alumno
 INNER JOIN secciones s ON s.id_seccion=m.id_seccion
@@ -216,8 +223,7 @@ WHERE m.estado_matricula=1
 AND m.id_anhio=anhio
 AND m.id_apoderado=apo$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_anhio`()
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_anhio` ()  NO SQL
 SELECT idanhio,anhio_lectivo,finicio_anhio,ffin_anhio,
 LEFT(descripcion_anhio,20) as descripcion, descripcion_anhio,
 (CASE
@@ -235,8 +241,7 @@ LEFT(descripcion_anhio,20) as descripcion, descripcion_anhio,
   FROM anhio_lectivo
 WHERE estado_anhio=1$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_apoderados`()
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_apoderados` ()  NO SQL
 SELECT id_apoderado,doc_apoderado,apellidos_apoderado,
 nombres_apoderado,(CASE WHEN sexo_apoderado='M' THEN 'MASCULINO' ELSE 'FEMENINO' END) AS sexo_apoderado,
 celular_apoderado
@@ -244,8 +249,7 @@ FROM apoderado
 WHERE estado_apoderado=1
 ORDER BY apellidos_apoderado ASC$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_apoderados_xanhio`(IN `anhio` TINYINT)
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_apoderados_xanhio` (IN `anhio` TINYINT)  NO SQL
 SELECT m.id_apoderado,ap.apellidos_apoderado,ap.nombres_apoderado,ap.doc_apoderado,ap.celular_apoderado FROM matricula m
 INNER JOIN apoderado ap ON ap.id_apoderado=m.id_apoderado
 WHERE m.estado_matricula=1
@@ -253,8 +257,7 @@ AND m.id_anhio=anhio
 GROUP BY m.id_apoderado
 ORDER BY ap.apellidos_apoderado,ap.nombres_apoderado ASC$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_detalle_deuda_pendientes`(IN `apo` SMALLINT)
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_detalle_deuda_pendientes` (IN `apo` SMALLINT)  NO SQL
 SELECT de.id_detalle_deuda,ca.descripcion_concepto,de.saldo_deuda,
 (CASE WHEN de.estado_deuda='P' THEN 'PENDIENTE'
 ELSE 'PAGADO' END) AS estado_deuda,'' as tipo_pago,0 as monto FROM detalle_deuda de 
@@ -263,8 +266,7 @@ WHERE de.id_apoderado=apo
 AND de.estado_deuda!='E'
 AND de.estado_deuda='P'$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_grados`(IN `nivel` CHAR(1))
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_grados` (IN `nivel` CHAR(1))  NO SQL
 SELECT g.id_grado,g.descripcion_grado,g.nivel_grado,
 (CASE 
      WHEN estado_grado=1 THEN 'ACTIVO'
@@ -281,14 +283,12 @@ END) as total FROM grados g
    ON g.id_grado = s.id_grado
  WHERE g.nivel_grado=nivel$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_grados_activos`(IN `nivel` CHAR(1))
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_grados_activos` (IN `nivel` CHAR(1))  NO SQL
 SELECT * FROM grados g
  WHERE g.nivel_grado=nivel
  AND g.estado_grado=1$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_grados_xmatricula`(IN `anhio` TINYINT)
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_grados_xmatricula` (IN `anhio` TINYINT)  NO SQL
 SELECT g.id_grado,g.descripcion_grado FROM matricula m 
 INNER JOIN secciones s ON s.id_seccion=m.id_seccion
 INNER JOIN grados g ON g.id_grado=s.id_grado
@@ -297,8 +297,7 @@ AND m.id_anhio=anhio
 GROUP BY g.id_grado,g.descripcion_grado
 ORDER BY g.id_grado$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_historial_matricula`(IN `alumno` SMALLINT)
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_historial_matricula` (IN `alumno` SMALLINT)  NO SQL
 SELECT m.id_matricula,g.descripcion_grado,s.nombre_seccion,a.anhio_lectivo, ap.id_apoderado,ap.apellidos_apoderado,ap.nombres_apoderado,ap.doc_apoderado,deuda.total FROM apoderado ap LEFT JOIN
     (  SELECT id_apoderado, SUM(saldo_deuda) as total
        FROM detalle_deuda GROUP BY id_apoderado
@@ -308,11 +307,11 @@ SELECT m.id_matricula,g.descripcion_grado,s.nombre_seccion,a.anhio_lectivo, ap.i
  INNER JOIN grados g ON g.id_grado=s.id_grado
  INNER JOIN anhio_lectivo a ON a.idanhio=m.id_anhio
  WHERE m.id_alumno=alumno
+ AND m.estado_matricula=1
  GROUP BY ap.id_apoderado,m.id_matricula,g.descripcion_grado,s.nombre_seccion,
  a.anhio_lectivo$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_ingresos_xperiodo`(IN `anhio` CHAR(4))
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_ingresos_xperiodo` (IN `anhio` CHAR(4))  NO SQL
 SELECT r.id_recibo AS id_ingreso,'R' AS tipo,a.id_apoderado as id_apoderado,r.num_recibo AS doc_ingreso, 
 CONCAT(a.apellidos_apoderado,' ',a.nombres_apoderado) as descripcion_ingreso,r.mtotal_recibo AS monto_ingreso, 
 r.freg_recibo AS freg_ingreso
@@ -329,29 +328,25 @@ WHERE tipo_movimiento='I'
 AND estado_movimiento=1 AND YEAR(freg_movimiento)=anhio
 ORDER BY freg_ingreso DESC$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_libros_activos`()
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_libros_activos` ()  NO SQL
 SELECT * FROM libro l 
 INNER JOIN grados g ON g.id_grado=l.id_grado
 WHERE l.estado_libro=1
 ORDER BY g.id_grado ASC$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_libros_xgrado`(IN `grado` TINYINT, IN `matricula` SMALLINT)
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_libros_xgrado` (IN `grado` TINYINT, IN `matricula` SMALLINT)  NO SQL
 SELECT * FROM libro l WHERE NOT EXISTS 
 (SELECT * FROM libro_matricula lm WHERE lm.id_libro = l.id_libro
 AND lm.id_matricula=matricula)
 AND l.id_grado=grado
 AND l.estado_libro=1$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_libros_xmatricula`(IN `matricula` SMALLINT)
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_libros_xmatricula` (IN `matricula` SMALLINT)  NO SQL
 SELECT * FROM libro_matricula lm
 INNER JOIN libro l ON l.id_libro=lm.id_libro
 WHERE id_matricula=matricula$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_matriculados`()
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_matriculados` ()  NO SQL
 SELECT a.id_alumno,a.doc_alumno,CONCAT(a.apellidos_alumno,' ',a.nombres_alumno) as datos_alumno,m.id_matricula,
 g.descripcion_grado as grado,g.id_grado,s.nombre_seccion as seccion FROM matricula m 
 INNER JOIN apoderado ap ON m.id_apoderado=ap.id_apoderado
@@ -363,8 +358,7 @@ INNER JOIN tipo_relacion tr ON tr.id_tipo_relacion=m.id_tipo_relacion
 WHERE m.estado_matricula=1
 AND m.id_anhio=(SELECT idanhio FROM anhio_lectivo WHERE condicion_anhio='A' AND estado_anhio=1)$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_matriculados_xanhio`(IN `anhio` TINYINT)
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_matriculados_xanhio` (IN `anhio` TINYINT)  NO SQL
 SELECT a.doc_alumno,a.apellidos_alumno,a.nombres_alumno,g.descripcion_grado,s.nombre_seccion FROM matricula m 
 INNER JOIN alumno a ON a.id_alumno=m.id_alumno
 INNER JOIN secciones s ON s.id_seccion=m.id_seccion
@@ -373,8 +367,7 @@ WHERE m.id_anhio=anhio
 AND m.estado_matricula=1
 ORDER BY g.id_grado,s.nombre_seccion,a.apellidos_alumno,a.nombres_alumno ASC$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_matriculados_xgrado`(IN `grado` TINYINT)
-SELECT a.doc_alumno,a.apellidos_alumno,a.nombres_alumno,s.nombre_seccion FROM matricula m 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_matriculados_xgrado` (IN `grado` TINYINT)  SELECT a.doc_alumno,a.apellidos_alumno,a.nombres_alumno,s.nombre_seccion FROM matricula m 
 INNER JOIN alumno a ON a.id_alumno=m.id_alumno
 INNER JOIN secciones s ON s.id_seccion=m.id_seccion
 INNER JOIN grados g ON s.id_grado=g.id_grado
@@ -383,13 +376,11 @@ AND m.id_anhio=(SELECT idanhio FROM anhio_lectivo WHERE condicion_anhio='A' AND 
 AND m.estado_matricula=1
 ORDER BY a.apellidos_alumno,a.nombres_alumno,s.nombre_seccion ASC$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_perfil_usuario`()
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_perfil_usuario` ()  NO SQL
 SELECT * FROM perfil_usuario
 WHERE estado_perfil=1$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_secciones_xgrado`(IN `grado` TINYINT)
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_secciones_xgrado` (IN `grado` TINYINT)  NO SQL
 SELECT s.id_seccion,s.nombre_seccion,g.descripcion_grado,g.id_grado,
 (CASE 
      WHEN s.turno_seccion='M' THEN 'MAÑANA'
@@ -399,13 +390,11 @@ INNER JOIN grados g ON g.id_grado=s.id_grado
 WHERE s.estado_seccion=1
 AND g.id_grado=grado$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_tipo_relacion`()
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_tipo_relacion` ()  NO SQL
 SELECT * FROM tipo_relacion
 WHERE estado_relacion=1$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_todos_conceptos`(IN `anhio` CHAR(4))
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_todos_conceptos` (IN `anhio` CHAR(4))  NO SQL
 SELECT id_concepto,descripcion_concepto,(CASE WHEN tipo_concepto='A'
 THEN 'APAFA' ELSE 'OTROS' END) AS tipo_concepto,id_anhio,
 monto_concepto FROM concepto_apafa c
@@ -414,8 +403,7 @@ WHERE al.anhio_lectivo=anhio
 AND c.estado_concepto=1
 ORDER BY c.tipo_concepto$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_usuarios`()
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_usuarios` ()  NO SQL
 SELECT u.idusuario,u.apellidos_usu,u.nombres_usu,
 u.nom_usu,u.celular_usu,pu.nombre_perfil,
 (CASE 
@@ -430,16 +418,14 @@ INNER JOIN perfil_usuario pu ON pu.idperfil_usuario=u.idperfil_usuario
 WHERE u.estado_usu=1
 ORDER BY u.apellidos_usu$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_obtener_detalle_movimiento`(IN `id` SMALLINT, IN `tipo` CHAR(1))
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_obtener_detalle_movimiento` (IN `id` SMALLINT, IN `tipo` CHAR(1))  NO SQL
 SELECT descripcion_movimiento,monto_movimiento,freg_movimiento,
 doc_encargado_movimiento,datos_encargado_movimiento FROM otros_movimientos
 WHERE id_movimiento=id
 AND tipo_movimiento=tipo
 AND estado_movimiento=1$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_obtener_detalle_recibo`(IN `id` SMALLINT)
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_obtener_detalle_recibo` (IN `id` SMALLINT)  NO SQL
 SELECT c.descripcion_concepto,convert(dr.monto_detalle, decimal(10,2)) as monto_detalle FROM detalle_recibo dr 
 INNER JOIN detalle_deuda d ON dr.id_detalle_deuda=d.id_detalle_deuda
 INNER JOIN recibo r ON r.id_recibo=dr.id_recibo
@@ -447,25 +433,21 @@ INNER JOIN concepto_apafa c ON c.id_concepto=d.id_concepto
 WHERE r.id_recibo=id
 AND r.estado_recibo=1$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_obtener_usuario`(IN `id` INT)
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_obtener_usuario` (IN `id` INT)  NO SQL
 SELECT * FROM usuario u
 INNER JOIN perfil_usuario pu ON pu.idperfil_usuario=u.idperfil_usuario
 WHERE u.idusuario=id$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_quitar_entrega_libro`(IN `matricula` SMALLINT, IN `libro` TINYINT)
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_quitar_entrega_libro` (IN `matricula` SMALLINT, IN `libro` TINYINT)  NO SQL
 DELETE FROM libro_matricula
 WHERE id_matricula=matricula
 AND id_libro=libro$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_resetear_usuario`(IN `id_usu` TINYINT)
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_resetear_usuario` (IN `id_usu` TINYINT)  NO SQL
 UPDATE usuario SET clave_usu=SHA('1A2B3C4D'),fbaja_usu=NULL
 WHERE idusuario=id_usu$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_ultimo_recibo_ingresado`(IN `anhio` CHAR(4))
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_ultimo_recibo_ingresado` (IN `anhio` CHAR(4))  NO SQL
 SELECT *
   FROM recibo
   WHERE estado_recibo=1
@@ -473,8 +455,7 @@ SELECT *
  ORDER BY id_recibo DESC
   limit 1$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_alumno`(IN `id` SMALLINT, IN `ape_alum` VARCHAR(60), IN `nom_alum` VARCHAR(50), IN `fnac` DATE, IN `sex_alum` CHAR(1), IN `tel_alum` CHAR(6), IN `cel_alum` CHAR(9), IN `direc_alum` VARCHAR(80), IN `cor_alum` VARCHAR(80), IN `proc_alum` VARCHAR(100), IN `ape_padre` VARCHAR(60), IN `nom_padre` VARCHAR(50), IN `cel_padre` CHAR(9), IN `cor_padre` VARCHAR(80), IN `ape_madre` VARCHAR(60), IN `nom_madre` VARCHAR(50), IN `cel_madre` CHAR(9), IN `cor_madre` VARCHAR(80))
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_alumno` (IN `id` SMALLINT, IN `ape_alum` VARCHAR(60), IN `nom_alum` VARCHAR(50), IN `fnac` DATE, IN `sex_alum` CHAR(1), IN `tel_alum` CHAR(6), IN `cel_alum` CHAR(9), IN `direc_alum` VARCHAR(80), IN `cor_alum` VARCHAR(80), IN `proc_alum` VARCHAR(100), IN `ape_padre` VARCHAR(60), IN `nom_padre` VARCHAR(50), IN `cel_padre` CHAR(9), IN `cor_padre` VARCHAR(80), IN `ape_madre` VARCHAR(60), IN `nom_madre` VARCHAR(50), IN `cel_madre` CHAR(9), IN `cor_madre` VARCHAR(80))  NO SQL
 UPDATE alumno SET apellidos_alumno=ape_alum,
 nombres_alumno=nom_alum,fnac_alumno=fnac,
 sexo_alumno=sex_alum,telefono_alumno=tel_alum,
@@ -487,8 +468,7 @@ apellidos_madre=ape_madre,nombres_madre=nom_madre,
 celular_madre=cel_madre,correo_madre=cor_madre
 WHERE id_alumno=id$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_anhio_xcriterio`(IN `criterio` VARCHAR(12), IN `id` TINYINT)
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_anhio_xcriterio` (IN `criterio` VARCHAR(12), IN `id` TINYINT)  NO SQL
 IF criterio="cerrar" THEN
 UPDATE anhio_lectivo SET condicion_anhio='C'
 WHERE idanhio=id;
@@ -500,40 +480,33 @@ UPDATE anhio_lectivo SET estado_anhio=0
 WHERE idanhio=id;
 END IF$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_apoderado`(IN `id_apo` SMALLINT, IN `ape_apod` VARCHAR(60), IN `nom_apod` VARCHAR(50), IN `sex_apod` CHAR(1), IN `cel_apod` CHAR(9), IN `dir_apod` VARCHAR(80), IN `cor_apod` VARCHAR(80))
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_apoderado` (IN `id_apo` SMALLINT, IN `ape_apod` VARCHAR(60), IN `nom_apod` VARCHAR(50), IN `sex_apod` CHAR(1), IN `cel_apod` CHAR(9), IN `dir_apod` VARCHAR(80), IN `cor_apod` VARCHAR(80))  NO SQL
 UPDATE apoderado SET apellidos_apoderado=ape_apod,
 nombres_apoderado=nom_apod,sexo_apoderado=sex_apod,
 celular_apoderado=cel_apod,
 direccion_apoderado=dir_apod,correo_apoderado=cor_apod
 WHERE id_apoderado=id_apo$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_clave`(IN `clave` VARCHAR(10), IN `id` SMALLINT)
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_clave` (IN `clave` VARCHAR(10), IN `id` SMALLINT)  NO SQL
 UPDATE usuario SET clave_usu=SHA(clave) 
 WHERE idusuario=id$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_concepto`(IN `id` SMALLINT, IN `descripcion` VARCHAR(100), IN `monto` FLOAT)
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_concepto` (IN `id` SMALLINT, IN `descripcion` VARCHAR(100), IN `monto` FLOAT)  NO SQL
 UPDATE concepto_apafa SET descripcion_concepto=descripcion,monto_concepto=monto
 WHERE id_concepto=id$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_deuda`(IN `id` SMALLINT, IN `monto` FLOAT, IN `estado` CHAR(1))
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_deuda` (IN `id` SMALLINT, IN `monto` FLOAT, IN `estado` CHAR(1))  NO SQL
 UPDATE detalle_deuda SET saldo_deuda=saldo_deuda-monto,
 fseg_deuda=NOW(),estado_deuda=estado
 WHERE id_detalle_deuda=id$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_libro`(IN `t_libro` VARCHAR(80), IN `edit_libro` VARCHAR(20), IN `edicion` CHAR(4), IN `grado` TINYINT, IN `idlibro` TINYINT)
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_libro` (IN `t_libro` VARCHAR(80), IN `edit_libro` VARCHAR(20), IN `edicion` CHAR(4), IN `grado` TINYINT, IN `idlibro` TINYINT)  NO SQL
 UPDATE libro SET titulo_libro=t_libro,editorial_libro=edit_libro,edicion_libro=edicion,id_grado=grado WHERE id_libro=idlibro$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_usuario`(IN `idusu` TINYINT, IN `nom_usu` VARCHAR(20), IN `nombres` VARCHAR(45), IN `apellidos` VARCHAR(60), IN `sexo` CHAR(1), IN `celular` CHAR(9), IN `correo` VARCHAR(80), IN `direccion` VARCHAR(80), IN `fbaja` DATE, IN `obser` VARCHAR(50), IN `perfil` INT)
-UPDATE usuario SET nom_usu=nom_usu,nombres_usu=nombres,apellidos_usu=apellidos,sexo_usu=sexo,celular_usu=celular,correo_usu=correo,direccion_usu=direccion,fbaja_usu=fbaja,obser_usu=obser,idperfil_usuario=perfil
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_usuario` (IN `idusu` TINYINT, IN `nom_usu` VARCHAR(20), IN `nombres` VARCHAR(45), IN `apellidos` VARCHAR(60), IN `sexo` CHAR(1), IN `celular` CHAR(9), IN `correo` VARCHAR(80), IN `direccion` VARCHAR(80), IN `fbaja` DATE, IN `obser` VARCHAR(50), IN `perfil` INT)  UPDATE usuario SET nom_usu=nom_usu,nombres_usu=nombres,apellidos_usu=apellidos,sexo_usu=sexo,celular_usu=celular,correo_usu=correo,direccion_usu=direccion,fbaja_usu=fbaja,obser_usu=obser,idperfil_usuario=perfil
 WHERE idusuario=idusu$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_verificar_anhio`(IN `dato` CHAR(4))
-SELECT
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_verificar_anhio` (IN `dato` CHAR(4))  SELECT
     anhio_lectivo,idanhio
     FROM anhio_lectivo
     WHERE anhio_lectivo=dato AND estado_anhio=1
@@ -544,34 +517,36 @@ SELECT
     FROM anhio_lectivo
     WHERE condicion_anhio='A' AND estado_anhio=1)$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_verificar_cuota_apafa_xanhio`(IN `anhio_lec` CHAR(4))
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_verificar_cuota_apafa_xanhio` (IN `anhio_lec` CHAR(4))  NO SQL
 SELECT * FROM concepto_apafa c
 INNER JOIN anhio_lectivo al ON al.idanhio=c.id_anhio
 WHERE al.anhio_lectivo=anhio_lec
 AND c.tipo_concepto='A'
 AND c.estado_concepto=1$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_verificar_matricula_alumno`(IN `alumno` SMALLINT, IN `dato_anhio` CHAR(4))
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_verificar_deuda_apoderado` (IN `concepto` SMALLINT, IN `apoderado` SMALLINT, IN `anhio` CHAR(4))  NO SQL
+SELECT * FROM detalle_deuda
+WHERE id_concepto=concepto
+AND id_apoderado=apoderado
+AND  YEAR(freg_deuda)=anhio
+AND estado_deuda='P'$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_verificar_matricula_alumno` (IN `alumno` SMALLINT, IN `dato_anhio` CHAR(4))  NO SQL
 SELECT * FROM matricula m
 WHERE m.id_alumno=alumno
 AND m.estado_matricula=1
 AND m.id_anhio=(SELECT idanhio FROM anhio_lectivo WHERE condicion_anhio='A' AND estado_anhio=1 AND anhio_lectivo=dato_anhio)$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_verificar_seccion`(IN `nombre` VARCHAR(20), IN `grado` TINYINT)
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_verificar_seccion` (IN `nombre` VARCHAR(20), IN `grado` TINYINT)  NO SQL
 SELECT * FROM secciones
 WHERE nombre_seccion=nombre
 AND id_grado=grado
 AND estado_seccion=1$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_verificar_si_anhio_aperturado`()
-SELECT * FROM anhio_lectivo
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_verificar_si_anhio_aperturado` ()  SELECT * FROM anhio_lectivo
 WHERE condicion_anhio='A' AND estado_anhio=1$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_verificar_si_cuota_apafa_registrada`(IN `apoderado` SMALLINT, IN `dato_anhio` CHAR(4))
-    NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_verificar_si_cuota_apafa_registrada` (IN `apoderado` SMALLINT, IN `dato_anhio` CHAR(4))  NO SQL
 SELECT * FROM detalle_deuda du 
 INNER JOIN concepto_apafa ca ON ca.id_concepto=du.id_concepto
 INNER JOIN anhio_lectivo a ON a.idanhio=ca.id_anhio
@@ -588,8 +563,8 @@ DELIMITER ;
 -- Estructura de tabla para la tabla `alumno`
 --
 
-CREATE TABLE IF NOT EXISTS `alumno` (
-  `id_alumno` smallint(6) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `alumno` (
+  `id_alumno` smallint(6) NOT NULL,
   `tdoc_alumno` char(3) NOT NULL,
   `doc_alumno` varchar(15) NOT NULL,
   `apellidos_alumno` varchar(60) NOT NULL,
@@ -609,9 +584,8 @@ CREATE TABLE IF NOT EXISTS `alumno` (
   `nombres_madre` varchar(50) NOT NULL,
   `celular_madre` char(9) DEFAULT NULL,
   `correo_madre` varchar(80) DEFAULT NULL,
-  `estado_alumno` bit(1) NOT NULL DEFAULT b'1',
-  PRIMARY KEY (`id_alumno`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=144 ;
+  `estado_alumno` bit(1) NOT NULL DEFAULT b'1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `alumno`
@@ -654,7 +628,7 @@ INSERT INTO `alumno` (`id_alumno`, `tdoc_alumno`, `doc_alumno`, `apellidos_alumn
 (34, 'DNI', '22699649', 'López Calvo', 'Rebeca', '2006-04-12', 'M', NULL, '934614768', '', NULL, NULL, 'López Caicedo', 'Remigio', NULL, '', 'Calvo Machado', 'Medally', '985538389', '', b'1'),
 (35, 'DNI', '30796276', 'López García', 'Andr?s', '2003-04-21', 'M', NULL, '978939666', '', NULL, NULL, 'López Cadillo', 'Javier', NULL, '', 'García Lazaro', 'Isabel', '952909129', '', b'1'),
 (36, 'DNI', '66637196', 'López Rueda', 'Jose Javier', '2004-06-02', 'M', NULL, '929572233', '', NULL, NULL, 'López Caldas', 'Alex', NULL, '', 'Rueda Aranda', 'Maria Cecilia', NULL, '', b'1'),
-(37, 'DNI', '61821438', 'Abad Chavez Abad Chavez Abad Chavez', 'Romar Abad Chavez Abad Chavez Abad Chavez', '2006-10-28', 'M', NULL, '988325569', 'Calle Motupe # 114', NULL, NULL, 'Abad Cajaleon', 'Jhans Carlos', NULL, NULL, 'Chavez Vasquez', 'Teresa', NULL, NULL, b'1'),
+(37, 'DNI', '61821438', 'Abad Chavez ', 'Romar Abad ', '2006-10-28', 'M', NULL, '988325569', 'Calle Motupe # 114', NULL, NULL, 'Abad Cajaleon', 'Jhans Carlos', NULL, NULL, 'Chavez Vasquez', 'Teresa', NULL, NULL, b'1'),
 (38, 'DNI', '70080533', 'Acha Guerrero', 'Yasanali', '2004-05-19', 'F', NULL, '988118327', '', NULL, NULL, 'Acha Casado', 'Juan Carlos', NULL, '', 'Guerrero Correa', 'Flor Isabel', NULL, '', b'1'),
 (39, 'DNI', '75797998', 'Acosta Santisteban', 'Maria Gisela', '2004-08-08', 'F', NULL, '907796793', '', NULL, NULL, 'Acosta Casimiro', 'Michael', NULL, '', 'Santisteban Ita', 'Milagros Magaly', NULL, '', b'1'),
 (40, 'DNI', '42179802', 'Acuña Cervantes', 'Elmer', '2006-11-15', 'M', '436223', '957923672', '', NULL, NULL, 'Acuña Casio', 'Emerson', NULL, '', 'Cervantes Malaspina', 'Lizbeth', NULL, '', b'1'),
@@ -768,16 +742,15 @@ INSERT INTO `alumno` (`id_alumno`, `tdoc_alumno`, `doc_alumno`, `apellidos_alumn
 -- Estructura de tabla para la tabla `anhio_lectivo`
 --
 
-CREATE TABLE IF NOT EXISTS `anhio_lectivo` (
-  `idanhio` tinyint(4) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `anhio_lectivo` (
+  `idanhio` tinyint(4) NOT NULL,
   `anhio_lectivo` char(4) NOT NULL,
   `finicio_anhio` date NOT NULL,
   `ffin_anhio` date NOT NULL,
   `descripcion_anhio` varchar(150) DEFAULT NULL,
   `condicion_anhio` char(1) NOT NULL DEFAULT 'A',
-  `estado_anhio` bit(1) NOT NULL DEFAULT b'1',
-  PRIMARY KEY (`idanhio`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=24 ;
+  `estado_anhio` bit(1) NOT NULL DEFAULT b'1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `anhio_lectivo`
@@ -804,8 +777,8 @@ INSERT INTO `anhio_lectivo` (`idanhio`, `anhio_lectivo`, `finicio_anhio`, `ffin_
 -- Estructura de tabla para la tabla `apoderado`
 --
 
-CREATE TABLE IF NOT EXISTS `apoderado` (
-  `id_apoderado` smallint(6) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `apoderado` (
+  `id_apoderado` smallint(6) NOT NULL,
   `tdoc_apoderado` char(3) NOT NULL,
   `doc_apoderado` varchar(15) NOT NULL,
   `apellidos_apoderado` varchar(60) NOT NULL,
@@ -814,9 +787,8 @@ CREATE TABLE IF NOT EXISTS `apoderado` (
   `celular_apoderado` char(9) NOT NULL,
   `direccion_apoderado` varchar(80) NOT NULL,
   `correo_apoderado` varchar(80) DEFAULT NULL,
-  `estado_apoderado` bit(1) NOT NULL DEFAULT b'1',
-  PRIMARY KEY (`id_apoderado`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=145 ;
+  `estado_apoderado` bit(1) NOT NULL DEFAULT b'1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `apoderado`
@@ -934,7 +906,7 @@ INSERT INTO `apoderado` (`id_apoderado`, `tdoc_apoderado`, `doc_apoderado`, `ape
 (109, 'DNI', '14002639', 'Cajahuaringa Santillana', 'Alexandra', 'F', '932895470', '', NULL, b'1'),
 (110, 'DNI', '17553397', 'Cruz Cañazca', 'Solange', 'F', '966306829', '', NULL, b'1'),
 (111, 'DNI', '19838080', 'Delgado Del Carpio', 'Idalia', 'F', '955472585', '', NULL, b'1'),
-(112, 'DNI', '11717065', 'Abad Solis', 'Carmen', 'F', '913251919', 'calle chiclayo # 114 MOTUPE LAMBAYEQUE CHICLAYO', NULL, b'1'),
+(112, 'DNI', '11717065', 'Abad Solis ', 'Carmen', 'F', '913251919', 'calle chiclayo # 114 MOTUPE LAMBAYEQUE CHICLAYO', NULL, b'1'),
 (113, 'DNI', '14268468', 'Leo Mojo', 'Candy', 'F', '973591530', '', NULL, b'1'),
 (114, 'DNI', '17198872', 'Aguilar Pauca', 'Karla Luz', 'F', '941267001', '', NULL, b'1'),
 (115, 'DNI', '16853284', 'Vicente Teves', 'Rosa Leydi', 'F', '935554463', '', NULL, b'1'),
@@ -974,8 +946,8 @@ INSERT INTO `apoderado` (`id_apoderado`, `tdoc_apoderado`, `doc_apoderado`, `ape
 -- Estructura de tabla para la tabla `compra`
 --
 
-CREATE TABLE IF NOT EXISTS `compra` (
-  `id_compra` smallint(6) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `compra` (
+  `id_compra` smallint(6) NOT NULL,
   `id_usuario` tinyint(4) NOT NULL,
   `id_anhio` tinyint(4) NOT NULL,
   `tipo_compra` char(1) NOT NULL,
@@ -987,11 +959,8 @@ CREATE TABLE IF NOT EXISTS `compra` (
   `doc_encargado_compra` varchar(15) NOT NULL,
   `encargado_compra` varchar(80) NOT NULL,
   `total_compra` float NOT NULL,
-  `estado_compra` bit(1) NOT NULL DEFAULT b'1',
-  PRIMARY KEY (`id_compra`),
-  KEY `id_usuario` (`id_usuario`),
-  KEY `id_anhio` (`id_anhio`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+  `estado_compra` bit(1) NOT NULL DEFAULT b'1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -999,16 +968,14 @@ CREATE TABLE IF NOT EXISTS `compra` (
 -- Estructura de tabla para la tabla `concepto_apafa`
 --
 
-CREATE TABLE IF NOT EXISTS `concepto_apafa` (
-  `id_concepto` smallint(6) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `concepto_apafa` (
+  `id_concepto` smallint(6) NOT NULL,
   `descripcion_concepto` varchar(100) NOT NULL,
   `tipo_concepto` char(1) NOT NULL,
   `id_anhio` tinyint(4) NOT NULL,
   `monto_concepto` float NOT NULL,
-  `estado_concepto` bit(1) NOT NULL DEFAULT b'1',
-  PRIMARY KEY (`id_concepto`),
-  KEY `id_anhio` (`id_anhio`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=13 ;
+  `estado_concepto` bit(1) NOT NULL DEFAULT b'1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `concepto_apafa`
@@ -1032,16 +999,14 @@ INSERT INTO `concepto_apafa` (`id_concepto`, `descripcion_concepto`, `tipo_conce
 -- Estructura de tabla para la tabla `detalle_compra`
 --
 
-CREATE TABLE IF NOT EXISTS `detalle_compra` (
-  `id_detalle_compra` smallint(6) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `detalle_compra` (
+  `id_detalle_compra` smallint(6) NOT NULL,
   `id_compra` smallint(6) NOT NULL,
   `nom_producto` varchar(30) NOT NULL,
   `cantidad_compra` tinyint(4) NOT NULL,
   `medida_compra` varchar(10) NOT NULL,
-  `punit_compra` float NOT NULL,
-  PRIMARY KEY (`id_detalle_compra`),
-  KEY `id_compra` (`id_compra`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+  `punit_compra` float NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1049,30 +1014,30 @@ CREATE TABLE IF NOT EXISTS `detalle_compra` (
 -- Estructura de tabla para la tabla `detalle_deuda`
 --
 
-CREATE TABLE IF NOT EXISTS `detalle_deuda` (
-  `id_detalle_deuda` smallint(6) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `detalle_deuda` (
+  `id_detalle_deuda` smallint(6) NOT NULL,
   `id_concepto` smallint(6) NOT NULL,
   `id_apoderado` smallint(6) NOT NULL,
   `saldo_deuda` float NOT NULL,
+  `descripcion_deuda` varchar(100) DEFAULT NULL,
   `freg_deuda` date NOT NULL,
   `fseg_deuda` datetime NOT NULL,
-  `estado_deuda` char(1) NOT NULL DEFAULT 'P',
-  PRIMARY KEY (`id_detalle_deuda`),
-  KEY `id_concepto` (`id_concepto`),
-  KEY `id_apoderado` (`id_apoderado`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=28 ;
+  `estado_deuda` char(1) NOT NULL DEFAULT 'P'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `detalle_deuda`
 --
 
-INSERT INTO `detalle_deuda` (`id_detalle_deuda`, `id_concepto`, `id_apoderado`, `saldo_deuda`, `freg_deuda`, `fseg_deuda`, `estado_deuda`) VALUES
-(22, 8, 3, 54, '2019-06-25', '2019-06-25 15:25:16', 'P'),
-(23, 8, 112, 20, '2019-07-08', '2019-07-16 18:38:57', 'P'),
-(24, 8, 55, 54, '2019-07-08', '2019-07-08 16:08:58', 'P'),
-(25, 10, 112, 10, '2019-07-16', '2019-07-16 18:38:57', 'P'),
-(26, 11, 112, 10, '2019-07-16', '2019-07-16 18:38:57', 'P'),
-(27, 12, 112, 5, '2019-07-16', '2019-07-16 18:38:57', 'P');
+INSERT INTO `detalle_deuda` (`id_detalle_deuda`, `id_concepto`, `id_apoderado`, `saldo_deuda`, `descripcion_deuda`, `freg_deuda`, `fseg_deuda`, `estado_deuda`) VALUES
+(22, 8, 3, 54, NULL, '2019-06-25', '2019-06-25 15:25:16', 'P'),
+(23, 8, 112, 20, NULL, '2019-07-08', '2019-07-16 18:38:57', 'P'),
+(24, 8, 55, 54, NULL, '2019-07-08', '2019-07-08 16:08:58', 'P'),
+(25, 10, 112, 10, NULL, '2019-07-16', '2019-07-16 18:38:57', 'P'),
+(26, 11, 112, 10, NULL, '2019-07-16', '2019-07-16 18:38:57', 'P'),
+(27, 12, 112, 5, NULL, '2019-07-16', '2019-07-16 18:38:57', 'P'),
+(28, 9, 112, 54.5, NULL, '2019-07-17', '2019-07-17 19:16:42', 'P'),
+(30, 9, 55, 54.5, NULL, '2019-07-17', '2019-07-17 19:18:59', 'P');
 
 -- --------------------------------------------------------
 
@@ -1080,12 +1045,10 @@ INSERT INTO `detalle_deuda` (`id_detalle_deuda`, `id_concepto`, `id_apoderado`, 
 -- Estructura de tabla para la tabla `detalle_recibo`
 --
 
-CREATE TABLE IF NOT EXISTS `detalle_recibo` (
+CREATE TABLE `detalle_recibo` (
   `id_detalle_deuda` smallint(6) NOT NULL,
   `id_recibo` smallint(6) NOT NULL,
-  `monto_detalle` float NOT NULL,
-  KEY `id_recibo` (`id_recibo`),
-  KEY `id_detalle_deuda` (`id_detalle_deuda`)
+  `monto_detalle` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -1105,13 +1068,12 @@ INSERT INTO `detalle_recibo` (`id_detalle_deuda`, `id_recibo`, `monto_detalle`) 
 -- Estructura de tabla para la tabla `grados`
 --
 
-CREATE TABLE IF NOT EXISTS `grados` (
-  `id_grado` tinyint(4) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `grados` (
+  `id_grado` tinyint(4) NOT NULL,
   `descripcion_grado` varchar(40) NOT NULL,
   `nivel_grado` char(1) NOT NULL,
-  `estado_grado` bit(1) NOT NULL DEFAULT b'1',
-  PRIMARY KEY (`id_grado`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
+  `estado_grado` bit(1) NOT NULL DEFAULT b'1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `grados`
@@ -1130,16 +1092,14 @@ INSERT INTO `grados` (`id_grado`, `descripcion_grado`, `nivel_grado`, `estado_gr
 -- Estructura de tabla para la tabla `libro`
 --
 
-CREATE TABLE IF NOT EXISTS `libro` (
-  `id_libro` tinyint(4) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `libro` (
+  `id_libro` tinyint(4) NOT NULL,
   `titulo_libro` varchar(80) NOT NULL,
   `editorial_libro` varchar(20) NOT NULL,
   `edicion_libro` char(4) NOT NULL,
   `id_grado` tinyint(4) NOT NULL,
-  `estado_libro` bit(1) NOT NULL DEFAULT b'1',
-  PRIMARY KEY (`id_libro`),
-  KEY `id_grado` (`id_grado`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
+  `estado_libro` bit(1) NOT NULL DEFAULT b'1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `libro`
@@ -1160,12 +1120,10 @@ INSERT INTO `libro` (`id_libro`, `titulo_libro`, `editorial_libro`, `edicion_lib
 -- Estructura de tabla para la tabla `libro_matricula`
 --
 
-CREATE TABLE IF NOT EXISTS `libro_matricula` (
+CREATE TABLE `libro_matricula` (
   `id_matricula` smallint(6) NOT NULL,
   `id_libro` tinyint(4) NOT NULL,
-  `devolvio_libro` bit(1) NOT NULL DEFAULT b'0',
-  KEY `id_matricula` (`id_matricula`),
-  KEY `id_libro` (`id_libro`)
+  `devolvio_libro` bit(1) NOT NULL DEFAULT b'0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -1182,29 +1140,23 @@ INSERT INTO `libro_matricula` (`id_matricula`, `id_libro`, `devolvio_libro`) VAL
 -- Estructura de tabla para la tabla `matricula`
 --
 
-CREATE TABLE IF NOT EXISTS `matricula` (
-  `id_matricula` smallint(6) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `matricula` (
+  `id_matricula` smallint(6) NOT NULL,
   `fecha_matricula` date NOT NULL,
   `id_apoderado` smallint(6) NOT NULL,
   `id_alumno` smallint(6) NOT NULL,
   `id_anhio` tinyint(4) NOT NULL,
   `id_seccion` tinyint(4) NOT NULL,
   `id_tipo_relacion` tinyint(4) NOT NULL,
-  `estado_matricula` bit(1) NOT NULL DEFAULT b'1',
-  PRIMARY KEY (`id_matricula`),
-  KEY `id_tipo_relacion` (`id_tipo_relacion`),
-  KEY `id_seccion` (`id_seccion`),
-  KEY `id_anhio` (`id_anhio`),
-  KEY `id_alumno` (`id_alumno`),
-  KEY `id_apoderado` (`id_apoderado`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=43 ;
+  `estado_matricula` bit(1) NOT NULL DEFAULT b'1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `matricula`
 --
 
 INSERT INTO `matricula` (`id_matricula`, `fecha_matricula`, `id_apoderado`, `id_alumno`, `id_anhio`, `id_seccion`, `id_tipo_relacion`, `estado_matricula`) VALUES
-(38, '2019-07-08', 112, 37, 23, 5, 2, b'1'),
+(38, '2019-07-08', 112, 37, 23, 5, 2, b'0'),
 (39, '2019-07-08', 112, 38, 23, 5, 2, b'1'),
 (40, '2019-07-08', 55, 39, 23, 5, 2, b'1'),
 (41, '2019-07-08', 112, 40, 23, 6, 2, b'1'),
@@ -1216,27 +1168,27 @@ INSERT INTO `matricula` (`id_matricula`, `fecha_matricula`, `id_apoderado`, `id_
 -- Estructura de tabla para la tabla `otros_movimientos`
 --
 
-CREATE TABLE IF NOT EXISTS `otros_movimientos` (
-  `id_movimiento` smallint(6) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `otros_movimientos` (
+  `id_movimiento` smallint(6) NOT NULL,
   `tipo_movimiento` char(1) NOT NULL,
   `descripcion_movimiento` varchar(100) NOT NULL,
   `monto_movimiento` float(10,2) NOT NULL,
   `freg_movimiento` datetime NOT NULL,
   `doc_encargado_movimiento` varchar(15) NOT NULL,
   `datos_encargado_movimiento` varchar(100) NOT NULL,
-  `id_usuario` smallint(6) NOT NULL,
-  `estado_movimiento` bit(1) NOT NULL DEFAULT b'1',
-  PRIMARY KEY (`id_movimiento`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+  `id_usuario` tinyint(4) NOT NULL,
+  `estado_movimiento` bit(1) NOT NULL DEFAULT b'1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `otros_movimientos`
 --
 
 INSERT INTO `otros_movimientos` (`id_movimiento`, `tipo_movimiento`, `descripcion_movimiento`, `monto_movimiento`, `freg_movimiento`, `doc_encargado_movimiento`, `datos_encargado_movimiento`, `id_usuario`, `estado_movimiento`) VALUES
-(1, 'I', 'RIFA DEL DIA DEL PADRE', 2000.50, '2019-06-03 03:19:17', '565665666', 'Juan Carlos Rios Vasquez', 46, b'1'),
-(2, 'I', 'BINGO POR ANIVERSARIO', 5500.00, '2019-06-08 18:27:22', '15465465465', 'Julca Zeña Javier', 46, b'1'),
-(3, 'I', 'RIFA POR EL DIA DE LA MADRE', 1000.50, '2019-06-08 18:28:37', '9879989898', 'Susana Vasquez Delgado', 46, b'1');
+(1, 'I', 'RIFA DEL DIA DEL PADRE', 2000.50, '2019-06-03 03:19:17', '565665666', 'Juan Carlos Rios Vasquez', 46, b'0'),
+(2, 'I', 'BINGO POR ANIVERSARIO', 5500.00, '2019-06-08 18:27:22', '15465465465', 'Julca Zeña Javier', 46, b'0'),
+(3, 'I', 'RIFA POR EL DIA DE LA MADRE', 1000.50, '2019-06-08 18:28:37', '9879989898', 'Susana Vasquez Delgado', 46, b'0'),
+(4, 'I', 'SFAFAS', 100.00, '2019-07-17 14:56:21', 'DSFSD3252352352', 'Fadad', 1, b'0');
 
 -- --------------------------------------------------------
 
@@ -1244,13 +1196,12 @@ INSERT INTO `otros_movimientos` (`id_movimiento`, `tipo_movimiento`, `descripcio
 -- Estructura de tabla para la tabla `perfil_usuario`
 --
 
-CREATE TABLE IF NOT EXISTS `perfil_usuario` (
-  `idperfil_usuario` tinyint(4) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `perfil_usuario` (
+  `idperfil_usuario` tinyint(4) NOT NULL,
   `nombre_perfil` varchar(25) NOT NULL,
   `abrev_perfil` char(2) NOT NULL,
-  `estado_perfil` bit(1) NOT NULL DEFAULT b'1',
-  PRIMARY KEY (`idperfil_usuario`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+  `estado_perfil` bit(1) NOT NULL DEFAULT b'1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `perfil_usuario`
@@ -1268,26 +1219,23 @@ INSERT INTO `perfil_usuario` (`idperfil_usuario`, `nombre_perfil`, `abrev_perfil
 -- Estructura de tabla para la tabla `recibo`
 --
 
-CREATE TABLE IF NOT EXISTS `recibo` (
-  `id_recibo` smallint(6) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `recibo` (
+  `id_recibo` smallint(6) NOT NULL,
   `id_apoderado` smallint(6) NOT NULL,
   `id_usuario` tinyint(4) NOT NULL,
   `mtotal_recibo` float NOT NULL,
   `freg_recibo` datetime NOT NULL,
   `num_recibo` varchar(20) NOT NULL,
-  `estado_recibo` bit(1) NOT NULL DEFAULT b'1',
-  PRIMARY KEY (`id_recibo`),
-  KEY `id_apoderado` (`id_apoderado`),
-  KEY `id_usuario` (`id_usuario`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=25 ;
+  `estado_recibo` bit(1) NOT NULL DEFAULT b'1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `recibo`
 --
 
 INSERT INTO `recibo` (`id_recibo`, `id_apoderado`, `id_usuario`, `mtotal_recibo`, `freg_recibo`, `num_recibo`, `estado_recibo`) VALUES
-(23, 112, 1, 24, '2019-07-16 17:59:34', '1171-20190716-1', b'1'),
-(24, 112, 1, 44.25, '2019-07-16 18:38:57', '1171-20190716-2', b'1');
+(23, 112, 1, 24, '2019-07-16 17:59:34', '1171-20190716-1', b'0'),
+(24, 112, 1, 44.25, '2019-07-16 18:38:57', '1171-20190716-2', b'0');
 
 -- --------------------------------------------------------
 
@@ -1295,17 +1243,15 @@ INSERT INTO `recibo` (`id_recibo`, `id_apoderado`, `id_usuario`, `mtotal_recibo`
 -- Estructura de tabla para la tabla `reunion`
 --
 
-CREATE TABLE IF NOT EXISTS `reunion` (
-  `id_reunion` smallint(6) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `reunion` (
+  `id_reunion` smallint(6) NOT NULL,
   `motivo_reunion` varchar(100) NOT NULL,
   `fecha_reunion` date NOT NULL,
   `hora_reunion` time NOT NULL,
   `id_concepto` smallint(6) NOT NULL,
   `lista_reunion` bit(1) NOT NULL DEFAULT b'0',
-  `estado_reunion` bit(1) NOT NULL DEFAULT b'1',
-  PRIMARY KEY (`id_reunion`),
-  KEY `id_concepto` (`id_concepto`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+  `estado_reunion` bit(1) NOT NULL DEFAULT b'1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `reunion`
@@ -1320,7 +1266,7 @@ INSERT INTO `reunion` (`id_reunion`, `motivo_reunion`, `fecha_reunion`, `hora_re
 -- Estructura de tabla para la tabla `reunion_apoderado`
 --
 
-CREATE TABLE IF NOT EXISTS `reunion_apoderado` (
+CREATE TABLE `reunion_apoderado` (
   `id_reunion` smallint(6) NOT NULL,
   `id_apoderado` smallint(6) NOT NULL,
   `asistio_reunion` bit(1) NOT NULL DEFAULT b'0'
@@ -1340,15 +1286,13 @@ INSERT INTO `reunion_apoderado` (`id_reunion`, `id_apoderado`, `asistio_reunion`
 -- Estructura de tabla para la tabla `secciones`
 --
 
-CREATE TABLE IF NOT EXISTS `secciones` (
-  `id_seccion` tinyint(4) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `secciones` (
+  `id_seccion` tinyint(4) NOT NULL,
   `nombre_seccion` varchar(20) NOT NULL,
   `id_grado` tinyint(4) NOT NULL,
   `turno_seccion` char(1) NOT NULL,
-  `estado_seccion` bit(1) NOT NULL DEFAULT b'1',
-  PRIMARY KEY (`id_seccion`),
-  KEY `id_grado` (`id_grado`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
+  `estado_seccion` bit(1) NOT NULL DEFAULT b'1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `secciones`
@@ -1371,12 +1315,11 @@ INSERT INTO `secciones` (`id_seccion`, `nombre_seccion`, `id_grado`, `turno_secc
 -- Estructura de tabla para la tabla `tipo_relacion`
 --
 
-CREATE TABLE IF NOT EXISTS `tipo_relacion` (
-  `id_tipo_relacion` tinyint(4) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `tipo_relacion` (
+  `id_tipo_relacion` tinyint(4) NOT NULL,
   `nombre_relacion` varchar(20) NOT NULL,
-  `estado_relacion` bit(1) NOT NULL DEFAULT b'1',
-  PRIMARY KEY (`id_tipo_relacion`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
+  `estado_relacion` bit(1) NOT NULL DEFAULT b'1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `tipo_relacion`
@@ -1396,8 +1339,8 @@ INSERT INTO `tipo_relacion` (`id_tipo_relacion`, `nombre_relacion`, `estado_rela
 -- Estructura de tabla para la tabla `usuario`
 --
 
-CREATE TABLE IF NOT EXISTS `usuario` (
-  `idusuario` tinyint(4) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `usuario` (
+  `idusuario` tinyint(4) NOT NULL,
   `idperfil_usuario` tinyint(4) NOT NULL,
   `nom_usu` varchar(20) NOT NULL,
   `clave_usu` varchar(100) NOT NULL,
@@ -1411,10 +1354,8 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   `fcreacion_usu` date NOT NULL,
   `fbaja_usu` date DEFAULT NULL,
   `obser_usu` varchar(200) DEFAULT NULL,
-  `estado_usu` bit(1) NOT NULL DEFAULT b'1',
-  PRIMARY KEY (`idusuario`),
-  KEY `idperfil_usuario` (`idperfil_usuario`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+  `estado_usu` bit(1) NOT NULL DEFAULT b'1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `usuario`
@@ -1426,6 +1367,232 @@ INSERT INTO `usuario` (`idusuario`, `idperfil_usuario`, `nom_usu`, `clave_usu`, 
 (3, 2, 'rosafc', '2ef4d31ff48bb12b7c977be13909b5ae02683c7b', '14526398', 'Rosa Magaly ', 'Fernandez Cabrejos', 'F', '987445896', '', 'calle motupe # 152', '2019-06-29', '2019-07-03', NULL, b'1'),
 (4, 3, 'lishyestelita', 'ea8d414fe25b078a9b8e1516862bddf210e686bd', '45256389', 'Lishy Tatiana', 'Estela Zeña', 'F', '968574258', NULL, 'calle tucume # 150', '2019-06-29', NULL, NULL, b'1');
 
+--
+-- Índices para tablas volcadas
+--
+
+--
+-- Indices de la tabla `alumno`
+--
+ALTER TABLE `alumno`
+  ADD PRIMARY KEY (`id_alumno`);
+
+--
+-- Indices de la tabla `anhio_lectivo`
+--
+ALTER TABLE `anhio_lectivo`
+  ADD PRIMARY KEY (`idanhio`);
+
+--
+-- Indices de la tabla `apoderado`
+--
+ALTER TABLE `apoderado`
+  ADD PRIMARY KEY (`id_apoderado`);
+
+--
+-- Indices de la tabla `compra`
+--
+ALTER TABLE `compra`
+  ADD PRIMARY KEY (`id_compra`),
+  ADD KEY `id_usuario` (`id_usuario`),
+  ADD KEY `id_anhio` (`id_anhio`);
+
+--
+-- Indices de la tabla `concepto_apafa`
+--
+ALTER TABLE `concepto_apafa`
+  ADD PRIMARY KEY (`id_concepto`),
+  ADD KEY `id_anhio` (`id_anhio`);
+
+--
+-- Indices de la tabla `detalle_compra`
+--
+ALTER TABLE `detalle_compra`
+  ADD PRIMARY KEY (`id_detalle_compra`),
+  ADD KEY `id_compra` (`id_compra`);
+
+--
+-- Indices de la tabla `detalle_deuda`
+--
+ALTER TABLE `detalle_deuda`
+  ADD PRIMARY KEY (`id_detalle_deuda`),
+  ADD KEY `id_concepto` (`id_concepto`),
+  ADD KEY `id_apoderado` (`id_apoderado`);
+
+--
+-- Indices de la tabla `detalle_recibo`
+--
+ALTER TABLE `detalle_recibo`
+  ADD KEY `id_recibo` (`id_recibo`),
+  ADD KEY `id_detalle_deuda` (`id_detalle_deuda`);
+
+--
+-- Indices de la tabla `grados`
+--
+ALTER TABLE `grados`
+  ADD PRIMARY KEY (`id_grado`);
+
+--
+-- Indices de la tabla `libro`
+--
+ALTER TABLE `libro`
+  ADD PRIMARY KEY (`id_libro`),
+  ADD KEY `id_grado` (`id_grado`);
+
+--
+-- Indices de la tabla `libro_matricula`
+--
+ALTER TABLE `libro_matricula`
+  ADD KEY `id_matricula` (`id_matricula`),
+  ADD KEY `id_libro` (`id_libro`);
+
+--
+-- Indices de la tabla `matricula`
+--
+ALTER TABLE `matricula`
+  ADD PRIMARY KEY (`id_matricula`),
+  ADD KEY `id_tipo_relacion` (`id_tipo_relacion`),
+  ADD KEY `id_seccion` (`id_seccion`),
+  ADD KEY `id_anhio` (`id_anhio`),
+  ADD KEY `id_alumno` (`id_alumno`),
+  ADD KEY `id_apoderado` (`id_apoderado`);
+
+--
+-- Indices de la tabla `otros_movimientos`
+--
+ALTER TABLE `otros_movimientos`
+  ADD PRIMARY KEY (`id_movimiento`);
+
+--
+-- Indices de la tabla `perfil_usuario`
+--
+ALTER TABLE `perfil_usuario`
+  ADD PRIMARY KEY (`idperfil_usuario`);
+
+--
+-- Indices de la tabla `recibo`
+--
+ALTER TABLE `recibo`
+  ADD PRIMARY KEY (`id_recibo`),
+  ADD KEY `id_apoderado` (`id_apoderado`),
+  ADD KEY `id_usuario` (`id_usuario`);
+
+--
+-- Indices de la tabla `reunion`
+--
+ALTER TABLE `reunion`
+  ADD PRIMARY KEY (`id_reunion`),
+  ADD KEY `id_concepto` (`id_concepto`);
+
+--
+-- Indices de la tabla `secciones`
+--
+ALTER TABLE `secciones`
+  ADD PRIMARY KEY (`id_seccion`),
+  ADD KEY `id_grado` (`id_grado`);
+
+--
+-- Indices de la tabla `tipo_relacion`
+--
+ALTER TABLE `tipo_relacion`
+  ADD PRIMARY KEY (`id_tipo_relacion`);
+
+--
+-- Indices de la tabla `usuario`
+--
+ALTER TABLE `usuario`
+  ADD PRIMARY KEY (`idusuario`),
+  ADD KEY `idperfil_usuario` (`idperfil_usuario`);
+
+--
+-- AUTO_INCREMENT de las tablas volcadas
+--
+
+--
+-- AUTO_INCREMENT de la tabla `alumno`
+--
+ALTER TABLE `alumno`
+  MODIFY `id_alumno` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=144;
+--
+-- AUTO_INCREMENT de la tabla `anhio_lectivo`
+--
+ALTER TABLE `anhio_lectivo`
+  MODIFY `idanhio` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+--
+-- AUTO_INCREMENT de la tabla `apoderado`
+--
+ALTER TABLE `apoderado`
+  MODIFY `id_apoderado` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=146;
+--
+-- AUTO_INCREMENT de la tabla `compra`
+--
+ALTER TABLE `compra`
+  MODIFY `id_compra` smallint(6) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT de la tabla `concepto_apafa`
+--
+ALTER TABLE `concepto_apafa`
+  MODIFY `id_concepto` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+--
+-- AUTO_INCREMENT de la tabla `detalle_compra`
+--
+ALTER TABLE `detalle_compra`
+  MODIFY `id_detalle_compra` smallint(6) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT de la tabla `detalle_deuda`
+--
+ALTER TABLE `detalle_deuda`
+  MODIFY `id_detalle_deuda` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+--
+-- AUTO_INCREMENT de la tabla `grados`
+--
+ALTER TABLE `grados`
+  MODIFY `id_grado` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+--
+-- AUTO_INCREMENT de la tabla `libro`
+--
+ALTER TABLE `libro`
+  MODIFY `id_libro` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+--
+-- AUTO_INCREMENT de la tabla `matricula`
+--
+ALTER TABLE `matricula`
+  MODIFY `id_matricula` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+--
+-- AUTO_INCREMENT de la tabla `otros_movimientos`
+--
+ALTER TABLE `otros_movimientos`
+  MODIFY `id_movimiento` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+--
+-- AUTO_INCREMENT de la tabla `perfil_usuario`
+--
+ALTER TABLE `perfil_usuario`
+  MODIFY `idperfil_usuario` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+--
+-- AUTO_INCREMENT de la tabla `recibo`
+--
+ALTER TABLE `recibo`
+  MODIFY `id_recibo` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+--
+-- AUTO_INCREMENT de la tabla `reunion`
+--
+ALTER TABLE `reunion`
+  MODIFY `id_reunion` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+--
+-- AUTO_INCREMENT de la tabla `secciones`
+--
+ALTER TABLE `secciones`
+  MODIFY `id_seccion` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+--
+-- AUTO_INCREMENT de la tabla `tipo_relacion`
+--
+ALTER TABLE `tipo_relacion`
+  MODIFY `id_tipo_relacion` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+--
+-- AUTO_INCREMENT de la tabla `usuario`
+--
+ALTER TABLE `usuario`
+  MODIFY `idusuario` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- Restricciones para tablas volcadas
 --

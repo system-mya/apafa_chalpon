@@ -3,7 +3,7 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/delay';
 import { Http } from '@angular/http';
 import "rxjs/add/operator/map";
-import { clsOtro_Ingreso,clsBusqueda,clsRecibo } from '../../app.datos';
+import { clsMovimiento,clsBusqueda,clsRecibo } from '../../app.datos';
 
 @Injectable({
   providedIn: 'root'
@@ -17,12 +17,12 @@ export class IngresosService {
     .map(res => res.json())
   }
 
-  public nvo_otro_ingreso(ingreso:clsOtro_Ingreso){
+  public nvo_otro_ingreso(ingreso:clsMovimiento){
     return this._http.post('/api/tesoreria/insertar_ingreso',ingreso)
      .map(data => data.json()).toPromise()
   }
 
-  public Listar_Detalle_Deuda(recibo:clsRecibo){
+  public Listar_Detalle_Deuda(recibo:clsBusqueda){
     return this._http.post('/api/tesoreria/listar_detalle_deuda',recibo)
     .map(data => data.json()).toPromise()
   }
@@ -41,6 +41,13 @@ export class IngresosService {
     return this._http.post('/api/tesoreria/obtener_detalle_movimiento',recibo)
     .map(res => res.json()).toPromise()
   }
+
+    // llamando al api ELIMINAR MOVIMIENTO
+public eliminar_ingreso_egreso(movimiento:clsBusqueda){
+  return this._http.post('/api/tesoreria/eliminar_ingreso_egreso',movimiento)
+   .map(data => data.json()).toPromise()
+}
+
 
 
 }

@@ -56,6 +56,12 @@
                           [matTooltipPosition]="positionOptions[3]"
                           data-toggle="modal" (click)="btnEdit_Apoderado(element.id_apoderado)">
                         <span class="fa fa-edit"></span></button>
+                        <button class="btn btn-primary btn-xs distancia_btn_opciones"
+                              matTooltip="Conceptos"
+                              matTooltipClass="tooltip-mensaje"
+                              [matTooltipPosition]="positionOptions[3]"
+                              data-toggle="modal" (click)="btnNuevo_Concepto(element.id_apoderado)">
+                            <span class="fa fa-file-text-o"></span></button>
                        <button class="btn btn-danger btn-xs distancia_btn_opciones"
                             matTooltip="Eliminar"
                             matTooltipClass="tooltip-mensaje"
@@ -224,30 +230,41 @@
             </button>
           </div>
           <div class="modal-body">
-            <div class="bd-example">
-              <dl class="row">
-                <dt class="col-sm-3">Apellidos Completos: </dt>
-                <dd class="col-sm-3 text-left"><em style="font-size: 16px;">{{DetApoderado.apellidos_apoderado}}</em></dd>
-                <dt class="col-sm-3">Nombres Compeltos: </dt>
-                <dd class="col-sm-3 text-left"><em style="font-size: 16px;">{{DetApoderado.nombres_apoderado}}</em></dd>
-              </dl> 
-              <dl class="row">
-                <dt class="col-sm-1">Tipo: </dt>
-                <dd class="col-sm-1">{{DetApoderado.tdoc_apoderado}}</dd>
-                <dt class="col-sm-1">Doc.: </dt>
-                <dd class="col-sm-2">{{DetApoderado.doc_apoderado}}</dd>
-                <dt class="col-sm-1">Sexo: </dt>
-                <dd class="col-sm-2 text-left">{{DetApoderado.sexo_apoderado}}</dd>
-                <dt class="col-sm-2">N° Celular: </dt>
-                <dd class="col-sm-2">{{DetApoderado.celular_apoderado}}</dd>              
-              </dl>
-              <dl class="row">                
-                <dt class="col-sm-2">Dirección: </dt>
-                <dd class="col-sm-3">{{DetApoderado.direccion_apoderado}}</dd>
-                <dt class="col-sm-2">Correo: </dt>
-                <dd class="col-sm-3">{{DetApoderado.correo_apoderado}}</dd>
-              </dl>
-            </div>
+              <div class="row">
+                  <div class="col-sm-4 col-lg-5">
+                    <p style="margin-bottom: 1px !important;"><strong>Apellidos y Nombres </strong></p><h6>{{DetApoderado.apellidos_apoderado}} {{DetApoderado.nombres_apoderado}}</h6>
+                    <p style="margin-bottom: 1px !important;"><strong>Tipo Doc: </strong></p><h6>{{DetApoderado.tdoc_apoderado}}</h6>
+                    <p style="margin-bottom: 1px !important;"><strong>Doc Identidad: </strong></p><h6>{{DetApoderado.doc_apoderado}} </h6>
+                    <p style="margin-bottom: 1px !important;"><strong>Sexo: </strong></p><h6>{{DetApoderado.sexo_apoderado}} </h6>
+                    <p style="margin-bottom: 1px !important;"><strong>N° Celular: </strong></p><h6>{{DetApoderado.celular_apoderado}}</h6>
+                    <p style="margin-bottom: 1px !important;"><strong>Dirección: </strong></p><h6>{{DetApoderado.direccion_apoderado}}</h6>
+                    <p style="margin-bottom: 1px !important;"><strong>Correo: </strong></p><h6>{{DetApoderado.correo_apoderado}} </h6>
+                  </div><br> 
+                  <div class="col-sm-8 col-lg-7">
+                      <p style="margin-bottom: 1px !important;"><strong>DETALLE DE DEUDA</strong></p><br>
+                      <!-- <div class="progress progress-xs"><div aria-valuemax="100" aria-valuemin="0" aria-valuenow="95" class="progress-bar bg-danger" role="progressbar" style="width: 100%"></div></div><br> -->
+                      <div class="secciones-detalle-recibo table-responsive">
+                        <table class="table ">
+                          <thead>
+                            <tr>
+                                <th nowrap>Descripción Concepto</th>
+                                <th nowrap>Saldo</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let item of DataDeuda;index as i">
+                                <td width="80%">
+                                    {{item.descripcion_concepto}}
+                                  </td>
+                                  <td nowrap>
+                                    {{item.saldo_deuda | number : '.2-2'}}
+                                  </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                 </div>  
           </div>
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
@@ -390,4 +407,72 @@
     </div><!-- /.modal-dialog -->
   </div>
   <!-- /.Fin Modal Nuevo Apoderado-->
+  <!--Modal Insertar Concepto Apoderado-->
+<div bsModal #NvoConceptoModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}" >
+    <div class="modal-dialog modal-md modal-success" role="document">
+      <div class="modal-content">
+          <form name="form" class="formulario" (ngSubmit)="myDeuda.form.valid && btnRegistrar_Deuda(deuda)" #myDeuda="ngForm" novalidate autocomplete="off">
+        <div class="modal-header">
+          <h4 class="modal-title">Ingreso de Deuda</h4>
+          <button type="button" class="close" (click)="frmApo_hide('NC')" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                  <div class="form-group col-sm-12 col-md-12">
+                    <label for="descripcion_concepto" style="font-weight: bold;">Descripción Concepto <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                    <select class="form-control" id="id_concepto" name="id_concepto" 
+                    (change)="obtener_montos(deuda.id_concepto)"
+                    [(ngModel)]="deuda.id_concepto" #id_concepto="ngModel">
+                    <option value="0" selected disabled>-----Seleccionar Concepto------</option>
+                    <option *ngFor="let c of DataConceptos" value="{{c.id_concepto}}">{{c.descripcion_concepto}}</option>
+                   </select>
+                   <div *ngIf="myDeuda.submitted && deuda.id_concepto==''" style="
+                       width: 100%;
+                       margin-top: .25rem;
+                       font-size: 80%;
+                       color: #f86c6b;">
+                         Debe seleccionar una opción
+                        </div>
+                  </div>
+              </div><!--/.row--> 
+              <div class="row">
+                  <div class="form-group col-sm-12 col-md-5">
+                      <label for="monto" style="font-weight: bold;">Monto Concepto <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                      <input type="text" class="form-control" id="monto" name="monto"
+                       placeholder="Monto" [(ngModel)]="deuda.monto" #regmonto="ngModel" 
+                       maxlength="11" readonly required style="background-color: #ffffff;
+                       opacity: 1;
+                       color: #080808;">
+                    </div>
+                    <div class="form-group col-sm-12 col-md-4">
+                      <label for="monto_ingresado" style="font-weight: bold;">Monto <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                      <input type="text" class="form-control" id="monto_ingresado" name="monto_ingresado"
+                       placeholder="Monto" [(ngModel)]="deuda.monto_ingresado" #regingresado="ngModel" 
+                       onkeyup="verif(this)" maxlength="11" [ngClass]="{ 'is-invalid': myDeuda.submitted && regingresado.invalid }" 
+                       pattern="^(?!\.?$)\d{1,8}(\.\d{1,2})?$" onkeypress="return Num_Decimal(event);" required>
+                       <div *ngIf="myDeuda.submitted && regingresado.invalid" class="invalid-feedback">
+                        <div *ngIf="regingresado.errors.required">Monto campo requerido</div>
+                        <div *ngIf="regingresado.errors.pattern">Formato Monto Incorrecto</div>
+                       </div>
+                    </div>
+                </div><!--/.row-->    
+                <div class="row">
+                    <div class="form-group col-sm-12 col-md-12">
+                        <label for="monto" style="font-weight: bold;">Descripción:</label>
+                        <textarea id="descripcion_deuda" name="descripcion_deuda" rows="3" [(ngModel)]="deuda.descripcion_deuda" #regobser="ngModel"
+                         class="form-control" maxlength="100" placeholder="Ingrese Descripcion" onkeyup="verif(this)"></textarea>
+                      </div>
+                  </div><!--/.row-->   
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" (click)="frmApo_hide('NC')"><span class="fa fa-times-circle"></span> Close</button>
+          <button type="submit" class="btn btn-primary" ><span class="fa fa-save"></span> Guardar</button>
+        </div>
+      </form>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div>
+  <!-- /.Fin Modal Insertar Concepto Apoderado-->
 </div>

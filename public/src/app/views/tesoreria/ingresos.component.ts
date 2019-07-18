@@ -2,7 +2,7 @@ import { Component, ViewChild, ViewEncapsulation, Inject  } from '@angular/core'
 import { NgForm } from '@angular/forms';
 import { DOCUMENT } from '@angular/platform-browser';
 import {MatPaginator, MatSort, MatTableDataSource, TooltipPosition} from '@angular/material';
-import {clsBusqueda,clsOtro_Ingreso,clsRecibo,clsDetalle_Deuda} from '../../app.datos';
+import {clsBusqueda,clsMovimiento,clsRecibo,clsDetalle_Deuda} from '../../app.datos';
 import { IngresosService } from './ingresos.service';
 import { MatriculaService } from '../apafa/matricula.service';
 import { ApoderadoService } from '../apafa/apoderado.service';
@@ -46,7 +46,7 @@ export class IngresosComponent {
   @ViewChild('myForm') mytemplateForm: NgForm;
   @ViewChild('myRecibo') mytemplatemyRecibo: NgForm;
   public DatoBusqueda: clsBusqueda;
-  public otro: clsOtro_Ingreso = {};
+  public otro: clsMovimiento = {};
   public recibo : clsRecibo = {};
   public DataDeuda : clsDetalle_Deuda ={};
   public optAd : string;
@@ -119,7 +119,7 @@ DataIngresos: any = [];
 
 
 
-  onSubmit(form: clsOtro_Ingreso) {
+  onSubmit(form: clsMovimiento) {
     swal({
       title: '¿Esta seguro que desea guardar?',
       type: 'question',
@@ -132,6 +132,7 @@ DataIngresos: any = [];
     }).then((result) => {
       if (result.value == true) {
         form.id_usuario = localStorage.getItem('ID');
+        form.tipo_movimiento = 'I';
         this._IngresosServicios.nvo_otro_ingreso(form)
         .then(data => {
           if (data.status == 1) {
@@ -168,9 +169,15 @@ DataIngresos: any = [];
     });
   }
   
-
+  ImprimirPDF(dato){
+      if(dato.tipo=='R'){
+           this.VerPDFRecibo(dato.id_apoderado,dato.id_ingreso,dato.doc_ingreso,dato.freg_ingreso);
+      }else{
+         this.VerPDFIngreso(dato.id_ingreso);
+      }
+  }
   public detalle_recibo;
-  public VerPrimeroPDF(id_apoderado,id_ingreso,num,fecha)
+  public VerPDFRecibo(id_apoderado,id_ingreso,num,fecha)
   {
   this.loadingBar.start();
   this.spinner.show();
@@ -259,6 +266,74 @@ DataIngresos: any = [];
            
            
   }
+
+  public VerPDFIngreso(id_ingreso)
+  {
+  this.loadingBar.start();
+  this.spinner.show();
+  const doc = new jspdf({orientation: 'portrait',unit: 'mm',format: 'A5'});
+  this.DatoBusqueda.idbusqueda=id_ingreso;
+  this.DatoBusqueda.datobusqueda='I';
+  this._IngresosServicios.obtener_detalle_movimiento(this.DatoBusqueda)
+  .then(data => {
+    if(data.status==1){    
+           
+           var totalPagesExp = "{total_pages_count_string}";
+            var img = new Image();
+            img.src = 'assets/img/cabecera_recibos.png'
+            doc.addImage(img,'png',25,10,150,40);
+            doc.setFontSize(12);
+            doc.setFont('helvetica')
+            doc.setFontType('bold');
+            doc.text(80, 60, 'DETALLE MOVIMIENTO');
+            doc.setFontType('normal');
+            doc.text(30, 70, 'Fecha y Hora: ' + formatDate(data.data[0].freg_movimiento,'dd/MM/yyyy h:mm a','en-US'));
+            doc.text(30, 80, 'Doc. Identidad Responsable: ' + data.data[0].doc_encargado_movimiento);
+            var splitTitle = doc.splitTextToSize('Sr(a) Responsable Ingreso: ' + data.data[0].datos_encargado_movimiento, 160);
+            doc.text(30, 90, splitTitle);
+            doc.setFontType('bold');
+            doc.text(80, 110, 'DETALLE INGRESO');
+            doc.setFontType('normal');
+            var splitConcepto = doc.splitTextToSize('Concepto Ingreso: ' + data.data[0].descripcion_movimiento, 160);
+            doc.text(30, 120 ,splitConcepto);
+            doc.text(30, 130, 'Monto Ingreso: '+data.data[0].monto_movimiento.toFixed(2));
+            doc.setFontType('bold');
+              // Footer
+              var str = "Página " + doc.internal.getNumberOfPages()
+              // Total page number plugin only available in jspdf v1.0+
+              if (typeof doc.putTotalPages === 'function') {
+                  str = str + " de " + totalPagesExp;
+              }
+              doc.setFontSize(10);
+        
+              // jsPDF 1.4+ uses getWidth, <1.4 uses .width
+              var pageSize = doc.internal.pageSize;
+              var pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
+              doc.text(str, 30, pageHeight - 10);
+                 
+              // Total page number plugin only available in jspdf v1.0+
+              if (typeof doc.putTotalPages === 'function') {
+                  doc.putTotalPages(totalPagesExp);
+              }
+              setTimeout(() => {
+              doc.output('save', data.data[0].doc_encargado_movimiento+'.pdf');
+              this.toastr.success('Recibo Generado', 'Aviso!',{positionClass: 'toast-top-right',timeOut: 500});
+              this.DetallePago.hide();
+              this.loadingBar.complete();
+              this.spinner.hide();
+              this.document.documentElement.scrollTop = 0;
+            }, 5000);
+    }else{
+      this.toastr.error(data.message, 'Aviso!');
+      this.loadingBar.complete();
+     }
+  } )
+  .catch(err => console.log(err))
+           
+           
+           
+           
+  }
     
   //https://github.com/simonbengtsson/jsPDF-AutoTable/blob/master/examples/examples.js ejemplos
 
@@ -280,7 +355,8 @@ DataIngresos: any = [];
             this.recibo.celular_apoderado = data.data[0].celular_apoderado;
             this.recibo.direccion_apoderado = data.data[0].direccion_apoderado;
             this.recibo.correo_apoderado = data.data[0].correo_apoderado;
-            this._IngresosServicios.Listar_Detalle_Deuda(this.recibo)
+            this.DatoBusqueda.idbusqueda=this.recibo.id_apoderado;
+            this._IngresosServicios.Listar_Detalle_Deuda(this.DatoBusqueda)
       .then(data => {
         if(data.status==1){
             this.seleccion_deuda=false;
@@ -337,7 +413,7 @@ DataIngresos: any = [];
                   allowEscapeKey: false
               }).then((result) => {
                 if (result.value == true) {                  
-                  this.VerPrimeroPDF(data.data[1][0],data.data[1][1],data.data[0],data.data[2]);
+                  this.VerPDFRecibo(data.data[1][0],data.data[1][1],data.data[0],data.data[2]);
                   
                 }
               })
@@ -456,6 +532,45 @@ btnDetalle_Ingreso(dato){
     } )
     .catch(err => console.log(err))
   }
+  }
+
+  btnEliminar_Ingreso(dato) {
+    if(dato.tipo=='O'){
+      this.DatoBusqueda.datobusqueda='M';
+       this.DatoBusqueda.idbusqueda=dato.id_ingreso;
+   }else{
+    this.DatoBusqueda.datobusqueda='R';
+    this.DatoBusqueda.idbusqueda=dato.id_ingreso;
+   }
+    swal({
+      title: '¿Esta seguro que desea eliminar?',
+      type: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, Guardar!',
+      allowOutsideClick: false,
+      allowEscapeKey:false,
+    }).then((result) => {
+      if (result.value==true) {
+            this._IngresosServicios.eliminar_ingreso_egreso(this.DatoBusqueda)
+            .then(data => {
+              if(data.status==1){
+                swal({
+                  title: 'Aviso!',
+                  text: data.message,
+                  type: 'success',
+                  allowOutsideClick: false,
+                  allowEscapeKey:false
+              })
+              this.ListarIngresos();
+              }else{
+                this.toastr.error(data.message, 'Aviso!');
+               }
+            } )
+            .catch(err => console.log(err))
+      }
+    })
   }
     
 }

@@ -64,13 +64,13 @@ type = "ball-clip-rotate-multiple">
                     matTooltip="Imprimir"
                     matTooltipClass="tooltip-mensaje"
                     [matTooltipPosition]="positionOptions[3]"
-                    data-toggle="modal" (click)="VerPrimeroPDF(element.id_apoderado,element.id_ingreso,element.doc_ingreso,element.freg_ingreso)">
+                    data-toggle="modal" (click)="ImprimirPDF(element)">
                   <span class="fa fa-print"></span></button>
                  <button class="btn btn-danger btn-xs distancia_btn_opciones"
                       matTooltip="Eliminar"
                       matTooltipClass="tooltip-mensaje"
                       [matTooltipPosition]="positionOptions[3]"
-                      (click)="btnEliminar_Alumno(element.id_alumno)"
+                      (click)="btnEliminar_Ingreso(element)"
                       *ngIf="optAd=='AD'">
                  <span class="fa fa-trash-o btn-xs"></span>
                  </button>
@@ -103,7 +103,7 @@ type = "ball-clip-rotate-multiple">
               <div class="form-group col-sm-12 col-md-5">
                   <label for="doc_encargado_ingreso" style="font-weight: bold;">Doc. Ident. <i class="fa fa-certificate" style="color:red !important"></i> :</label>
                   <input type="text" class="form-control" id="doc_encargado_ingreso" name="doc_encargado_ingreso"
-                  placeholder="Doc Identidad"  [(ngModel)]="otro.doc_encargado_ingreso" #regdoc="ngModel"
+                  placeholder="Doc Identidad"  [(ngModel)]="otro.doc_encargado_movimiento" #regdoc="ngModel"
                   pattern="[0-9a-zA-Z]{8,15}" [ngClass]="{ 'is-invalid': myForm.submitted && regdoc.invalid }" required onkeyup="verif(this);mayus(this);" maxlength="15">
                   <div *ngIf="myForm.submitted && regdoc.invalid" class="invalid-feedback">
                       <div *ngIf="regdoc.errors.required">Doc. Identidad campo requerido</div>
@@ -113,7 +113,7 @@ type = "ball-clip-rotate-multiple">
                 <div class="form-group col-sm-12 col-md-7">
                   <label for="datos_encrgado_ingreso" style="font-weight: bold;">Datos Encargado <i class="fa fa-certificate" style="color:red !important"></i> :</label>
                   <input type="text" class="form-control" id="datos_encrgado_ingreso" name="datos_encrgado_ingreso"
-                   placeholder="Nombres Completos" [(ngModel)]="otro.datos_encrgado_ingreso" #regdatos="ngModel" 
+                   placeholder="Nombres Completos" [(ngModel)]="otro.datos_encrgado_movimiento" #regdatos="ngModel" 
                    onkeyup="verif(this)" maxlength="100" [ngClass]="{ 'is-invalid': myForm.submitted && regdatos.invalid }" 
                    pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,100}[\s]*)+$" required>
                    <div *ngIf="myForm.submitted && regdatos.invalid" class="invalid-feedback">
@@ -126,8 +126,8 @@ type = "ball-clip-rotate-multiple">
               <div class="form-group col-sm-12 col-md-8">
                   <label for="descripcion_ingreso" style="font-weight: bold;">Descripción <i class="fa fa-certificate" style="color:red !important"></i> :</label>
                   <input type="text" class="form-control" id="descripcion_ingreso" name="descripcion_ingreso"
-                  placeholder="Descripción Ingreso"  [(ngModel)]="otro.descripcion_ingreso" #regdesc="ngModel"
-                  pattern="^([A-Za-z0-9#/ñ]{1,80}[\s]*)+$" [ngClass]="{ 'is-invalid': myForm.submitted && regdesc.invalid }" required onkeyup="verif(this)" maxlength="100">
+                  placeholder="Descripción Ingreso"  [(ngModel)]="otro.descripcion_movimiento" #regdesc="ngModel"
+                  pattern="^([A-ZÁÉÍÓÚÑa-zñáéíóú0-9]{1,100}[\s]*)+$" [ngClass]="{ 'is-invalid': myForm.submitted && regdesc.invalid }" required onkeyup="verif(this);mayus(this);" maxlength="100">
                   <div *ngIf="myForm.submitted && regdesc.invalid" class="invalid-feedback">
                       <div *ngIf="regdesc.errors.required">Descripción campo requerido</div>
                       <div *ngIf="regdesc.errors.pattern">Formato Descripción Incorrectos</div>
@@ -136,7 +136,7 @@ type = "ball-clip-rotate-multiple">
                 <div class="form-group col-sm-12 col-md-4">
                   <label for="monto_ingreso" style="font-weight: bold;">Monto <i class="fa fa-certificate" style="color:red !important"></i> :</label>
                   <input type="text" class="form-control" id="monto_ingreso" name="monto_ingreso"
-                   placeholder="Monto" [(ngModel)]="otro.monto_ingreso" #regmonto="ngModel" 
+                   placeholder="Monto" [(ngModel)]="otro.monto_movimiento" #regmonto="ngModel" 
                    onkeyup="verif(this)" maxlength="100" [ngClass]="{ 'is-invalid': myForm.submitted && regmonto.invalid }" 
                    pattern="^(?!\.?$)\d{1,8}(\.\d{1,2})?$" onkeypress="return Num_Decimal(event);" required>
                    <div *ngIf="myForm.submitted && regmonto.invalid" class="invalid-feedback">
@@ -379,7 +379,7 @@ type = "ball-clip-rotate-multiple">
                 </thead>
                 <tbody>
                   <tr *ngFor="let item of detalle_recibo;index as i">
-                      <td nowrap>
+                      <td width="80%">
                           {{item.descripcion_concepto}}
                         </td>
                         <td nowrap>
@@ -436,7 +436,7 @@ type = "ball-clip-rotate-multiple">
               </thead>
               <tbody>
                 <tr>
-                    <td nowrap>
+                      <td width="80%">
                         {{DetIngreso.descripcion_movimiento}}
                       </td>
                       <td nowrap>

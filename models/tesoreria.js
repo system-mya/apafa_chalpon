@@ -170,19 +170,23 @@ class Tesoreria {
         });
     };
 
-    nvo_otro_ingreso(ingreso, res) {
+    nvo_movimiento(ingreso, res) {
         connection.acquire((err, con) => {
             if(err){
-                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOSaa'});
+                res.send({status: 0, message: err.sqlMessage});
             }else{                   
-               var query = "CALL pa_insertar_otro_ingreso('"+ [ingreso.descripcion_ingreso] 
-                        +"','"+ [ingreso.monto_ingreso] + "','"+ [ingreso.doc_encargado_ingreso] 
-                        + "','"+ [ingreso.datos_encrgado_ingreso] 
+               var query = "CALL pa_insertar_movimientos('"+[ingreso.tipo_movimiento]+"','"+ [ingreso.descripcion_movimiento] 
+                        +"','"+ [ingreso.monto_movimiento] + "','"+ [ingreso.doc_encargado_movimiento] 
+                        + "','"+ [ingreso.datos_encrgado_movimiento] 
                         + "',"+ get('123456$#@$^@1ERF',[ingreso.id_usuario][0]) + ")";
+                        console.log("CALL pa_insertar_movimientos('"+[ingreso.tipo_movimiento]+"','"+ [ingreso.descripcion_movimiento] 
+                        +"','"+ [ingreso.monto_movimiento] + "','"+ [ingreso.doc_encargado_movimiento] 
+                        + "','"+ [ingreso.datos_encrgado_movimiento] 
+                        + "',"+ get('123456$#@$^@1ERF',[ingreso.id_usuario][0]) + ")");
                         con.query(query,(err, result) => {
                             con.release();
                             if(err){
-                                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOSsss'});
+                                res.send({status: 0, message: err.sqlMessage});
                             }else{
                                 if (result.affectedRows == 1) {
                                     res.send({status: 1, message: 'Ingreso Registrado'});
@@ -200,7 +204,7 @@ class Tesoreria {
             if(err){
                 res.send({status: 0, message: err.sqlMessage});
             }else{
-            var query = "CALL pa_listar_detalle_deuda_pendientes("+[recibo.id_apoderado]+")"; 
+            var query = "CALL pa_listar_detalle_deuda_pendientes("+[recibo.idbusqueda]+")"; 
             /* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
             con.query(query,(err, result) => {
                 con.release();
@@ -554,7 +558,6 @@ class Tesoreria {
         });
     };
 
-
     listar_compras_xperiodo(anhio,res) {
         connection.acquire((err, con) => {
             if(err){
@@ -596,6 +599,28 @@ class Tesoreria {
                
             });
         }
+        });
+    };
+
+    eliminar_movimiento(movimiento, res) {
+        connection.acquire((err, con) => {
+            if(err){
+                res.send({status: 0, message: err.sqlMessage});
+            }else{
+            var query = "CALL pa_eliminar_ingreso_egreso('"+[movimiento.datobusqueda]+"',"+ [movimiento.idbusqueda] +")";
+            con.query(query,(err, result) => {
+                con.release();
+                if(err){
+                    res.send({status: 0, message: err.sqlMessage});
+                }else{
+                    if (result.affectedRows == 0) {
+                        res.send({status: 2, message: 'NO SE ELIMINO'});
+                    } else {
+                        res.send({status: 1, message: 'ELIMINACION EXITOSA'});
+                    }
+                }
+            });
+            }
         });
     };
 

@@ -32,6 +32,7 @@ function bodyRows(data,rowCount) {
 })
 export class MatriculaComponent {
   @ViewChild('NvaMatriculaModal') public NvaMatriculaModal: ModalDirective;
+  @ViewChild('DetalleMatricula') public DetalleMatricula: ModalDirective;
   @ViewChild('myForm') mytemplateForm : NgForm;
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -102,8 +103,8 @@ frmMat_hide(opc){
    this.panel_tabla=true;
    this.panel_registro_libro=false;
     }else{
-      if(opc=="E"){
-        
+      if(opc=="DM"){
+        this.DetalleMatricula.hide();
       }
     }
   }
@@ -463,19 +464,65 @@ DataGrado : clsGrados;
                   this.toastr.error(data_matriculados.message, 'Aviso!');
                 }
               })
-          
-          
-          
-          
-        
         }else{
           this.toastr.error("Consulta Sin Exito", 'Aviso!');
         }
-        
-        
-      });
-     
-  
-    
+    });   
+   }
+   
+   DetMatricula : any = [];
+   btnDetalle_Matricula(id){
+    this.loadingBar.start();
+    this.DatoBusqueda.idbusqueda=id;
+    this._MatriculaServicios.detalle_matricula(this.DatoBusqueda)
+    .then(data => {
+      if(data.status==1){
+        this.loadingBar.complete();  
+        this.DetMatricula = data.data[0];
+        this.toastr.success(data.message, 'Aviso!');
+        this.DetalleMatricula.show();
+      }else{
+        this.loadingBar.complete();   
+        this.toastr.error(data.message, 'Aviso!');
+       }
+    } )
+    .catch(err => console.log(err))
   }
+
+  btnEliminar_Matricula(id:number) {
+    this.loadingBar.start();
+    swal({
+      title: '¿Esta seguro que desea eliminar?',
+      type: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, Guardar!',
+      allowOutsideClick: false,
+      allowEscapeKey:false,
+    }).then((result) => {
+      if (result.value==true) {
+        this.DatoBusqueda.idbusqueda=id;
+            this._MatriculaServicios.eliminar_matricula(this.DatoBusqueda)
+            .then(data => {
+              if(data.status==1){
+                swal({
+                  title: 'Aviso!',
+                  text: data.message,
+                  type: 'success',
+                  allowOutsideClick: false,
+                  allowEscapeKey:false
+              })
+              this.loadingBar.complete();   
+              this.ListarMatriculados();
+              }else{
+                this.loadingBar.complete();   
+                this.toastr.error(data.message, 'Aviso!');
+               }
+            } )
+            .catch(err => console.log(err))
+      }
+    })
+  }
+  
 }

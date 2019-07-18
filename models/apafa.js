@@ -577,7 +577,99 @@ update_alumno(alumno, res) {
 
     });
 
-    }
+    };
+
+    detalle_matricula(matricula, res) {
+        connection.acquire((err, con) => {
+            if(err){
+                res.send({status: 0, message: err.sqlMessage});
+            }else{
+            var query = "CALL pa_detalle_matricula("+ [matricula.idbusqueda] +")"; 
+            /* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
+            con.query(query,(err, result) => {
+                con.release();
+                if(err){
+                    res.send({status: 0, message: err.sqlMessage});
+                }else{
+                    if (result[0].length == 0) {
+                        res.send({status: 2, message: 'CONSULTA SIN EXITO'});
+                    } else {
+                        res.send({status: 1, message: 'Datos Matricula',data:result[0]});
+                    }
+                }
+            });
+            }
+        });
+    };
+
+    eliminar_matricula(matricula, res) {
+        connection.acquire((err, con) => {
+            if(err){
+                res.send({status: 0, message: err.sqlMessage});
+            }else{
+            var query = "CALL pa_eliminar_matricula("+ [matricula.idbusqueda] +")"; 
+            /* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
+            con.query(query,(err, result) => {
+                con.release();
+                if(err){
+                    res.send({status: 0, message: err.sqlMessage});
+                }else{
+                    if (result.affectedRows == 0) {
+                        res.send({status: 2, message: 'MATRICULA NO ELIMINADA'});
+                    } else {
+                        res.send({status: 1, message: 'MATRICULA ELIMINADA'});
+                    }
+                }
+            });
+            }
+        });
+    };
+
+    nva_deuda_apoderado(deuda, res) {
+        connection.acquire((err, con) => {
+            if(err){
+                res.send({status: 0, message: err.sqlMessage});
+            }else{
+
+            if ([deuda.descripcion_deuda]==''){
+                var descripcion_deuda="NULL";
+            }else{
+                descripcion_deuda="'"+[deuda.descripcion_deuda]+"'";
+            }
+    
+            var query_verificar = "CALL pa_verificar_deuda_apoderado("+[deuda.id_concepto]+","+[deuda.id_apoderado]+",'"+ [deuda.anhio] +"')";
+            
+            con.query(query_verificar,(err, result) => {
+                if(err){
+                    res.send({status: 0, message: err.sqlMessage});
+                }else{
+                    if (result[0].length == 0) {
+                        var query = "CALL pa_insertar_deuda_apoderado("+ [deuda.id_concepto] +","+ [deuda.id_apoderado] 
+                        +",'"+ [deuda.monto_ingresado] + "',"+ descripcion_deuda +")";
+                        
+                        con.query(query,(err, result) => {
+                            con.release();
+                            if(err){
+                                res.send({status: 0, message: err.sqlMessage});
+                            }else{
+                                if (result.affectedRows == 1) {
+                                    res.send({status: 1, message: 'DEUDA REGISTRADA'});
+                                } else {
+                                    res.send({status: 2, message: 'DEUDA NO REGISTRADA'});
+                                }
+                            }
+                        });
+                    } else {
+                        res.send({status: 3, message: 'CONCEPTO YA REGISTRADO'});
+                    }
+                }
+            });
+    
+            
+            }
+        });
+    };
+
 
     listar_historial_matricula(alumno, res) {
         connection.acquire((err, con) => {
@@ -651,9 +743,9 @@ update_alumno(alumno, res) {
     listar_libros_xmatricula(dato, res) {
         connection.acquire((err, con) => {
             if(err){
-                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                res.send({status: 0, message: err.sqlMessage});
             }else{
-            var query = "CALL pa_listar_libros_xmatriculaSS("+ [dato.idbusqueda] +")"; 
+            var query = "CALL pa_listar_libros_xmatricula("+ [dato.idbusqueda] +")"; 
             /* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
             con.query(query,(err, result) => {
                 con.release();
@@ -675,7 +767,7 @@ update_alumno(alumno, res) {
     insertar_libro_matricula(libro, res) {
         connection.acquire((err, con) => {
             if(err){
-                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                res.send({status: 0, message: err.sqlMessage});
             }else{            
                         var query = "CALL pa_insertar_libro_xmatricula("+ [libro.id_matricula] 
                             + "," + [libro.id_libro] +")";
@@ -696,7 +788,7 @@ update_alumno(alumno, res) {
             });
         };
 
-        quitar_entrega_libro(dato, res) {
+    quitar_entrega_libro(dato, res) {
             connection.acquire((err, con) => {
                 if(err){
                     res.send({status: 0, message: err.sqlMessage});
@@ -719,7 +811,7 @@ update_alumno(alumno, res) {
             });
         };
 
-        registrar_devolucion_libro(dato, res) {
+    registrar_devolucion_libro(dato, res) {
             connection.acquire((err, con) => {
                 if(err){
                     res.send({status: 0, message: err.sqlMessage});

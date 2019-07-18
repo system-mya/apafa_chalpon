@@ -45,23 +45,23 @@
                     <ng-container matColumnDef="opciones_alumno">
                         <th width="15%" mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Opciones </th>
                         <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> 
+                          <button class="btn btn-info btn-xs distancia_btn_opciones"
+                                matTooltip="Detalle"
+                                matTooltipClass="tooltip-mensaje"
+                                [matTooltipPosition]="positionOptions[3]"
+                                data-toggle="modal" (click)="btnDetalle_Matricula(element.id_matricula)">
+                              <span class="fa fa-address-card-o"></span></button>
                           <button class="btn btn-warning btn-xs distancia_btn_opciones"
                                 matTooltip="Libros"
                                 matTooltipClass="tooltip-mensaje"
                                 [matTooltipPosition]="positionOptions[3]"
                                 data-toggle="modal" (click)="Listar_Libros(element.id_grado,element.id_matricula,element.grado)">
-                              <span class="fa fa-archive"></span></button>
-                          <button class="btn btn-primary btn-xs distancia_btn_opciones"
-                              matTooltip="Conceptos"
-                              matTooltipClass="tooltip-mensaje"
-                              [matTooltipPosition]="positionOptions[3]"
-                              data-toggle="modal" (click)="btnEdit_Alumno(element.id_alumno)">
-                            <span class="fa fa-file-text-o"></span></button>
+                              <span class="fa fa-archive"></span></button>                          
                            <button class="btn btn-danger btn-xs distancia_btn_opciones"
                                 matTooltip="Eliminar"
                                 matTooltipClass="tooltip-mensaje"
                                 [matTooltipPosition]="positionOptions[3]"
-                                (click)="btnEliminar_Alumno(element.id_alumno)"
+                                (click)="btnEliminar_Matricula(element.id_matricula)"
                                 *ngIf="optAd=='AD'">
                            <span class="fa fa-trash-o btn-xs"></span>
                            </button>
@@ -374,4 +374,46 @@
  </div>
 </div>
 <!--FIN FORMULARIO LIBROS-->
+
+<!--Modal Detalle Ingreso-->
+<div bsModal #DetalleMatricula="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}">
+  <div class="modal-dialog modal-lg modal-success" role="document">
+    <div class="modal-content" style="border-style: solid; border-width: 5px; border-radius: 2rem !important;">
+        <div class="modal-header"  style="color: #020202 !important;background-color: #ffffff !important;border-top-left-radius: 2rem !important;
+        border-top-right-radius: 2rem !important;">
+          <h4 class="modal-title">Detalle Matricula</h4>
+          <button type="button" class="close" (click)="frmMat_hide('DM')" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      <div class="modal-body">
+         <div class="row">
+          <div class="col-sm-4 col-lg-4">
+            <p style="margin-bottom: 1px !important;"><strong>ALUMNO</strong></p><br>
+            <p style="margin-bottom: 1px !important;"><strong>Doc. Alumno: </strong></p><h6>{{DetMatricula.doc_alumno}}</h6>
+            <p style="margin-bottom: 1px !important;"><strong>Apellidos: </strong></p><h6>{{DetMatricula.apellidos_alumno}}</h6>
+            <p style="margin-bottom: 1px !important;"><strong>Nombres: </strong></p><h6>{{DetMatricula.nombres_alumno}} </h6>
+            <p style="margin-bottom: 1px !important;"><strong>Dirección: </strong></p><h6>{{DetMatricula.direccion_alumno}} </h6>
+        </div><br>
+        <div class="col-sm-8 col-lg-4">
+          <p style="margin-bottom: 1px !important;"><strong>APODERADO</strong></p><br>
+          <p style="margin-bottom: 1px !important;"><strong>Doc. Apoderado: </strong></p><h6>{{DetMatricula.doc_apoderado}}</h6>
+          <p style="margin-bottom: 1px !important;"><strong>Apellidos: </strong></p><h6>{{DetMatricula.apellidos_apoderado}}</h6>
+          <p style="margin-bottom: 1px !important;"><strong>Nombres: </strong></p><h6>{{DetMatricula.nombres_apoderado}} </h6>
+          <p style="margin-bottom: 1px !important;"><strong>Tipo Relación: </strong></p><h6>{{DetMatricula.nombre_relacion}} </h6>
+        </div> 
+        <div class="col-sm-8 col-lg-4">
+            <p style="margin-bottom: 1px !important;"><strong>MATRICULA</strong></p><br>
+            <p style="margin-bottom: 1px !important;"><strong>Grado: </strong></p><h6>{{DetMatricula.descripcion_grado}}</h6>
+            <p style="margin-bottom: 1px !important;"><strong>Sección: </strong></p><h6>{{DetMatricula.nombre_seccion}}</h6>
+            <p style="margin-bottom: 1px !important;"><strong>Turno: </strong></p><h6>{{DetMatricula.turno_seccion}} </h6>
+          </div>
+         </div>  
+        
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
+<!-- /.Fin Modal Detalle Ingreso-->
+
 </div>

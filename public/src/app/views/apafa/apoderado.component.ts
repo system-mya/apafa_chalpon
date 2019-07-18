@@ -2,10 +2,12 @@ import { Component,ViewChild,ViewEncapsulation } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import {MatPaginator, MatSort, MatTableDataSource,TooltipPosition} from '@angular/material';
 import {ModalDirective} from 'ngx-bootstrap/modal';
-import {clsApoderado,clsBusqueda} from '../../app.datos';
+import {clsApoderado,clsBusqueda,clsDetalle_Deuda} from '../../app.datos';
 import { ApoderadoService } from './apoderado.service';
 import { ToastrService } from 'ngx-toastr';
 import { LoadingBarService } from '@ngx-loading-bar/core';
+import { ConceptosService } from '../tesoreria/conceptos.service';
+import { IngresosService } from '../tesoreria/ingresos.service';
 declare var swal: any;
 
 @Component({
@@ -17,18 +19,22 @@ export class ApoderdoComponent {
   @ViewChild('NvoApoderadoModal') public NvoApoderadoModal: ModalDirective;
   @ViewChild('DetApoderadoModal') public DetApoderadoModal: ModalDirective;
   @ViewChild('EditApoderadoModal') public EditApoderadoModal: ModalDirective;
+  @ViewChild('NvoConceptoModal') public NvoConceptoModal: ModalDirective;
   displayedColumns: string[] = ['doc_apoderado','apellidos_apoderado','sexo_apoderado','num_contacto','opciones_apoderado'];
   positionOptions: TooltipPosition[] = ['after', 'before', 'above', 'below', 'left', 'right'];
   public apoderado : clsApoderado;
+  public deuda : clsDetalle_Deuda = {};
   public Editapoderado : clsApoderado;
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild('myForm') mytemplateForm : NgForm;
+  @ViewChild('myDeuda') myDeudaForm : NgForm;
   public DatoBusqueda : clsBusqueda;
   public optAd : string;
   constructor(private _ApoderadoServicio:ApoderadoService,private toastr: ToastrService,
-    private loadingBar: LoadingBarService) {
+    private loadingBar: LoadingBarService,private _ConceptosServicios: ConceptosService,
+    private _IngresosServicios: IngresosService) {
     this.apoderado = {
       tdoc_apoderado:'',
       correo_apoderado:''
@@ -63,6 +69,9 @@ export class ApoderdoComponent {
       }else{
         if(opc=="E"){
           this.EditApoderadoModal.hide();
+        }else{
+          this.NvoConceptoModal.hide();
+          this.myDeudaForm.resetForm();
         }
       }
     }
@@ -141,18 +150,30 @@ applyFilter(filterValue: string) {
   
 
 DetApoderado : any = [];
+public DataDeuda : clsDetalle_Deuda ={};
 btnDetalle_Apoderado(id){
   this.loadingBar.start();
   this.DatoBusqueda.idbusqueda=id;
   console.log(this.DatoBusqueda.idbusqueda);
   this._ApoderadoServicio.detalle_apoderado(this.DatoBusqueda)
     .then(data => {
-      if(data.status==1){
-        this.loadingBar.complete();
-        this.DetApoderadoModal.show(); 
+      if(data.status==1){        
         this.DetApoderado = data.data[0];
-        //this.DataAlumno.sexo_alumno = data.data[0].sexo_alumno.charAt(0);
-        this.toastr.success(data.message, 'Aviso!',{positionClass: 'toast-top-right',timeOut: 500});
+        this.DatoBusqueda.idbusqueda=this.DetApoderado.id_apoderado;
+        this._IngresosServicios.Listar_Detalle_Deuda(this.DatoBusqueda)
+      .then(data_deuda => {
+        if(data_deuda.status==1){
+            this.DataDeuda = data_deuda.data;
+            this.toastr.success(data.message, 'Aviso!');
+            this.loadingBar.complete();
+            this.DetApoderadoModal.show(); 
+        }else{
+          this.toastr.error(data_deuda.message, 'Aviso!');
+          this.loadingBar.complete();
+         }
+      } )
+      .catch(err => console.log(err))
+        
       }else{
         this.loadingBar.complete();
         this.toastr.error(data.message, 'Aviso!');
@@ -253,6 +274,84 @@ btnEliminar_Apoderado(id:number) {
              }
           } )
           .catch(err => console.log(err))
+    }
+  })
+}
+
+btnNuevo_Concepto(id){
+  this.loadingBar.start();
+  this.deuda.id_apoderado=id;
+  this.NvoConceptoModal.show();
+  this.ListarConceptosxPeriodo();
+}
+
+DataConceptos: any = [];
+ ListarConceptosxPeriodo () {
+  this.DatoBusqueda.datobusqueda = localStorage.getItem('_anhio');
+  this._ConceptosServicios.Lista_otros_conceptos(this.DatoBusqueda).subscribe(
+    data => {
+      if (data.status === 1) {        
+       this.DataConceptos = data.data;       
+       this.deuda.id_concepto=0;
+       this.deuda.descripcion_deuda='';
+       this.loadingBar.complete();
+      } else {
+        this.DataConceptos = data.data;
+        this.toastr.error(data.message, 'Aviso!');
+        this.loadingBar.complete();
+      }
+    }
+  );
+}
+
+obtener_montos(id){
+  for(var i=0;i<this.DataConceptos.length;i++){
+       if(this.DataConceptos[i].id_concepto==id){
+            this.deuda.monto=this.DataConceptos[i].monto_concepto.toFixed(2);
+            this.deuda.monto_ingresado=this.DataConceptos[i].monto_concepto.toFixed(2);
+       }
+  }
+}
+
+btnRegistrar_Deuda(deuda:clsDetalle_Deuda){ 
+  swal({
+    title: '¿Esta seguro que desea guardar?',
+    type: 'question',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Si, Guardar!',
+    allowOutsideClick: false,
+    allowEscapeKey:false,
+  }).then((result) => {
+    if (result.value==true) {
+      deuda.anhio=localStorage.getItem('_anhio');
+      this._ApoderadoServicio.nva_deuda_apoderado(deuda)
+      .then(data => {
+        if(data.status==1){
+          this.NvoConceptoModal.hide();
+          swal({
+              title: 'Aviso!',
+              text: data.message,
+              type: 'success',
+              allowOutsideClick: false,
+              allowEscapeKey:false
+          })
+          this.myDeudaForm.resetForm();
+        }else{
+            swal({
+              title: 'Aviso!',
+              html:
+              '<span style="color:red">' +
+              data.message +
+              '</span>',
+              type: 'error',
+              allowOutsideClick: false,
+              allowEscapeKey:false
+            })
+        }
+      } )
+      .catch(err => console.log(err))
     }
   })
 }

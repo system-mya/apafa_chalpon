@@ -131,16 +131,17 @@ export class clsTipo_Relacion
    estado_relacion ?: boolean;
 }
 
-export class clsOtro_Ingreso
+export class clsMovimiento
 {
-    id_otro_ingres ?: number;
-    descripcion_ingreso ?: string;
-    monto_ingreso ?: number;
-    freg_ingreso ?: string;
-    doc_encargado_ingreso ?: string;
-    datos_encrgado_ingreso ?: string;
+    id_movimiento ?: number;
+    tipo_movimiento ?: string;
+    descripcion_movimiento ?: string;
+    monto_movimiento ?: number;
+    freg_movimiento ?: string;
+    doc_encargado_movimiento ?: string;
+    datos_encrgado_movimiento ?: string;
     id_usuario ?: string;
-    estado_ingreso ?: boolean;
+    estado_movimiento ?: boolean;
 }
 
 
@@ -166,11 +167,16 @@ export class clsRecibo
 export class clsDetalle_Deuda
 {
     id_detalle_deuda ?: number;
+    id_concepto ?: number;
+    id_apoderado ?: number;
     tipo_pago ?: string;
     descripcion_concepto ?: string;
+    descripcion_deuda ?: string;
     saldo_deuda ?: number;
+    anhio ?: string;
     estado_deuda ?: string;
     monto ?: number;
+    monto_ingresado ?: number;
     monto_invalid ?: boolean;
 }
 

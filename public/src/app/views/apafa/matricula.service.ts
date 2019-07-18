@@ -32,6 +32,16 @@ public nva_matricula(matricula:clsMatricula){
    .map(data => data.json()).toPromise()
 }
 
+public detalle_matricula(matricula:clsBusqueda){
+  return this._http.post('/api/apafa/detalle_matricula',matricula)
+   .map(data => data.json()).toPromise()
+}
+
+public eliminar_matricula(matricula:clsBusqueda){
+  return this._http.post('/api/apafa/eliminar_matricula',matricula)
+   .map(data => data.json()).toPromise()
+}
+
 public libros_xgrado(dato:clsBusqueda){
   return this._http.post('/api/apafa/listar_libros_xgrado',dato)
    .map(data => data.json()).toPromise()
