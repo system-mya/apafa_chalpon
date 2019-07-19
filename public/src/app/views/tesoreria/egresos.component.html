@@ -76,7 +76,7 @@ type = "ball-clip-rotate-multiple">
                       matTooltip="Eliminar"
                       matTooltipClass="tooltip-mensaje"
                       [matTooltipPosition]="positionOptions[3]"
-                      (click)="btnEliminar_Alumno(element.id_alumno)"
+                      (click)="btnEliminar_Egreso(element)"
                       *ngIf="optAd=='AD'">
                  <span class="fa fa-trash-o btn-xs"></span>
                  </button>
@@ -607,7 +607,7 @@ type = "ball-clip-rotate-multiple">
             </div><!--/.row-->       
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" (click)="frmCompras_hide('RE')"><span class="fa fa-times-circle"></span> Close</button>
+        <button type="button" class="btn btn-danger" (click)="frmEgresos_hide('RE')"><span class="fa fa-times-circle"></span> Close</button>
         <button type="submit" class="btn btn-primary" ><span class="fa fa-save"></span> Guardar</button>
       </div>
     </form>

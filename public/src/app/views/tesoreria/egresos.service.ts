@@ -32,4 +32,12 @@ export class EgresosService {
      .map(data => data.json()).toPromise()
   }
 
+  
+    // llamando al api ELIMINAR MOVIMIENTO
+public eliminar_ingreso_egreso(movimiento:clsBusqueda){
+  return this._http.post('/api/tesoreria/eliminar_ingreso_egreso',movimiento)
+   .map(data => data.json()).toPromise()
+}
+
+
 }

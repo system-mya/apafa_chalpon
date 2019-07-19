@@ -58,7 +58,7 @@ export class EgresosComponent {
   public btnagregar : boolean;
   public optAd : string;
   constructor(private toastr: ToastrService,private loadingBar: LoadingBarService,
-    private _CompraServicios: EgresosService,
+    private _EgresosServicios: EgresosService,
     @Inject(DOCUMENT) private document: Document,
     private spinner: NgxSpinnerService) { 
     this.DatoBusqueda = {
@@ -72,7 +72,7 @@ export class EgresosComponent {
  DataEgresos: any = [];
  ListarEgresosxPeriodo () {
   this.DatoBusqueda.datobusqueda = localStorage.getItem('_anhio');
-  this._CompraServicios.getLista_compras_xperiodo(this.DatoBusqueda).subscribe(
+  this._EgresosServicios.getLista_compras_xperiodo(this.DatoBusqueda).subscribe(
     data => {
       if (data.status === 1) {
        this.DataEgresos = data.data;
@@ -81,6 +81,10 @@ export class EgresosComponent {
        this.dataSource.sort = this.sort;
       } else {
         this.toastr.error(data.message, 'Aviso!');
+        this.DataEgresos = data.data;
+        this.dataSource = new MatTableDataSource(this.DataEgresos);
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
       }
 
     }
@@ -106,12 +110,12 @@ export class EgresosComponent {
     if(dato.control.status=='VALID' && this.producto.nom_producto!='' && this.producto.medida_compra!='' && this.producto.cantidad_compra>0 && this.producto.punit_compra>0){
       this.detalle_compra.push({
         nom_producto : this.producto.nom_producto.toUpperCase(),
-        cantidad : this.producto.cantidad_compra,
-        medida : this.producto.medida_compra.toUpperCase(),
-        precio_unit : this.producto.punit_compra
+        cantidad_compra : this.producto.cantidad_compra,
+        medida_compra : this.producto.medida_compra.toUpperCase(),
+        punit_compra : this.producto.punit_compra
       });
       for(indice in this.detalle_compra){
-        this.compra.total_compra=this.compra.total_compra + Number(this.detalle_compra[indice].precio_unit * this.detalle_compra[indice].cantidad);
+        this.compra.total_compra=this.compra.total_compra + Number(this.detalle_compra[indice].punit_compra * this.detalle_compra[indice].cantidad_compra);
          console.log(this.compra.total_compra);
       }
       this.producto.nom_producto='';
@@ -150,7 +154,7 @@ export class EgresosComponent {
           form.id_usuario = localStorage.getItem('ID');
           form.detalle = this.detalle_compra;
           //form.contador=0;
-          this._CompraServicios.nva_compra(form)
+          this._EgresosServicios.nva_compra(form)
           .then(data => {
             if (data.status == 1) {
               swal({
@@ -225,7 +229,7 @@ export class EgresosComponent {
       this.DetalleCompra.encargado_compra = dato.encargado_compra;
       this.DetalleCompra.total_compra = dato.total_compra;
       this.DatoBusqueda.idbusqueda=dato.id_compra;
-      this._CompraServicios.Obtener_Detalle_Compra(this.DatoBusqueda)
+      this._EgresosServicios.Obtener_Detalle_Compra(this.DatoBusqueda)
       .subscribe(
        data => {
          if (data.status === 1) {
@@ -276,13 +280,19 @@ export class EgresosComponent {
     }
   }
 
-
   ImprimirPDF(dato){
+       if(dato.tipo_compra=="OTROS"){
+             this.VerPDFEgreso(dato);
+       }else{
+            this.VerPDFCompra(dato);
+       }
+  }
+  VerPDFCompra(dato){
     this.loadingBar.start();
     this.spinner.show();
     const doc = new jspdf({orientation: 'portrait',unit: 'mm',format: 'A5'});
       this.DatoBusqueda.idbusqueda=dato.id_compra;
-     this._CompraServicios.Obtener_Detalle_Compra(this.DatoBusqueda)
+     this._EgresosServicios.Obtener_Detalle_Compra(this.DatoBusqueda)
      .subscribe(
       data => {
         if (data.status === 1) {
@@ -391,7 +401,7 @@ export class EgresosComponent {
       if (result.value == true) {
         form.id_usuario = localStorage.getItem('ID');
         form.tipo_movimiento = 'E';
-        this._CompraServicios.nvo_otro_egreso(form)
+        this._EgresosServicios.nvo_otro_egreso(form)
         .then(data => {
           if (data.status == 1) {
             swal({
@@ -426,6 +436,102 @@ export class EgresosComponent {
       }
     });
   }
+
+  btnEliminar_Egreso(dato) {
+    if(dato.tipo_compra=='OTROS'){
+      this.DatoBusqueda.datobusqueda='M';
+       this.DatoBusqueda.idbusqueda=dato.id_compra;
+   }else{
+    this.DatoBusqueda.datobusqueda='C';
+    this.DatoBusqueda.idbusqueda=dato.id_compra;
+   }
+    swal({
+      title: '¿Esta seguro que desea eliminar?',
+      type: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, Guardar!',
+      allowOutsideClick: false,
+      allowEscapeKey:false,
+    }).then((result) => {
+      if (result.value==true) {
+            this._EgresosServicios.eliminar_ingreso_egreso(this.DatoBusqueda)
+            .then(data => {
+              if(data.status==1){
+                swal({
+                  title: 'Aviso!',
+                  text: data.message,
+                  type: 'success',
+                  allowOutsideClick: false,
+                  allowEscapeKey:false
+              })
+              this.ListarEgresosxPeriodo();
+              }else{
+                this.toastr.error(data.message, 'Aviso!');
+               }
+            } )
+            .catch(err => console.log(err))
+      }
+    })
+  }
+
+  public VerPDFEgreso(dato)
+  {
+  this.loadingBar.start();
+  this.spinner.show();
+  const doc = new jspdf({orientation: 'portrait',unit: 'mm',format: 'A5'});
+           var totalPagesExp = "{total_pages_count_string}";
+            var img = new Image();
+            img.src = 'assets/img/cabecera_recibos.png'
+            doc.addImage(img,'png',25,10,150,40);
+            doc.setFontSize(12);
+            doc.setFont('helvetica')
+            doc.setFontType('bold');
+            doc.text(80, 60, 'DETALLE MOVIMIENTO');            
+            doc.text(30, 70, 'Fecha y Hora: ');
+            doc.text(30, 80, 'Doc. Identidad : ' );
+            doc.text(30, 90, 'Sr(a) Datos Completos: ');            
+            doc.setFontType('normal');
+            doc.text(60, 70, formatDate(dato.fecha_compra,'dd/MM/yyyy h:mm a','en-US'));
+            doc.text(63, 80, dato.num_compra);
+            var splitTitle = doc.splitTextToSize(dato.razon_social_compra, 160);
+            doc.text(80, 90, splitTitle);
+            doc.setFontType('bold');
+            doc.text(80, 110, 'DETALLE EGRESO');     
+            doc.text(30, 120, 'Concepto Egreso: ');        
+            doc.text(30, 130, 'Monto Egreso: ');
+            doc.setFontType('normal');
+            var splitConcepto = doc.splitTextToSize(dato.ruc_compra, 160);
+            doc.text(68, 120 ,splitConcepto);
+            doc.text(60, 130, dato.total_compra.toFixed(2));
+            doc.setFontType('bold');
+              // Footer
+              var str = "Página " + doc.internal.getNumberOfPages()
+              // Total page number plugin only available in jspdf v1.0+
+              if (typeof doc.putTotalPages === 'function') {
+                  str = str + " de " + totalPagesExp;
+              }
+              doc.setFontSize(10);
+        
+              // jsPDF 1.4+ uses getWidth, <1.4 uses .width
+              var pageSize = doc.internal.pageSize;
+              var pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
+              doc.text(str, 30, pageHeight - 10);
+                 
+              // Total page number plugin only available in jspdf v1.0+
+              if (typeof doc.putTotalPages === 'function') {
+                  doc.putTotalPages(totalPagesExp);
+              }
+              setTimeout(() => {
+              doc.output('save', dato.num_compra +'.pdf');
+              this.toastr.success('Recibo Generado', 'Aviso!',{positionClass: 'toast-top-right',timeOut: 500});
+              this.loadingBar.complete();
+              this.spinner.hide();
+              this.document.documentElement.scrollTop = 0;
+            }, 5000);         
+  }
+    
 }
 
 

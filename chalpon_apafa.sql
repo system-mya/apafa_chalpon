@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 19-07-2019 a las 00:32:41
+-- Tiempo de generación: 19-07-2019 a las 21:38:52
 -- Versión del servidor: 5.7.14
 -- Versión de PHP: 5.6.25
 
@@ -44,6 +44,10 @@ AND estado_apoderado=1$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_cambiar_estado_grado` (IN `grado` TINYINT, IN `estado` BIT)  NO SQL
 UPDATE grados SET estado_grado=estado 
 WHERE id_grado=grado$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_cambiar_lista_reunion` (IN `reunion` SMALLINT)  NO SQL
+UPDATE reunion SET lista_reunion=1
+WHERE id_reunion=reunion$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_detalle_alumno` (IN `id` SMALLINT)  NO SQL
 SELECT id_alumno,(CASE WHEN tdoc_alumno='OTR' THEN 'OTROS' ELSE 'DNI' END) AS tdoc_alumno,doc_alumno,apellidos_alumno,
@@ -95,6 +99,9 @@ IF criterio="M" THEN
 ELSEIF criterio="R" THEN
         UPDATE recibo SET estado_recibo=0
         WHERE id_recibo=id;
+ELSEIF criterio="c" THEN
+        UPDATE compra SET estado_compra=0
+        WHERE id_compra=id;
 END IF$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_libro` (IN `idlibro` TINYINT)  NO SQL
@@ -208,6 +215,14 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_nvo_recibo` (IN `apo` S
 INSERT INTO recibo(id_apoderado,id_usuario,mtotal_recibo,freg_recibo, num_recibo) 
 VALUES (apo,usu,mtotal,NOW(),num)$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_reunion` (IN `motivo` VARCHAR(100), IN `fecha` DATE, IN `hora` TIME, IN `concepto` SMALLINT)  NO SQL
+INSERT INTO reunion(motivo_reunion, fecha_reunion,hora_reunion,id_concepto) 
+VALUES (motivo,fecha,hora,concepto)$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_reunion_apoderado` (IN `reunion` SMALLINT, IN `apoderado` SMALLINT)  NO SQL
+INSERT INTO reunion_apoderado(id_reunion,id_apoderado) 
+VALUES (reunion,apoderado)$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_seccion` (IN `nombre` VARCHAR(20), IN `grado` TINYINT, IN `turno` CHAR(1))  NO SQL
 INSERT INTO secciones(nombre_seccion,id_grado,turno_seccion) 
 VALUES (nombre,grado,turno)$$
@@ -264,6 +279,25 @@ celular_apoderado
 FROM apoderado
 WHERE estado_apoderado=1
 ORDER BY apellidos_apoderado ASC$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_apoderados_matricula` (IN `dato_anhio` CHAR(4))  NO SQL
+SELECT m.id_apoderado FROM matricula m 
+INNER JOIN anhio_lectivo a ON a.idanhio=m.id_anhio
+WHERE a.anhio_lectivo=dato_anhio
+GROUP BY m.id_apoderado$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_apoderados_reunion` (IN `reunion` SMALLINT, IN `anhio` CHAR(4))  NO SQL
+SELECT m.id_apoderado,ap.doc_apoderado,CONCAT(ap.apellidos_apoderado,' ',ap.nombres_apoderado) AS apoderado,GROUP_CONCAT(a.apellidos_alumno,' ',a.nombres_alumno,'
+') AS matriculados,ra.asistio_reunion 
+FROM matricula m 
+INNER JOIN alumno a ON a.id_alumno=m.id_alumno 
+INNER JOIN anhio_lectivo al ON al.idanhio=m.id_anhio
+INNER JOIN apoderado ap ON ap.id_apoderado=m.id_apoderado
+INNER JOIN reunion_apoderado ra ON ra.id_apoderado=m.id_apoderado
+WHERE al.anhio_lectivo=anhio 
+AND ra.id_reunion=reunion
+GROUP BY m.id_apoderado,ap.doc_apoderado,ra.asistio_reunion
+ORDER BY ap.apellidos_apoderado,ap.nombres_apoderado$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_apoderados_xanhio` (IN `anhio` TINYINT)  NO SQL
 SELECT m.id_apoderado,ap.apellidos_apoderado,ap.nombres_apoderado,ap.doc_apoderado,ap.celular_apoderado FROM matricula m
@@ -423,6 +457,16 @@ AND a.anhio_lectivo=dato_anhio$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_perfil_usuario` ()  NO SQL
 SELECT * FROM perfil_usuario
 WHERE estado_perfil=1$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_reuniones_xperiodo` (IN `dato_anhio` CHAR(4))  NO SQL
+SELECT r.id_reunion, r.motivo_reunion,CONCAT(r.fecha_reunion,' ',r.hora_reunion) AS fecha_reunion,r.lista_reunion,r.id_concepto,r.estado_reunion,c.descripcion_concepto,
+c.monto_concepto,a.anhio_lectivo
+FROM reunion r
+INNER JOIN concepto_apafa c ON c.id_concepto=r.id_concepto
+INNER JOIN anhio_lectivo a ON a.idanhio=c.id_anhio
+WHERE r.estado_reunion=1
+AND a.anhio_lectivo=dato_anhio
+ORDER BY r.id_reunion DESC$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_secciones_xgrado` (IN `grado` TINYINT)  NO SQL
 SELECT s.id_seccion,s.nombre_seccion,g.descripcion_grado,g.id_grado,
@@ -1019,7 +1063,7 @@ CREATE TABLE `compra` (
 --
 
 INSERT INTO `compra` (`id_compra`, `id_usuario`, `id_anhio`, `tipo_compra`, `num_compra`, `razon_social_compra`, `ruc_compra`, `fecha_compra`, `freg_compra`, `doc_encargado_compra`, `encargado_compra`, `total_compra`, `estado_compra`) VALUES
-(11, 1, 23, 'B', '4436436436', 'fdghdfhdfh fhgdfh df hdf h dhdfhdfhdf h fdhdfh', '10719195827', '2019-07-18', '2019-07-18 15:38:47', '45654J454545', 'Fad Dadad', 400.66, b'1');
+(11, 1, 23, 'B', '4436436436', 'fdghdfhdfh fhgdfh df hdf h dhdfhdfhdf h fdhdfh', '10719195827', '2019-07-18', '2019-07-18 15:38:47', '45654J454545', 'Fad Dadad', 400.66, b'0');
 
 -- --------------------------------------------------------
 
@@ -1105,7 +1149,8 @@ INSERT INTO `detalle_deuda` (`id_detalle_deuda`, `id_concepto`, `id_apoderado`, 
 (26, 11, 112, 10, NULL, '2019-07-16', '2019-07-16 18:38:57', 'P'),
 (27, 12, 112, 5, NULL, '2019-07-16', '2019-07-16 18:38:57', 'P'),
 (28, 9, 112, 0, NULL, '2019-07-17', '2019-07-18 15:55:06', 'C'),
-(30, 9, 55, 54.5, NULL, '2019-07-17', '2019-07-17 19:18:59', 'P');
+(30, 9, 55, 54.5, NULL, '2019-07-17', '2019-07-17 19:18:59', 'P'),
+(31, 9, 15, 54.5, NULL, '2019-07-19', '2019-07-19 16:04:02', 'P');
 
 -- --------------------------------------------------------
 
@@ -1230,7 +1275,8 @@ INSERT INTO `matricula` (`id_matricula`, `fecha_matricula`, `id_apoderado`, `id_
 (39, '2019-07-08', 112, 38, 23, 5, 2, b'1'),
 (40, '2019-07-08', 55, 39, 23, 5, 2, b'1'),
 (41, '2019-07-08', 112, 40, 23, 6, 2, b'1'),
-(42, '2019-07-11', 112, 41, 23, 9, 1, b'1');
+(42, '2019-07-11', 112, 41, 23, 9, 1, b'1'),
+(43, '2019-07-19', 15, 47, 23, 9, 1, b'1');
 
 -- --------------------------------------------------------
 
@@ -1262,7 +1308,8 @@ INSERT INTO `otros_movimientos` (`id_movimiento`, `tipo_movimiento`, `descripcio
 (5, 'I', 'SFSF', 12.00, '2019-07-18 15:52:43', '325235235325235', 'Djk', 1, b'1'),
 (6, 'I', 'PINTADO DE CARPETAs', 100.50, '2019-07-18 19:08:08', '546545654654654', 'Juan Jose Vasquez Delgado', 1, b'1'),
 (7, 'I', 'PINTADO DE CARPETAS', 100.50, '2019-07-18 19:09:18', '45786767', 'Juan Jose Vasquez Delgado', 1, b'1'),
-(8, 'E', 'PINTADO DE CARPETAs', 100.50, '2019-07-18 19:10:03', '6545646465465', 'Juan Jose Vasquez Delgado', 1, b'1');
+(8, 'E', 'PINTADO DE CARPETAs', 100.50, '2019-07-18 19:10:03', '6545646465465', 'Juan Jose Vasquez Delgado', 1, b'0'),
+(9, 'E', 'DICTADO DE CLASES DE INGLES', 400.50, '2019-07-19 12:28:52', '73258572', 'Marita Vanessa Sanchez Velasquez', 1, b'1');
 
 -- --------------------------------------------------------
 
@@ -1333,7 +1380,8 @@ CREATE TABLE `reunion` (
 --
 
 INSERT INTO `reunion` (`id_reunion`, `motivo_reunion`, `fecha_reunion`, `hora_reunion`, `id_concepto`, `lista_reunion`, `estado_reunion`) VALUES
-(1, 'Asamblea General de padres', '2019-06-21', '14:30:00', 3, b'1', b'1');
+(1, 'Asamblea General de padres', '2019-06-21', '14:30:00', 3, b'1', b'1'),
+(2, 'Reunion de padres de familia', '2019-07-21', '16:30:00', 12, b'1', b'1');
 
 -- --------------------------------------------------------
 
@@ -1353,7 +1401,9 @@ CREATE TABLE `reunion_apoderado` (
 
 INSERT INTO `reunion_apoderado` (`id_reunion`, `id_apoderado`, `asistio_reunion`) VALUES
 (1, 2, b'0'),
-(1, 4, b'0');
+(1, 4, b'0'),
+(2, 55, b'0'),
+(2, 112, b'0');
 
 -- --------------------------------------------------------
 
@@ -1617,7 +1667,7 @@ ALTER TABLE `detalle_compra`
 -- AUTO_INCREMENT de la tabla `detalle_deuda`
 --
 ALTER TABLE `detalle_deuda`
-  MODIFY `id_detalle_deuda` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id_detalle_deuda` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 --
 -- AUTO_INCREMENT de la tabla `grados`
 --
@@ -1632,12 +1682,12 @@ ALTER TABLE `libro`
 -- AUTO_INCREMENT de la tabla `matricula`
 --
 ALTER TABLE `matricula`
-  MODIFY `id_matricula` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `id_matricula` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 --
 -- AUTO_INCREMENT de la tabla `otros_movimientos`
 --
 ALTER TABLE `otros_movimientos`
-  MODIFY `id_movimiento` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_movimiento` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 --
 -- AUTO_INCREMENT de la tabla `perfil_usuario`
 --
@@ -1652,7 +1702,7 @@ ALTER TABLE `recibo`
 -- AUTO_INCREMENT de la tabla `reunion`
 --
 ALTER TABLE `reunion`
-  MODIFY `id_reunion` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_reunion` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT de la tabla `secciones`
 --

@@ -82,9 +82,11 @@ export class ReunionesComponent implements  OnInit {
        this.dataSource.paginator = this.paginator;
        this.dataSource.sort = this.sort;
       } else {
-        this.toastr.error(data.message, 'Aviso!', {
-          positionClass: 'toast-top-right'
-        });
+        this.toastr.error(data.message, 'Aviso!');
+        this.DataReuniones = data.data;
+        this.dataSource = new MatTableDataSource(this.DataReuniones);
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
       }
 
     }
@@ -148,13 +150,10 @@ searchString:string;
       allowEscapeKey: false,
     }).then((result) => {
       if (result.value == true) {
-        //form.contador=0;
-        this.spinner.show();
         this._ReunionesServicio.nva_reunion(form)
         .then(data => {
           if (data.status == 1) {
             this.NvaReunionModal.hide();
-            setTimeout(() => {
             swal({
               title: 'Aviso!',
               text: data.message,
@@ -162,12 +161,9 @@ searchString:string;
               allowOutsideClick: false,
               allowEscapeKey:false
             }) 
-              this.spinner.hide();
-              
             this.loadingBar.complete();
             this.document.documentElement.scrollTop = 0;
             this.ListarReunionesxPeriodo();
-            }, 5000);
             
           } else {
               swal({
