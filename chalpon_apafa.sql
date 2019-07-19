@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 18-07-2019 a las 00:43:11
+-- Tiempo de generación: 19-07-2019 a las 00:32:41
 -- Versión del servidor: 5.7.14
 -- Versión de PHP: 5.6.25
 
@@ -145,9 +145,25 @@ sexo_apoderado, celular_apoderado, direccion_apoderado,
 correo_apoderado) VALUES (tdoc_apod,doc_apod,
 ape_apod,nom_apod,sex_apod,cel_apod,direc_apod,cor_apod)$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_compra` (IN `usu` TINYINT, IN `codanhio` CHAR(4), IN `tipo` CHAR(1), IN `num` VARCHAR(10), IN `rsocial` VARCHAR(50), IN `ruc` CHAR(11), IN `fecha` DATE, IN `doc` VARCHAR(15), IN `encargado` VARCHAR(80), IN `total` FLOAT)  NO SQL
+INSERT INTO compra(id_usuario,id_anhio,tipo_compra,
+num_compra,razon_social_compra, ruc_compra,
+fecha_compra,freg_compra,doc_encargado_compra,
+encargado_compra, total_compra) 
+VALUES (usu,(SELECT idanhio from
+anhio_lectivo WHERE condicion_anhio='A' 
+AND estado_anhio=1
+AND anhio_lectivo=codanhio),tipo,num,rsocial,ruc,fecha,NOW(),doc,
+encargado,total)$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_concepto_apafa` (IN `des_concepto` VARCHAR(100), IN `tipo` CHAR(1), IN `anhio` CHAR(4), IN `monto` FLOAT(10,2))  NO SQL
 INSERT INTO concepto_apafa (descripcion_concepto, tipo_concepto, id_anhio, monto_concepto) 
 VALUES (des_concepto,tipo,(SELECT idanhio FROM anhio_lectivo WHERE anhio_lectivo=anhio AND condicion_anhio='A' AND estado_anhio=1),monto)$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_detalle_compra` (IN `compra` SMALLINT, IN `producto` VARCHAR(30), IN `cant` TINYINT, IN `med` VARCHAR(10), IN `precio` FLOAT)  NO SQL
+INSERT INTO detalle_compra(id_compra,nom_producto,
+cantidad_compra,medida_compra,punit_compra) VALUES (compra,
+producto,cant,med,precio)$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_detalle_recibo` (IN `id_detalle` SMALLINT, IN `recibo` SMALLINT, IN `monto` FLOAT(10,2))  NO SQL
 INSERT INTO detalle_recibo(id_detalle_deuda, id_recibo, monto_detalle) VALUES (id_detalle,recibo,monto)$$
@@ -257,6 +273,10 @@ AND m.id_anhio=anhio
 GROUP BY m.id_apoderado
 ORDER BY ap.apellidos_apoderado,ap.nombres_apoderado ASC$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_detalle_compra` (IN `compra` SMALLINT)  NO SQL
+SELECT * FROM detalle_compra
+WHERE id_compra=compra$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_detalle_deuda_pendientes` (IN `apo` SMALLINT)  NO SQL
 SELECT de.id_detalle_deuda,ca.descripcion_concepto,de.saldo_deuda,
 (CASE WHEN de.estado_deuda='P' THEN 'PENDIENTE'
@@ -265,6 +285,23 @@ INNER JOIN concepto_apafa ca ON ca.id_concepto=de.id_concepto
 WHERE de.id_apoderado=apo
 AND de.estado_deuda!='E'
 AND de.estado_deuda='P'$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_egresos_xperiodo` (IN `cod_anhio` CHAR(4))  NO SQL
+SELECT id_compra,(CASE WHEN tipo_compra='F' THEN 'FACTURA'
+                          ELSE 'BOLETA' END) as tipo_compra,num_compra, razon_social_compra,ruc_compra, fecha_compra,freg_compra, doc_encargado_compra, encargado_compra, total_compra, estado_compra FROM compra
+WHERE estado_compra=1
+AND id_anhio=(SELECT idanhio FROM anhio_lectivo WHERE condicion_anhio='A' AND estado_anhio=1 AND anhio_lectivo=cod_anhio)
+UNION ALL 
+SELECT id_movimiento AS id_compra,'OTROS' AS tipo_compra, 
+doc_encargado_movimiento AS num_compra, 
+datos_encargado_movimiento As razon_social_compra,
+descripcion_movimiento AS ruc_compra,freg_movimiento AS fecha_compra,freg_movimiento AS freg_compra,
+'' AS doc_encargado_compra,'' AS encargado_compra,
+monto_movimiento AS total_compra,estado_movimiento as estado_compra
+FROM otros_movimientos
+WHERE tipo_movimiento='E'
+AND estado_movimiento=1 AND YEAR(freg_movimiento)=cod_anhio
+ORDER BY freg_compra DESC$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_grados` (IN `nivel` CHAR(1))  NO SQL
 SELECT g.id_grado,g.descripcion_grado,g.nivel_grado,
@@ -376,6 +413,13 @@ AND m.id_anhio=(SELECT idanhio FROM anhio_lectivo WHERE condicion_anhio='A' AND 
 AND m.estado_matricula=1
 ORDER BY a.apellidos_alumno,a.nombres_alumno,s.nombre_seccion ASC$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_otros_conceptos` (IN `dato_anhio` CHAR(4))  NO SQL
+SELECT * FROM concepto_apafa c 
+INNER JOIN anhio_lectivo a ON a.idanhio=c.id_anhio
+WHERE c.estado_concepto=1
+AND c.tipo_concepto='O'
+AND a.anhio_lectivo=dato_anhio$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_perfil_usuario` ()  NO SQL
 SELECT * FROM perfil_usuario
 WHERE estado_perfil=1$$
@@ -446,6 +490,14 @@ AND id_libro=libro$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_resetear_usuario` (IN `id_usu` TINYINT)  NO SQL
 UPDATE usuario SET clave_usu=SHA('1A2B3C4D'),fbaja_usu=NULL
 WHERE idusuario=id_usu$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_ultima_compra` (IN `anhio` CHAR(4))  NO SQL
+SELECT *
+  FROM compra
+  WHERE estado_compra=1
+  AND YEAR(freg_compra)=anhio
+ ORDER BY id_compra DESC
+  limit 1$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_ultimo_recibo_ingresado` (IN `anhio` CHAR(4))  NO SQL
 SELECT *
@@ -962,6 +1014,13 @@ CREATE TABLE `compra` (
   `estado_compra` bit(1) NOT NULL DEFAULT b'1'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Volcado de datos para la tabla `compra`
+--
+
+INSERT INTO `compra` (`id_compra`, `id_usuario`, `id_anhio`, `tipo_compra`, `num_compra`, `razon_social_compra`, `ruc_compra`, `fecha_compra`, `freg_compra`, `doc_encargado_compra`, `encargado_compra`, `total_compra`, `estado_compra`) VALUES
+(11, 1, 23, 'B', '4436436436', 'fdghdfhdfh fhgdfh df hdf h dhdfhdfhdf h fdhdfh', '10719195827', '2019-07-18', '2019-07-18 15:38:47', '45654J454545', 'Fad Dadad', 400.66, b'1');
+
 -- --------------------------------------------------------
 
 --
@@ -1008,6 +1067,15 @@ CREATE TABLE `detalle_compra` (
   `punit_compra` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Volcado de datos para la tabla `detalle_compra`
+--
+
+INSERT INTO `detalle_compra` (`id_detalle_compra`, `id_compra`, `nom_producto`, `cantidad_compra`, `medida_compra`, `punit_compra`) VALUES
+(1, 11, 'DFSFS', 2, 'WEWE', 2.33),
+(2, 11, 'DFGDFGDFGDF FD GDFG DFG DFGDF ', 4, 'FGDFG', 44),
+(3, 11, 'GDGDS DSG DG D GDSG DSG DSG DS', 4, 'TEWTEWTEWT', 55);
+
 -- --------------------------------------------------------
 
 --
@@ -1031,12 +1099,12 @@ CREATE TABLE `detalle_deuda` (
 
 INSERT INTO `detalle_deuda` (`id_detalle_deuda`, `id_concepto`, `id_apoderado`, `saldo_deuda`, `descripcion_deuda`, `freg_deuda`, `fseg_deuda`, `estado_deuda`) VALUES
 (22, 8, 3, 54, NULL, '2019-06-25', '2019-06-25 15:25:16', 'P'),
-(23, 8, 112, 20, NULL, '2019-07-08', '2019-07-16 18:38:57', 'P'),
+(23, 8, 112, 0, NULL, '2019-07-08', '2019-07-18 15:55:06', 'C'),
 (24, 8, 55, 54, NULL, '2019-07-08', '2019-07-08 16:08:58', 'P'),
 (25, 10, 112, 10, NULL, '2019-07-16', '2019-07-16 18:38:57', 'P'),
 (26, 11, 112, 10, NULL, '2019-07-16', '2019-07-16 18:38:57', 'P'),
 (27, 12, 112, 5, NULL, '2019-07-16', '2019-07-16 18:38:57', 'P'),
-(28, 9, 112, 54.5, NULL, '2019-07-17', '2019-07-17 19:16:42', 'P'),
+(28, 9, 112, 0, NULL, '2019-07-17', '2019-07-18 15:55:06', 'C'),
 (30, 9, 55, 54.5, NULL, '2019-07-17', '2019-07-17 19:18:59', 'P');
 
 -- --------------------------------------------------------
@@ -1060,7 +1128,9 @@ INSERT INTO `detalle_recibo` (`id_detalle_deuda`, `id_recibo`, `monto_detalle`) 
 (23, 24, 10),
 (25, 24, 24.25),
 (26, 24, 5),
-(27, 24, 5);
+(27, 24, 5),
+(23, 25, 20),
+(28, 25, 54.5);
 
 -- --------------------------------------------------------
 
@@ -1188,7 +1258,11 @@ INSERT INTO `otros_movimientos` (`id_movimiento`, `tipo_movimiento`, `descripcio
 (1, 'I', 'RIFA DEL DIA DEL PADRE', 2000.50, '2019-06-03 03:19:17', '565665666', 'Juan Carlos Rios Vasquez', 46, b'0'),
 (2, 'I', 'BINGO POR ANIVERSARIO', 5500.00, '2019-06-08 18:27:22', '15465465465', 'Julca Zeña Javier', 46, b'0'),
 (3, 'I', 'RIFA POR EL DIA DE LA MADRE', 1000.50, '2019-06-08 18:28:37', '9879989898', 'Susana Vasquez Delgado', 46, b'0'),
-(4, 'I', 'SFAFAS', 100.00, '2019-07-17 14:56:21', 'DSFSD3252352352', 'Fadad', 1, b'0');
+(4, 'I', 'SFAFAS', 100.00, '2019-07-17 14:56:21', 'DSFSD3252352352', 'Fadad', 1, b'0'),
+(5, 'I', 'SFSF', 12.00, '2019-07-18 15:52:43', '325235235325235', 'Djk', 1, b'1'),
+(6, 'I', 'PINTADO DE CARPETAs', 100.50, '2019-07-18 19:08:08', '546545654654654', 'Juan Jose Vasquez Delgado', 1, b'1'),
+(7, 'I', 'PINTADO DE CARPETAS', 100.50, '2019-07-18 19:09:18', '45786767', 'Juan Jose Vasquez Delgado', 1, b'1'),
+(8, 'E', 'PINTADO DE CARPETAs', 100.50, '2019-07-18 19:10:03', '6545646465465', 'Juan Jose Vasquez Delgado', 1, b'1');
 
 -- --------------------------------------------------------
 
@@ -1235,7 +1309,8 @@ CREATE TABLE `recibo` (
 
 INSERT INTO `recibo` (`id_recibo`, `id_apoderado`, `id_usuario`, `mtotal_recibo`, `freg_recibo`, `num_recibo`, `estado_recibo`) VALUES
 (23, 112, 1, 24, '2019-07-16 17:59:34', '1171-20190716-1', b'0'),
-(24, 112, 1, 44.25, '2019-07-16 18:38:57', '1171-20190716-2', b'0');
+(24, 112, 1, 44.25, '2019-07-16 18:38:57', '1171-20190716-2', b'0'),
+(25, 112, 1, 74.5, '2019-07-18 15:55:05', '1171-20190718-1', b'1');
 
 -- --------------------------------------------------------
 
@@ -1527,7 +1602,7 @@ ALTER TABLE `apoderado`
 -- AUTO_INCREMENT de la tabla `compra`
 --
 ALTER TABLE `compra`
-  MODIFY `id_compra` smallint(6) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_compra` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 --
 -- AUTO_INCREMENT de la tabla `concepto_apafa`
 --
@@ -1537,7 +1612,7 @@ ALTER TABLE `concepto_apafa`
 -- AUTO_INCREMENT de la tabla `detalle_compra`
 --
 ALTER TABLE `detalle_compra`
-  MODIFY `id_detalle_compra` smallint(6) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_detalle_compra` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT de la tabla `detalle_deuda`
 --
@@ -1562,7 +1637,7 @@ ALTER TABLE `matricula`
 -- AUTO_INCREMENT de la tabla `otros_movimientos`
 --
 ALTER TABLE `otros_movimientos`
-  MODIFY `id_movimiento` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_movimiento` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 --
 -- AUTO_INCREMENT de la tabla `perfil_usuario`
 --
@@ -1572,7 +1647,7 @@ ALTER TABLE `perfil_usuario`
 -- AUTO_INCREMENT de la tabla `recibo`
 --
 ALTER TABLE `recibo`
-  MODIFY `id_recibo` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id_recibo` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 --
 -- AUTO_INCREMENT de la tabla `reunion`
 --

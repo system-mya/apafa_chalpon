@@ -246,7 +246,7 @@ DataIngresos: any = [];
               }
               setTimeout(() => {
               doc.output('save', num+'.pdf');
-              this.toastr.success('Recibo Generado', 'Aviso!',{positionClass: 'toast-top-right',timeOut: 500});
+              this.toastr.success('Recibo Generado', 'Aviso!');
               this.DetallePago.hide();
               this.loadingBar.complete();
               this.spinner.hide();
@@ -277,7 +277,6 @@ DataIngresos: any = [];
   this._IngresosServicios.obtener_detalle_movimiento(this.DatoBusqueda)
   .then(data => {
     if(data.status==1){    
-           
            var totalPagesExp = "{total_pages_count_string}";
             var img = new Image();
             img.src = 'assets/img/cabecera_recibos.png'
@@ -485,7 +484,6 @@ DetApoderado : any = [];
 DetIngreso : any = [];
 public monto_pagado;
 btnDetalle_Ingreso(dato){
-  console.log(dato);
   this.loadingBar.start();
   if(dato.tipo=='R'){
     this.DatoBusqueda.idbusqueda=dato.id_apoderado;

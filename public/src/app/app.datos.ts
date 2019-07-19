@@ -139,7 +139,7 @@ export class clsMovimiento
     monto_movimiento ?: number;
     freg_movimiento ?: string;
     doc_encargado_movimiento ?: string;
-    datos_encrgado_movimiento ?: string;
+    datos_encargado_movimiento ?: string;
     id_usuario ?: string;
     estado_movimiento ?: boolean;
 }
@@ -205,9 +205,9 @@ export class clsDetalle_Compra
     id_detalle_compra ?: number;
     id_compra ?: number;
     nom_producto ?: string;
-    cantidad ?: number;
-    medida ?: string;
-    precio_unit ?: number;
+    cantidad_compra ?: number;
+    medida_compra ?: string;
+    punit_compra ?: number;
 }
 
 

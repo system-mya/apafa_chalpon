@@ -102,8 +102,8 @@ function hoyFecha(){
     return new Promise(function (resolve, reject) {
     for(i=0;i<cantidad;i++){       
                   var query="CALL pa_insertar_detalle_compra("+id_compra
-                  +",'"+compra.detalle[i].nom_producto +"',"+ compra.detalle[i].cantidad
-                  +",'" + compra.detalle[i].medida +"','" + compra.detalle[i].precio_unit +"')";
+                  +",'"+compra.detalle[i].nom_producto +"',"+ compra.detalle[i].cantidad_compra
+                  +",'" + compra.detalle[i].medida_compra +"','" + compra.detalle[i].punit_compra +"')";
                      con.query(query ,function(err,result) {                     
                         if (err) { 
                             malos=malos+1;
@@ -170,28 +170,24 @@ class Tesoreria {
         });
     };
 
-    nvo_movimiento(ingreso, res) {
+    nvo_movimiento(movimiento, res) {
         connection.acquire((err, con) => {
             if(err){
                 res.send({status: 0, message: err.sqlMessage});
             }else{                   
-               var query = "CALL pa_insertar_movimientos('"+[ingreso.tipo_movimiento]+"','"+ [ingreso.descripcion_movimiento] 
-                        +"','"+ [ingreso.monto_movimiento] + "','"+ [ingreso.doc_encargado_movimiento] 
-                        + "','"+ [ingreso.datos_encrgado_movimiento] 
-                        + "',"+ get('123456$#@$^@1ERF',[ingreso.id_usuario][0]) + ")";
-                        console.log("CALL pa_insertar_movimientos('"+[ingreso.tipo_movimiento]+"','"+ [ingreso.descripcion_movimiento] 
-                        +"','"+ [ingreso.monto_movimiento] + "','"+ [ingreso.doc_encargado_movimiento] 
-                        + "','"+ [ingreso.datos_encrgado_movimiento] 
-                        + "',"+ get('123456$#@$^@1ERF',[ingreso.id_usuario][0]) + ")");
+               var query = "CALL pa_insertar_movimientos('"+[movimiento.tipo_movimiento]+"','"+ [movimiento.descripcion_movimiento.toUpperCase()] 
+                        +"','"+ [movimiento.monto_movimiento] + "','"+ [movimiento.doc_encargado_movimiento] 
+                        + "','"+ [movimiento.datos_encargado_movimiento] 
+                        + "',"+ get('123456$#@$^@1ERF',[movimiento.id_usuario][0]) + ")";
                         con.query(query,(err, result) => {
                             con.release();
                             if(err){
                                 res.send({status: 0, message: err.sqlMessage});
                             }else{
                                 if (result.affectedRows == 1) {
-                                    res.send({status: 1, message: 'Ingreso Registrado'});
+                                    res.send({status: 1, message: 'Movimiento Registrado'});
                                 } else {
-                                    res.send({status: 2, message: 'Ingreso No Registrado'});
+                                    res.send({status: 2, message: 'Movimiento No Registrado'});
                                 }
                             }
                         });
@@ -304,7 +300,6 @@ class Tesoreria {
                                             )
                                         .catch(function(value){
                                             if(value>0){
-                                               console.log("hubo error");
                                                con.rollback(function() {
                                                 con.release();
                                                 res.send({status: 2, message: 'RECIBO NO REGISTRADO'});                                                                                                  
@@ -474,7 +469,7 @@ class Tesoreria {
     nva_compra(compra, res) {
         connection.acquire((err, con) => {
             if(err){
-                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+                res.send({status: 0, message: err.sqlMessage});
             }else{
                 con.beginTransaction(function(err) {
                     if (err) {  
@@ -515,8 +510,8 @@ class Tesoreria {
                                                         var cantidad = [compra.detalle.length];
                                                         var resultad;
                                                         resultad = insertar_detalle_compra(compra,con,cantidad,id_compra);
-                                                        resultad.then(function(valule1){
-                                                        if(valule1>0){
+                                                        resultad.then(function(valule){
+                                                        if(valule>0){
                                                            con.commit(function(err) {
                                                             if (err) { 
                                                                 con.rollback(function() {
@@ -533,10 +528,10 @@ class Tesoreria {
                                                         )
                                                     .catch(function(value){
                                                         if(value>0){
-                                                           con.rollback(function() {
-                                                            con.release();                                                                                                  
-                                                        });
-                                                        res.send({status: 0, message: err.sqlMessage}); 
+                                                            con.rollback(function() {
+                                                                con.release();
+                                                                res.send({status: 2, message: 'COMPRA NO REGISTRADA'});                                                                                                  
+                                                            });
                                                         }
                                                     }                                     
                                                         
@@ -558,12 +553,12 @@ class Tesoreria {
         });
     };
 
-    listar_compras_xperiodo(anhio,res) {
+    listar_egresos_xperiodo(anhio,res) {
         connection.acquire((err, con) => {
             if(err){
                 res.send({status: 0, message:err.sqlMessage});
             }else{
-            con.query("CALL pa_listar_compras_xperiodo('"+[anhio.datobusqueda]+"')", (err, result) => {
+            con.query("CALL pa_listar_egresos_xperiodo('"+[anhio.datobusqueda]+"')", (err, result) => {
                 con.release();
                 if(err){
                     res.send({status: 0, message:err.sqlMessage});

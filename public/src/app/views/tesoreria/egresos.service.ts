@@ -3,7 +3,7 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/delay';
 import { Http } from '@angular/http';
 import "rxjs/add/operator/map";
-import { clsCompras,clsBusqueda } from '../../app.datos';
+import { clsCompras,clsBusqueda,clsMovimiento } from '../../app.datos';
 
 @Injectable({
   providedIn: 'root'
@@ -18,13 +18,18 @@ export class EgresosService {
   }
 
   public getLista_compras_xperiodo(anhio:clsBusqueda){
-    return this._http.post('/api/tesoreria/listar_compras_xperiodo',anhio)
+    return this._http.post('/api/tesoreria/listar_egresos_xperiodo',anhio)
     .map(res => res.json())
   }
 
-  public getObtener_Detalle_Compra(compra:clsBusqueda){
+  public Obtener_Detalle_Compra(compra:clsBusqueda){
     return this._http.post('/api/tesoreria/listar_detalle_compra',compra)
     .map(res => res.json())
+  }
+
+  public nvo_otro_egreso(movimiento:clsMovimiento){
+    return this._http.post('/api/tesoreria/insertar_movimiento',movimiento)
+     .map(data => data.json()).toPromise()
   }
 
 }

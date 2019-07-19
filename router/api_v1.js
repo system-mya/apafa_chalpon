@@ -246,7 +246,7 @@ app.post('/api/tesoreria/listar_ingresos_xperiodo', (req, res) => {
 });
 
 //INSERTAR NUEVO INGRESO
-app.post('/api/tesoreria/insertar_ingreso', (req, res) => {
+app.post('/api/tesoreria/insertar_movimiento', (req, res) => {
     tesoreria.nvo_movimiento(req.body, res);
 });
 
@@ -277,8 +277,8 @@ app.post('/api/tesoreria/insertar_nueva_compra', (req, res) => {
 });
 
 //LLAMADA LISTA DE COMPRAS X PERIODO
-app.post('/api/tesoreria/listar_compras_xperiodo', (req, res) => {
-    tesoreria.listar_compras_xperiodo(req.body,res);
+app.post('/api/tesoreria/listar_egresos_xperiodo', (req, res) => {
+    tesoreria.listar_egresos_xperiodo(req.body,res);
 });
 
 //LLAMADA LISTA DE DETALLE X COMPRA

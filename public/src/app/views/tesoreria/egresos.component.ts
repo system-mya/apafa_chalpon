@@ -1,12 +1,36 @@
 import { Component,ViewChild,ViewEncapsulation,Inject } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { DOCUMENT } from '@angular/platform-browser';
 import {ModalDirective} from 'ngx-bootstrap/modal';
-import {clsCompras,clsDetalle_Compra,clsBusqueda} from '../../app.datos';
+import {clsCompras,clsDetalle_Compra,clsBusqueda,clsMovimiento} from '../../app.datos';
 import {MatPaginator, MatSort, MatTableDataSource, TooltipPosition} from '@angular/material';
 import { ToastrService } from 'ngx-toastr';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { EgresosService } from './egresos.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 declare var swal: any;
+import * as jspdf from 'jspdf';
+import 'jspdf-autotable';
+import { formatDate } from '@angular/common';
+
+function bodyRows(data,rowCount) {
+  rowCount = rowCount;
+  let body = [];
+  for (var j = 0; j < rowCount; j++) {
+      body.push({
+          id: j+1,
+          nom_producto: data[j].nom_producto,
+          cantidad_compra: data[j].cantidad_compra,
+          medida_compra: data[j].medida_compra,
+          punit_compra: data[j].punit_compra.toFixed(2),
+          total: (data[j].cantidad_compra * data[j].punit_compra).toFixed(2),
+      });
+  }
+  return body;
+}
+
+
+
 @Component({
   templateUrl: 'egresos.component.html',
   styleUrls: ['tesoreria.css'],
@@ -14,13 +38,18 @@ declare var swal: any;
 })
 export class EgresosComponent {
   @ViewChild('NvaCompraModal') public NvaCompraModal: ModalDirective;
+  @ViewChild('NvoOtroEgresoModal') public NvoOtroEgresoModal: ModalDirective;
   @ViewChild('DetalleCompraModal') public DetalleCompraModal: ModalDirective;
+  @ViewChild('DetalleEgreso') public DetalleEgreso: ModalDirective;
+  @ViewChild('MyCompra') myCompraForm: NgForm;
+  @ViewChild('myForm') myEgresoForm: NgForm;
   displayedColumns: string[] = ['tipo_compra', 'num_compra', 'razon_social_compra', 'fecha_compra', 'total_compra','opciones'];
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   positionOptions: TooltipPosition[] = ['after', 'before', 'above', 'below', 'left', 'right'];
   public compra : clsCompras = {};
+  public otro: clsMovimiento = {};
   public DatoBusqueda: clsBusqueda;
   public producto : clsDetalle_Compra = {};
   public panel_registro : boolean;
@@ -30,23 +59,24 @@ export class EgresosComponent {
   public optAd : string;
   constructor(private toastr: ToastrService,private loadingBar: LoadingBarService,
     private _CompraServicios: EgresosService,
-    @Inject(DOCUMENT) private document: Document,) { 
+    @Inject(DOCUMENT) private document: Document,
+    private spinner: NgxSpinnerService) { 
     this.DatoBusqueda = {
         datobusqueda: ''
       };
     this.panel_tabla_egresos=true;
-    this.ListarComprasxPeriodo();
+    this.ListarEgresosxPeriodo();
     this.optAd = localStorage.getItem('id_perfil');
   }
 
- DataCompras: any = [];
- ListarComprasxPeriodo () {
+ DataEgresos: any = [];
+ ListarEgresosxPeriodo () {
   this.DatoBusqueda.datobusqueda = localStorage.getItem('_anhio');
   this._CompraServicios.getLista_compras_xperiodo(this.DatoBusqueda).subscribe(
     data => {
       if (data.status === 1) {
-       this.DataCompras = data.data;
-       this.dataSource = new MatTableDataSource(this.DataCompras);
+       this.DataEgresos = data.data;
+       this.dataSource = new MatTableDataSource(this.DataEgresos);
        this.dataSource.paginator = this.paginator;
        this.dataSource.sort = this.sort;
       } else {
@@ -63,9 +93,9 @@ export class EgresosComponent {
     this.compra.ruc_compra='';
     this.compra.tipo_compra='';
     this.producto.nom_producto='';
-    this.producto.medida='';
-    this.producto.precio_unit=0;
-    this.producto.cantidad=0;
+    this.producto.medida_compra='';
+    this.producto.punit_compra=0;
+    this.producto.cantidad_compra=0;
     this.btnagregar=false;
     this.document.documentElement.scrollTop = 0;
   }
@@ -73,28 +103,28 @@ export class EgresosComponent {
   btnagregar_producto(dato){
     var indice;
     this.compra.total_compra=0;
-    if(dato.control.status=='VALID' && this.producto.nom_producto!='' && this.producto.medida!='' && this.producto.cantidad>0 && this.producto.precio_unit>0){
+    if(dato.control.status=='VALID' && this.producto.nom_producto!='' && this.producto.medida_compra!='' && this.producto.cantidad_compra>0 && this.producto.punit_compra>0){
       this.detalle_compra.push({
         nom_producto : this.producto.nom_producto.toUpperCase(),
-        cantidad : this.producto.cantidad,
-        medida : this.producto.medida.toUpperCase(),
-        precio_unit : this.producto.precio_unit
+        cantidad : this.producto.cantidad_compra,
+        medida : this.producto.medida_compra.toUpperCase(),
+        precio_unit : this.producto.punit_compra
       });
       for(indice in this.detalle_compra){
         this.compra.total_compra=this.compra.total_compra + Number(this.detalle_compra[indice].precio_unit * this.detalle_compra[indice].cantidad);
          console.log(this.compra.total_compra);
       }
       this.producto.nom_producto='';
-      this.producto.medida='';
-      this.producto.precio_unit=0;
-      this.producto.cantidad=0;
+      this.producto.medida_compra='';
+      this.producto.punit_compra=0;
+      this.producto.cantidad_compra=0;
       this.btnagregar=false;
     }else{
       this.btnagregar=true;
       this.opcmedida=true;
       this.opcnom_producto=true;
       this.producto.nom_producto='';
-      this.producto.medida='';
+      this.producto.medida_compra='';
     }
   }
 
@@ -134,7 +164,7 @@ export class EgresosComponent {
               this.panel_registro=false;
               this.loadingBar.complete();
               this.document.documentElement.scrollTop = 0;
-              this.ListarComprasxPeriodo();
+              this.ListarEgresosxPeriodo();
             } else {
                 swal({
                   title: 'Aviso!',
@@ -146,6 +176,7 @@ export class EgresosComponent {
                   allowOutsideClick: false,
                   allowEscapeKey: false
                 });
+                this.loadingBar.complete();
             }
           } )
           .catch(err => console.log(err));
@@ -158,42 +189,67 @@ export class EgresosComponent {
     this.detalle_compra.splice(dato, 1);
   }
 
-  frmCompras_hide(opt){
+  frmEgresos_hide(opt){
       if(opt=='R'){
            this.panel_registro=false;
            this.panel_tabla_egresos=true;
+           this.myCompraForm.resetForm();
            this.document.documentElement.scrollTop = 0;
-           this.ListarComprasxPeriodo();
+           this.ListarEgresosxPeriodo();
 
       }else{
-        this.DetalleCompraModal.hide();
+        if(opt=='D'){
+          this.DetalleCompraModal.hide();
+        }else{
+          if(opt=='DE'){
+            this.DetalleEgreso.hide();
+          }else{
+            this.NvoOtroEgresoModal.hide();
+            this.myEgresoForm.resetForm();
+          }
+        }
       }
   }
 
   public DetalleCompra:any=[];
   public DetalleLista : clsDetalle_Compra;
   btnDetalle_Compra(dato){     
-     this.DetalleCompra.tipo_compra = dato.tipo_compra;
-     this.DetalleCompra.num_compra = dato.num_compra;
-     this.DetalleCompra.razon_social_compra = dato.razon_social_compra;
-     this.DetalleCompra.ruc_compra = dato.ruc_compra;
-     this.DetalleCompra.fecha_compra = dato.fecha_compra;
-     this.DetalleCompra.doc_encargado_compra = dato.doc_encargado_compra;
-     this.DetalleCompra.encargado_compra = dato.encargado_compra;
-     this.DetalleCompra.total_compra = dato.total_compra;
-     this.DatoBusqueda.idbusqueda=dato.id_compra;
-     this._CompraServicios.getObtener_Detalle_Compra(this.DatoBusqueda)
-     .subscribe(
-      data => {
-        if (data.status === 1) {
-           this.DetalleLista = data.data;
-           this.DetalleCompraModal.show();
-        } else {
-          this.toastr.error(data.message, 'Aviso!');
-        }
-  
-      }
-    );
+     this.loadingBar.start();
+     if(dato.tipo_compra != "OTROS"){
+      this.DetalleCompra.tipo_compra = dato.tipo_compra;
+      this.DetalleCompra.num_compra = dato.num_compra;
+      this.DetalleCompra.razon_social_compra = dato.razon_social_compra;
+      this.DetalleCompra.ruc_compra = dato.ruc_compra;
+      this.DetalleCompra.fecha_compra = dato.fecha_compra;
+      this.DetalleCompra.doc_encargado_compra = dato.doc_encargado_compra;
+      this.DetalleCompra.encargado_compra = dato.encargado_compra;
+      this.DetalleCompra.total_compra = dato.total_compra;
+      this.DatoBusqueda.idbusqueda=dato.id_compra;
+      this._CompraServicios.Obtener_Detalle_Compra(this.DatoBusqueda)
+      .subscribe(
+       data => {
+         if (data.status === 1) {
+            this.DetalleLista = data.data;
+            this.toastr.success(data.message, 'Aviso!');
+            this.DetalleCompraModal.show();
+            this.loadingBar.complete();
+         } else {
+           this.toastr.error(data.message, 'Aviso!');
+           this.loadingBar.complete();
+         }
+   
+       }
+     );
+     }else{
+      this.DetalleCompra.num_compra = dato.num_compra;
+      this.DetalleCompra.razon_social_compra = dato.razon_social_compra;
+      this.DetalleCompra.ruc_compra = dato.ruc_compra;
+      this.DetalleCompra.fecha_compra = dato.fecha_compra;
+      this.DetalleCompra.total_compra = dato.total_compra;
+      this.toastr.success('CONSULTA EXITOSA', 'Aviso!');
+      this.DetalleEgreso.show();
+      this.loadingBar.complete();
+     }
   }
  
   public opcnom_producto : boolean;
@@ -221,6 +277,155 @@ export class EgresosComponent {
   }
 
 
+  ImprimirPDF(dato){
+    this.loadingBar.start();
+    this.spinner.show();
+    const doc = new jspdf({orientation: 'portrait',unit: 'mm',format: 'A5'});
+      this.DatoBusqueda.idbusqueda=dato.id_compra;
+     this._CompraServicios.Obtener_Detalle_Compra(this.DatoBusqueda)
+     .subscribe(
+      data => {
+        if (data.status === 1) {
+          var ruc;
+          if(dato.ruc_compra==null){
+               ruc = '';
+          }else{
+             ruc = dato.ruc_compra;
+          }
+          var headRows=  [{id:'N°',nom_producto: 'DESCRIPCION PRODUCTO', medida_compra: 'MEDIDA',cantidad_compra: 'CANTIDAD',punit_compra: 'PRECIO',total: 'TOTAL'}];
+          var totalPagesExp = "{total_pages_count_string}";
+           var img = new Image();
+           img.src = 'assets/img/cabecera_recibos.png'
+           doc.addImage(img,'png',25,10,150,40);
+           doc.setFontSize(12);
+           doc.setFont('helvetica')
+           doc.setFontType('bold');
+           doc.text(80, 60, 'DETALLE MOVIMIENTO');
+           doc.text(30, 70, 'Tipo: '); 
+           doc.text(70, 70, 'Núm ' +dato.tipo_compra + ": " );    
+           doc.text(150, 70, 'Fecha: ' );  
+           doc.text(30, 80, 'Razón Social: ' );      
+           doc.text(148, 80, 'RUC: ');
+           doc.text(30, 90, 'Doc Encargado: ');
+           doc.text(30, 100, 'Encargado Compra: ');
+           doc.setFontType('normal');
+           doc.text(41, 70, dato.tipo_compra); 
+           doc.text(101, 70,  dato.num_compra);
+           doc.text(168, 70, formatDate(dato.fecha_compra,'dd/MM/yyyy','en-US'));
+           var splitRazonSocial = doc.splitTextToSize(dato.razon_social_compra, 100);
+           doc.text(60, 80, splitRazonSocial);
+           doc.text(161, 80, ruc);
+           doc.text(63, 90, dato.doc_encargado_compra);
+           var splitEncargado = doc.splitTextToSize( dato.encargado_compra, 100);
+           doc.text(71, 100, splitEncargado);
+           doc.setFontType('bold');
+           doc.text(80, 110, 'DETALLE COMPRA');
+           var contador= data.data.length;
+           doc.autoTable({
+             head: headRows,
+             body: bodyRows(data.data,contador),
+             startY: 115, 
+             showHead: 'firstPage',
+             theme: 'grid',
+             columnStyles:{
+               id: {halign: 'center',cellWidth: 8},
+               nom_producto: {cellWidth: 42},
+               medida_compra: {halign: 'center',cellWidth: 20},
+               cantidad_compra: {halign: 'center',cellWidth: 10},
+               punit_compra: {halign: 'center',cellWidth: 10},
+               total: {halign: 'center',cellWidth: 10}
+              },
+             didDrawPage: function (data) {
+               // Footer
+               var str = "Página " + doc.internal.getNumberOfPages()
+               // Total page number plugin only available in jspdf v1.0+
+               if (typeof doc.putTotalPages === 'function') {
+                   str = str + " de " + totalPagesExp;
+               }
+               doc.setFontSize(10);
+         
+               // jsPDF 1.4+ uses getWidth, <1.4 uses .width
+               var pageSize = doc.internal.pageSize;
+               var pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
+               doc.text(str, data.settings.margin.left, pageHeight - 10);
+           }
+         });
+          doc.text(100, doc.autoTable.previous.finalY + 10, 'Total: ');
+          doc.text(150, doc.autoTable.previous.finalY + 10, ''+dato.total_compra.toFixed(2));
+              // Total page number plugin only available in jspdf v1.0+
+              if (typeof doc.putTotalPages === 'function') {
+                  doc.putTotalPages(totalPagesExp);
+              }
+
+           setTimeout(() => {
+            doc.output('save', dato.tipo_compra + "-" + dato.num_compra+'.pdf');
+            this.toastr.success(dato.tipo_compra + ' Generado', 'Aviso!');
+            this.loadingBar.complete();
+            this.spinner.hide();
+            this.document.documentElement.scrollTop = 0;
+          }, 5000);
+        } else {
+          this.toastr.error(data.message, 'Aviso!');
+          this.loadingBar.complete();
+        }
+  
+      }
+    );
+  }
+
+  btnNuevo_OtroEgreso(){
+    this.NvoOtroEgresoModal.show();
+  }
+
+  onSubmit(form: clsMovimiento) {
+    swal({
+      title: '¿Esta seguro que desea guardar?',
+      type: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, Guardar!',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+    }).then((result) => {
+      if (result.value == true) {
+        form.id_usuario = localStorage.getItem('ID');
+        form.tipo_movimiento = 'E';
+        this._CompraServicios.nvo_otro_egreso(form)
+        .then(data => {
+          if (data.status == 1) {
+            swal({
+                title: 'Aviso!',
+                text: data.message,
+                type: 'success',
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            })
+            this.ListarEgresosxPeriodo();
+            this.NvoOtroEgresoModal.hide();
+            this.myEgresoForm.resetForm();
+          } else {
+            if (data.status == 2) {
+              this.toastr.error(data.message, 'Aviso!');
+            } else {
+              swal({
+                title: 'Aviso!',
+                html:
+                '<span style="color:red">' +
+                data.message +
+                '</span>',
+                type: 'error',
+                allowOutsideClick: false,
+                allowEscapeKey: false
+              });
+
+            }
+          }
+        } )
+        .catch(err => console.log(err));
+      }
+    });
+  }
 }
 
 
