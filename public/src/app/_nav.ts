@@ -146,29 +146,36 @@ export const navAD: NavData[] = [
     icon: 'fa fa-file-text-o',
     children: [
       {
-        name: 'Lista Apoderados',
+        name: 'Listado Matriculados',
         url: '/reportes/lstoficial_apoderados',
         icon: 'cui-justify-center'
       },
       {
-        name: 'Lista Matriculados',
+        name: 'Alumnos x Grado',
         url: '/reportes/lstmatriculados',
         icon: 'cui-justify-center'
       },
       {
-        name: 'Font Awesome',
-        url: '/icons/font-awesome',
-        icon: 'icon-star',
-        badge: {
-          variant: 'secondary',
-          text: '4.7'
-        }
+        name: 'Listado de Ingresos',
+        url: '/icons/simple-line-icons',
+        icon: 'cui-justify-center'
       },
       {
-        name: 'Simple Line Icons',
+        name: 'Listado de Egresos',
         url: '/icons/simple-line-icons',
-        icon: 'icon-star'
-      }
+        icon: 'cui-justify-center'
+      },
+      {
+        name: 'Reporte de Balance',
+        url: '/icons/font-awesome',
+        icon: 'cui-justify-center'
+      },
+      {
+        name: 'Reporte de Deudas',
+        url: '/icons/simple-line-icons',
+        icon: 'cui-justify-center'
+      },
+     
     ]
   }
 ];

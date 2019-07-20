@@ -211,8 +211,7 @@ searchString:string;
               allowOutsideClick: false,
               allowEscapeKey:false
             }) 
-              this.spinner.hide();
-              
+              this.spinner.hide();              
             this.loadingBar.complete();
             this.document.documentElement.scrollTop = 0;
             this.ListarReunionesxPeriodo();
@@ -342,12 +341,14 @@ searchString:string;
               this._ReunionesServicio.listar_apoderados_reunion(this.DatoBusqueda).subscribe(
               data_lista => {
                 if (data_lista.status === 1) {
+                    this.toastr.success(data_lista.message, 'Aviso!');
                     this.DataAsistentes=data_lista.data;
                     this.panel_tabla=false;
                     this.panel_detalle=true;
                     this.loadingBar.complete();
                   }else{
                   this.toastr.error(data_lista.message, 'Aviso!');
+                  this.loadingBar.complete();
                 }
               }) 
   }
@@ -403,5 +404,41 @@ searchString:string;
              }
           } )
           .catch(err => console.log(err))
+  }
+
+  btnEliminar_Reunion(id:number) {
+    swal({
+      title: '¿Esta seguro que desea eliminar reunión?',
+      type: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, Guardar!',
+      allowOutsideClick: false,
+      allowEscapeKey:false,
+    }).then((result) => {
+      //console.log(result.value);
+      if (result.value==true) {
+        this.DatoBusqueda.idbusqueda=id;
+          //console.log(this.DatoBusqueda.idbusqueda);
+          //this.DetUsuarioModal.show(); 
+            this._ReunionesServicio.eliminar_reunion(this.DatoBusqueda)
+            .then(data => {
+              if(data.status==1){
+                swal({
+                  title: 'Aviso!',
+                  text: data.message,
+                  type: 'success',
+                  allowOutsideClick: false,
+                  allowEscapeKey:false
+              })
+              this.ListarReunionesxPeriodo();
+              }else{
+                this.toastr.error(data.message, 'Aviso!');
+               }
+            } )
+            .catch(err => console.log(err))
+      }
+    })
   }
 }

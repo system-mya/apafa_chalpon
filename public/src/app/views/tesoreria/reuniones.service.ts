@@ -37,5 +37,11 @@ export class ReunionesService {
      .map(data => data.json()).toPromise()
   }
 
+  public eliminar_reunion(reunion:clsBusqueda){
+    return this._http.post('/api/tesoreria/eliminar_reunion',reunion)
+    .map(data => data.json()).toPromise()
+  }
+
+
 
 }

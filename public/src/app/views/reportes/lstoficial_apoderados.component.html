@@ -2,7 +2,7 @@
   <div class="card card-default">
     <div class="card-header">
       <h5><strong>
-        <i class="fa fa-align-justify"></i>&nbsp;&nbsp;Lista Oficial de Apoderados
+        <i class="fa fa-align-justify"></i>&nbsp;&nbsp;Lista Oficial de Matriculados
       </strong></h5>
     </div>
     <div class="card-body">
@@ -11,31 +11,38 @@
               <div class="row">
                   <div class="col-sm-12 col-md-5 col-lg-3">
                       <div class="form-group">
-                      <select class="form-control" id="anhio_lectivo" name="anhio_lectivo"
-                        [(ngModel)]="anhio_lectivo" #reganhio_lectivo="ngModel" (change)="BuscarListaApoderados(anhio_lectivo)">
-                        <option value="0" selected disabled>---Seleccionar Año Lectivo----</option>
-                        <option *ngFor="let a of DataAnhios" value="{{a.idanhio}}">Año Lectivo {{a.anhio_lectivo}}</option>
-                      </select>
+                          <select class="form-control" id="anhio_lectivo" name="anhio_lectivo"
+                          [(ngModel)]="anhio_lectivo" #reganhio_lectivo="ngModel" (change)="MostarFechaIniFin(anhio_lectivo)">
+                          <option value="0" selected disabled>---Seleccionar Año Lectivo----</option>
+                          <option *ngFor="let a of DataAnhios" value="{{a.idanhio}}">AÑO LECTIVO {{a.anhio_lectivo}}</option>
+                        </select>
                     </div>
                   </div>
                   <div class="col-sm-12 col-md-5 col-lg-3">
                       <div class="form-group">
-                    <input type="text" class="form-control" id="finicio_anhio" name="finicio_anhio" 
-                        placeholder="Fecha Inicio" [(ngModel)]="finicio_anhio" 
-                        maxlength="60" readonly required style="background-color: #ffffff;
-                        opacity: 1;
-                        color: #080808;">
-                        </div>
+                          <input type="text" class="form-control" id="finicio_anhio" name="finicio_anhio" 
+                          placeholder="Fecha Inicio" [(ngModel)]="finicio_anhio" 
+                          maxlength="60" readonly required style="background-color: #ffffff;
+                          opacity: 1;
+                          color: #080808;">
+                    </div>
                   </div>
                   <div class="col-sm-12 col-md-5 col-lg-3">
                       <div class="form-group">
-                      <input type="text" class="form-control" id="ffin_anhio" name="ffin_anhio" 
-                        placeholder="Fecha Fin" [(ngModel)]="ffin_anhio" 
-                        maxlength="60" readonly required style="background-color: #ffffff;
-                        opacity: 1;
-                        color: #080808;">
-                      </div>
+                          <input type="text" class="form-control" id="ffin_anhio" name="ffin_anhio" 
+                          placeholder="Fecha Fin" [(ngModel)]="ffin_anhio" 
+                          maxlength="60" readonly required style="background-color: #ffffff;
+                          opacity: 1;
+                          color: #080808;">
+                    </div>
                   </div>
+                  <div class="col-sm-12 col-md-5 col-lg-1">
+                      <div class="form-group">
+                      <button class="btn btn-success" (click)="BuscarListaApoderados(anhio_lectivo)">
+                          <span class="fa fa-search"></span>
+                      </button>
+                    </div>
+                    </div>
               </div>
           </div>
           <div class="card-header estilo-cabecera">APODERADOS Y ALUMNOS MATRICULADOS
@@ -53,11 +60,10 @@
                   <table id="tab_customers" class="table"> 
                       <thead>
                       <tr>
-                          <th>Apoderados</th>
-                          <th>Alumnos Matriculados</th>
-                          <th>Grado</th>
-                          <th>Sección</th>
-                          <th width="10%">Firma</th>
+                          <th width="30%">Apoderados</th>
+                          <th width="30%">Alumnos Matriculados</th>
+                          <th width="25%">Grado</th>
+                          <th width="15%">Sección</th>
                         </tr>   
                       </thead>  
                       <tbody>
@@ -67,7 +73,6 @@
                             <td>{{data.numbers[0].apellidos_alumno}} {{data.numbers[0].nombres_alumno}}</td>
                             <td>{{data.numbers[0].descripcion_grado}}</td>
                             <td>{{data.numbers[0].nombre_seccion}}</td>
-                            <td [attr.rowspan]="data.numbers.length"> </td>
                         </tr>
                         <ng-container *ngFor="let number of data.numbers; let i= index;">
                             <tr *ngIf="i!=0">

@@ -272,10 +272,11 @@ export class ListaMatriculadosComponent implements OnInit{
             body: this.GradoTodos[i].matriculados,
             styles: {overflow: 'linebreak'},
             columnStyles: {
-              doc_alumno: {cellWidth: 25}, 
-              apellidos_alumno:{cellWidth:40}, 
-              nombres_alumno: {cellWidth: 15}, 
-              nombre_seccion: {halign: 'center',cellWidth: 30}
+              id: {cellWidth: 10}, 
+              doc_alumno: {cellWidth: 15}, 
+              apellidos_alumno:{cellWidth:30}, 
+              nombres_alumno: {cellWidth: 30}, 
+              nombre_seccion: {halign: 'center',cellWidth: 15}
              },
             startY: doc.autoTable.previous.finalY + 12,  
           showHead: 'firstPage',

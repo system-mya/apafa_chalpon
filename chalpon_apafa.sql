@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 19-07-2019 a las 21:38:52
+-- Tiempo de generación: 20-07-2019 a las 23:36:41
 -- Versión del servidor: 5.7.14
 -- Versión de PHP: 5.6.25
 
@@ -110,6 +110,10 @@ UPDATE libro SET estado_libro=0 WHERE id_libro=idlibro$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_matricula` (IN `id` SMALLINT)  NO SQL
 UPDATE matricula SET estado_matricula=0
 WHERE id_matricula=id$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_reunion` (IN `id` SMALLINT)  NO SQL
+UPDATE reunion SET estado_reunion=0
+WHERE id_reunion=id$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_seccion` (IN `id` TINYINT)  NO SQL
 UPDATE secciones SET estado_seccion=0
@@ -270,7 +274,8 @@ LEFT(descripcion_anhio,20) as descripcion, descripcion_anhio,
   ELSE '#e4040e'
  END) as color_condicion
   FROM anhio_lectivo
-WHERE estado_anhio=1$$
+WHERE estado_anhio=1
+ORDER BY anhio_lectivo DESC$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_apoderados` ()  NO SQL
 SELECT id_apoderado,doc_apoderado,apellidos_apoderado,
@@ -531,6 +536,10 @@ DELETE FROM libro_matricula
 WHERE id_matricula=matricula
 AND id_libro=libro$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_registrar_asistencia_reunion` (IN `reunion` SMALLINT, IN `apoderado` SMALLINT, IN `opt` BIT(1))  NO SQL
+UPDATE reunion_apoderado SET asistio_reunion=opt
+WHERE id_reunion=reunion AND id_apoderado=apoderado$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_resetear_usuario` (IN `id_usu` TINYINT)  NO SQL
 UPDATE usuario SET clave_usu=SHA('1A2B3C4D'),fbaja_usu=NULL
 WHERE idusuario=id_usu$$
@@ -725,7 +734,7 @@ INSERT INTO `alumno` (`id_alumno`, `tdoc_alumno`, `doc_alumno`, `apellidos_alumn
 (35, 'DNI', '30796276', 'López García', 'Andr?s', '2003-04-21', 'M', NULL, '978939666', '', NULL, NULL, 'López Cadillo', 'Javier', NULL, '', 'García Lazaro', 'Isabel', '952909129', '', b'1'),
 (36, 'DNI', '66637196', 'López Rueda', 'Jose Javier', '2004-06-02', 'M', NULL, '929572233', '', NULL, NULL, 'López Caldas', 'Alex', NULL, '', 'Rueda Aranda', 'Maria Cecilia', NULL, '', b'1'),
 (37, 'DNI', '61821438', 'Abad Chavez ', 'Romar Abad ', '2006-10-28', 'M', NULL, '988325569', 'Calle Motupe # 114', NULL, NULL, 'Abad Cajaleon', 'Jhans Carlos', NULL, NULL, 'Chavez Vasquez', 'Teresa', NULL, NULL, b'1'),
-(38, 'DNI', '70080533', 'Acha Guerrero', 'Yasanali', '2004-05-19', 'F', NULL, '988118327', '', NULL, NULL, 'Acha Casado', 'Juan Carlos', NULL, '', 'Guerrero Correa', 'Flor Isabel', NULL, '', b'1'),
+(38, 'DNI', '70080533', 'Acha Guerrero Acha Guerrero', 'Yasanali Yasanali Yasanali', '2004-05-19', 'F', NULL, '988118327', 'LOS TUMBOS NO LOS TUMBOS', NULL, NULL, 'Acha Casado', 'Juan Carlos', NULL, NULL, 'Guerrero Correa', 'Flor Isabel', NULL, NULL, b'1'),
 (39, 'DNI', '75797998', 'Acosta Santisteban', 'Maria Gisela', '2004-08-08', 'F', NULL, '907796793', '', NULL, NULL, 'Acosta Casimiro', 'Michael', NULL, '', 'Santisteban Ita', 'Milagros Magaly', NULL, '', b'1'),
 (40, 'DNI', '42179802', 'Acuña Cervantes', 'Elmer', '2006-11-15', 'M', '436223', '957923672', '', NULL, NULL, 'Acuña Casio', 'Emerson', NULL, '', 'Cervantes Malaspina', 'Lizbeth', NULL, '', b'1'),
 (41, 'DNI', '72367755', 'Acuña Diaz', 'Alexander', '2005-10-07', 'M', '426694', '979354840', '', NULL, NULL, 'Acuña Casabona', 'Benito Gabriel', NULL, '', 'Diaz Medina', 'Giselle', NULL, '', b'1'),
@@ -865,7 +874,8 @@ INSERT INTO `anhio_lectivo` (`idanhio`, `anhio_lectivo`, `finicio_anhio`, `ffin_
 (20, '2014', '2014-01-01', '2014-12-31', NULL, 'A', b'0'),
 (21, '2013', '2013-01-01', '2013-12-31', NULL, 'C', b'0'),
 (22, '2018', '2018-01-01', '2018-12-31', NULL, 'C', b'1'),
-(23, '2019', '2019-01-01', '2019-12-31', NULL, 'A', b'1');
+(23, '2019', '2019-01-01', '2019-12-31', NULL, 'A', b'1'),
+(24, '2017', '2017-01-01', '2017-12-31', NULL, 'C', b'1');
 
 -- --------------------------------------------------------
 
@@ -1380,8 +1390,8 @@ CREATE TABLE `reunion` (
 --
 
 INSERT INTO `reunion` (`id_reunion`, `motivo_reunion`, `fecha_reunion`, `hora_reunion`, `id_concepto`, `lista_reunion`, `estado_reunion`) VALUES
-(1, 'Asamblea General de padres', '2019-06-21', '14:30:00', 3, b'1', b'1'),
-(2, 'Reunion de padres de familia', '2019-07-21', '16:30:00', 12, b'1', b'1');
+(1, 'Asamblea General de padres', '2019-06-21', '14:30:00', 3, b'1', b'0'),
+(2, 'Reunion de padres de familia', '2019-07-21', '16:30:00', 12, b'1', b'0');
 
 -- --------------------------------------------------------
 
@@ -1403,7 +1413,7 @@ INSERT INTO `reunion_apoderado` (`id_reunion`, `id_apoderado`, `asistio_reunion`
 (1, 2, b'0'),
 (1, 4, b'0'),
 (2, 55, b'0'),
-(2, 112, b'0');
+(2, 112, b'1');
 
 -- --------------------------------------------------------
 
@@ -1642,7 +1652,7 @@ ALTER TABLE `alumno`
 -- AUTO_INCREMENT de la tabla `anhio_lectivo`
 --
 ALTER TABLE `anhio_lectivo`
-  MODIFY `idanhio` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `idanhio` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 --
 -- AUTO_INCREMENT de la tabla `apoderado`
 --

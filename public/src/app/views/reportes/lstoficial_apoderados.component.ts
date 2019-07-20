@@ -47,7 +47,7 @@ export class ListaOficialApoderadosComponent implements OnInit {
  
  public DataApoderado : any;
  public panel_tabla:boolean;
- BuscarListaApoderados(a){
+ MostarFechaIniFin(a){
   this.panel_tabla=false;
    for(var i=0; i<this.DataAnhios.length;i++){
        if(this.DataAnhios[i].idanhio==a){
@@ -57,56 +57,57 @@ export class ListaOficialApoderadosComponent implements OnInit {
         this.ffin_anhio="Hasta: " + ffin[2] +"/"+ffin[1]+"/"+ffin[0];
        }
    }   
-   this.loadingBar.start();
-   this.DatoBusqueda.idbusqueda=a;
-    //console.log(this.DatoBusqueda.idbusqueda);
-    //this.DetUsuarioModal.show(); 
-      this._ReportesServicios.listar_apoderados_xanhio(this.DatoBusqueda)
-      .then(data => {
-        if(data.status==1){
-          this.body=[];
-          this.DataApoderado=data.data;
-          for (let numero of this.DataApoderado){
-            this.DatoBusqueda.datobusqueda=numero.id_apoderado; 
-            this._ReportesServicios.listar_alumnos_xapoderado(this.DatoBusqueda)
-            .then(data_alumno => {
-              if(data_alumno.status==1){
-                this.body.push({
-                  pname: numero.apellidos_apoderado + " " + numero.nombres_apoderado ,
-                  doc:numero.doc_apoderado,
-                  celular:numero.celular_apoderado,
-                  numbers: data_alumno.data
-                 })
-                 
-                this.panel_tabla=true;
-              }else{
-                this.toastr.error(data.message, 'Aviso!',{
-                  positionClass: 'toast-top-right',
-                  timeOut: 500
-                });
-                this.loadingBar.complete();
-                this.body=[];
-              }
-            })
-          }
-          this.loadingBar.complete();
-          this.toastr.success(data.message, 'Aviso!',{
+ }
+
+ BuscarListaApoderados(a){
+  this.loadingBar.start();
+  this.DatoBusqueda.idbusqueda=a;
+   //console.log(this.DatoBusqueda.idbusqueda);
+   //this.DetUsuarioModal.show(); 
+     this._ReportesServicios.listar_apoderados_xanhio(this.DatoBusqueda)
+     .then(data => {
+       if(data.status==1){
+         this.body=[];
+         this.DataApoderado=data.data;
+         for (let numero of this.DataApoderado){
+           this.DatoBusqueda.datobusqueda=numero.id_apoderado; 
+           this._ReportesServicios.listar_alumnos_xapoderado(this.DatoBusqueda)
+           .then(data_alumno => {
+             if(data_alumno.status==1){
+               this.body.push({
+                 pname: numero.apellidos_apoderado + " " + numero.nombres_apoderado ,
+                 doc:numero.doc_apoderado,
+                 celular:numero.celular_apoderado,
+                 numbers: data_alumno.data
+                })
+                
+               this.panel_tabla=true;
+             }else{
+               this.toastr.error(data.message, 'Aviso!',{
+                 positionClass: 'toast-top-right',
+                 timeOut: 500
+               });
+               this.loadingBar.complete();
+               this.body=[];
+             }
+           })
+         }
+         this.loadingBar.complete();
+         this.toastr.success(data.message, 'Aviso!',{
+           positionClass: 'toast-top-right',
+           timeOut: 500
+         });
+         this.body.sort();
+       }else{
+          this.toastr.error(data.message, 'Aviso!',{
             positionClass: 'toast-top-right',
             timeOut: 500
           });
-          this.body.sort();
-        }else{
-           this.toastr.error(data.message, 'Aviso!',{
-             positionClass: 'toast-top-right',
-             timeOut: 500
-           });
-           this.loadingBar.complete();
-           this.body=[];
-         }
-      } )
-      .catch(err => console.log(err))
-    
-      
+          this.loadingBar.complete();
+          this.body=[];
+        }
+     } )
+     .catch(err => console.log(err))
  }
 
  public VerPDF()
@@ -119,7 +120,7 @@ export class ListaOficialApoderadosComponent implements OnInit {
     doc.setFontSize(12);
     doc.setFont('helvetica');
     doc.setFontType('bold');
-    doc.text(70, 60, 'LISTA GENERAL DE APODERADOS');
+    doc.text(65, 60, 'LISTA OFICIAL DE MATRICULADOS');
     // From HTML
      doc.autoTable({html: '.table',
      styles: {overflow: 'linebreak', cellWidth:'wrap'},
