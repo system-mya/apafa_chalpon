@@ -305,7 +305,7 @@ export class ListaMatriculadosComponent implements OnInit{
       console.log(this.GradoTodos);
     }    
 
-    doc.output('save', 'padron_matriculados.pdf');
+    doc.output('save', 'padron_alumnos.pdf');
          
   }
 
