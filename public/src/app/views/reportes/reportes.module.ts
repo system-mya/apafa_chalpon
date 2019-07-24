@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ListaOficialApoderadosComponent } from './lstoficial_apoderados.component';
 import { ListaMatriculadosComponent } from './lstmatriculados.component';
+import { BalanceComponent } from './lstbalance.component';
 import { FontAwesomeComponent } from './font-awesome.component';
 import { SimpleLineIconsComponent } from './simple-line-icons.component';
 import { TableFilterPipe } from './table-filter.pipe';
@@ -88,6 +89,7 @@ import { MatAutocompleteModule,
     ListaOficialApoderadosComponent,
     TableFilterPipe,
     ListaMatriculadosComponent,
+    BalanceComponent,
     FontAwesomeComponent,
     SimpleLineIconsComponent,   
   ]

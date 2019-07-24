@@ -32,4 +32,9 @@ export class ReportesService {
     .map(res => res.json())
   }
 
+  public listar_alumnos_grado_seccion(reporte:clsBusqueda){
+    return this._http.post('/api/reportes/listar_alumnos_grado_seccion',reporte)
+    .map(res => res.json()).toPromise()
+  }
+
 }

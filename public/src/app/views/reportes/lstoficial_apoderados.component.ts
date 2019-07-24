@@ -83,10 +83,7 @@ export class ListaOficialApoderadosComponent implements OnInit {
                 
                this.panel_tabla=true;
              }else{
-               this.toastr.error(data.message, 'Aviso!',{
-                 positionClass: 'toast-top-right',
-                 timeOut: 500
-               });
+               this.toastr.error(data.message, 'Aviso!');
                this.loadingBar.complete();
                this.body=[];
              }

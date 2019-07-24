@@ -366,6 +366,11 @@ app.post('/api/reportes/pa_listar_matriculados_xanhio', (req, res) => {
     reportes.pa_listar_matriculados_xanhio(req.body,res);
 });
 
+//LLAMADA LISTAR MATRICULADOS X ANHIO
+app.post('/api/reportes/listar_alumnos_grado_seccion', (req, res) => {
+    reportes.listar_alumnos_grado_seccion(req.body,res);
+});
+
 }
 
 }

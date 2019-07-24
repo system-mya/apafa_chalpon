@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 20-07-2019 a las 23:36:41
+-- Tiempo de generación: 24-07-2019 a las 00:14:29
 -- Versión del servidor: 5.7.14
 -- Versión de PHP: 5.6.25
 
@@ -249,14 +249,27 @@ nombres_alumno,tdoc_alumno,doc_alumno,
 WHERE estado_alumno=1
 ORDER BY apellidos_alumno ASC$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_alumnos_grado_seccion` (IN `anhio` TINYINT, IN `grado` TINYINT, IN `seccion` TINYINT)  NO SQL
+SELECT a.doc_alumno,a.apellidos_alumno,a.nombres_alumno,g.descripcion_grado,s.nombre_seccion
+FROM matricula m 
+INNER JOIN alumno a ON a.id_alumno=m.id_alumno
+INNER JOIN secciones s ON s.id_seccion=m.id_seccion
+INNER JOIN grados g ON g.id_grado=s.id_grado
+WHERE m.id_anhio=anhio
+AND g.id_grado=grado
+AND m.id_seccion=seccion
+AND m.estado_matricula=1
+ORDER BY a.apellidos_alumno,a.nombres_alumno$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_alumnos_xapoderado_matricula` (IN `anhio` TINYINT, IN `apo` SMALLINT)  NO SQL
-SELECT a.apellidos_alumno,a.nombres_alumno,g.descripcion_grado,s.nombre_seccion FROM matricula m
+SELECT a.apellidos_alumno,a.nombres_alumno,g.id_grado,g.descripcion_grado,s.nombre_seccion FROM matricula m
 INNER JOIN alumno a ON a.id_alumno=m.id_alumno
 INNER JOIN secciones s ON s.id_seccion=m.id_seccion
 INNER JOIN grados g ON g.id_grado=s.id_grado
 WHERE m.estado_matricula=1
 AND m.id_anhio=anhio
-AND m.id_apoderado=apo$$
+AND m.id_apoderado=apo
+ORDER BY g.id_grado ASC$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_anhio` ()  NO SQL
 SELECT idanhio,anhio_lectivo,finicio_anhio,ffin_anhio,
@@ -737,7 +750,7 @@ INSERT INTO `alumno` (`id_alumno`, `tdoc_alumno`, `doc_alumno`, `apellidos_alumn
 (38, 'DNI', '70080533', 'Acha Guerrero Acha Guerrero', 'Yasanali Yasanali Yasanali', '2004-05-19', 'F', NULL, '988118327', 'LOS TUMBOS NO LOS TUMBOS', NULL, NULL, 'Acha Casado', 'Juan Carlos', NULL, NULL, 'Guerrero Correa', 'Flor Isabel', NULL, NULL, b'1'),
 (39, 'DNI', '75797998', 'Acosta Santisteban', 'Maria Gisela', '2004-08-08', 'F', NULL, '907796793', '', NULL, NULL, 'Acosta Casimiro', 'Michael', NULL, '', 'Santisteban Ita', 'Milagros Magaly', NULL, '', b'1'),
 (40, 'DNI', '42179802', 'Acuña Cervantes', 'Elmer', '2006-11-15', 'M', '436223', '957923672', '', NULL, NULL, 'Acuña Casio', 'Emerson', NULL, '', 'Cervantes Malaspina', 'Lizbeth', NULL, '', b'1'),
-(41, 'DNI', '72367755', 'Acuña Diaz', 'Alexander', '2005-10-07', 'M', '426694', '979354840', '', NULL, NULL, 'Acuña Casabona', 'Benito Gabriel', NULL, '', 'Diaz Medina', 'Giselle', NULL, '', b'1'),
+(41, 'DNI', '72367755', 'Acuña Diaz ', 'Alexander', '2005-10-07', 'M', '426694', '979354840', 'calle ', NULL, NULL, 'Acuña Casabona', 'Benito Gabriel', NULL, NULL, 'Diaz Medina', 'Giselle', NULL, NULL, b'1'),
 (42, 'DNI', '76476977', 'Acuña Gil', 'Rosa Elvira', '2004-07-17', 'F', '430396', '995978265', '', NULL, NULL, 'Acuña Castillo', 'Ernesto', NULL, '', 'Gil Rocca', 'Fernanda Luisa', NULL, '', b'1'),
 (43, 'DNI', '47478285', 'Acuña Marrufo', 'José Edgardo', '2004-02-08', 'M', '493337', '910075288', '', NULL, NULL, 'Acuña Casatañeda', 'Jenhs Joe', NULL, '', 'Marrufo Julcamoro', 'Teresa Isabel', NULL, '', b'1'),
 (44, 'DNI', '44449653', 'Acuña Marrufo', 'Rosita Elvira', '2005-11-01', 'F', '480935', '944415847', '', NULL, NULL, 'Acuña Castro', 'Luis Alberto', NULL, '', 'Marrufo Minchon', 'Gianera', NULL, '', b'1'),
@@ -1442,7 +1455,8 @@ INSERT INTO `secciones` (`id_seccion`, `nombre_seccion`, `id_grado`, `turno_secc
 (6, 'B', 2, 'M', b'0'),
 (7, 'B', 2, 'T', b'0'),
 (8, 'B', 1, 'T', b'0'),
-(9, 'A', 1, 'M', b'1');
+(9, 'A', 1, 'M', b'1'),
+(10, 'B', 1, 'M', b'1');
 
 -- --------------------------------------------------------
 
@@ -1657,7 +1671,7 @@ ALTER TABLE `anhio_lectivo`
 -- AUTO_INCREMENT de la tabla `apoderado`
 --
 ALTER TABLE `apoderado`
-  MODIFY `id_apoderado` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=146;
+  MODIFY `id_apoderado` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=145;
 --
 -- AUTO_INCREMENT de la tabla `compra`
 --
@@ -1717,7 +1731,7 @@ ALTER TABLE `reunion`
 -- AUTO_INCREMENT de la tabla `secciones`
 --
 ALTER TABLE `secciones`
-  MODIFY `id_seccion` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id_seccion` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 --
 -- AUTO_INCREMENT de la tabla `tipo_relacion`
 --

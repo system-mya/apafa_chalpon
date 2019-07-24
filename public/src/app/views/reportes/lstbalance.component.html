@@ -2,7 +2,7 @@
     <div class="card card-default">
       <div class="card-header">
         <h5><strong>
-          <i class="fa fa-align-justify"></i>&nbsp;&nbsp;Listado Alumnos x Grado
+          <i class="fa fa-align-justify"></i>&nbsp;&nbsp;Reporte de Balance
         </strong></h5>
       </div>
       <div class="card-body">
@@ -11,43 +11,50 @@
                 <div class="row">
                     <div class="col-sm-12 col-md-5 col-lg-3">
                         <div class="form-group">
-                        <select class="form-control" id="anhio_lectivo" name="anhio_lectivo"
-                          [(ngModel)]="anhio_lectivo" (change)="ListarGrados(anhio_lectivo)">
-                          <option value="0" selected disabled>---Seleccionar Año Lectivo----</option>
-                          <option *ngFor="let a of DataAnhios" value="{{a.idanhio}}">AÑO LECTIVO {{a.anhio_lectivo}}</option>
+                        <label for="postal-code" style="font-weight: bold;">Busqueda Por:</label>
+                        <select class="form-control" id="criterio" name="criterio"
+                          [(ngModel)]="criterio" (change)="CriterioBusqueda()">
+                          <option value="0" selected disabled>---SELECCIONAR CRITERIO----</option>
+                          <option value="1">AÑO LECTIVO</option>
+                          <option value="2">FECHAS</option>
                         </select>
                       </div>
                     </div>
-                    <div class="col-sm-12 col-md-5 col-lg-4">
-                        <div class="form-group">
-                        <select class="form-control" id="grado" name="grado"
-                        [(ngModel)]="grado" (change)="Listar_Secciones_xGrado(grado)" [disabled]="grado==-1">
-                        <option value="0" selected disabled>-----SELECCIONAR GRADOS------</option>
-                        <!-- <option value="0" selected>-----TODOS LOS GRADOS------</option> -->
-                        <option *ngFor="let g of DataGrado" value="{{g.id_grado}}">{{g.descripcion_grado}}</option>
-                        </select>
+                    <div class="col-sm-12 col-md-5 col-lg-3" *ngIf="criterio==1">
+                      <div class="form-group">
+                       <label for="postal-code" style="font-weight: bold;">Año Lectivo:</label>
+                       <select class="form-control" id="anhio_lectivo" name="anhio_lectivo"
+                        [(ngModel)]="anhio_lectivo">
+                        <option value="0" selected disabled>---Seleccionar Año Lectivo----</option>
+                        <option *ngFor="let a of DataAnhios" value="{{a.idanhio}}">AÑO LECTIVO {{a.anhio_lectivo}}</option>
+                       </select>
                       </div>
                     </div>
-                    <div class="col-sm-12 col-md-5 col-lg-3">
+                    <div class="col-sm-12 col-md-5 col-lg-3" *ngIf="criterio==2">
                         <div class="form-group">
-                        <select class="form-control" id="seccion" name="seccion"
-                          [(ngModel)]="seccion" [disabled]="seccion==-1">
-                          <option value="0" selected disabled>-----SELECCIONAR SECCION------</option>
-                          <!-- <option value="0" selected>-----TODAS LAS SECCIONES------</option> -->
-                          <option *ngFor="let s of DataSecciones" value="{{s.id_seccion}}">{{s.nombre_seccion}}</option>
-                        </select>
+                          <label for="postal-code" style="font-weight: bold;">Fecha Desde:</label>
+                          <input class="form-control" id="fecha_desde" type='date' name="fecha_desde" placeholder="date"
+                           [(ngModel)]="fecha_desde" #regfecha="ngModel" required>
                       </div>
                     </div>
-                    <div class="col-sm-12 col-md-5 col-lg-1">
+                    <div class="col-sm-12 col-md-5 col-lg-3" *ngIf="criterio==2">
+                      <div class="form-group">
+                        <label for="postal-code" style="font-weight: bold;">Fecha Hasta:</label>
+                        <input class="form-control" id="fecha_hasta" type='date' name="fecha_hasta" placeholder="date"
+                         [(ngModel)]="fecha_hasta" #regfecha="ngModel" required>
+                    </div>
+                  </div>
+                    <div class="col-sm-12 col-md-2 col-lg-3">
                         <div class="form-group">
-                        <button class="btn btn-success" (click)="Generar_Lista()">
+                        <label for="postal-code" style="font-weight: bold;">Buscar:</label><br>
+                        <button class="btn btn-success" (click)="Generar_Reporte()">
                             <span class="fa fa-search"></span>
                         </button>
                       </div>
                       </div>
                 </div>
             </div>
-            <div class="card-header estilo-cabecera">ALUMNOS - GRADO - SECCION
+            <div class="card-header estilo-cabecera">BALANCE DE INGRESOS Y EGRESOS
                 <div class="card-header-actions">
                    <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true" style="color: red;cursor: pointer;"
                    (click)="VerPDF()" *ngIf="panel_tabla"></i>

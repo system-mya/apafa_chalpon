@@ -15,9 +15,9 @@ class Reportes {
                     res.send({status: 0, message: err.sqlMessage});
                 }else{
                     if (result[0].length == 0) {
-                        res.send({status: 2, message: 'No hay Apoderados'});
+                        res.send({status: 2, message: 'NO HAY DATOS EN LA CONSULTA'});
                     } else {
-                        res.send({status: 1, message: 'Lista Apoderados',data:result[0]});
+                        res.send({status: 1, message: 'Lista de Matriculados',data:result[0]});
                     }
                 }
             });
@@ -62,6 +62,29 @@ class Reportes {
                         res.send({status: 2, message: 'NO HAY GRADOS CON MATRICULA'});
                     } else {
                         res.send({status: 1, message: 'LISTA GRADOS',data:result[0]});
+                    }
+                }
+               
+            });
+        }
+        });
+    };
+
+    listar_alumnos_grado_seccion(reporte,res) {
+        connection.acquire((err, con) => {
+            if(err){
+                res.send({status: 0, message: err.sqlMessage});
+            }else{
+            var array = reporte.datobusqueda.split("-");
+            con.query("CALL pa_listar_alumnos_grado_seccion("+ [reporte.idbusqueda] +","+parseInt(array[0])+","+parseInt(array[1])+")", (err, result) => {
+                con.release();
+                if(err){
+                    res.send({status: 0, message: err.sqlMessage});
+                }else{
+                    if (result[0].length == 0) {
+                        res.send({status: 2, message: 'NO HAY DATOS EN LA CONSULTA'});
+                    } else {
+                        res.send({status: 1, message: 'Lista de Matriculados',data:result[0]});
                     }
                 }
                

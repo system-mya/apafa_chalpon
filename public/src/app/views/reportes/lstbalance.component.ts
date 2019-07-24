@@ -29,27 +29,27 @@ function bodyRows(data,rowCount) {
 
 
 @Component({
-  templateUrl: 'lstmatriculados.component.html',
+  templateUrl: 'lstbalance.component.html',
   styleUrls: ['reportes.css'],
   encapsulation: ViewEncapsulation.None,
 })
-export class ListaMatriculadosComponent implements OnInit{
+export class BalanceComponent implements OnInit{
   displayedColumns: string[] = ['doc_alumno','apellidos_alumno','nombres_alumno','descripcion_grado','nombre_seccion'];
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   public anhio_lectivo:number;
-  public grado:number;
+  public criterio:number;
   public seccion:number;
+  public fecha_desde : string;
+  public fecha_hasta : string;
   public body : any = [];
   public DatoBusqueda : clsBusqueda = {};
   searchString:string;
   constructor(private _AnhiosServicios:AnhiosService,private toastr: ToastrService,
     private _ReportesServicios: ReportesService,private loadingBar: LoadingBarService,
     private _GradoServicios:GradoSeccionService,private _MatriculaServicios:MatriculaService) { 
-    this.ListarAnhiosLectivos();
-    this.Inicializar_Tabla();
-    this.grado=0;
+    this.criterio=0;
     this.anhio_lectivo=0;
     this.seccion=0;
   }
@@ -73,6 +73,13 @@ export class ListaMatriculadosComponent implements OnInit{
    )
  }
 
+ CriterioBusqueda(){
+   if(this.criterio==1){
+       this.ListarAnhiosLectivos();
+       this.anhio_lectivo=0;
+   }
+ }
+
   DataGrado : clsGrados;
   grado_valor : boolean;
   ListarGrados (id){
@@ -83,7 +90,6 @@ export class ListaMatriculadosComponent implements OnInit{
      data => {
        if(data.status==1){
          this.DataGrado = data.data;
-         this.grado=0;
          this.seccion=0;
          this.grado_valor=false;
          this.loadingBar.complete();
@@ -91,7 +97,6 @@ export class ListaMatriculadosComponent implements OnInit{
          if(data.status==0){
           this.toastr.error(data.message, 'Aviso!');
           this.DataGrado = null;
-          this.grado=0;
           this.seccion=0;
           this.grado_valor=true;
           this.loadingBar.complete();
@@ -99,7 +104,6 @@ export class ListaMatriculadosComponent implements OnInit{
           this.toastr.warning(data.message, 'Aviso!');
           this.DataGrado = null;
           this.grado_valor=true;
-          this.grado=0;
           this.seccion=0;
           this.loadingBar.complete();
          }
@@ -139,27 +143,32 @@ export class ListaMatriculadosComponent implements OnInit{
    DataMatriculados : any = [];
    public panel_tabla:boolean;
 
-   Generar_Lista(){
-     if(this.anhio_lectivo==0 || this.grado==0 || this.seccion==0){
-      this.toastr.warning('DEBE SELECCIONAR CRITERIOS DE BUSQUEDAD', 'Aviso!');
+   Generar_Reporte(){
+     if(this.criterio==0){
+      this.toastr.warning('DEBE SELECCIONAR CRITERIOS DE BUSQUEDAD', 'Aviso!');     
      }else{
-      if(this.anhio_lectivo!=0 && this.grado!=0 && this.seccion!=0){
-        this.panel_tabla=true;
-        this.GradoTodos=[];
-        this.DatoBusqueda.idbusqueda=this.anhio_lectivo;
-        this.DatoBusqueda.datobusqueda=this.grado + "-" + this.seccion;
-        this._ReportesServicios.listar_alumnos_grado_seccion(this.DatoBusqueda).then(
-          data => {
-            if(data.status==1){
-              this.DataMatriculados = data.data;
-              this.panel_tabla=true;
-            }else{
-              this.panel_tabla=false;
-              this.toastr.error(data.message, 'Aviso!');
-              this.DataMatriculados = [];
-            }        
-          })
-      }
+      if(this.criterio==1){
+        if(this.anhio_lectivo==0){
+          this.toastr.warning('DEBE SELECCIONAR CRITERIOS DE BUSQUEDAD', 'Aviso!');
+         }else{
+            this.panel_tabla=true;
+            this.GradoTodos=[];
+            this.DatoBusqueda.idbusqueda=this.anhio_lectivo;
+            this._ReportesServicios.listar_alumnos_grado_seccion(this.DatoBusqueda).then(
+              data => {
+                if(data.status==1){
+                  this.DataMatriculados = data.data;
+                  this.panel_tabla=true;
+                }else{
+                  this.panel_tabla=false;
+                  this.toastr.error(data.message, 'Aviso!');
+                  this.DataMatriculados = [];
+                }        
+              })
+         }
+       }else{
+       console.log(this.fecha_desde);
+       }
      }
    }
 
@@ -210,12 +219,7 @@ export class ListaMatriculadosComponent implements OnInit{
   // }
 
 
-   Inicializar_Tabla(){
-    this.DataMatriculados = [];
-    this.dataSource = new MatTableDataSource(this.DataMatriculados);
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;         
-   }
+   
    Lista_Matriculados_xAnhio(id){   
       this.DatoBusqueda.idbusqueda=id;
       this._ReportesServicios.pa_listar_matriculados_xanhio(this.DatoBusqueda).subscribe(
