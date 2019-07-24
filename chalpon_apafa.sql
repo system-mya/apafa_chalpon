@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 24-07-2019 a las 00:14:29
+-- Tiempo de generación: 24-07-2019 a las 23:43:45
 -- Versión del servidor: 5.7.14
 -- Versión de PHP: 5.6.25
 
@@ -24,6 +24,46 @@ DELIMITER $$
 --
 -- Procedimientos
 --
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_balance_xanhio` (IN `anhio` TINYINT)  NO SQL
+SELECT 'INGRESO' as tipo,'PAGO APAFA' as descripcion, r.freg_recibo as fecha,r.mtotal_recibo as balance_i,'' as balance_e FROM recibo r
+WHERE r.estado_recibo=1
+AND r.id_anhio=anhio
+UNION ALL
+SELECT 'INGRESO' as tipo,o.descripcion_movimiento as decripcion,o.freg_movimiento as fecha,o.monto_movimiento as balance_i,'' as balance_e FROM otros_movimientos o
+WHERE o.estado_movimiento=1
+AND o.id_anhio=anhio
+AND o.tipo_movimiento='I'
+UNION ALL
+SELECT 'EGRESO' as tipo,o.descripcion_movimiento as decripcion,o.freg_movimiento as fecha,'' as balance_i,o.monto_movimiento as balance_e FROM otros_movimientos o
+WHERE o.estado_movimiento=1
+AND o.id_anhio=anhio
+AND o.tipo_movimiento='E'
+UNION ALL 
+SELECT 'EGRESO' as tipo,'COMPRAS' as decripcion,c.freg_compra as fecha,'' as balance_i,c.total_compra as balance_e FROM compra c
+WHERE c.estado_compra=1
+AND c.id_anhio=anhio
+ORDER BY fecha DESC$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_balance_xfechas` (IN `fini` DATE, IN `ffin` DATE)  NO SQL
+SELECT 'INGRESO' as tipo,'PAGO APAFA' as descripcion, r.freg_recibo as fecha,r.mtotal_recibo as balance_i,'' as balance_e FROM recibo r
+WHERE r.estado_recibo=1
+AND (DATE(r.freg_recibo)>=fini AND DATE(r.freg_recibo)<=ffin)
+UNION ALL
+SELECT 'INGRESO' as tipo,o.descripcion_movimiento as decripcion,o.freg_movimiento as fecha,o.monto_movimiento as balance_i,'' as balance_e FROM otros_movimientos o
+WHERE o.estado_movimiento=1
+AND (DATE(o.freg_movimiento)>=fini AND DATE(o.freg_movimiento)<=ffin)
+AND o.tipo_movimiento='I'
+UNION ALL
+SELECT 'EGRESO' as tipo,o.descripcion_movimiento as decripcion,o.freg_movimiento as fecha,'' as balance_i,o.monto_movimiento as balance_e FROM otros_movimientos o
+WHERE o.estado_movimiento=1
+AND (DATE(o.freg_movimiento)>=fini AND DATE(o.freg_movimiento)<=ffin)
+AND o.tipo_movimiento='E'
+UNION ALL 
+SELECT 'EGRESO' as tipo,'COMPRAS' as decripcion,c.freg_compra as fecha,'' as balance_i,c.total_compra as balance_e FROM compra c
+WHERE c.estado_compra=1
+AND (DATE(c.freg_compra)>=fini AND DATE(c.freg_compra)<=ffin)
+ORDER BY fecha DESC$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_buscar_dni_usuario` (IN `dni` CHAR(8))  NO SQL
 SELECT * FROM usuario
 WHERE dni_usu=dni
@@ -211,13 +251,19 @@ anhio_lectivo WHERE condicion_anhio='A'
 AND estado_anhio=1
 AND anhio_lectivo=codanhio),idseccion,idrelacion)$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_movimientos` (IN `tipo` CHAR(1), IN `descripcion` VARCHAR(100), IN `monto` FLOAT(10,2), IN `doc` VARCHAR(15), IN `datos` VARCHAR(100), IN `usu` TINYINT)  NO SQL
-INSERT INTO otros_movimientos(tipo_movimiento, descripcion_movimiento, monto_movimiento, freg_movimiento,doc_encargado_movimiento, datos_encargado_movimiento, id_usuario) VALUES (tipo,descripcion,
-monto,NOW(),doc,datos,usu)$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_movimientos` (IN `tipo` CHAR(1), IN `descripcion` VARCHAR(100), IN `monto` FLOAT(10,2), IN `doc` VARCHAR(15), IN `datos` VARCHAR(100), IN `usu` TINYINT, IN `anhio` CHAR(4))  NO SQL
+INSERT INTO otros_movimientos(tipo_movimiento, descripcion_movimiento, monto_movimiento, freg_movimiento,doc_encargado_movimiento, datos_encargado_movimiento, id_usuario,id_anhio) VALUES (tipo,descripcion,
+monto,NOW(),doc,datos,usu,(SELECT idanhio from
+anhio_lectivo WHERE condicion_anhio='A' 
+AND estado_anhio=1
+AND anhio_lectivo=anhio))$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_nvo_recibo` (IN `apo` SMALLINT, IN `usu` SMALLINT, IN `mtotal` FLOAT, IN `num` VARCHAR(20))  NO SQL
-INSERT INTO recibo(id_apoderado,id_usuario,mtotal_recibo,freg_recibo, num_recibo) 
-VALUES (apo,usu,mtotal,NOW(),num)$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_nvo_recibo` (IN `apo` SMALLINT, IN `usu` SMALLINT, IN `mtotal` FLOAT, IN `num` VARCHAR(20), IN `anhio` CHAR(4))  NO SQL
+INSERT INTO recibo(id_apoderado,id_usuario,id_anhio,mtotal_recibo,freg_recibo, num_recibo) 
+VALUES (apo,usu,(SELECT idanhio from
+anhio_lectivo WHERE condicion_anhio='A' 
+AND estado_anhio=1
+AND anhio_lectivo=anhio),mtotal,NOW(),num)$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_insertar_reunion` (IN `motivo` VARCHAR(100), IN `fecha` DATE, IN `hora` TIME, IN `concepto` SMALLINT)  NO SQL
 INSERT INTO reunion(motivo_reunion, fecha_reunion,hora_reunion,id_concepto) 
@@ -352,7 +398,10 @@ descripcion_movimiento AS ruc_compra,freg_movimiento AS fecha_compra,freg_movimi
 monto_movimiento AS total_compra,estado_movimiento as estado_compra
 FROM otros_movimientos
 WHERE tipo_movimiento='E'
-AND estado_movimiento=1 AND YEAR(freg_movimiento)=cod_anhio
+AND estado_movimiento=1 AND id_anhio=(SELECT idanhio from
+anhio_lectivo WHERE condicion_anhio='A' 
+AND estado_anhio=1
+AND anhio_lectivo=cod_anhio)
 ORDER BY freg_compra DESC$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_grados` (IN `nivel` CHAR(1))  NO SQL
@@ -406,7 +455,10 @@ CONCAT(a.apellidos_apoderado,' ',a.nombres_apoderado) as descripcion_ingreso,r.m
 r.freg_recibo AS freg_ingreso
 FROM recibo r
 INNER JOIN apoderado a ON a.id_apoderado=r.id_apoderado
-WHERE r.estado_recibo =1 AND YEAR(r.freg_recibo)=anhio
+WHERE r.estado_recibo =1 AND r.id_anhio=(SELECT idanhio from
+anhio_lectivo WHERE condicion_anhio='A' 
+AND estado_anhio=1
+AND anhio_lectivo=anhio)
 UNION ALL 
 SELECT id_movimiento AS id_ingreso,'O' AS tipo,'' AS id_apoderdo, 
 doc_encargado_movimiento AS doc_ingreso, 
@@ -414,7 +466,10 @@ descripcion_movimiento as descripcion_ingreso,
 monto_movimiento AS monto_ingreso, freg_movimiento AS freg_ingreso
 FROM otros_movimientos
 WHERE tipo_movimiento='I'
-AND estado_movimiento=1 AND YEAR(freg_movimiento)=anhio
+AND estado_movimiento=1 AND id_anhio=(SELECT idanhio from
+anhio_lectivo WHERE condicion_anhio='A' 
+AND estado_anhio=1
+AND anhio_lectivo=anhio)
 ORDER BY freg_ingreso DESC$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_libros_activos` ()  NO SQL
@@ -569,7 +624,10 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_ultimo_recibo_ingresado` (IN `an
 SELECT *
   FROM recibo
   WHERE estado_recibo=1
-  AND YEAR(freg_recibo)=anhio
+  AND id_anhio=(SELECT idanhio from
+anhio_lectivo WHERE condicion_anhio='A' 
+AND estado_anhio=1
+AND anhio_lectivo=anhio)
  ORDER BY id_recibo DESC
   limit 1$$
 
@@ -886,8 +944,8 @@ INSERT INTO `anhio_lectivo` (`idanhio`, `anhio_lectivo`, `finicio_anhio`, `ffin_
 (19, '2015', '2015-01-01', '2015-12-31', NULL, 'C', b'0'),
 (20, '2014', '2014-01-01', '2014-12-31', NULL, 'A', b'0'),
 (21, '2013', '2013-01-01', '2013-12-31', NULL, 'C', b'0'),
-(22, '2018', '2018-01-01', '2018-12-31', NULL, 'C', b'1'),
-(23, '2019', '2019-01-01', '2019-12-31', NULL, 'A', b'1'),
+(22, '2018', '2018-01-01', '2018-12-31', NULL, 'A', b'1'),
+(23, '2019', '2019-01-01', '2019-12-31', NULL, 'C', b'1'),
 (24, '2017', '2017-01-01', '2017-12-31', NULL, 'C', b'1');
 
 -- --------------------------------------------------------
@@ -1086,7 +1144,8 @@ CREATE TABLE `compra` (
 --
 
 INSERT INTO `compra` (`id_compra`, `id_usuario`, `id_anhio`, `tipo_compra`, `num_compra`, `razon_social_compra`, `ruc_compra`, `fecha_compra`, `freg_compra`, `doc_encargado_compra`, `encargado_compra`, `total_compra`, `estado_compra`) VALUES
-(11, 1, 23, 'B', '4436436436', 'fdghdfhdfh fhgdfh df hdf h dhdfhdfhdf h fdhdfh', '10719195827', '2019-07-18', '2019-07-18 15:38:47', '45654J454545', 'Fad Dadad', 400.66, b'0');
+(11, 1, 23, 'B', '4436436436', 'fdghdfhdfh fhgdfh df hdf h dhdfhdfhdf h fdhdfh', '10719195827', '2019-07-18', '2019-07-18 15:38:47', '45654J454545', 'Fad Dadad', 400.66, b'0'),
+(12, 1, 23, 'B', '3252353253', 'EL CEVICHITO', NULL, '2019-07-03', '2019-07-24 17:07:33', '235235235', 'Marita Vanessa', 74, b'1');
 
 -- --------------------------------------------------------
 
@@ -1141,7 +1200,9 @@ CREATE TABLE `detalle_compra` (
 INSERT INTO `detalle_compra` (`id_detalle_compra`, `id_compra`, `nom_producto`, `cantidad_compra`, `medida_compra`, `punit_compra`) VALUES
 (1, 11, 'DFSFS', 2, 'WEWE', 2.33),
 (2, 11, 'DFGDFGDFGDF FD GDFG DFG DFGDF ', 4, 'FGDFG', 44),
-(3, 11, 'GDGDS DSG DG D GDSG DSG DSG DS', 4, 'TEWTEWTEWT', 55);
+(3, 11, 'GDGDS DSG DG D GDSG DSG DSG DS', 4, 'TEWTEWTEWT', 55),
+(4, 12, 'CEVICHE DE TOLLO', 2, 'PLATO', 25),
+(5, 12, 'CERVEZA NEGRO', 3, 'BOTELLA', 8);
 
 -- --------------------------------------------------------
 
@@ -1168,9 +1229,9 @@ INSERT INTO `detalle_deuda` (`id_detalle_deuda`, `id_concepto`, `id_apoderado`, 
 (22, 8, 3, 54, NULL, '2019-06-25', '2019-06-25 15:25:16', 'P'),
 (23, 8, 112, 0, NULL, '2019-07-08', '2019-07-18 15:55:06', 'C'),
 (24, 8, 55, 54, NULL, '2019-07-08', '2019-07-08 16:08:58', 'P'),
-(25, 10, 112, 10, NULL, '2019-07-16', '2019-07-16 18:38:57', 'P'),
-(26, 11, 112, 10, NULL, '2019-07-16', '2019-07-16 18:38:57', 'P'),
-(27, 12, 112, 5, NULL, '2019-07-16', '2019-07-16 18:38:57', 'P'),
+(25, 10, 112, 5, NULL, '2019-07-16', '2019-07-24 15:50:56', 'P'),
+(26, 11, 112, 5, NULL, '2019-07-16', '2019-07-24 15:50:56', 'P'),
+(27, 12, 112, 0, NULL, '2019-07-16', '2019-07-24 15:50:56', 'C'),
 (28, 9, 112, 0, NULL, '2019-07-17', '2019-07-18 15:55:06', 'C'),
 (30, 9, 55, 54.5, NULL, '2019-07-17', '2019-07-17 19:18:59', 'P'),
 (31, 9, 15, 54.5, NULL, '2019-07-19', '2019-07-19 16:04:02', 'P');
@@ -1198,7 +1259,10 @@ INSERT INTO `detalle_recibo` (`id_detalle_deuda`, `id_recibo`, `monto_detalle`) 
 (26, 24, 5),
 (27, 24, 5),
 (23, 25, 20),
-(28, 25, 54.5);
+(28, 25, 54.5),
+(25, 26, 5),
+(26, 26, 5),
+(27, 26, 5);
 
 -- --------------------------------------------------------
 
@@ -1316,6 +1380,7 @@ CREATE TABLE `otros_movimientos` (
   `doc_encargado_movimiento` varchar(15) NOT NULL,
   `datos_encargado_movimiento` varchar(100) NOT NULL,
   `id_usuario` tinyint(4) NOT NULL,
+  `id_anhio` tinyint(4) NOT NULL,
   `estado_movimiento` bit(1) NOT NULL DEFAULT b'1'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -1323,16 +1388,17 @@ CREATE TABLE `otros_movimientos` (
 -- Volcado de datos para la tabla `otros_movimientos`
 --
 
-INSERT INTO `otros_movimientos` (`id_movimiento`, `tipo_movimiento`, `descripcion_movimiento`, `monto_movimiento`, `freg_movimiento`, `doc_encargado_movimiento`, `datos_encargado_movimiento`, `id_usuario`, `estado_movimiento`) VALUES
-(1, 'I', 'RIFA DEL DIA DEL PADRE', 2000.50, '2019-06-03 03:19:17', '565665666', 'Juan Carlos Rios Vasquez', 46, b'0'),
-(2, 'I', 'BINGO POR ANIVERSARIO', 5500.00, '2019-06-08 18:27:22', '15465465465', 'Julca Zeña Javier', 46, b'0'),
-(3, 'I', 'RIFA POR EL DIA DE LA MADRE', 1000.50, '2019-06-08 18:28:37', '9879989898', 'Susana Vasquez Delgado', 46, b'0'),
-(4, 'I', 'SFAFAS', 100.00, '2019-07-17 14:56:21', 'DSFSD3252352352', 'Fadad', 1, b'0'),
-(5, 'I', 'SFSF', 12.00, '2019-07-18 15:52:43', '325235235325235', 'Djk', 1, b'1'),
-(6, 'I', 'PINTADO DE CARPETAs', 100.50, '2019-07-18 19:08:08', '546545654654654', 'Juan Jose Vasquez Delgado', 1, b'1'),
-(7, 'I', 'PINTADO DE CARPETAS', 100.50, '2019-07-18 19:09:18', '45786767', 'Juan Jose Vasquez Delgado', 1, b'1'),
-(8, 'E', 'PINTADO DE CARPETAs', 100.50, '2019-07-18 19:10:03', '6545646465465', 'Juan Jose Vasquez Delgado', 1, b'0'),
-(9, 'E', 'DICTADO DE CLASES DE INGLES', 400.50, '2019-07-19 12:28:52', '73258572', 'Marita Vanessa Sanchez Velasquez', 1, b'1');
+INSERT INTO `otros_movimientos` (`id_movimiento`, `tipo_movimiento`, `descripcion_movimiento`, `monto_movimiento`, `freg_movimiento`, `doc_encargado_movimiento`, `datos_encargado_movimiento`, `id_usuario`, `id_anhio`, `estado_movimiento`) VALUES
+(1, 'I', 'RIFA DEL DIA DEL PADRE', 2000.50, '2019-06-03 03:19:17', '565665666', 'Juan Carlos Rios Vasquez', 46, 23, b'0'),
+(2, 'I', 'BINGO POR ANIVERSARIO', 5500.00, '2019-06-08 18:27:22', '15465465465', 'Julca Zeña Javier', 46, 23, b'0'),
+(3, 'I', 'RIFA POR EL DIA DE LA MADRE', 1000.50, '2019-06-08 18:28:37', '9879989898', 'Susana Vasquez Delgado', 46, 23, b'0'),
+(4, 'I', 'SFAFAS', 100.00, '2019-07-17 14:56:21', 'DSFSD3252352352', 'Fadad', 1, 23, b'0'),
+(5, 'I', 'SFSF', 12.00, '2019-07-18 15:52:43', '325235235325235', 'Djk', 1, 23, b'1'),
+(6, 'I', 'PINTADO DE CARPETAs', 100.50, '2019-07-18 19:08:08', '546545654654654', 'Juan Jose Vasquez Delgado', 1, 23, b'1'),
+(7, 'I', 'PINTADO DE CARPETAS', 100.50, '2019-07-18 19:09:18', '45786767', 'Juan Jose Vasquez Delgado', 1, 23, b'1'),
+(8, 'E', 'PINTADO DE CARPETAs', 100.50, '2019-07-18 19:10:03', '6545646465465', 'Juan Jose Vasquez Delgado', 1, 23, b'0'),
+(9, 'E', 'DICTADO DE CLASES DE INGLES POR LA PROFESORA MARITA', 400.50, '2019-07-19 12:28:52', '73258572', 'Marita Vanessa Sanchez Velasquez', 1, 23, b'1'),
+(10, 'I', 'RIFAS DE REINADO', 1500.00, '2019-07-24 16:17:41', '3523532532532', 'Maria Pia', 1, 23, b'1');
 
 -- --------------------------------------------------------
 
@@ -1367,6 +1433,7 @@ CREATE TABLE `recibo` (
   `id_recibo` smallint(6) NOT NULL,
   `id_apoderado` smallint(6) NOT NULL,
   `id_usuario` tinyint(4) NOT NULL,
+  `id_anhio` tinyint(4) NOT NULL,
   `mtotal_recibo` float NOT NULL,
   `freg_recibo` datetime NOT NULL,
   `num_recibo` varchar(20) NOT NULL,
@@ -1377,10 +1444,11 @@ CREATE TABLE `recibo` (
 -- Volcado de datos para la tabla `recibo`
 --
 
-INSERT INTO `recibo` (`id_recibo`, `id_apoderado`, `id_usuario`, `mtotal_recibo`, `freg_recibo`, `num_recibo`, `estado_recibo`) VALUES
-(23, 112, 1, 24, '2019-07-16 17:59:34', '1171-20190716-1', b'0'),
-(24, 112, 1, 44.25, '2019-07-16 18:38:57', '1171-20190716-2', b'0'),
-(25, 112, 1, 74.5, '2019-07-18 15:55:05', '1171-20190718-1', b'1');
+INSERT INTO `recibo` (`id_recibo`, `id_apoderado`, `id_usuario`, `id_anhio`, `mtotal_recibo`, `freg_recibo`, `num_recibo`, `estado_recibo`) VALUES
+(23, 112, 1, 23, 24, '2019-07-16 17:59:34', '1171-20190716-1', b'0'),
+(24, 112, 1, 23, 44.25, '2019-07-16 18:38:57', '1171-20190716-2', b'0'),
+(25, 112, 1, 23, 74.5, '2019-07-18 15:55:05', '1171-20190718-1', b'1'),
+(26, 112, 1, 23, 15, '2019-07-24 15:50:56', '1171-20190724-2', b'1');
 
 -- --------------------------------------------------------
 
@@ -1610,7 +1678,8 @@ ALTER TABLE `matricula`
 -- Indices de la tabla `otros_movimientos`
 --
 ALTER TABLE `otros_movimientos`
-  ADD PRIMARY KEY (`id_movimiento`);
+  ADD PRIMARY KEY (`id_movimiento`),
+  ADD KEY `id_anhio` (`id_anhio`);
 
 --
 -- Indices de la tabla `perfil_usuario`
@@ -1624,7 +1693,8 @@ ALTER TABLE `perfil_usuario`
 ALTER TABLE `recibo`
   ADD PRIMARY KEY (`id_recibo`),
   ADD KEY `id_apoderado` (`id_apoderado`),
-  ADD KEY `id_usuario` (`id_usuario`);
+  ADD KEY `id_usuario` (`id_usuario`),
+  ADD KEY `id_anhio` (`id_anhio`);
 
 --
 -- Indices de la tabla `reunion`
@@ -1676,7 +1746,7 @@ ALTER TABLE `apoderado`
 -- AUTO_INCREMENT de la tabla `compra`
 --
 ALTER TABLE `compra`
-  MODIFY `id_compra` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id_compra` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 --
 -- AUTO_INCREMENT de la tabla `concepto_apafa`
 --
@@ -1686,7 +1756,7 @@ ALTER TABLE `concepto_apafa`
 -- AUTO_INCREMENT de la tabla `detalle_compra`
 --
 ALTER TABLE `detalle_compra`
-  MODIFY `id_detalle_compra` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_detalle_compra` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT de la tabla `detalle_deuda`
 --
@@ -1711,7 +1781,7 @@ ALTER TABLE `matricula`
 -- AUTO_INCREMENT de la tabla `otros_movimientos`
 --
 ALTER TABLE `otros_movimientos`
-  MODIFY `id_movimiento` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id_movimiento` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 --
 -- AUTO_INCREMENT de la tabla `perfil_usuario`
 --
@@ -1721,7 +1791,7 @@ ALTER TABLE `perfil_usuario`
 -- AUTO_INCREMENT de la tabla `recibo`
 --
 ALTER TABLE `recibo`
-  MODIFY `id_recibo` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id_recibo` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 --
 -- AUTO_INCREMENT de la tabla `reunion`
 --
@@ -1796,9 +1866,16 @@ ALTER TABLE `matricula`
   ADD CONSTRAINT `seccion_matricula` FOREIGN KEY (`id_seccion`) REFERENCES `secciones` (`id_seccion`);
 
 --
+-- Filtros para la tabla `otros_movimientos`
+--
+ALTER TABLE `otros_movimientos`
+  ADD CONSTRAINT `anhio_movimiento` FOREIGN KEY (`id_anhio`) REFERENCES `anhio_lectivo` (`idanhio`);
+
+--
 -- Filtros para la tabla `recibo`
 --
 ALTER TABLE `recibo`
+  ADD CONSTRAINT `anhio_recibo` FOREIGN KEY (`id_anhio`) REFERENCES `anhio_lectivo` (`idanhio`),
   ADD CONSTRAINT `apoderado_recibo` FOREIGN KEY (`id_apoderado`) REFERENCES `apoderado` (`id_apoderado`),
   ADD CONSTRAINT `usuario_recibo` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`idusuario`);
 

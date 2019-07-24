@@ -115,6 +115,54 @@ class Reportes {
         });
     };
 
+    listar_balance_xanhio(anhio, res) {
+        connection.acquire((err, con) => {
+            if(err){
+                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+            }else{
+            var query = "CALL pa_balance_xanhio("+ [anhio.idbusqueda] +")"; 
+            /* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
+            con.query(query,(err, result) => {
+                con.release();
+                if(err){
+                    res.send({status: 0, message: err.sqlMessage});
+                }else{
+                    if (result[0].length == 0) {
+                        res.send({status: 2, message: 'NO HAY DATOS EN LA CONSULTA'});
+                    } else {
+                        res.send({status: 1, message: 'BALANCE GENERAL',data:result[0]});
+                    }
+                }
+            });
+            }
+        });
+    };
+
+    listar_balance_xfechas(anhio, res) {
+        connection.acquire((err, con) => {
+            if(err){
+                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+            }else{
+            var array = anhio.datobusqueda.split("*");
+            var query = "CALL pa_balance_xfechas('"+ array[0] +"','"+  array[1] +"')"; 
+            /* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
+            con.query(query,(err, result) => {
+                con.release();
+                if(err){
+                    res.send({status: 0, message: err.sqlMessage});
+                }else{
+                    if (result[0].length == 0) {
+                        res.send({status: 2, message: 'NO HAY DATOS EN LA CONSULTA'});
+                    } else {
+                        res.send({status: 1, message: 'BALANCE GENERAL',data:result[0]});
+                    }
+                }
+            });
+            }
+        });
+    };
+
+
 }
 
 module.exports = new Reportes();

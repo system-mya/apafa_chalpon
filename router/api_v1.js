@@ -371,6 +371,16 @@ app.post('/api/reportes/listar_alumnos_grado_seccion', (req, res) => {
     reportes.listar_alumnos_grado_seccion(req.body,res);
 });
 
+//LLAMADA LISTAR BALANCE X AÑO
+app.post('/api/reportes/listar_balance_xanhio', (req, res) => {
+    reportes.listar_balance_xanhio(req.body,res);
+});
+
+//LLAMADA LISTAR BALANCE X FECHAS
+app.post('/api/reportes/listar_balance_xfechas', (req, res) => {
+    reportes.listar_balance_xfechas(req.body,res);
+});
+
 }
 
 }

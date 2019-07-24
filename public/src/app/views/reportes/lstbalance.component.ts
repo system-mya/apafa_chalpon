@@ -12,6 +12,8 @@ import 'rxjs/add/operator/delay';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import * as jspdf from 'jspdf';
 import 'jspdf-autotable';
+import { formatDate } from '@angular/common';
+
 function bodyRows(data,rowCount) {
   rowCount = rowCount;
   let body = [];
@@ -74,9 +76,16 @@ export class BalanceComponent implements OnInit{
  }
 
  CriterioBusqueda(){
+   this.panel_tabla=false;
    if(this.criterio==1){
        this.ListarAnhiosLectivos();
        this.anhio_lectivo=0;
+       this.fecha_desde='';
+       this.fecha_hasta='';
+   }else{
+    this.anhio_lectivo=0;
+     this.fecha_desde='';
+     this.fecha_hasta='';
    }
  }
 
@@ -140,7 +149,7 @@ export class BalanceComponent implements OnInit{
    } 
 
    GradoTodos : any = [];
-   DataMatriculados : any = [];
+   DataBalance : any = [];
    public panel_tabla:boolean;
 
    Generar_Reporte(){
@@ -151,23 +160,44 @@ export class BalanceComponent implements OnInit{
         if(this.anhio_lectivo==0){
           this.toastr.warning('DEBE SELECCIONAR CRITERIOS DE BUSQUEDAD', 'Aviso!');
          }else{
-            this.panel_tabla=true;
-            this.GradoTodos=[];
+            this.loadingBar.start();
             this.DatoBusqueda.idbusqueda=this.anhio_lectivo;
-            this._ReportesServicios.listar_alumnos_grado_seccion(this.DatoBusqueda).then(
+            this._ReportesServicios.listar_balance_xanhio(this.DatoBusqueda).then(
               data => {
                 if(data.status==1){
-                  this.DataMatriculados = data.data;
+                  this.toastr.success(data.message, 'Aviso!');
+                  this.DataBalance = data.data;
                   this.panel_tabla=true;
+                  this.loadingBar.complete();
                 }else{
                   this.panel_tabla=false;
                   this.toastr.error(data.message, 'Aviso!');
-                  this.DataMatriculados = [];
+                  this.DataBalance = [];
+                  this.loadingBar.complete();
                 }        
               })
          }
        }else{
-       console.log(this.fecha_desde);
+         if(this.fecha_desde==undefined || this.fecha_hasta==undefined){
+          this.toastr.warning('DEBE SELECCIONAR CRITERIOS DE BUSQUEDAD', 'Aviso!');
+         }else{
+          this.loadingBar.start();
+          this.DatoBusqueda.datobusqueda=this.fecha_desde + "*" + this.fecha_hasta;
+          this._ReportesServicios.listar_balance_xfechas(this.DatoBusqueda).then(
+            data => {
+              if(data.status==1){
+                this.toastr.success(data.message, 'Aviso!');
+                this.DataBalance = data.data;
+                this.panel_tabla=true;
+                this.loadingBar.complete();
+              }else{
+                this.panel_tabla=false;
+                this.toastr.error(data.message, 'Aviso!');
+                this.DataBalance = [];
+                this.loadingBar.complete();
+              }        
+            })
+         }
        }
      }
    }
@@ -220,28 +250,7 @@ export class BalanceComponent implements OnInit{
 
 
    
-   Lista_Matriculados_xAnhio(id){   
-      this.DatoBusqueda.idbusqueda=id;
-      this._ReportesServicios.pa_listar_matriculados_xanhio(this.DatoBusqueda).subscribe(
-        data =>{
-          if(data.status==1){           
-            this.DataMatriculados = data.data;
-            this.dataSource = new MatTableDataSource(this.DataMatriculados);
-            this.dataSource.paginator = this.paginator;
-            this.dataSource.sort = this.sort;            
-           }else{
-             this.toastr.error(data.message, 'Aviso!');
-             this.panel_tabla=false;
-             this.DataMatriculados = data.data;
-             this.dataSource = new MatTableDataSource(this.DataMatriculados);
-             this.dataSource.paginator = this.paginator;
-             this.dataSource.sort = this.sort;
-           }
-        }
-      )
-    
-    
-   }
+
 
    applyFilter(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
@@ -349,6 +358,14 @@ export class BalanceComponent implements OnInit{
 
   public VerPDF()
   {
+    if(this.criterio==1){
+      var anhio:string;
+      for(var i=0;i<this.DataAnhios.length;i++){
+        if(this.DataAnhios[i].idanhio==this.anhio_lectivo){
+          anhio=this.DataAnhios[i].anhio_lectivo;
+        }
+      }
+    }
     var doc = new jspdf({orientation: 'portrait',unit: 'mm',format: 'A4'});
     var totalPagesExp = "{total_pages_count_string}";
     var img = new Image();
@@ -357,17 +374,22 @@ export class BalanceComponent implements OnInit{
     doc.setFontSize(12);
     doc.setFont('helvetica');
     doc.setFontType('bold');
-    doc.text(50, 60, "GRADO: "+this.DataMatriculados[0].descripcion_grado + " SECCION: " + this.DataMatriculados[0].nombre_seccion);
+    if(this.criterio==1){
+      doc.text(70, 60, "BALANCE GENERAL AÑO " + anhio);
+    }else{
+      doc.text(45, 60, "BALANCE GENERAL DESDE: " +  formatDate(this.fecha_desde,'dd/MM/yyyy','en-US') + " HASTA: " + formatDate(this.fecha_hasta,'dd/MM/yyyy','en-US'));
+    }
+    
     // From HTML
      doc.autoTable({html: '.table',
-     styles: {overflow: 'linebreak', cellWidth:'wrap'},
+     styles: {overflow: 'linebreak'},
      columnStyles:{
        0: {halign: 'center',cellWidth: 5},
-       1: {cellWidth: 10},
-       2: {cellWidth: 25},
-       3: {cellWidth: 25},
-       4: {halign: 'center',cellWidth: 30},
-       5: {halign: 'center',cellWidth: 5}
+       1: {cellWidth: 2},
+       2: {cellWidth: 32},
+       3: {cellWidth: 30},
+       4: {cellWidth: 5},
+       5: {cellWidth: 5}
       },
      theme: 'grid',showHead: 'firstPage',startY: 70,
      didDrawPage: function (data) {
@@ -404,8 +426,8 @@ export class BalanceComponent implements OnInit{
   
     // }
   
-    doc.output('save', this.DataMatriculados[0].descripcion_grado+" "+this.DataMatriculados[0].nombre_seccion+'.pdf');
-  }
+    doc.output('save', "BALANCE GENERAL "+ this.fecha_desde + " " + this.fecha_hasta +'.pdf');
+  } 
 
   
 }

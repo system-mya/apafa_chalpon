@@ -178,7 +178,7 @@ class Tesoreria {
                var query = "CALL pa_insertar_movimientos('"+[movimiento.tipo_movimiento]+"','"+ [movimiento.descripcion_movimiento.toUpperCase()] 
                         +"','"+ [movimiento.monto_movimiento] + "','"+ [movimiento.doc_encargado_movimiento] 
                         + "','"+ [movimiento.datos_encargado_movimiento] 
-                        + "',"+ get('123456$#@$^@1ERF',[movimiento.id_usuario][0]) + ")";
+                        + "',"+ get('123456$#@$^@1ERF',[movimiento.id_usuario][0]) + ",'"+ [movimiento.anhio] +"')";
                         con.query(query,(err, result) => {
                             con.release();
                             if(err){
@@ -242,7 +242,7 @@ class Tesoreria {
                             var num_recibo = [recibo.doc_apoderado][0].substr(0,4) + "-" + hoyFecha() + "-1";
                             var query_nvo_recibo = "CALL pa_insertar_nvo_recibo("+[recibo.id_apoderado]
                             + "," + get('123456$#@$^@1ERF',[recibo.id_usuario][0]) 
-                            + ",'" + [recibo.mtotal_recibo] + "','"+ num_recibo + "')";
+                            + ",'" + [recibo.mtotal_recibo] + "','"+ num_recibo + "','" + [recibo.anhio] + "')";
                             con.query(query_nvo_recibo, function(err, result) {
                             if (err) { 
                                 con.rollback(function() {
@@ -328,7 +328,7 @@ class Tesoreria {
                             var num_recibo = [recibo.doc_apoderado][0].substr(0,4) + "-" + hoyFecha() + "-" + (parseInt(array[2])+1);
                             var query_nvo_recibo = "CALL pa_insertar_nvo_recibo("+[recibo.id_apoderado]
                             + "," + get('123456$#@$^@1ERF',[recibo.id_usuario][0]) 
-                            + ",'" + [recibo.mtotal_recibo] + "','"+ num_recibo + "')";
+                            + ",'" + [recibo.mtotal_recibo] + "','"+ num_recibo + "','" + [recibo.anhio] + "')";
                             con.query(query_nvo_recibo, function(err, result) {
                             if (err) { 
                                 con.rollback(function() {

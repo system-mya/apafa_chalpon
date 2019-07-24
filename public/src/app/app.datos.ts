@@ -134,6 +134,7 @@ export class clsTipo_Relacion
 export class clsMovimiento
 {
     id_movimiento ?: number;
+    anhio ?: string;
     tipo_movimiento ?: string;
     descripcion_movimiento ?: string;
     monto_movimiento ?: number;

@@ -37,4 +37,14 @@ export class ReportesService {
     .map(res => res.json()).toPromise()
   }
 
+  public listar_balance_xanhio(anhio:clsBusqueda){
+    return this._http.post('/api/reportes/listar_balance_xanhio',anhio)
+    .map(res => res.json()).toPromise()
+  }
+
+  public listar_balance_xfechas(anhio:clsBusqueda){
+    return this._http.post('/api/reportes/listar_balance_xfechas',anhio)
+    .map(res => res.json()).toPromise()
+  }
+
 }

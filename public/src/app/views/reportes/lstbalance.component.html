@@ -41,7 +41,7 @@
                       <div class="form-group">
                         <label for="postal-code" style="font-weight: bold;">Fecha Hasta:</label>
                         <input class="form-control" id="fecha_hasta" type='date' name="fecha_hasta" placeholder="date"
-                         [(ngModel)]="fecha_hasta" #regfecha="ngModel" required>
+                         [(ngModel)]="fecha_hasta" #regfecha="ngModel" min="{{fecha_desde}}" required>
                     </div>
                   </div>
                     <div class="col-sm-12 col-md-2 col-lg-3">
@@ -61,43 +61,37 @@
                 </div>
             </div>
             <div class="card-body" *ngIf="panel_tabla">
-              <div class="row">
-                  <div class="form-group col-sm-6">
-                      <label for="monto_concepto" style="font-weight: bold;">Buscar Alumno:</label>
-                    <input type="text" class="form-control" name="searchString" placeholder="Ingrese Apellidos Alumno" [(ngModel)]="searchString">
-                  </div>
-              </div>
-              <div class="table-responsive">  
+              <div class="secciones-balance table-responsive">  
             <table class="table">
               <thead>
                 <tr>
                   <th width="5%">N°</th>
-                  <th width="15%">Doc. Identidad</th>
-                  <th width="25%">Apellidos</th>
-                  <th width="25%">Nombres</th>
-                  <th width="25%">Grado</th>
-                  <th width="5%">Sección</th>
-                </tr>
+                  <th width="15%">Tipo Movimiento</th>
+                  <th width="30%">Descripción</th>
+                  <th width="20%">Fecha y Hora</th>
+                  <th width="20%">Ingreso</th>
+                  <th width="20%">Egreso</th>
+                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let item of DataMatriculados | filter : 'apellidos_alumno' : searchString;let indice=index;">
+                <tr *ngFor="let item of DataBalance;let indice=index;">
                     <td>
                       {{indice + 1}}                        
                     </td>
                     <td>
-                      {{item.doc_alumno}}                        
+                      {{item.tipo}}                        
                     </td>
                     <td>
-                      {{item.apellidos_alumno}}                        
+                      {{item.descripcion}}                        
                     </td>
                     <td>
-                      {{item.nombres_alumno}}                        
+                      {{item.fecha | date:'dd/MM/yyyy h:mm a '}}                        
                     </td>
                     <td>
-                      {{item.descripcion_grado}}                        
+                      {{item.balance_i | number : '.2-2'}}                        
                     </td>
                     <td>
-                      {{item.nombre_seccion}}                        
+                      {{item.balance_e | number : '.2-2'}}                        
                     </td>
                 </tr>
               </tbody>

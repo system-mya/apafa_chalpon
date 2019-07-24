@@ -49,7 +49,12 @@ export class InicialComponent implements OnInit {
   Cargar_Matriculados (){
    this._MatriculaServicios.getListarMatriculados().subscribe(
      data => {
-        this.contador_matriculados = data.data.length;      
+        if(data.data!=undefined){
+          console.log(data.data);
+           this.contador_matriculados = data.data.length; 
+        }else{
+          this.contador_matriculados = 0;
+        }     
      })
    }
 }

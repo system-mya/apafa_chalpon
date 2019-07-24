@@ -132,6 +132,7 @@ DataIngresos: any = [];
     }).then((result) => {
       if (result.value == true) {
         form.id_usuario = localStorage.getItem('ID');
+        form.anhio = localStorage.getItem('_anhio');
         form.tipo_movimiento = 'I';
         this._IngresosServicios.nvo_otro_ingreso(form)
         .then(data => {

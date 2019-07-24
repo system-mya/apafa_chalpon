@@ -18,7 +18,7 @@ export class IngresosService {
   }
 
   public nvo_otro_ingreso(ingreso:clsMovimiento){
-    return this._http.post('/api/tesoreria/insertar_ingreso',ingreso)
+    return this._http.post('/api/tesoreria/insertar_movimiento',ingreso)
      .map(data => data.json()).toPromise()
   }
 

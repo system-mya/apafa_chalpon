@@ -36,4 +36,17 @@
     text-align: center !important;
     border: 1px solid #606273 !important;
   }
+
+  .secciones-balance {
+    height: 500px !important;
+    overflow: auto;
+  }
+  
+  .secciones-balance th {
+    position: sticky;
+    position: -webkit-sticky;
+    top: 0;
+    background: white;
+    z-index: 10;
+  }
   
