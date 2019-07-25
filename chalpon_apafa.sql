@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 24-07-2019 a las 23:43:45
+-- Tiempo de generación: 25-07-2019 a las 22:27:36
 -- Versión del servidor: 5.7.14
 -- Versión de PHP: 5.6.25
 
@@ -450,7 +450,7 @@ SELECT m.id_matricula,g.descripcion_grado,s.nombre_seccion,a.anhio_lectivo, ap.i
  a.anhio_lectivo$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_ingresos_xperiodo` (IN `anhio` CHAR(4))  NO SQL
-SELECT r.id_recibo AS id_ingreso,'R' AS tipo,a.id_apoderado as id_apoderado,r.num_recibo AS doc_ingreso, 
+SELECT r.id_recibo AS id_ingreso,'RECIBO' AS tipo,a.id_apoderado as id_apoderado,r.num_recibo AS doc_ingreso, 
 CONCAT(a.apellidos_apoderado,' ',a.nombres_apoderado) as descripcion_ingreso,r.mtotal_recibo AS monto_ingreso, 
 r.freg_recibo AS freg_ingreso
 FROM recibo r
@@ -460,7 +460,7 @@ anhio_lectivo WHERE condicion_anhio='A'
 AND estado_anhio=1
 AND anhio_lectivo=anhio)
 UNION ALL 
-SELECT id_movimiento AS id_ingreso,'O' AS tipo,'' AS id_apoderdo, 
+SELECT id_movimiento AS id_ingreso,'OTROS' AS tipo,'' AS id_apoderdo, 
 doc_encargado_movimiento AS doc_ingreso, 
 descripcion_movimiento as descripcion_ingreso,
 monto_movimiento AS monto_ingreso, freg_movimiento AS freg_ingreso
@@ -944,8 +944,8 @@ INSERT INTO `anhio_lectivo` (`idanhio`, `anhio_lectivo`, `finicio_anhio`, `ffin_
 (19, '2015', '2015-01-01', '2015-12-31', NULL, 'C', b'0'),
 (20, '2014', '2014-01-01', '2014-12-31', NULL, 'A', b'0'),
 (21, '2013', '2013-01-01', '2013-12-31', NULL, 'C', b'0'),
-(22, '2018', '2018-01-01', '2018-12-31', NULL, 'A', b'1'),
-(23, '2019', '2019-01-01', '2019-12-31', NULL, 'C', b'1'),
+(22, '2018', '2018-01-01', '2018-12-31', NULL, 'C', b'1'),
+(23, '2019', '2019-01-01', '2019-12-31', NULL, 'A', b'1'),
 (24, '2017', '2017-01-01', '2017-12-31', NULL, 'C', b'1');
 
 -- --------------------------------------------------------

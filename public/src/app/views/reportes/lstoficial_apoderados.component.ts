@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import {clsBusqueda} from '../../app.datos';
 import 'rxjs/add/operator/map';
 import { LoadingBarService } from '@ngx-loading-bar/core';
+import { NgxSpinnerService } from 'ngx-spinner';
 import * as jspdf from 'jspdf';
 import 'jspdf-autotable';
 
@@ -21,7 +22,8 @@ export class ListaOficialApoderadosComponent implements OnInit {
   public DatoBusqueda : clsBusqueda = {};
   searchString:string;
   constructor(private _AnhiosServicios:AnhiosService,private toastr: ToastrService,
-    private _ReportesServicios: ReportesService,private loadingBar: LoadingBarService) { 
+    private _ReportesServicios: ReportesService,private loadingBar: LoadingBarService,
+    private spinner: NgxSpinnerService) { 
     this.ListarAnhiosLectivos();
     this.anhio_lectivo=0;
   }
@@ -109,6 +111,8 @@ export class ListaOficialApoderadosComponent implements OnInit {
 
  public VerPDF()
   {
+    this.loadingBar.start();
+    this.spinner.show();
     var doc = new jspdf({orientation: 'portrait',unit: 'mm',format: 'A4'});
     var totalPagesExp = "{total_pages_count_string}";
     var img = new Image();
@@ -161,7 +165,12 @@ export class ListaOficialApoderadosComponent implements OnInit {
     // });
   
     // }
-  
-    doc.output('save', 'lista_apoderados_y_alumnos_matriculados.pdf');
+    setTimeout(() => {
+      doc.output('save', 'lista_apoderados_y_alumnos_matriculados.pdf');
+      this.toastr.success('PDF Generado', 'Aviso!');
+      this.loadingBar.complete();
+      this.spinner.hide();
+    }, 5000); 
+    
   }
 }

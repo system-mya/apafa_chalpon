@@ -4,10 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { ListaOficialApoderadosComponent } from './lstoficial_apoderados.component';
 import { ListaMatriculadosComponent } from './lstmatriculados.component';
 import { BalanceComponent } from './lstbalance.component';
-import { FontAwesomeComponent } from './font-awesome.component';
+import { ListaIngresosEgresosComponent } from './lstingresosyegresos.component';
 import { SimpleLineIconsComponent } from './simple-line-icons.component';
 import { TableFilterPipe } from './table-filter.pipe';
 import { ReportesRoutingModule } from './reportes-routing.module';
+import { NgxSpinnerModule } from 'ngx-spinner';
 import { MatAutocompleteModule,
   MatBadgeModule,
   MatBottomSheetModule,
@@ -46,7 +47,7 @@ import { MatAutocompleteModule,
   MatFormFieldModule,} from '@angular/material';
 @NgModule({
   imports: [ CommonModule,
-    ReportesRoutingModule,FormsModule,
+    ReportesRoutingModule,FormsModule,NgxSpinnerModule,
     [
       MatAutocompleteModule,
       MatBadgeModule,
@@ -90,7 +91,7 @@ import { MatAutocompleteModule,
     TableFilterPipe,
     ListaMatriculadosComponent,
     BalanceComponent,
-    FontAwesomeComponent,
+    ListaIngresosEgresosComponent,
     SimpleLineIconsComponent,   
   ]
 })

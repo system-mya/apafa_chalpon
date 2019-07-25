@@ -10,6 +10,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/delay';
 import { LoadingBarService } from '@ngx-loading-bar/core';
+import { NgxSpinnerService } from 'ngx-spinner';
 import * as jspdf from 'jspdf';
 import 'jspdf-autotable';
 import { formatDate } from '@angular/common';
@@ -50,7 +51,8 @@ export class BalanceComponent implements OnInit{
   searchString:string;
   constructor(private _AnhiosServicios:AnhiosService,private toastr: ToastrService,
     private _ReportesServicios: ReportesService,private loadingBar: LoadingBarService,
-    private _GradoServicios:GradoSeccionService,private _MatriculaServicios:MatriculaService) { 
+    private _GradoServicios:GradoSeccionService,private _MatriculaServicios:MatriculaService,
+    private spinner: NgxSpinnerService) { 
     this.criterio=0;
     this.anhio_lectivo=0;
     this.seccion=0;
@@ -80,12 +82,12 @@ export class BalanceComponent implements OnInit{
    if(this.criterio==1){
        this.ListarAnhiosLectivos();
        this.anhio_lectivo=0;
-       this.fecha_desde='';
-       this.fecha_hasta='';
+       this.fecha_desde=undefined;
+       this.fecha_hasta=undefined;
    }else{
     this.anhio_lectivo=0;
-     this.fecha_desde='';
-     this.fecha_hasta='';
+     this.fecha_desde=undefined;
+     this.fecha_hasta=undefined;
    }
  }
 
@@ -358,6 +360,8 @@ export class BalanceComponent implements OnInit{
 
   public VerPDF()
   {
+    this.loadingBar.start();
+    this.spinner.show();
     if(this.criterio==1){
       var anhio:string;
       for(var i=0;i<this.DataAnhios.length;i++){
@@ -425,8 +429,18 @@ export class BalanceComponent implements OnInit{
     // });
   
     // }
+    setTimeout(() => {
+      if(this.criterio==1){
+        doc.output('save', "BALANCE GENERAL "+ anhio + '.pdf');
+      }else{
+        doc.output('save', "BALANCE GENERAL "+ this.fecha_desde + " " + this.fecha_hasta +'.pdf');
+      }
+      this.toastr.success('PDF Generado', 'Aviso!');
+      this.loadingBar.complete();
+      this.spinner.hide();
+    }, 5000); 
   
-    doc.output('save', "BALANCE GENERAL "+ this.fecha_desde + " " + this.fecha_hasta +'.pdf');
+    
   } 
 
   

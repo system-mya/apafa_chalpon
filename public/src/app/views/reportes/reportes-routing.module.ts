@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { ListaOficialApoderadosComponent } from './lstoficial_apoderados.component';
 import { ListaMatriculadosComponent } from './lstmatriculados.component';
 import { BalanceComponent } from './lstbalance.component';
-import { SimpleLineIconsComponent } from './simple-line-icons.component';
+import { ListaIngresosEgresosComponent } from './lstingresosyegresos.component';
 
 const routes: Routes = [
   {
@@ -38,10 +38,10 @@ const routes: Routes = [
         }
       },
       {
-        path: 'simple-line-icons',
-        component: SimpleLineIconsComponent,
+        path: 'lstingresosyegresos',
+        component: ListaIngresosEgresosComponent,
         data: {
-          title: 'Simple Line Icons'
+          title: 'Ingresos y Egresos'
         }
       }
     ]

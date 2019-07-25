@@ -156,13 +156,8 @@ export const navAD: NavData[] = [
         icon: 'cui-justify-center'
       },
       {
-        name: 'Listado de Ingresos',
-        url: '/icons/simple-line-icons',
-        icon: 'cui-justify-center'
-      },
-      {
-        name: 'Listado de Egresos',
-        url: '/icons/simple-line-icons',
+        name: 'Ingresos y Egresos',
+        url: '/reportes/lstingresosyegresos',
         icon: 'cui-justify-center'
       },
       {

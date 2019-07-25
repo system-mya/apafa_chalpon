@@ -38,7 +38,7 @@ export class IngresosComponent {
   @ViewChild('NvoPagoModal') public NvoPagoModal: ModalDirective;
   @ViewChild('DetallePago') public DetallePago: ModalDirective;
   @ViewChild('DetalleIngreso') public DetalleIngreso: ModalDirective;
-  displayedColumns: string[] = ['doc_ingreso', 'descripcion_ingreso', 'monto_ingreso', 'freg_ingreso', 'opciones_ingreso'];
+  displayedColumns: string[] = ['tipo','doc_ingreso', 'descripcion_ingreso', 'monto_ingreso', 'freg_ingreso', 'opciones_ingreso'];
   positionOptions: TooltipPosition[] = ['after', 'before', 'above', 'below', 'left', 'right'];
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -171,7 +171,7 @@ DataIngresos: any = [];
   }
   
   ImprimirPDF(dato){
-      if(dato.tipo=='R'){
+      if(dato.tipo.charAt(0)=='R'){
            this.VerPDFRecibo(dato.id_apoderado,dato.id_ingreso,dato.doc_ingreso,dato.freg_ingreso);
       }else{
          this.VerPDFIngreso(dato.id_ingreso);
@@ -486,7 +486,7 @@ DetIngreso : any = [];
 public monto_pagado;
 btnDetalle_Ingreso(dato){
   this.loadingBar.start();
-  if(dato.tipo=='R'){
+  if(dato.tipo.charAt(0)=='R'){
     this.DatoBusqueda.idbusqueda=dato.id_apoderado;
     this._ApoderadoServicios.detalle_apoderado(this.DatoBusqueda)
     .then(data => {
@@ -534,7 +534,7 @@ btnDetalle_Ingreso(dato){
   }
 
   btnEliminar_Ingreso(dato) {
-    if(dato.tipo=='O'){
+    if(dato.tipo.charAt(0)=='O'){
       this.DatoBusqueda.datobusqueda='M';
        this.DatoBusqueda.idbusqueda=dato.id_ingreso;
    }else{

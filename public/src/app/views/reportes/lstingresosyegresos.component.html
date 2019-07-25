@@ -1,0 +1,177 @@
+<ngx-spinner
+bdColor = "rgba(62,58,58,0.49)"
+size = "medium"
+color = "#e80606"
+type = "ball-clip-rotate-multiple">
+<p style="color: #e80606" > Espere Cargando....... </p>
+</ngx-spinner>
+<div class="animated fadeIn">
+    <div class="card card-default">
+      <div class="card-header">
+        <h5><strong>
+          <i class="fa fa-align-justify"></i>&nbsp;&nbsp;Listado de Ingresos y Egresos
+        </strong></h5>
+      </div>
+      <div class="card-body">
+        <div class="card-header estilo-cabecera">CRITERIOS DE BUSQUEDA</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-12 col-md-5 col-lg-3">
+                        <div class="form-group">
+                        <label for="postal-code" style="font-weight: bold;">Busqueda Por:</label>
+                        <select class="form-control" id="criterio" name="criterio"
+                          [(ngModel)]="criterio" (change)="CriterioBusqueda()">
+                          <option value="0" selected disabled>---SELECCIONAR CRITERIO----</option>
+                          <option value="1">TODOS LOS MOVIMIENTOS</option>
+                          <option value="2">INGRESOS</option>
+                          <option value="3">EGRESOS</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-sm-12 col-md-5 col-lg-3">
+                        <div class="form-group">
+                        <label for="postal-code" style="font-weight: bold;">Filtro:</label>
+                        <select class="form-control" id="filtro" name="filtro"
+                          [(ngModel)]="filtro" (change)="FiltroBusqueda()" [disabled]="criterio==1">
+                          <option value="0" selected disabled>---SELECCIONAR FILTRO----</option>                          
+                          <option value="1">AÑO LECTIVO</option>
+                          <option value="2">TIPO</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-sm-12 col-md-5 col-lg-3" *ngIf="filtro==1">
+                      <div class="form-group">
+                       <label for="postal-code" style="font-weight: bold;">Año Lectivo:</label>
+                       <select class="form-control" id="anhio_lectivo" name="anhio_lectivo"
+                        [(ngModel)]="anhio_lectivo">
+                        <option value="0" selected disabled>---Seleccionar Año Lectivo---</option>
+                        <option *ngFor="let a of DataAnhios" value="{{a.idanhio}}">AÑO LECTIVO {{a.anhio_lectivo}}</option>
+                       </select>
+                      </div>
+                    </div>
+                    <div class="col-sm-12 col-md-5 col-lg-3" *ngIf="criterio==2 && filtro==2">
+                      <div class="form-group">
+                      <label for="postal-code" style="font-weight: bold;">Tipo Ingreso:</label>
+                      <select class="form-control" id="tipo_ingreso" name="tipo_ingreso"
+                        [(ngModel)]="tipo_ingreso" (change)="TipoBusqueda()">
+                        <option value="0" selected disabled>---SELECCIONAR TIPO---</option>                          
+                        <option value="1">RECIBOS - PAGO APAFA</option>
+                        <option value="2">OTROS</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-sm-12 col-md-5 col-lg-3" *ngIf="criterio==3 && filtro==2">
+                      <div class="form-group">
+                      <label for="postal-code" style="font-weight: bold;">Tipo Egresos:</label>
+                      <select class="form-control" id="tipo_egreso" name="tipo_egreso"
+                        [(ngModel)]="tipo_egreso" (change)="TipoBusqueda()" >
+                        <option value="0" selected disabled>---SELECCIONAR TIPO---</option>                          
+                        <option value="1">COMPRAS</option>
+                        <option value="2">OTROS</option>
+                      </select>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-2 col-lg-3" *ngIf="filtro==1">
+                    <div class="form-group row btnbuscar">
+                      <label class="col-md-12 col-form-label" for="select2">
+                          <button class="btn btn-success" (click)="BuscarIngresosyEgresos()">
+                              <span class="fa fa-search"></span>
+                          </button></label>
+                    </div>
+                </div>                   
+                </div>
+                <div class="row" *ngIf="filtro==2 && tipo_ingreso!=0 || tipo_egreso!=0">
+                  <div class="col-lg-1"></div>
+                  <div class="col-sm-12 col-md-5 col-lg-3">
+                      <div class="form-group row">                          
+                       <div class="col-md-12">
+                            <input class="form-check-input" id="inlineRadio1" name="inline-radios" 
+                            type="radio" value="option1" [(ngModel)]="option1" style="cursor: pointer;">
+                            <select class="form-control" id="anhio" name="anhio"
+                            [(ngModel)]="anhio" >
+                            <option value="0" selected disabled>---Seleccionar Año Lectivo---</option>
+                            <option *ngFor="let a of DataAnhios" value="{{a.idanhio}}">AÑO LECTIVO {{a.anhio_lectivo}}</option>
+                           </select>
+                        </div>
+                      </div>
+                  </div>
+                  <div class="col-sm-12 col-md-5 col-lg-3">
+                      <div class="form-group row">                     
+                       <div class="col-md-12">
+                          <input class="form-check-input" id="inlineRadio2" name="inline-radios" 
+                          type="radio" value="option2" [(ngModel)]="option2" style="cursor: pointer;">
+                            <input type="text" class="form-control" id="num_doc" name="num_doc"
+                            placeholder="Num. Documento" [(ngModel)]="num_doc"
+                            onkeyup="verif(this);" maxlength="20">
+                        </div>
+                      </div>
+                  </div>
+                  <div class="col-sm-12 col-md-5 col-lg-3">
+                      <div class="form-group row">
+                        <div class="col-md-12">
+                            <input class="form-check-input" id="inlineRadio3" name="inline-radios" 
+                            type="radio" value="option3" [(ngModel)]="option3" style="cursor: pointer;">
+                            <input type="text" class="form-control" id="desc_doc" name="desc_doc"
+                            placeholder="Descripción Documento" [(ngModel)]="desc_doc"
+                            onkeyup="verif(this)" maxlength="100">
+                        </div>
+                      </div>
+                  </div>
+                  <div class="col-sm-12 col-md-2 col-lg-1">
+                      <div class="form-group row">
+                        <label class="col-md-12 col-form-label" for="select2">
+                            <button class="btn btn-success" (click)="BuscarIngresosyEgresos()">
+                                <span class="fa fa-search"></span>
+                            </button></label>
+                      </div>
+                  </div>
+              </div>
+            </div>
+            <div class="card-header estilo-cabecera">BALANCE DE INGRESOS Y EGRESOS
+                <div class="card-header-actions">
+                   <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true" style="color: red;cursor: pointer;"
+                   (click)="VerPDF()" *ngIf="panel_tabla"></i>
+                </div>
+            </div>
+            <div class="card-body" *ngIf="panel_tabla">
+              <div class="table-responsive">  
+            <table class="table">
+              <thead>
+                <tr>
+                  <th width="5%">N°</th>
+                  <th width="15%">Tipo Movimiento</th>
+                  <th width="30%">Descripción</th>
+                  <th width="20%">Fecha y Hora</th>
+                  <th width="20%">Ingreso</th>
+                  <th width="20%">Egreso</th>
+                 </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of DataBalance;let indice=index;">
+                    <td>
+                      {{indice + 1}}                        
+                    </td>
+                    <td>
+                      {{item.tipo}}                        
+                    </td>
+                    <td>
+                      {{item.descripcion}}                        
+                    </td>
+                    <td>
+                      {{item.fecha | date:'dd/MM/yyyy h:mm a '}}                        
+                    </td>
+                    <td>
+                      {{item.balance_i | number : '.2-2'}}                        
+                    </td>
+                    <td>
+                      {{item.balance_e | number : '.2-2'}}                        
+                    </td>
+                </tr>
+              </tbody>
+            </table>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+  

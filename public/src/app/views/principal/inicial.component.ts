@@ -23,7 +23,12 @@ export class InicialComponent implements OnInit {
   Cargar_Alumnos (){
     this._AlumnosServicios.getListarAlumnos().subscribe(
       data => {
-        this.contador_alumnos = data.data.length;
+        if(data.data!=undefined){
+          this.contador_alumnos = data.data.length;
+        }else{
+          this.contador_alumnos = 0;
+        }
+        
       }
     )
   }
@@ -32,7 +37,12 @@ export class InicialComponent implements OnInit {
  Cargar_Apoderados (){
   this._ApoderadoServicio.getListarApoderados().subscribe(
     data => {   
-          this.contador_apoderados = data.data.length;
+      if(data.data!=undefined){
+        this.contador_apoderados = data.data.length;
+      }else{
+        this.contador_apoderados = 0;
+      }
+          
      })
    }
   
@@ -40,7 +50,12 @@ export class InicialComponent implements OnInit {
    Cargar_Usuarios (){
     this._UsuariosServicios.getListarUsiarios().subscribe(
       data => {
-        this.contador_usuarios = data.data.length;
+        if(data.data!=undefined){
+          this.contador_usuarios = data.data.length;
+        }else{
+          this.contador_usuarios = 0;
+        }
+        
       }
     )
   }
@@ -50,7 +65,6 @@ export class InicialComponent implements OnInit {
    this._MatriculaServicios.getListarMatriculados().subscribe(
      data => {
         if(data.data!=undefined){
-          console.log(data.data);
            this.contador_matriculados = data.data.length; 
         }else{
           this.contador_matriculados = 0;

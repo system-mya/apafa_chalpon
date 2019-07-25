@@ -1,8 +1,8 @@
 import { Component,ViewEncapsulation,ViewChild,OnInit } from '@angular/core';
-import { AnhiosService } from './../administracion/anhios.service';
-import { GradoSeccionService } from './../administracion/grado-seccion.service';
-import { MatriculaService } from './../apafa/matricula.service';
-import { ReportesService } from './../reportes/reportes.service';
+import { AnhiosService } from '../administracion/anhios.service';
+import { GradoSeccionService } from '../administracion/grado-seccion.service';
+import { MatriculaService } from '../apafa/matricula.service';
+import { ReportesService } from './reportes.service';
 import {MatPaginator, MatSort, MatTableDataSource,TooltipPosition} from '@angular/material';
 import { ToastrService } from 'ngx-toastr';
 import {clsBusqueda,clsGrados,clsSecciones} from '../../app.datos';
@@ -30,16 +30,26 @@ function bodyRows(data,rowCount) {
 
 
 @Component({
-  templateUrl: 'lstmatriculados.component.html',
+  templateUrl: 'lstingresosyegresos.component.html',
   styleUrls: ['reportes.css'],
   encapsulation: ViewEncapsulation.None,
 })
-export class ListaMatriculadosComponent implements OnInit{
+export class ListaIngresosEgresosComponent implements OnInit{
   displayedColumns: string[] = ['doc_alumno','apellidos_alumno','nombres_alumno','descripcion_grado','nombre_seccion'];
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+  public criterio : number;
+  public filtro : number;
+  public tipo_ingreso : number;
+  public tipo_egreso : number;
   public anhio_lectivo:number;
+  public anhio:number;
+  public option1:string;
+  public option2:string;
+  public option3:string;
+  public num_doc:string;
+  public desc_doc:string;
   public grado:number;
   public seccion:number;
   public body : any = [];
@@ -51,6 +61,10 @@ export class ListaMatriculadosComponent implements OnInit{
     private spinner: NgxSpinnerService) { 
     this.ListarAnhiosLectivos();
     this.Inicializar_Tabla();
+    this.criterio=0;
+    this.filtro=0;
+    this.tipo_ingreso=0;
+    this.tipo_egreso=0;
     this.grado=0;
     this.anhio_lectivo=0;
     this.seccion=0;
@@ -59,6 +73,42 @@ export class ListaMatriculadosComponent implements OnInit{
 
   ngOnInit() {   
     
+  }
+
+  CriterioBusqueda(){
+    this.panel_tabla=false;
+    this.tipo_ingreso=0;
+    this.tipo_egreso=0;  
+    if(this.criterio==1){
+      this.ListarAnhiosLectivos();
+        this.filtro=1;
+        this.anhio_lectivo=0;
+    }else{
+     this.filtro=0;
+     this.anhio_lectivo=0;
+    }
+  }
+
+  FiltroBusqueda(){
+    this.panel_tabla=false;  
+    this.tipo_ingreso=0;
+    this.tipo_egreso=0; 
+    if(this.filtro==1){
+        this.ListarAnhiosLectivos();
+        this.anhio_lectivo=0;
+    }else{
+     this.anhio_lectivo=0;
+     
+    }
+  }
+
+  TipoBusqueda(){
+    this.anhio=0; 
+    this.option1='';
+    this.option2='';
+    this.option3='';
+    this.num_doc='';
+    this.desc_doc='';
   }
 
   DataAnhios : any = [];
@@ -73,6 +123,14 @@ export class ListaMatriculadosComponent implements OnInit{
        
      }
    )
+ }
+
+ BuscarIngresosyEgresos(){
+   if(this.filtro==1){
+      if(this.anhio_lectivo==0){
+        this.toastr.warning('DEBE SELECCIONAR AÑO LECTIVO', 'Aviso!');
+      }
+   }
  }
 
   DataGrado : clsGrados;
@@ -165,53 +223,6 @@ export class ListaMatriculadosComponent implements OnInit{
      }
    }
 
-  //  Generar_Lista(){
-  //   if(this.anhio_lectivo==0 && this.grado==0 && this.seccion==0){
-  //    this.toastr.warning('DEBE SELECCIONAR CRITERIOS DE BUSQUEDAD', 'Aviso!');
-  //   }else{
-  //    if(this.anhio_lectivo!=0 && this.grado!=0 && this.seccion!=0){
-  //      this.Lista_Matriculados_xAnhio(this.anhio_lectivo);
-  //      this.panel_tabla=true;
-  //      this.GradoTodos=[];
-  //      this.DatoBusqueda.idbusqueda=this.anhio_lectivo;
-  //      this.DatoBusqueda.datobusqueda=this.grado + "-" + this.seccion;
-  //      this._ReportesServicios.listar_alumnos_grado_seccion(this.DatoBusqueda).then(
-  //        data => {
-  //          if(data.status==1){
-  //            for (let numero of data.data){
-  //              this.DatoBusqueda.idbusqueda=numero.id_grado;
-  //              this._MatriculaServicios.listar_matriculados_xgrado(this.DatoBusqueda).subscribe(
-  //                data_matriculados =>{
-  //                  let body=[];
-  //                  if(data_matriculados.data != null){
-  //                    for (var j=0;j< data_matriculados.data.length;j++){
-  //                      body.push({
-  //                        id: j+1,
-  //                        doc_alumno:  data_matriculados.data[j].doc_alumno,
-  //                        apellidos_alumno:  data_matriculados.data[j].apellidos_alumno,
-  //                        nombres_alumno:  data_matriculados.data[j].nombres_alumno,
-  //                        nombre_seccion:  data_matriculados.data[j].nombre_seccion,
-  //                    });
-  //                    }
-  //                    this.GradoTodos.push({
-  //                      id_grado: numero.id_grado,
-  //                      nombre_grado:numero.descripcion_grado,
-  //                      matriculados:body
-  //                     })
-  //                  }
-                   
-  //              })
-  //            }
-  //            this.panel_tabla=true;
-  //          }else{
-  //            this.toastr.error("Consulta Sin Exito", 'Aviso!');
-  //          }        
-  //        })
-  //    }
-  //   }
-  // }
-
-
    Inicializar_Tabla(){
     this.DataMatriculados = [];
     this.dataSource = new MatTableDataSource(this.DataMatriculados);
@@ -266,84 +277,6 @@ export class ListaMatriculadosComponent implements OnInit{
       })
     })
     }
-
-  //  public VerPDF()
-  // {
-  //   let body=[];
-  //   var doc = new jspdf({orientation: 'portrait',unit: 'mm',format: 'A4'});
-  //   var totalPagesExp = "{total_pages_count_string}";
-  //   var img = new Image();
-  //   img.src = 'assets/img/cabecera_recibos.png'
-  //   doc.addImage(img,'png',25,10,150,40);
-  //   doc.setFontSize(12);
-  //   doc.setFont('helvetica');
-  //   doc.setFontType('bold');
-  //   doc.text(70, 60, 'LISTA GENERAL DE MATRICULADOS');
-  //   doc.text(this.GradoTodos[0].nombre_grado, 20, 78);  
-  //   for(var i=0;i<this.GradoTodos.length;i++){
-  //     console.log(this.GradoTodos[i].id_grado);
-  //     var headRows = [{id: 'N°',doc_alumno: 'Doc. Alumno', apellidos_alumno: 'Apellidos Completos', nombres_alumno: 'Nombres Completos', nombre_seccion: 'Seccion'}];
-  //     if(i==0){
-  //       doc.text(this.GradoTodos[i].nombre_grado, 20, 78);
-  //       doc.autoTable({
-  //           head: headRows,
-  //           body: this.GradoTodos[i].matriculados,
-  //           bodyStyles: {valign: 'top'},
-  //           styles: {overflow: 'linebreak'},
-  //           columnStyles: {
-  //             id: {cellWidth: 10}, 
-  //             doc_alumno: {cellWidth: 15}, 
-  //             apellidos_alumno:{cellWidth:30}, 
-  //             nombres_alumno: {cellWidth: 30}, 
-  //             nombre_seccion: {halign: 'center',cellWidth: 15}
-  //            },
-  //           startY: 80,
-  //           showHead: 'firstPage',
-  //           theme: 'grid',
-  //       });        
-  //     }else{
-  //       doc.text(this.GradoTodos[i].nombre_grado, 20, doc.autoTable.previous.finalY + 10);          
-  //       doc.autoTable({
-  //           head: headRows, 
-  //           body: this.GradoTodos[i].matriculados,
-  //           styles: {overflow: 'linebreak'},
-  //           columnStyles: {
-  //             id: {cellWidth: 10}, 
-  //             doc_alumno: {cellWidth: 15}, 
-  //             apellidos_alumno:{cellWidth:30}, 
-  //             nombres_alumno: {cellWidth: 30}, 
-  //             nombre_seccion: {halign: 'center',cellWidth: 15}
-  //            },
-  //           startY: doc.autoTable.previous.finalY + 12,  
-  //         showHead: 'firstPage',
-  //         theme: 'grid',
-  //           didDrawPage: function (data) {
-  //             // Footer
-  //             var str = "Página " + doc.internal.getNumberOfPages()
-  //             // Total page number plugin only available in jspdf v1.0+
-  //             if (typeof doc.putTotalPages === 'function') {
-  //                 str = str + " de " + totalPagesExp;
-  //             }
-  //             doc.setFontSize(10);
-        
-  //             // jsPDF 1.4+ uses getWidth, <1.4 uses .width
-  //             var pageSize = doc.internal.pageSize;
-  //             var pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
-  //             doc.text(str, data.settings.margin.left, pageHeight - 10);
-  //         }
-  //       });
-  //     }
-
-  //     if (typeof doc.putTotalPages === 'function') {
-  //       doc.putTotalPages(totalPagesExp);
-  //   }
-           
-  //     console.log(this.GradoTodos);
-  //   }    
-
-  //   doc.output('save', 'padron_alumnos.pdf');
-         
-  // }
 
   public VerPDF()
   {
