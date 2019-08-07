@@ -39,7 +39,7 @@ export class ListaIngresosEgresosComponent implements OnInit{
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  public criterio : number;
+  public criterio : string;
   public filtro : number;
   public tipo_ingreso : number;
   public tipo_egreso : number;
@@ -61,7 +61,7 @@ export class ListaIngresosEgresosComponent implements OnInit{
     private spinner: NgxSpinnerService) { 
     this.ListarAnhiosLectivos();
     this.Inicializar_Tabla();
-    this.criterio=0;
+    this.criterio='';
     this.filtro=0;
     this.tipo_ingreso=0;
     this.tipo_egreso=0;
@@ -79,21 +79,15 @@ export class ListaIngresosEgresosComponent implements OnInit{
     this.panel_tabla=false;
     this.tipo_ingreso=0;
     this.tipo_egreso=0;  
-    if(this.criterio==1){
-      this.ListarAnhiosLectivos();
-        this.filtro=1;
-        this.anhio_lectivo=0;
-    }else{
      this.filtro=0;
      this.anhio_lectivo=0;
-    }
   }
 
   FiltroBusqueda(){
     this.panel_tabla=false;  
     this.tipo_ingreso=0;
     this.tipo_egreso=0; 
-    if(this.filtro==1){
+    if(this.filtro==0){
         this.ListarAnhiosLectivos();
         this.anhio_lectivo=0;
     }else{
@@ -125,10 +119,30 @@ export class ListaIngresosEgresosComponent implements OnInit{
    )
  }
 
+ DataIE : any = [];
+ panel_tabla:boolean;
  BuscarIngresosyEgresos(){
-   if(this.filtro==1){
+   if(this.criterio!=''){
       if(this.anhio_lectivo==0){
         this.toastr.warning('DEBE SELECCIONAR AÑO LECTIVO', 'Aviso!');
+      }else{
+            this.loadingBar.start();
+            this.DatoBusqueda.datobusqueda=this.criterio;
+            this.DatoBusqueda.idbusqueda=this.anhio_lectivo;
+            this._ReportesServicios.listar_movimientos_xanhio(this.DatoBusqueda).then(
+              data => {
+                if(data.status==1){
+                  this.toastr.success('Todos los Movimientos', 'Aviso!');
+                  this.DataIE = data.data;
+                  this.panel_tabla=true;
+                  this.loadingBar.complete();
+                }else{
+                  this.panel_tabla=false;
+                  this.toastr.error(data.message, 'Aviso!');
+                  this.DataIE = [];
+                  this.loadingBar.complete();
+                }        
+              })
       }
    }
  }
@@ -197,7 +211,6 @@ export class ListaIngresosEgresosComponent implements OnInit{
 
    GradoTodos : any = [];
    DataMatriculados : any = [];
-   public panel_tabla:boolean;
 
    Generar_Lista(){
      if(this.anhio_lectivo==0 || this.grado==0 || this.seccion==0){

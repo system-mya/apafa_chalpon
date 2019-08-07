@@ -152,9 +152,13 @@ export class BalanceComponent implements OnInit{
 
    GradoTodos : any = [];
    DataBalance : any = [];
+   total_i:number=0.00;
+   total_e:number=0.00;
    public panel_tabla:boolean;
 
    Generar_Reporte(){
+     this.total_i=0.00;
+     this.total_e=0.00;
      if(this.criterio==0){
       this.toastr.warning('DEBE SELECCIONAR CRITERIOS DE BUSQUEDAD', 'Aviso!');     
      }else{
@@ -169,6 +173,14 @@ export class BalanceComponent implements OnInit{
                 if(data.status==1){
                   this.toastr.success(data.message, 'Aviso!');
                   this.DataBalance = data.data;
+                  for(var i=0;i<data.data.length;i++){
+                    if(data.data[i].tipo=="INGRESO"){
+                      this.total_i=this.total_i+parseFloat(data.data[i].balance_i);
+                      console.log(data.data[i].balance_i);
+                    }else{
+                      this.total_e=(this.total_e)+parseFloat(data.data[i].balance_e);
+                    }
+                  }
                   this.panel_tabla=true;
                   this.loadingBar.complete();
                 }else{
@@ -190,6 +202,14 @@ export class BalanceComponent implements OnInit{
               if(data.status==1){
                 this.toastr.success(data.message, 'Aviso!');
                 this.DataBalance = data.data;
+                for(var i=0;i<data.data.length;i++){
+                  if(data.data[i].tipo=="INGRESO"){
+                    this.total_i=this.total_i+parseFloat(data.data[i].balance_i);
+                    console.log(data.data[i].balance_i);
+                  }else{
+                    this.total_e=(this.total_e)+parseFloat(data.data[i].balance_e);
+                  }
+                }
                 this.panel_tabla=true;
                 this.loadingBar.complete();
               }else{

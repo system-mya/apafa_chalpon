@@ -47,4 +47,9 @@ export class ReportesService {
     .map(res => res.json()).toPromise()
   }
 
+  public listar_movimientos_xanhio(dato:clsBusqueda){
+    return this._http.post('/api/reportes/listar_movimientos_xanhio',dato)
+    .map(res => res.json()).toPromise()
+  }
+
 }

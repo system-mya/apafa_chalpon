@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 25-07-2019 a las 22:27:36
+-- Tiempo de generación: 07-08-2019 a las 00:03:30
 -- Versión del servidor: 5.7.14
 -- Versión de PHP: 5.6.25
 
@@ -29,17 +29,17 @@ SELECT 'INGRESO' as tipo,'PAGO APAFA' as descripcion, r.freg_recibo as fecha,r.m
 WHERE r.estado_recibo=1
 AND r.id_anhio=anhio
 UNION ALL
-SELECT 'INGRESO' as tipo,o.descripcion_movimiento as decripcion,o.freg_movimiento as fecha,o.monto_movimiento as balance_i,'' as balance_e FROM otros_movimientos o
+SELECT 'INGRESO' as tipo,o.descripcion_movimiento as descripcion,o.freg_movimiento as fecha,o.monto_movimiento as balance_i,'' as balance_e FROM otros_movimientos o
 WHERE o.estado_movimiento=1
 AND o.id_anhio=anhio
 AND o.tipo_movimiento='I'
 UNION ALL
-SELECT 'EGRESO' as tipo,o.descripcion_movimiento as decripcion,o.freg_movimiento as fecha,'' as balance_i,o.monto_movimiento as balance_e FROM otros_movimientos o
+SELECT 'EGRESO' as tipo,o.descripcion_movimiento as descripcion,o.freg_movimiento as fecha,'' as balance_i,o.monto_movimiento as balance_e FROM otros_movimientos o
 WHERE o.estado_movimiento=1
 AND o.id_anhio=anhio
 AND o.tipo_movimiento='E'
 UNION ALL 
-SELECT 'EGRESO' as tipo,'COMPRAS' as decripcion,c.freg_compra as fecha,'' as balance_i,c.total_compra as balance_e FROM compra c
+SELECT 'EGRESO' as tipo,'COMPRAS' as descripcion,c.freg_compra as fecha,'' as balance_i,c.total_compra as balance_e FROM compra c
 WHERE c.estado_compra=1
 AND c.id_anhio=anhio
 ORDER BY fecha DESC$$
@@ -49,17 +49,17 @@ SELECT 'INGRESO' as tipo,'PAGO APAFA' as descripcion, r.freg_recibo as fecha,r.m
 WHERE r.estado_recibo=1
 AND (DATE(r.freg_recibo)>=fini AND DATE(r.freg_recibo)<=ffin)
 UNION ALL
-SELECT 'INGRESO' as tipo,o.descripcion_movimiento as decripcion,o.freg_movimiento as fecha,o.monto_movimiento as balance_i,'' as balance_e FROM otros_movimientos o
+SELECT 'INGRESO' as tipo,o.descripcion_movimiento as descripcion,o.freg_movimiento as fecha,o.monto_movimiento as balance_i,'' as balance_e FROM otros_movimientos o
 WHERE o.estado_movimiento=1
 AND (DATE(o.freg_movimiento)>=fini AND DATE(o.freg_movimiento)<=ffin)
 AND o.tipo_movimiento='I'
 UNION ALL
-SELECT 'EGRESO' as tipo,o.descripcion_movimiento as decripcion,o.freg_movimiento as fecha,'' as balance_i,o.monto_movimiento as balance_e FROM otros_movimientos o
+SELECT 'EGRESO' as tipo,o.descripcion_movimiento as descripcion,o.freg_movimiento as fecha,'' as balance_i,o.monto_movimiento as balance_e FROM otros_movimientos o
 WHERE o.estado_movimiento=1
 AND (DATE(o.freg_movimiento)>=fini AND DATE(o.freg_movimiento)<=ffin)
 AND o.tipo_movimiento='E'
 UNION ALL 
-SELECT 'EGRESO' as tipo,'COMPRAS' as decripcion,c.freg_compra as fecha,'' as balance_i,c.total_compra as balance_e FROM compra c
+SELECT 'EGRESO' as tipo,'COMPRAS' as descripcion,c.freg_compra as fecha,'' as balance_i,c.total_compra as balance_e FROM compra c
 WHERE c.estado_compra=1
 AND (DATE(c.freg_compra)>=fini AND DATE(c.freg_compra)<=ffin)
 ORDER BY fecha DESC$$
@@ -519,6 +519,30 @@ WHERE g.id_grado=grado
 AND m.id_anhio=(SELECT idanhio FROM anhio_lectivo WHERE condicion_anhio='A' AND estado_anhio=1)
 AND m.estado_matricula=1
 ORDER BY a.apellidos_alumno,a.nombres_alumno,s.nombre_seccion ASC$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_movimientos_xanhio` (IN `tipo` CHAR(1), IN `anhio` TINYINT)  NO SQL
+IF tipo="I" THEN
+SELECT 'INGRESO' as tipo,'PAGO APAFA' as descripcion, r.freg_recibo as fecha,r.mtotal_recibo as monto FROM recibo r
+WHERE r.estado_recibo=1
+AND r.id_anhio=anhio
+UNION ALL
+SELECT 'INGRESO' as tipo,o.descripcion_movimiento as descripcion,o.freg_movimiento as fecha,o.monto_movimiento as monto FROM otros_movimientos o
+WHERE o.estado_movimiento=1
+AND o.id_anhio=anhio
+AND o.tipo_movimiento='I'
+ORDER BY fecha DESC;
+ELSE
+SELECT 'EGRESO' as tipo,o.descripcion_movimiento as descripcion,o.freg_movimiento as fecha,
+o.monto_movimiento as monto FROM otros_movimientos o
+WHERE o.estado_movimiento=1
+AND o.id_anhio=anhio
+AND o.tipo_movimiento='E'
+UNION ALL 
+SELECT 'EGRESO' as tipo,'COMPRAS' as descripcion,c.freg_compra as fecha,c.total_compra as monto FROM compra c
+WHERE c.estado_compra=1
+AND c.id_anhio=anhio
+ORDER BY fecha DESC;
+END IF$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_otros_conceptos` (IN `dato_anhio` CHAR(4))  NO SQL
 SELECT * FROM concepto_apafa c 

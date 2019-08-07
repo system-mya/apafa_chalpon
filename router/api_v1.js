@@ -381,6 +381,12 @@ app.post('/api/reportes/listar_balance_xfechas', (req, res) => {
     reportes.listar_balance_xfechas(req.body,res);
 });
 
+//LLAMADA LISTAR MOVIMIENTOS X ANHIO
+app.post('/api/reportes/listar_movimientos_xanhio', (req, res) => {
+    reportes.listar_movimientos_xanhio(req.body,res);
+});
+
+
 }
 
 }

@@ -162,6 +162,29 @@ class Reportes {
         });
     };
 
+    listar_movimientos_xanhio(dato, res) {
+        connection.acquire((err, con) => {
+            if(err){
+                res.send({status: 0, message: 'ERROR EN LA BASE DE DATOS'});
+            }else{
+            var query = "CALL pa_listar_movimientos_xanhio('"+[dato.datobusqueda]+"',"+ [dato.idbusqueda] +")"; 
+            /* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
+            con.query(query,(err, result) => {
+                con.release();
+                if(err){
+                    res.send({status: 0, message: err.sqlMessage});
+                }else{
+                    if (result[0].length == 0) {
+                        res.send({status: 2, message: 'NO HAY DATOS EN LA CONSULTA'});
+                    } else {
+                        res.send({status: 1, message: 'LISTA MOVIMIENTOS',data:result[0]});
+                    }
+                }
+            });
+            }
+        });
+    };
+
 
 }
 

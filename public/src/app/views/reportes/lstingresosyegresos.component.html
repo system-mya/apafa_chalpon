@@ -21,10 +21,9 @@ type = "ball-clip-rotate-multiple">
                         <label for="postal-code" style="font-weight: bold;">Busqueda Por:</label>
                         <select class="form-control" id="criterio" name="criterio"
                           [(ngModel)]="criterio" (change)="CriterioBusqueda()">
-                          <option value="0" selected disabled>---SELECCIONAR CRITERIO----</option>
-                          <option value="1">TODOS LOS MOVIMIENTOS</option>
-                          <option value="2">INGRESOS</option>
-                          <option value="3">EGRESOS</option>
+                          <option value="" selected disabled>---SELECCIONAR CRITERIO----</option>
+                          <option value="I">INGRESOS</option>
+                          <option value="E">EGRESOS</option>
                         </select>
                       </div>
                     </div>
@@ -32,7 +31,7 @@ type = "ball-clip-rotate-multiple">
                         <div class="form-group">
                         <label for="postal-code" style="font-weight: bold;">Filtro:</label>
                         <select class="form-control" id="filtro" name="filtro"
-                          [(ngModel)]="filtro" (change)="FiltroBusqueda()" [disabled]="criterio==1">
+                          [(ngModel)]="filtro" (change)="FiltroBusqueda()">
                           <option value="0" selected disabled>---SELECCIONAR FILTRO----</option>                          
                           <option value="1">AÑO LECTIVO</option>
                           <option value="2">TIPO</option>
@@ -49,7 +48,7 @@ type = "ball-clip-rotate-multiple">
                        </select>
                       </div>
                     </div>
-                    <div class="col-sm-12 col-md-5 col-lg-3" *ngIf="criterio==2 && filtro==2">
+                    <div class="col-sm-12 col-md-5 col-lg-3" *ngIf="criterio=='I' && filtro==2">
                       <div class="form-group">
                       <label for="postal-code" style="font-weight: bold;">Tipo Ingreso:</label>
                       <select class="form-control" id="tipo_ingreso" name="tipo_ingreso"
@@ -60,7 +59,7 @@ type = "ball-clip-rotate-multiple">
                       </select>
                     </div>
                   </div>
-                  <div class="col-sm-12 col-md-5 col-lg-3" *ngIf="criterio==3 && filtro==2">
+                  <div class="col-sm-12 col-md-5 col-lg-3" *ngIf="criterio=='E' && filtro==2">
                       <div class="form-group">
                       <label for="postal-code" style="font-weight: bold;">Tipo Egresos:</label>
                       <select class="form-control" id="tipo_egreso" name="tipo_egreso"
@@ -140,14 +139,13 @@ type = "ball-clip-rotate-multiple">
                 <tr>
                   <th width="5%">N°</th>
                   <th width="15%">Tipo Movimiento</th>
-                  <th width="30%">Descripción</th>
+                  <th width="40%">Descripción</th>
                   <th width="20%">Fecha y Hora</th>
-                  <th width="20%">Ingreso</th>
-                  <th width="20%">Egreso</th>
+                  <th width="20%">Monto</th>
                  </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let item of DataBalance;let indice=index;">
+                <tr *ngFor="let item of DataIE;let indice=index;">
                     <td>
                       {{indice + 1}}                        
                     </td>
@@ -161,10 +159,7 @@ type = "ball-clip-rotate-multiple">
                       {{item.fecha | date:'dd/MM/yyyy h:mm a '}}                        
                     </td>
                     <td>
-                      {{item.balance_i | number : '.2-2'}}                        
-                    </td>
-                    <td>
-                      {{item.balance_e | number : '.2-2'}}                        
+                      {{item.monto | number : '.2-2'}}                        
                     </td>
                 </tr>
               </tbody>
