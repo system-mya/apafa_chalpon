@@ -43,33 +43,27 @@
                 <ng-container matColumnDef="opciones_apoderado">
                     <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Opciones </th>
                     <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> 
-                  
-                      <button class="btn btn-info btn-xs distancia_btn_opciones"
-                            matTooltip="Detalle"
-                            matTooltipClass="tooltip-mensaje"
-                            [matTooltipPosition]="positionOptions[3]"
-                            data-toggle="modal" (click)="btnDetalle_Apoderado(element.id_apoderado)">
-                          <span class="fa fa-address-card-o"></span></button>
-                      <button class="btn btn-success btn-xs distancia_btn_opciones"
-                          matTooltip="Editar"
+                        <span class="fa fa-address-card-o btn-xs fa-2x distancia_btn_opciones" aria-hidden="true" style="color: rgb(12, 83, 236);cursor: pointer;"
+                        matTooltip="Detalle"
                           matTooltipClass="tooltip-mensaje"
                           [matTooltipPosition]="positionOptions[3]"
-                          data-toggle="modal" (click)="btnEdit_Apoderado(element.id_apoderado)">
-                        <span class="fa fa-edit"></span></button>
-                        <button class="btn btn-primary btn-xs distancia_btn_opciones"
-                              matTooltip="Conceptos"
-                              matTooltipClass="tooltip-mensaje"
-                              [matTooltipPosition]="positionOptions[3]"
-                              data-toggle="modal" (click)="btnNuevo_Concepto(element.id_apoderado)">
-                            <span class="fa fa-file-text-o"></span></button>
-                       <button class="btn btn-danger btn-xs distancia_btn_opciones"
-                            matTooltip="Eliminar"
+                          data-toggle="modal" (click)="btnDetalle_Apoderado(element.id_apoderado)"></span>
+                          <span class="fa fa-edit btn-xs fa-2x distancia_btn_opciones" aria-hidden="true" style="color: rgb(5, 153, 5);cursor: pointer;"
+                            matTooltip="Editar"
                             matTooltipClass="tooltip-mensaje"
                             [matTooltipPosition]="positionOptions[3]"
-                            (click)="btnEliminar_Apoderado(element.id_apoderado)"
-                            *ngIf="optAd=='AD'">
-                       <span class="fa fa-trash-o btn-xs"></span>
-                       </button>
+                            data-toggle="modal" (click)="btnEdit_Apoderado(element.id_apoderado)"></span>
+                            <span class="fa fa-file-text-o btn-xs fa-2x distancia_btn_opciones" aria-hidden="true" style="color: rgb(2, 180, 211);cursor: pointer;"
+                            matTooltip="Conceptos"
+                            matTooltipClass="tooltip-mensaje"
+                            [matTooltipPosition]="positionOptions[3]"
+                            data-toggle="modal" (click)="btnNuevo_Concepto(element.id_apoderado)"></span>
+                       <span class="fa fa-trash-o btn-xs fa-2x distancia_btn_opciones" aria-hidden="true" style="color: red;cursor: pointer;"
+                           matTooltip="Eliminar"
+                                matTooltipClass="tooltip-mensaje"
+                                [matTooltipPosition]="positionOptions[3]"
+                                (click)="btnEliminar_Apoderado(element.id_apoderado)"
+                            *ngIf="optAd=='AD'"></span>
                     </td>
                   </ng-container>
             <tr mat-header-row *matHeaderRowDef="displayedColumns" style="background-color: #b6b9d0 !important;"></tr>
@@ -243,12 +237,13 @@
                   <div class="col-sm-8 col-lg-7">
                       <p style="margin-bottom: 1px !important;"><strong>DETALLE DE DEUDA</strong></p><br>
                       <!-- <div class="progress progress-xs"><div aria-valuemax="100" aria-valuemin="0" aria-valuenow="95" class="progress-bar bg-danger" role="progressbar" style="width: 100%"></div></div><br> -->
-                      <div class="secciones-detalle-recibo table-responsive">
+                      <div class="secciones-detalle-recibo table-responsive">                        
                         <table class="table ">
                           <thead>
                             <tr>
                                 <th nowrap>Descripción Concepto</th>
                                 <th nowrap>Saldo</th>
+                                <th nowrap>Opciones</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -258,6 +253,32 @@
                                   </td>
                                   <td nowrap>
                                     {{item.saldo_deuda | number : '.2-2'}}
+                                  </td>
+                                  <td nowrap>
+                                      <span class="fa fa-trash-o btn-xs fa-2x distancia_btn_opciones" aria-hidden="true" style="color: red;cursor: pointer;"
+                                      #pop="bs-popover"  [popover]="options" placement="left" 
+                                      container="body"
+                                      matTooltip="Eliminar"
+                                      matTooltipClass="tooltip-mensaje"
+                                      [matTooltipPosition]="positionOptions[3]"></span>
+                                      <ng-template #options>
+                                        <mat-form-field class="example-form-field">
+                                          <input matInput type="text" placeholder="Ingrese Motivo de Eliminación:" [(ngModel)]="motivodel[i]">
+                                          <button mat-button *ngIf="motivodel[i]" matSuffix mat-icon-button aria-label="Clear" (click)="motivodel[i]=''">
+                                            <mat-icon>close</mat-icon>
+                                          </button>                                          
+                                        </mat-form-field>
+                                        <div *ngIf="valid_motivo[i]" style="color: red;"><span class="fa fa-times"></span>Debe Ingresar un Motivo</div>
+                                          <div class="popover-footer" style="text-align: right;">
+                                            <mat-icon aria-hidden="true" 
+                                            matTooltip="Guardar"
+                                            matTooltipClass="tooltip-mensaje"
+                                            [matTooltipPosition]="positionOptions[3]"
+                                            (click)="btneliminar_deuda(DetApoderado,item,motivodel[i],i)"
+                                            style="color: rgb(4, 82, 4);cursor: pointer;">
+                                              save</mat-icon>
+                                          </div>
+                                      </ng-template>                                    
                                   </td>
                             </tr>
                           </tbody>

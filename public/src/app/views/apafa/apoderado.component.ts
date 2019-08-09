@@ -2,6 +2,7 @@ import { Component,ViewChild,ViewEncapsulation } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import {MatPaginator, MatSort, MatTableDataSource,TooltipPosition} from '@angular/material';
 import {ModalDirective} from 'ngx-bootstrap/modal';
+import {PopoverDirective} from 'ngx-bootstrap/popover';
 import {clsApoderado,clsBusqueda,clsDetalle_Deuda} from '../../app.datos';
 import { ApoderadoService } from './apoderado.service';
 import { ToastrService } from 'ngx-toastr';
@@ -20,6 +21,7 @@ export class ApoderdoComponent {
   @ViewChild('DetApoderadoModal') public DetApoderadoModal: ModalDirective;
   @ViewChild('EditApoderadoModal') public EditApoderadoModal: ModalDirective;
   @ViewChild('NvoConceptoModal') public NvoConceptoModal: ModalDirective;
+  @ViewChild('pop') public pop: PopoverDirective ;
   displayedColumns: string[] = ['doc_apoderado','apellidos_apoderado','sexo_apoderado','num_contacto','opciones_apoderado'];
   positionOptions: TooltipPosition[] = ['after', 'before', 'above', 'below', 'left', 'right'];
   public apoderado : clsApoderado;
@@ -32,6 +34,7 @@ export class ApoderdoComponent {
   @ViewChild('myDeuda') myDeudaForm : NgForm;
   public DatoBusqueda : clsBusqueda;
   public optAd : string;
+  public motivodel:any={};
   constructor(private _ApoderadoServicio:ApoderadoService,private toastr: ToastrService,
     private loadingBar: LoadingBarService,private _ConceptosServicios: ConceptosService,
     private _IngresosServicios: IngresosService) {
@@ -48,9 +51,10 @@ export class ApoderdoComponent {
     }
     this.ListarApoderados();
     this.optAd = localStorage.getItem('id_perfil');
+   
+     
+    
   }
-
-
   btnNuevo_Apoderado(){
     this.apoderado = {
       tdoc_apoderado:'',
@@ -65,7 +69,9 @@ export class ApoderdoComponent {
       this.mytemplateForm.resetForm();
     }else{
       if(opc=="D"){
-        this.DetApoderadoModal.hide();
+        this.pop.hide();
+        this.motivodel={};
+        this.DetApoderadoModal.hide();        
       }else{
         if(opc=="E"){
           this.EditApoderadoModal.hide();
@@ -194,7 +200,7 @@ btnDetalle_Apoderado(id){
         this.Editapoderado.id_apoderado = data.data[0].id_apoderado;
         this.Editapoderado.sexo_apoderado = data.data[0].sexo_apoderado.charAt(0);
         this.Editapoderado.tdoc_apoderado = data.data[0].tdoc_apoderado.substr(0,3);
-        this.toastr.success(data.message, 'Aviso!',{positionClass: 'toast-top-right',timeOut: 500});
+        this.toastr.success(data.message, 'Aviso!');
       }else{
         this.toastr.error(data.message, 'Aviso!');
        }
@@ -358,4 +364,40 @@ btnRegistrar_Deuda(deuda:clsDetalle_Deuda){
   })
 }
 
+
+   public valid_motivo : any = [];
+   btneliminar_deuda(idapo,dato1,dato2,pos){
+    console.log(idapo);
+    console.log(dato1);
+    console.log(dato2);
+    
+    if(dato2!=undefined){      
+      if(dato2.trim()===''){
+         console.log("esta vacio");
+         this.valid_motivo[pos]=true;
+       
+      }else{
+        swal({
+          title: '¿Esta seguro que desea eliminar deuda?',
+          type: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Si, Guardar!',
+          allowOutsideClick: false,
+          allowEscapeKey:false,
+        }).then((result) => {
+          //console.log(result.value);
+          if (result.value==true) {
+           
+          }
+        })
+      }
+    }else{
+      this.valid_motivo[pos]=true;
+    }
+    setTimeout(() => {
+      this.valid_motivo[pos]=false;
+    }, 1000);
+  }
 }
