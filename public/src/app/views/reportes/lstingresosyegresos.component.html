@@ -139,25 +139,21 @@ type = "ball-clip-rotate-multiple">
                   </mat-form-field> 
                   <mat-form-field *ngIf="filtro=='N'">
                       <span matPrefix>Buscar: &nbsp;</span>
-                      <input matInput (keyup)="applyFilter($event.target.value)" (focus)="setupFilter('num_doc')" placeholder="Ingrese Descripción">
+                      <input matInput [(ngModel)]="search"  (keyup)="applyFilter($event.target.value)" (focus)="setupFilter('num_doc')" placeholder="Ingrese Num. Doc.">
                     </mat-form-field>  
                     <mat-form-field *ngIf="filtro=='D'">
                         <span matPrefix>Buscar: &nbsp;</span>
-                        <input matInput (keyup)="applyFilter($event.target.value)" (focus)="setupFilter('descripcion')" placeholder="Ingrese Descripción">
+                        <input matInput [(ngModel)]="search" (keyup)="applyFilter($event.target.value)" (focus)="setupFilter('descripcion')" placeholder="Ingrese Descripción">
                       </mat-form-field>
                   <mat-form-field *ngIf="filtro=='E'">
                       <mat-label>Estado:</mat-label>
-                      <mat-select [(value)]="estado" [(ngModel)]="estado">
-                         <mat-option value="VIGENTE">VIGENTE</mat-option>
-                          <mat-option value="ELIMINADO">ELIMINADO</mat-option>
+                      <mat-select [(value)]="selection" placeholder="Version">
+                        <mat-option *ngFor="let version of versions" [value]="version" (focus)="setupFilter('estado')" (click)="applyFilter(version)">
+                          {{version}}
+                        </mat-option>
                         </mat-select>
                     </mat-form-field> 
-               
-                        <button class="btn btn-success" (click)="applyFilter(estado)">
-                            <span class="fa fa-search"></span>
-                        </button>
-              <div class="mat-elevation-z8 table-responsive">
-                
+              <div class="mat-elevation-z8 table-responsive">                
                     
                     <table mat-table [dataSource]="dataSource" matSort id="tabla">
                        

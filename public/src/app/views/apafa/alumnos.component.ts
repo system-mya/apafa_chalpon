@@ -30,7 +30,6 @@ export class AlumnosComponent implements OnInit {
   displayedColumns: string[] = ['doc_alumno', 'apellidos_alumno','sexo_alumno','num_contacto','opciones_alumno'];
   positionOptions: TooltipPosition[] = ['after', 'before', 'above', 'below', 'left', 'right'];
   dataSource: MatTableDataSource<any>;
-  //isExpansionDetailRow = (index, row) => row.hasOwnProperty('detailRow');
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   public  chooseView : string;
@@ -45,7 +44,7 @@ export class AlumnosComponent implements OnInit {
   constructor(private _AlumnosServicios:AlumnosService,
     private _MatriculaServicios:MatriculaService,private toastr: ToastrService,
     @Inject(DOCUMENT) private document: Document,private loadingBar: LoadingBarService) {
-    this.ListarAlumnos();
+      this.ListarAlumnos();   
     this.panel_tabla=true;
     this.panel_registro=false;
     this.DatoBusqueda = {
@@ -66,9 +65,9 @@ export class AlumnosComponent implements OnInit {
    }
   
   ngOnInit() {
-    
   }
 
+  
   ListarAlumnos(){
     this._AlumnosServicios.getListarAlumnos().subscribe(
       data => {
@@ -87,12 +86,14 @@ export class AlumnosComponent implements OnInit {
       }
     )
   }
-
+  numdata : number;
   applyFilter(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
+    this.numdata = this.dataSource.filteredData.length;
+
   }
 
   btnNuevo_Alumno(){

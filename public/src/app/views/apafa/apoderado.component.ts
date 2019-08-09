@@ -150,7 +150,7 @@ applyFilter(filterValue: string) {
   
 
 DetApoderado : any = [];
-public DataDeuda : clsDetalle_Deuda ={};
+public DataDeuda;
 btnDetalle_Apoderado(id){
   this.loadingBar.start();
   this.DatoBusqueda.idbusqueda=id;

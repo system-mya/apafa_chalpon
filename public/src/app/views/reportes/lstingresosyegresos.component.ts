@@ -50,7 +50,7 @@ export class ListaIngresosEgresosComponent implements OnInit{
   
   public criterio : string;
   public filtro : string;
-  public estado : string;
+  public estado : any;
   public tipo_ingreso : string;
   public tipo_egreso : string;
   public anhio_lectivo:number;
@@ -88,7 +88,8 @@ export class ListaIngresosEgresosComponent implements OnInit{
   }
 
   FiltroBusqueda(){
-    this.estado='';
+    this.search='';
+    this.selection='';
     this.applyFilter('');
     console.log(this.dataSource.data.length);
   }
@@ -333,10 +334,21 @@ EjecutarBusqueda(opt,valor){
       return textToSearch.indexOf(filter) !== -1;
     };
   }
-  
+  versions=["VIGENTE","ELIMINADO"]
+  search:any;
+  selection : any;
   applyFilter(filterValue: string) {
-    console.log(filterValue);
-    this.dataSource.filter = filterValue
+    if(this.selection){
+      this.dataSource.filter = this.selection.trim().toLowerCase() || this.search.trim().toLowerCase();
+     
+    }
+    else
+    {
+       this.dataSource.filter = this.search.trim().toLowerCase();
+    }
+   
+    
+   console.log(this.dataSource.data);
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
