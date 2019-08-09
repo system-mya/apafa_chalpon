@@ -35,19 +35,27 @@ function bodyRows(data,rowCount) {
   encapsulation: ViewEncapsulation.None,
 })
 export class ListaIngresosEgresosComponent implements OnInit{
-  displayedColumns: string[] = ['doc_alumno','apellidos_alumno','nombres_alumno','descripcion_grado','nombre_seccion'];
+  displayedColumns: string[] = ['tipo','num_doc','descripcion','fecha','monto','estado','opciones'];
+  positionOptions: TooltipPosition[] = ['after', 'before', 'above', 'below', 'left', 'right'];
   dataSource: MatTableDataSource<any>;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator) 
+  set paginator(value: MatPaginator) {
+    this.dataSource.paginator = value;
+  }
+
+  @ViewChild(MatSort) 
+  set sort(value: MatSort) {
+    this.dataSource.sort = value;
+  }
+  
   public criterio : string;
-  public filtro : number;
-  public tipo_ingreso : number;
-  public tipo_egreso : number;
+  public filtro : string;
+  public estado : string;
+  public tipo_ingreso : string;
+  public tipo_egreso : string;
   public anhio_lectivo:number;
   public anhio:number;
-  public option1:string;
-  public option2:string;
-  public option3:string;
+  public option:string;
   public num_doc:string;
   public desc_doc:string;
   public grado:number;
@@ -62,9 +70,9 @@ export class ListaIngresosEgresosComponent implements OnInit{
     this.ListarAnhiosLectivos();
     this.Inicializar_Tabla();
     this.criterio='';
-    this.filtro=0;
-    this.tipo_ingreso=0;
-    this.tipo_egreso=0;
+    this.filtro='';
+    this.tipo_ingreso='';
+    this.tipo_egreso='';
     this.grado=0;
     this.anhio_lectivo=0;
     this.seccion=0;
@@ -72,35 +80,22 @@ export class ListaIngresosEgresosComponent implements OnInit{
 
 
   ngOnInit() {   
-    
   }
 
   CriterioBusqueda(){
     this.panel_tabla=false;
-    this.tipo_ingreso=0;
-    this.tipo_egreso=0;  
-     this.filtro=0;
-     this.anhio_lectivo=0;
+    this.anhio_lectivo=0;
   }
 
   FiltroBusqueda(){
-    this.panel_tabla=false;  
-    this.tipo_ingreso=0;
-    this.tipo_egreso=0; 
-    if(this.filtro==0){
-        this.ListarAnhiosLectivos();
-        this.anhio_lectivo=0;
-    }else{
-     this.anhio_lectivo=0;
-     
-    }
+    this.estado='';
+    this.applyFilter('');
+    console.log(this.dataSource.data.length);
   }
 
   TipoBusqueda(){
     this.anhio=0; 
-    this.option1='';
-    this.option2='';
-    this.option3='';
+    this.option='';
     this.num_doc='';
     this.desc_doc='';
   }
@@ -121,6 +116,14 @@ export class ListaIngresosEgresosComponent implements OnInit{
 
  DataIE : any = [];
  panel_tabla:boolean;
+
+ Inicializar_Tabla(){
+  this.DataIE = null;
+  this.dataSource = new MatTableDataSource(this.DataIE);
+  this.dataSource.paginator = this.paginator;
+  this.dataSource.sort = this.sort;      
+ }
+
  BuscarIngresosyEgresos(){
    if(this.criterio!=''){
       if(this.anhio_lectivo==0){
@@ -129,24 +132,110 @@ export class ListaIngresosEgresosComponent implements OnInit{
             this.loadingBar.start();
             this.DatoBusqueda.datobusqueda=this.criterio;
             this.DatoBusqueda.idbusqueda=this.anhio_lectivo;
-            this._ReportesServicios.listar_movimientos_xanhio(this.DatoBusqueda).then(
+            this._ReportesServicios.listar_movimientos_xanhio(this.DatoBusqueda).subscribe(
               data => {
                 if(data.status==1){
                   this.toastr.success('Todos los Movimientos', 'Aviso!');
                   this.DataIE = data.data;
+                  this.dataSource = new MatTableDataSource(this.DataIE);
+                  this.dataSource.paginator = this.paginator;
+                  this.dataSource.sort = this.sort;      
+                  console.log(this.dataSource.paginator);         
                   this.panel_tabla=true;
                   this.loadingBar.complete();
                 }else{
                   this.panel_tabla=false;
                   this.toastr.error(data.message, 'Aviso!');
-                  this.DataIE = [];
+                  this.DataIE = data.data;
+                  this.dataSource = new MatTableDataSource(this.DataIE);
+                  this.dataSource.paginator = this.paginator;
+                  this.dataSource.sort = this.sort;  
                   this.loadingBar.complete();
                 }        
               })
       }
+   }else{
+    this.toastr.warning('DEBE SELECCIONAR CRITERIO', 'Aviso!');
    }
  }
 
+//  BuscarIngresosyEgresos_xCriterio(){
+//   if(this.option==''){
+//       this.toastr.warning('DEBE SELECCIONAR CRITERIO DE BUSQUEDA', 'Aviso!');
+//   }else{
+//       if(this.option=='A'){
+//         if(this.anhio==0){
+//           this.toastr.warning('DEBE SELECCIONAR AÑO LECTIVO', 'Aviso!');
+//         }else{
+//           if(this.criterio=='I'){
+//             this.EjecutarBusqueda(this.criterio+this.tipo_ingreso+this.option,this.anhio);
+//             this.num_doc='';
+//             this.desc_doc='';
+//           }else{
+
+//           }
+          
+//         }
+//       }else{
+//          if(this.option=='N'){          
+//           if(this.num_doc==''){
+//             this.toastr.warning('DEBE INGRESAR NUM. A BUSCAR', 'Aviso!');
+//           }else{
+//             if(this.criterio=='I'){
+//               this.EjecutarBusqueda(this.criterio+this.tipo_ingreso+this.option,this.num_doc);
+//               this.anhio=0;
+//               this.desc_doc='';
+//             }else{
+  
+//             }
+            
+//           }
+//          }else{
+//            if(this.option=='D'){
+//             if(this.desc_doc==''){
+//               this.toastr.warning('DEBE INGRESAR NUM. A BUSCAR', 'Aviso!');
+//             }else{
+//               if(this.criterio=='I'){
+//                 this.EjecutarBusqueda(this.criterio+this.tipo_ingreso+this.option,this.desc_doc);
+//                 this.anhio=0;
+//                 this.num_doc='';
+//               }else{
+    
+//               }
+              
+//             }
+//            }
+//          }
+//       }
+//   }
+ 
+// }
+
+EjecutarBusqueda(opt,valor){
+  this.loadingBar.start();
+  this.DatoBusqueda.optbusqueda=opt;
+  this.DatoBusqueda.datobusqueda=valor;
+  this._ReportesServicios.listar_movimientos_xcriterio(this.DatoBusqueda).subscribe(
+    data => {
+      if(data.status==1){
+        this.toastr.success('Lista de Movimientos', 'Aviso!');
+        this.DataIE = data.data;
+        this.dataSource = new MatTableDataSource(this.DataIE);
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;                
+        this.panel_tabla=true;
+        this.loadingBar.complete();
+      }else{
+        this.panel_tabla=false;
+        this.toastr.error(data.message, 'Aviso!');
+        this.DataIE = data.data;
+        this.dataSource = new MatTableDataSource(this.DataIE);
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;  
+        this.loadingBar.complete();
+      }        
+})
+}
   DataGrado : clsGrados;
   grado_valor : boolean;
   ListarGrados (id){
@@ -236,40 +325,26 @@ export class ListaIngresosEgresosComponent implements OnInit{
      }
    }
 
-   Inicializar_Tabla(){
-    this.DataMatriculados = [];
-    this.dataSource = new MatTableDataSource(this.DataMatriculados);
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;         
-   }
-   Lista_Matriculados_xAnhio(id){   
-      this.DatoBusqueda.idbusqueda=id;
-      this._ReportesServicios.pa_listar_matriculados_xanhio(this.DatoBusqueda).subscribe(
-        data =>{
-          if(data.status==1){           
-            this.DataMatriculados = data.data;
-            this.dataSource = new MatTableDataSource(this.DataMatriculados);
-            this.dataSource.paginator = this.paginator;
-            this.dataSource.sort = this.sort;            
-           }else{
-             this.toastr.error(data.message, 'Aviso!');
-             this.panel_tabla=false;
-             this.DataMatriculados = data.data;
-             this.dataSource = new MatTableDataSource(this.DataMatriculados);
-             this.dataSource.paginator = this.paginator;
-             this.dataSource.sort = this.sort;
-           }
-        }
-      )
-    
-    
-   }
 
-   applyFilter(filterValue: string) {
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+   setupFilter(column: string) {
+    this.dataSource.filterPredicate = (d: any, filter: string) => {
+      const textToSearch = d[column] && d[column].toLowerCase() || '';
+      return textToSearch.indexOf(filter) !== -1;
+    };
+  }
+  
+  applyFilter(filterValue: string) {
+    console.log(filterValue);
+    this.dataSource.filter = filterValue
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
+  }
+
+  FilterEstado(filterValue) {
+    console.log(this.dataSource);
+    this.dataSource.filter = filterValue;
   }
 
    Matriculados:any;

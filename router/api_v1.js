@@ -387,6 +387,11 @@ app.post('/api/reportes/listar_movimientos_xanhio', (req, res) => {
 });
 
 
+//LLAMADA LISTAR MOVIMIENTOS X CRITERIO
+app.post('/api/reportes/listar_movimientos_xcriterio', (req, res) => {
+    reportes.listar_movimientos_xcriterio(req.body,res);
+});
+
 }
 
 }

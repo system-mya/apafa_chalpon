@@ -1,6 +1,7 @@
 export class clsBusqueda {
     idbusqueda ?: number;
     datobusqueda ?: string;
+    optbusqueda ?: string;
 }
 
 export class clsUsuario {

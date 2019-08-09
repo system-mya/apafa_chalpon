@@ -27,18 +27,18 @@ type = "ball-clip-rotate-multiple">
                         </select>
                       </div>
                     </div>
-                    <div class="col-sm-12 col-md-5 col-lg-3">
+                    <!-- <div class="col-sm-12 col-md-5 col-lg-3">
                         <div class="form-group">
                         <label for="postal-code" style="font-weight: bold;">Filtro:</label>
                         <select class="form-control" id="filtro" name="filtro"
-                          [(ngModel)]="filtro" (change)="FiltroBusqueda()">
+                          [(ngModel)]="filtro" (change)="FiltroBusqueda()" [disabled]='true'>
                           <option value="0" selected disabled>---SELECCIONAR FILTRO----</option>                          
                           <option value="1">AÑO LECTIVO</option>
                           <option value="2">TIPO</option>
                         </select>
                       </div>
-                    </div>
-                    <div class="col-sm-12 col-md-5 col-lg-3" *ngIf="filtro==1">
+                    </div> -->
+                    <div class="col-sm-12 col-md-5 col-lg-3">
                       <div class="form-group">
                        <label for="postal-code" style="font-weight: bold;">Año Lectivo:</label>
                        <select class="form-control" id="anhio_lectivo" name="anhio_lectivo"
@@ -53,9 +53,9 @@ type = "ball-clip-rotate-multiple">
                       <label for="postal-code" style="font-weight: bold;">Tipo Ingreso:</label>
                       <select class="form-control" id="tipo_ingreso" name="tipo_ingreso"
                         [(ngModel)]="tipo_ingreso" (change)="TipoBusqueda()">
-                        <option value="0" selected disabled>---SELECCIONAR TIPO---</option>                          
-                        <option value="1">RECIBOS - PAGO APAFA</option>
-                        <option value="2">OTROS</option>
+                        <option value="" selected disabled>---SELECCIONAR TIPO---</option>                          
+                        <option value="R">RECIBOS - PAGO APAFA</option>
+                        <option value="O">OTROS</option>
                       </select>
                     </div>
                   </div>
@@ -64,13 +64,13 @@ type = "ball-clip-rotate-multiple">
                       <label for="postal-code" style="font-weight: bold;">Tipo Egresos:</label>
                       <select class="form-control" id="tipo_egreso" name="tipo_egreso"
                         [(ngModel)]="tipo_egreso" (change)="TipoBusqueda()" >
-                        <option value="0" selected disabled>---SELECCIONAR TIPO---</option>                          
-                        <option value="1">COMPRAS</option>
-                        <option value="2">OTROS</option>
+                        <option value="" selected disabled>---SELECCIONAR TIPO---</option>                          
+                        <option value="C">COMPRAS</option>
+                        <option value="O">OTROS</option>
                       </select>
                     </div>
                 </div>
-                <div class="col-sm-12 col-md-2 col-lg-3" *ngIf="filtro==1">
+                <div class="col-sm-12 col-md-2 col-lg-3">
                     <div class="form-group row btnbuscar">
                       <label class="col-md-12 col-form-label" for="select2">
                           <button class="btn btn-success" (click)="BuscarIngresosyEgresos()">
@@ -79,17 +79,17 @@ type = "ball-clip-rotate-multiple">
                     </div>
                 </div>                   
                 </div>
-                <div class="row" *ngIf="filtro==2 && tipo_ingreso!=0 || tipo_egreso!=0">
+                <div class="row" *ngIf="filtro==2 && tipo_ingreso!='' || tipo_egreso!=''">
                   <div class="col-lg-1"></div>
                   <div class="col-sm-12 col-md-5 col-lg-3">
                       <div class="form-group row">                          
                        <div class="col-md-12">
                             <input class="form-check-input" id="inlineRadio1" name="inline-radios" 
-                            type="radio" value="option1" [(ngModel)]="option1" style="cursor: pointer;">
+                            type="radio" value="A" [(ngModel)]="option" style="cursor: pointer;">
                             <select class="form-control" id="anhio" name="anhio"
                             [(ngModel)]="anhio" >
                             <option value="0" selected disabled>---Seleccionar Año Lectivo---</option>
-                            <option *ngFor="let a of DataAnhios" value="{{a.idanhio}}">AÑO LECTIVO {{a.anhio_lectivo}}</option>
+                            <option *ngFor="let a of DataAnhios" value="{{a.anhio_lectivo}}">AÑO LECTIVO {{a.anhio_lectivo}}</option>
                            </select>
                         </div>
                       </div>
@@ -98,7 +98,7 @@ type = "ball-clip-rotate-multiple">
                       <div class="form-group row">                     
                        <div class="col-md-12">
                           <input class="form-check-input" id="inlineRadio2" name="inline-radios" 
-                          type="radio" value="option2" [(ngModel)]="option2" style="cursor: pointer;">
+                          type="radio" value="N" [(ngModel)]="option" style="cursor: pointer;">
                             <input type="text" class="form-control" id="num_doc" name="num_doc"
                             placeholder="Num. Documento" [(ngModel)]="num_doc"
                             onkeyup="verif(this);" maxlength="20">
@@ -109,7 +109,7 @@ type = "ball-clip-rotate-multiple">
                       <div class="form-group row">
                         <div class="col-md-12">
                             <input class="form-check-input" id="inlineRadio3" name="inline-radios" 
-                            type="radio" value="option3" [(ngModel)]="option3" style="cursor: pointer;">
+                            type="radio" value="D" [(ngModel)]="option" style="cursor: pointer;">
                             <input type="text" class="form-control" id="desc_doc" name="desc_doc"
                             placeholder="Descripción Documento" [(ngModel)]="desc_doc"
                             onkeyup="verif(this)" maxlength="100">
@@ -119,7 +119,7 @@ type = "ball-clip-rotate-multiple">
                   <div class="col-sm-12 col-md-2 col-lg-1">
                       <div class="form-group row">
                         <label class="col-md-12 col-form-label" for="select2">
-                            <button class="btn btn-success" (click)="BuscarIngresosyEgresos()">
+                            <button class="btn btn-success" (click)="BuscarIngresosyEgresos_xCriterio()">
                                 <span class="fa fa-search"></span>
                             </button></label>
                       </div>
@@ -127,14 +127,109 @@ type = "ball-clip-rotate-multiple">
               </div>
             </div>
             <div class="card-header estilo-cabecera">BALANCE DE INGRESOS Y EGRESOS
-                <div class="card-header-actions">
-                   <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true" style="color: red;cursor: pointer;"
-                   (click)="VerPDF()" *ngIf="panel_tabla"></i>
-                </div>
             </div>
             <div class="card-body" *ngIf="panel_tabla">
-              <div class="table-responsive">  
-            <table class="table">
+                <mat-form-field>
+                    <mat-label>Filtrar Por:</mat-label>
+                    <mat-select [(ngModel)]="filtro" (selectionChange)="FiltroBusqueda()">
+                        <mat-option value="N">Num. Doc.</mat-option>
+                        <mat-option value="D">Descripción</mat-option>
+                        <mat-option value="E">Estado</mat-option>
+                      </mat-select>
+                  </mat-form-field> 
+                  <mat-form-field *ngIf="filtro=='N'">
+                      <span matPrefix>Buscar: &nbsp;</span>
+                      <input matInput (keyup)="applyFilter($event.target.value)" (focus)="setupFilter('num_doc')" placeholder="Ingrese Descripción">
+                    </mat-form-field>  
+                    <mat-form-field *ngIf="filtro=='D'">
+                        <span matPrefix>Buscar: &nbsp;</span>
+                        <input matInput (keyup)="applyFilter($event.target.value)" (focus)="setupFilter('descripcion')" placeholder="Ingrese Descripción">
+                      </mat-form-field>
+                  <mat-form-field *ngIf="filtro=='E'">
+                      <mat-label>Estado:</mat-label>
+                      <mat-select [(value)]="estado" [(ngModel)]="estado">
+                         <mat-option value="VIGENTE">VIGENTE</mat-option>
+                          <mat-option value="ELIMINADO">ELIMINADO</mat-option>
+                        </mat-select>
+                    </mat-form-field> 
+               
+                        <button class="btn btn-success" (click)="applyFilter(estado)">
+                            <span class="fa fa-search"></span>
+                        </button>
+              <div class="mat-elevation-z8 table-responsive">
+                
+                    
+                    <table mat-table [dataSource]="dataSource" matSort id="tabla">
+                       
+                      <ng-container matColumnDef="tipo">
+                        <th width="10%" mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" > Tipo </th>
+                        <td mat-cell *matCellDef="let element" style="text-align: center !important" > {{element.tipo}} </td>
+                      </ng-container>
+          
+                      <ng-container matColumnDef="num_doc">
+                        <th width="20%" mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap > Documento </th>
+                        <td mat-cell *matCellDef="let element" style="text-align: center !important"> {{element.num_doc}}
+                         </td>
+                      </ng-container>
+                  
+                  
+                      <ng-container matColumnDef="descripcion">
+                        <th width="30%" mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Descripcion </th>
+                        <td mat-cell *matCellDef="let element"> {{element.descripcion}}</td>
+                      </ng-container>
+                      
+                      <ng-container matColumnDef="fecha">
+                          <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Fecha y Hora </th>
+                          <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.fecha | date:'dd/MM/yyyy h:mm a '}} </td>
+                        </ng-container>
+          
+                        <ng-container matColumnDef="monto">
+                            <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap>Monto </th>
+                            <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.monto | number : '.2-2'}} </td>
+                          </ng-container>
+                          
+                          <ng-container matColumnDef="estado">
+                              <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap>Estado </th>
+                              <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap>
+                              <span class="badge badge-success" [ngStyle]="{'background-color':element.color_estado}">{{element.estado}}</span>  </td>
+                          </ng-container>
+
+                          <ng-container matColumnDef="opciones">
+                              <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Opciones </th>
+                              <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> 
+                                <button class="btn btn-info btn-xs distancia_btn_opciones"
+                                matTooltip="Detalle"
+                                matTooltipClass="tooltip-mensaje"
+                                [matTooltipPosition]="positionOptions[3]"
+                                data-toggle="modal" (click)="btnDetalle_Ingreso(element)">
+                              <span class="fa fa-address-card-o"></span></button>
+                          <button class="btn btn-warning btn-xs distancia_btn_opciones"
+                              matTooltip="Imprimir"
+                              matTooltipClass="tooltip-mensaje"
+                              [matTooltipPosition]="positionOptions[3]"
+                              data-toggle="modal" (click)="ImprimirPDF(element)">
+                            <span class="fa fa-print"></span></button>
+                           <button class="btn btn-danger btn-xs distancia_btn_opciones"
+                                matTooltip="Eliminar"
+                                matTooltipClass="tooltip-mensaje"
+                                [matTooltipPosition]="positionOptions[3]"
+                                (click)="btnEliminar_Ingreso(element)"
+                                *ngIf="optAd=='AD'">
+                           <span class="fa fa-trash-o btn-xs"></span>
+                           </button>
+                                
+                              </td>
+                            </ng-container>
+                      <tr mat-header-row *matHeaderRowDef="displayedColumns" style="background-color: #b6b9d0 !important;"></tr>
+                      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    </table>
+                    <div style="text-align: center;
+                    font-size: 14px;"
+                    [style.display]="dataSource.filteredData.length == 0 ? '' : 'none'">
+                     <span><b>No se encontraron datos que coincidan con el filtro.</b></span>
+                   </div>
+                    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>  
+            <!-- <table class="table">
               <thead>
                 <tr>
                   <th width="5%">N°</th>
@@ -163,7 +258,7 @@ type = "ball-clip-rotate-multiple">
                     </td>
                 </tr>
               </tbody>
-            </table>
+            </table> -->
             </div>
           </div>
         </div>

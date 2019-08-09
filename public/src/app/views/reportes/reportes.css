@@ -1,3 +1,13 @@
+.tooltip-mensaje{
+  background: #030000 !important;
+}
+
+.distancia_btn_opciones{
+  margin-left: 10px !important;
+  margin-right: 5px !important;
+}
+
+
 .estilo-cabecera{
     background-color: #3a60e4b3;
     font-weight:bold;
@@ -56,3 +66,5 @@
        margin-top: 22px !important;
      }
    }
+
+  

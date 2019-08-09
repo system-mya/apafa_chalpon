@@ -170,6 +170,8 @@ btnDetalle_Apoderado(id){
         }else{
           this.toastr.error(data_deuda.message, 'Aviso!');
           this.loadingBar.complete();
+          this.DetApoderadoModal.show(); 
+          this.DataDeuda = data_deuda.data;
          }
       } )
       .catch(err => console.log(err))

@@ -49,7 +49,12 @@ export class ReportesService {
 
   public listar_movimientos_xanhio(dato:clsBusqueda){
     return this._http.post('/api/reportes/listar_movimientos_xanhio',dato)
-    .map(res => res.json()).toPromise()
+    .map(res => res.json())
+  }
+
+  public listar_movimientos_xcriterio(dato:clsBusqueda){
+    return this._http.post('/api/reportes/listar_movimientos_xcriterio',dato)
+    .map(res => res.json())
   }
 
 }
