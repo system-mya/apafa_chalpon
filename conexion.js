@@ -5,7 +5,6 @@ class Connection {
     }
     init() {
         this.pool = mysql.createPool({
-            connectionLimit: 10,
             host: 'localhost',
             user: 'root',
             password: '03071593',

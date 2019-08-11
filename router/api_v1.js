@@ -168,6 +168,12 @@ app.post('/api/apafa/eliminar_apoderado', (req, res) => {
     apafa.eliminar_apoderado(req.body, res);
 });
 
+// LLAMADO AL MODELO ELIMINAR DEUDA
+app.post('/api/apafa/eliminar_deuda_apoderado', (req, res) => {
+    apafa.eliminar_deuda(req.body, res);
+});
+
+
 //LLAMADO A LISTAR MATRICULADOS
 app.get('/api/apafa/listar_matriculados', (req, res) => {
     apafa.listar_matriculados(res);

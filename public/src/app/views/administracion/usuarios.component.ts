@@ -389,33 +389,12 @@ btnDetalle_Usuario(idusuario){
           .then(data => {
             if(data.status==1){
               this.EditUsuarioModal.hide();
-              swal({
-                  title: 'Aviso!',
-                  text: data.message,
-                  type: 'success',
-                  allowOutsideClick: false,
-                  allowEscapeKey:false
-              })
+              this.toastr.success(data.message, 'Aviso!');
               this.Listar_Usuario();
               this.mytemplateForm.resetForm();
             }else{
-              if(data.status==2){
                 this.toastr.error(data.message, 'Aviso!');
-              }else{
-                swal({
-                  title: 'Aviso!',
-                  html:
-                  '<span style="color:red">' +
-                  data.message +
-                  '</span>',
-                  type: 'error',
-                  allowOutsideClick: false,
-                  allowEscapeKey:false
-                })
-               
-              }
-              
-            }
+             }
           } )
           .catch(err => console.log(err))
         }

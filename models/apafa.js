@@ -833,6 +833,30 @@ update_alumno(alumno, res) {
                 }
             });
         };
+
+    eliminar_deuda(deuda, res) {
+            connection.acquire((err, con) => {
+                if(err){
+                    res.send({status: 0, message: err.sqlMessage});
+                }else{
+                var query = "CALL pa_eliminar_deuda_apoderado("+ [deuda.idbusqueda] +",'"+[deuda.datobusqueda]+"')"; 
+                /* res.send("CALL pa_obtener_usuario("+ [user.idbusqueda] +")");  */
+                con.query(query,(err, result) => {
+                    con.release();
+                    if(err){
+                        res.send({status: 0, message: err.sqlMessage});
+                    }else{
+                        if (result.affectedRows == 0) {
+                            res.send({status: 2, message: 'DEUDA NO ELIMINADA'});
+                        } else {
+                            res.send({status: 1, message: 'DEUDA ELIMINADA'});
+                        }
+                    }
+                });
+                }
+            });
+        };
+    
 }
 
 module.exports = new Apafa();

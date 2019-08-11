@@ -263,7 +263,7 @@
                                       [matTooltipPosition]="positionOptions[3]"></span>
                                       <ng-template #options>
                                         <mat-form-field class="example-form-field">
-                                          <input matInput type="text" placeholder="Ingrese Motivo de Eliminación:" [(ngModel)]="motivodel[i]">
+                                          <input matInput type="text" placeholder="Ingrese Motivo de Eliminación:" [(ngModel)]="motivodel[i]"  maxlength="50" required>
                                           <button mat-button *ngIf="motivodel[i]" matSuffix mat-icon-button aria-label="Clear" (click)="motivodel[i]=''">
                                             <mat-icon>close</mat-icon>
                                           </button>                                          
@@ -274,7 +274,7 @@
                                             matTooltip="Guardar"
                                             matTooltipClass="tooltip-mensaje"
                                             [matTooltipPosition]="positionOptions[3]"
-                                            (click)="btneliminar_deuda(DetApoderado,item,motivodel[i],i)"
+                                            (click)="btneliminar_deuda(item.id_detalle_deuda,motivodel[i],i)"
                                             style="color: rgb(4, 82, 4);cursor: pointer;">
                                               save</mat-icon>
                                           </div>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 09-08-2019 a las 01:17:18
+-- Tiempo de generación: 11-08-2019 a las 23:55:37
 -- Versión del servidor: 5.7.14
 -- Versión de PHP: 5.6.25
 
@@ -131,6 +131,10 @@ UPDATE apoderado SET estado_apoderado=0 WHERE id_apoderado=id_apo$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_concepto` (IN `id` SMALLINT)  NO SQL
 UPDATE concepto_apafa SET estado_concepto=0
 WHERE id_concepto=id$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_deuda_apoderado` (IN `id` SMALLINT, IN `motivo` VARCHAR(50))  NO SQL
+UPDATE detalle_deuda SET motivo_eliminacion=motivo,estado_deuda='E'
+WHERE id_detalle_deuda=id$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_eliminar_ingreso_egreso` (IN `criterio` CHAR(1), IN `id` SMALLINT)  NO SQL
 IF criterio="M" THEN
@@ -572,50 +576,6 @@ SELECT 'EGRESO' as tipo,'COMPRAS' as descripcion,c.freg_compra as fecha,c.total_
  END) as color_estado FROM compra c
 WHERE c.id_anhio=anhio
 ORDER BY fecha DESC;
-END IF$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_movimientos_xcriterio` (IN `tipo` CHAR(3), IN `dato` VARCHAR(20))  NO SQL
-    DETERMINISTIC
-IF tipo="IRA" THEN
-    SELECT 'INGRESO' as tipo,CONCAT('PAGO APAFA:',' ',ap.apellidos_apoderado,ap.nombres_apoderado) as descripcion, r.freg_recibo as fecha,r.mtotal_recibo as monto,r.num_recibo as num_doc,
-    (CASE
-      WHEN r.estado_recibo=1 THEN 'VIGENTE'
-      ELSE 'ELIMINADO'
-     END) as estado,
-      (CASE
-  WHEN  r.estado_recibo=1 THEN '#2a7703'
-  ELSE '#e4040e'
- END) as color_estado FROM recibo r
-    INNER JOIN anhio_lectivo a ON a.idanhio=r.id_anhio
-    INNER JOIN apoderado ap ON ap.id_apoderado=r.id_apoderado
-    WHERE a.anhio_lectivo=dato
-    ORDER BY fecha DESC;
-ELSEIF tipo="IRN" THEN
-SELECT 'INGRESO' as tipo,CONCAT('PAGO APAFA:',' ',ap.apellidos_apoderado,ap.nombres_apoderado) as descripcion, r.freg_recibo as fecha,r.mtotal_recibo as monto,r.num_recibo as num_doc,
-    (CASE
-      WHEN r.estado_recibo=1 THEN 'VIGENTE'
-      ELSE 'ELIMINADO'
-     END) as estado,
-      (CASE
-  WHEN  r.estado_recibo=1 THEN '#2a7703'
-  ELSE '#e4040e'
- END) as color_estado FROM recibo r
-    INNER JOIN apoderado ap ON ap.id_apoderado=r.id_apoderado
-    WHERE r.num_recibo LIKE CONCAT('%',dato,'%')
-    ORDER BY fecha DESC;
-ELSEIF tipo="IRD" THEN
-SELECT 'INGRESO' as tipo,CONCAT('PAGO APAFA:',' ',a.apellidos_apoderado,a.nombres_apoderado) as descripcion, r.freg_recibo as fecha,r.mtotal_recibo as monto,r.num_recibo as num_doc,
-    (CASE
-      WHEN r.estado_recibo=1 THEN 'VIGENTE'
-      ELSE 'ELIMINADO'
-     END) as estado,
-      (CASE
-  WHEN  r.estado_recibo=1 THEN '#2a7703'
-  ELSE '#e4040e'
- END) as color_estado FROM recibo r
-   INNER JOIN apoderado a ON a.id_apoderado=r.id_apoderado
-    WHERE a.apellidos_apoderado LIKE CONCAT('%',dato,'%')
-    ORDER BY fecha DESC;
 END IF$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_otros_conceptos` (IN `dato_anhio` CHAR(4))  NO SQL
@@ -1313,6 +1273,7 @@ CREATE TABLE `detalle_deuda` (
   `id_apoderado` smallint(6) NOT NULL,
   `saldo_deuda` float NOT NULL,
   `descripcion_deuda` varchar(100) DEFAULT NULL,
+  `motivo_eliminacion` varchar(50) DEFAULT NULL,
   `freg_deuda` date NOT NULL,
   `fseg_deuda` datetime NOT NULL,
   `estado_deuda` char(1) NOT NULL DEFAULT 'P'
@@ -1322,16 +1283,16 @@ CREATE TABLE `detalle_deuda` (
 -- Volcado de datos para la tabla `detalle_deuda`
 --
 
-INSERT INTO `detalle_deuda` (`id_detalle_deuda`, `id_concepto`, `id_apoderado`, `saldo_deuda`, `descripcion_deuda`, `freg_deuda`, `fseg_deuda`, `estado_deuda`) VALUES
-(22, 8, 3, 54, NULL, '2019-06-25', '2019-06-25 15:25:16', 'P'),
-(23, 8, 112, 0, NULL, '2019-07-08', '2019-07-18 15:55:06', 'C'),
-(24, 8, 55, 54, NULL, '2019-07-08', '2019-07-08 16:08:58', 'P'),
-(25, 10, 112, 0, NULL, '2019-07-16', '2019-08-08 16:24:10', 'C'),
-(26, 11, 112, 4, NULL, '2019-07-16', '2019-08-08 16:27:25', 'P'),
-(27, 12, 112, 0, NULL, '2019-07-16', '2019-07-24 15:50:56', 'C'),
-(28, 9, 112, 0, NULL, '2019-07-17', '2019-07-18 15:55:06', 'C'),
-(30, 9, 55, 54.5, NULL, '2019-07-17', '2019-07-17 19:18:59', 'P'),
-(31, 9, 15, 54.5, NULL, '2019-07-19', '2019-07-19 16:04:02', 'P');
+INSERT INTO `detalle_deuda` (`id_detalle_deuda`, `id_concepto`, `id_apoderado`, `saldo_deuda`, `descripcion_deuda`, `motivo_eliminacion`, `freg_deuda`, `fseg_deuda`, `estado_deuda`) VALUES
+(22, 8, 3, 54, NULL, NULL, '2019-06-25', '2019-06-25 15:25:16', 'P'),
+(23, 8, 112, 0, NULL, NULL, '2019-07-08', '2019-07-18 15:55:06', 'C'),
+(24, 8, 55, 54, NULL, 'SE REGISTRO DOBLE APAFA', '2019-07-08', '2019-07-08 16:08:58', 'E'),
+(25, 10, 112, 0, NULL, NULL, '2019-07-16', '2019-08-08 16:24:10', 'C'),
+(26, 11, 112, 4, NULL, 'SE CANCELO RECIBO MANUAL', '2019-07-16', '2019-08-08 16:27:25', 'E'),
+(27, 12, 112, 0, NULL, NULL, '2019-07-16', '2019-07-24 15:50:56', 'C'),
+(28, 9, 112, 0, NULL, NULL, '2019-07-17', '2019-07-18 15:55:06', 'C'),
+(30, 9, 55, 54.5, NULL, NULL, '2019-07-17', '2019-07-17 19:18:59', 'P'),
+(31, 9, 15, 54.5, NULL, NULL, '2019-07-19', '2019-07-19 16:04:02', 'P');
 
 -- --------------------------------------------------------
 
@@ -1680,7 +1641,7 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`idusuario`, `idperfil_usuario`, `nom_usu`, `clave_usu`, `dni_usu`, `nombres_usu`, `apellidos_usu`, `sexo_usu`, `celular_usu`, `correo_usu`, `direccion_usu`, `fcreacion_usu`, `fbaja_usu`, `obser_usu`, `estado_usu`) VALUES
-(1, 1, 'jjulcav', 'd0c7366cd4b8ed80d5f28120c6be80ee89e93bbf', '71919582', 'Jose Andersson', 'Julca Vásquez', 'M', '978902579', '', 'CALLE CHICLAYO # 114', '2019-06-28', NULL, NULL, b'1'),
+(1, 1, 'jjulcav', 'd0c7366cd4b8ed80d5f28120c6be80ee89e93bbf', '71919582', 'Jose Andersson', 'Julca Vásquez', 'M', '978902579', NULL, 'CALLE CHICLAYO # 114', '2019-06-28', NULL, NULL, b'1'),
 (2, 4, 'maritasv', 'a6b7354b8ec74b0550233c5cbf8773c6d28ceef4', '73258572', 'Marita Vanessa', 'Sanchez Velasquez', 'F', '979241872', 'vanesa_2808@hotmail.com', 'VISTA ALEGRE M H LT 22 CRUZ DE LA ESPERANZA', '2019-06-29', NULL, NULL, b'1'),
 (3, 2, 'rosafc', '2ef4d31ff48bb12b7c977be13909b5ae02683c7b', '14526398', 'Rosa Magaly ', 'Fernandez Cabrejos', 'F', '987445896', '', 'calle motupe # 152', '2019-06-29', '2019-07-03', NULL, b'1'),
 (4, 3, 'lishyestelita', 'ea8d414fe25b078a9b8e1516862bddf210e686bd', '45256389', 'Lishy Tatiana', 'Estela Zeña', 'F', '968574258', NULL, 'calle tucume # 150', '2019-06-29', NULL, NULL, b'1');

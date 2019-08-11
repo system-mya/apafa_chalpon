@@ -164,12 +164,7 @@ export const navAD: NavData[] = [
         name: 'Reporte de Balance',
         url: '/reportes/lstbalance',
         icon: 'cui-justify-center'
-      },
-      {
-        name: 'Reporte de Deudas',
-        url: '/icons/simple-line-icons',
-        icon: 'cui-justify-center'
-      },
+      }
      
     ]
   }

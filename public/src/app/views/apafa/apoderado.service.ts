@@ -42,4 +42,9 @@ export class ApoderadoService {
     return this._http.post('/api/apafa/eliminar_apoderado',apoderado)
      .map(data => data.json()).toPromise()
   }
+
+  public eliminar_deuda(deuda:clsBusqueda){
+    return this._http.post('/api/apafa/eliminar_deuda_apoderado',deuda)
+     .map(data => data.json()).toPromise()
+  }
 }

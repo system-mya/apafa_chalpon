@@ -214,6 +214,7 @@ update_usuario(user, res) {
                     + ",'"+ [user.direccion_usu] + "',"+ baja_usu
                     + ","+ obser_usu +","+ [user.perfil_usu] +")";
                     con.query(query,(err, result) => {
+						con.release();
                         if(err){
                             res.send({status: 0, message: err.sqlMessage});
                         }else{

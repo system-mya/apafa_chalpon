@@ -69,7 +69,9 @@ export class ApoderdoComponent {
       this.mytemplateForm.resetForm();
     }else{
       if(opc=="D"){
-        this.pop.hide();
+        if(this.DataDeuda!=undefined){
+          this.pop.hide();
+        }        
         this.motivodel={};
         this.DetApoderadoModal.hide();        
       }else{
@@ -263,7 +265,7 @@ btnEliminar_Apoderado(id:number) {
   }).then((result) => {
     //console.log(result.value);
     if (result.value==true) {
-      this.DatoBusqueda.idbusqueda=id;
+        this.DatoBusqueda.idbusqueda=id;
         //console.log(this.DatoBusqueda.idbusqueda);
         //this.DetUsuarioModal.show(); 
           this._ApoderadoServicio.eliminar_apoderado(this.DatoBusqueda)
@@ -366,16 +368,11 @@ btnRegistrar_Deuda(deuda:clsDetalle_Deuda){
 
 
    public valid_motivo : any = [];
-   btneliminar_deuda(idapo,dato1,dato2,pos){
-    console.log(idapo);
-    console.log(dato1);
-    console.log(dato2);
-    
-    if(dato2!=undefined){      
-      if(dato2.trim()===''){
+   btneliminar_deuda(iddeuda,motivo,pos){     
+    if(motivo!=undefined){      
+      if(motivo.trim()===''){
          console.log("esta vacio");
-         this.valid_motivo[pos]=true;
-       
+         this.valid_motivo[pos]=true;       
       }else{
         swal({
           title: '¿Esta seguro que desea eliminar deuda?',
@@ -389,7 +386,26 @@ btnRegistrar_Deuda(deuda:clsDetalle_Deuda){
         }).then((result) => {
           //console.log(result.value);
           if (result.value==true) {
-           
+            this.DatoBusqueda.idbusqueda=iddeuda;
+            this.DatoBusqueda.datobusqueda=motivo;
+            //console.log(this.DatoBusqueda.idbusqueda);
+            //this.DetUsuarioModal.show(); 
+              this._ApoderadoServicio.eliminar_deuda(this.DatoBusqueda)
+              .then(data => {
+                if(data.status==1){
+                  swal({
+                    title: 'Aviso!',
+                    text: data.message,
+                    type: 'success',
+                    allowOutsideClick: false,
+                    allowEscapeKey:false
+                })
+                this.DetApoderadoModal.hide();
+                }else{
+                  this.toastr.error(data.message, 'Aviso!');
+                 }
+              } )
+              .catch(err => console.log(err))
           }
         })
       }
