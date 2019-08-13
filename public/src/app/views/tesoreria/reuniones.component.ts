@@ -1,4 +1,5 @@
 import { Component,ViewChild,ViewEncapsulation,Inject,OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { DOCUMENT } from '@angular/platform-browser';
 import {ModalDirective} from 'ngx-bootstrap/modal';
 import { ReunionesService } from './reuniones.service';
@@ -6,7 +7,6 @@ import { clsReunion,clsBusqueda } from '../../app.datos';
 import {MatPaginator, MatSort, MatTableDataSource, TooltipPosition} from '@angular/material';
 import { ToastrService } from 'ngx-toastr';
 import { LoadingBarService } from '@ngx-loading-bar/core';
-import { NgxSpinnerService } from 'ngx-spinner';
 declare var swal: any;
 import * as jspdf from 'jspdf';
 import 'jspdf-autotable';
@@ -35,6 +35,7 @@ function bodyRows(data,rowCount) {
 })
 export class ReunionesComponent implements  OnInit {
   @ViewChild('NvaReunionModal') public NvaReunionModal: ModalDirective;
+  @ViewChild('myForm') mytemplateForm : NgForm;
   displayedColumns: string[] = ['motivo_reunion', 'fecha_reunion','concepto', 'monto_concepto','opciones'];
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -49,8 +50,7 @@ export class ReunionesComponent implements  OnInit {
   constructor(private toastr: ToastrService,private loadingBar: LoadingBarService,
     private _ReunionesServicio: ReunionesService,
     private _ConceptosServicio: ConceptosService,
-    @Inject(DOCUMENT) private document: Document,
-    private spinner: NgxSpinnerService) { 
+    @Inject(DOCUMENT) private document: Document) { 
     this.DatoBusqueda = {
         datobusqueda: ''
       };
@@ -103,6 +103,7 @@ searchString:string;
   frmReunion_hide(opt){
        if(opt=='N'){
         this.NvaReunionModal.hide();
+        this.mytemplateForm.resetForm();
        }else{
          this.panel_tabla=true;
          this.panel_detalle=false;
@@ -154,28 +155,13 @@ searchString:string;
         .then(data => {
           if (data.status == 1) {
             this.NvaReunionModal.hide();
-            swal({
-              title: 'Aviso!',
-              text: data.message,
-              type: 'success',
-              allowOutsideClick: false,
-              allowEscapeKey:false
-            }) 
+            this.toastr.success(data.message, 'Aviso!');
             this.loadingBar.complete();
             this.document.documentElement.scrollTop = 0;
-            this.ListarReunionesxPeriodo();
-            
+            this.mytemplateForm.resetForm();
+            this.ListarReunionesxPeriodo();            
           } else {
-              swal({
-                title: 'Aviso!',
-                html:
-                '<span style="color:red">' +
-                data.message +
-                '</span>',
-                type: 'error',
-                allowOutsideClick: false,
-                allowEscapeKey: false
-              });
+            this.toastr.error(data.message, 'Aviso!');
           }
         } )
         .catch(err => console.log(err));
@@ -198,7 +184,6 @@ searchString:string;
         this.DatoBusqueda.idbusqueda = dato;
         this.DatoBusqueda.datobusqueda = localStorage.getItem('_anhio');
         this.loadingBar.start(); 
-        this.spinner.show();
         this._ReunionesServicio.generar_lista_firmas_reunion(this.DatoBusqueda)
         .then(data => {
           if (data.status == 1) {
@@ -210,8 +195,7 @@ searchString:string;
               type: 'success',
               allowOutsideClick: false,
               allowEscapeKey:false
-            }) 
-              this.spinner.hide();              
+            })            
             this.loadingBar.complete();
             this.document.documentElement.scrollTop = 0;
             this.ListarReunionesxPeriodo();
@@ -228,8 +212,7 @@ searchString:string;
                 type: 'error',
                 allowOutsideClick: false,
                 allowEscapeKey: false
-              });
-              this.spinner.hide();              
+              });             
               this.loadingBar.complete();
               this.document.documentElement.scrollTop = 0;
               this.ListarReunionesxPeriodo();
@@ -255,7 +238,6 @@ searchString:string;
     }).then((result) => {
       if (result.value == true) {
         this.loadingBar.start();
-        this.spinner.show();
         const doc = new jspdf({orientation: 'portrait',unit: 'mm',format: 'A4'});
                  var headRows=  [{id:'N°',doc_apoderado:'Doc. Apoderado',apoderado: 'APODERADO', matriculados: 'ALUMNOS MATRICULADOS',firma_apoderado:'FIRMA APODERADO'}];
                  var totalPagesExp = "{total_pages_count_string}";
@@ -311,7 +293,6 @@ searchString:string;
                         doc.putTotalPages(totalPagesExp);
                     }
                     setTimeout(() => {
-                    this.spinner.hide();
                     doc.output('save', dato.fecha_reunion+'.pdf');
                     this.toastr.success('Lista Generada', 'Aviso!',{positionClass: 'toast-top-right',timeOut: 500});
                    
@@ -330,10 +311,12 @@ searchString:string;
   public Detalle : clsReunion = {};
   public DataAsistentes : any = [];
   Detalle_Lista_Reunion(dato){
+    console.log(dato);
       this.Detalle.id_reunion=dato.id_reunion;
       this.Detalle.motivo_reunion=dato.motivo_reunion;
       this.Detalle.fecha_reunion=formatDate(dato.fecha_reunion,'dd/MM/yyyy h:mm a','en-US');
       this.Detalle.descripcion_concepto=dato.descripcion_concepto;
+      this.Detalle.asistencia_reunion=dato.asistencia_reunion.data[0];
       this.Detalle.monto_concepto=dato.monto_concepto.toFixed(2);
       this.DatoBusqueda.idbusqueda = dato.id_reunion;
       this.DatoBusqueda.datobusqueda = localStorage.getItem('_anhio');

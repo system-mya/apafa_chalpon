@@ -38,7 +38,7 @@ export class IngresosComponent {
   @ViewChild('NvoPagoModal') public NvoPagoModal: ModalDirective;
   @ViewChild('DetallePago') public DetallePago: ModalDirective;
   @ViewChild('DetalleIngreso') public DetalleIngreso: ModalDirective;
-  displayedColumns: string[] = ['tipo','doc_ingreso', 'descripcion_ingreso', 'monto_ingreso', 'freg_ingreso', 'opciones_ingreso'];
+  displayedColumns: string[] = ['tipo','doc_ingreso', 'descripcion_ingreso', 'monto_ingreso', 'freg_ingreso', 'estado','opciones_ingreso'];
   positionOptions: TooltipPosition[] = ['after', 'before', 'above', 'below', 'left', 'right'];
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;

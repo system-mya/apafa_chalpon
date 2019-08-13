@@ -9,6 +9,7 @@ import { SimpleLineIconsComponent } from './simple-line-icons.component';
 import { TableFilterPipe } from './table-filter.pipe';
 import { ReportesRoutingModule } from './reportes-routing.module';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { ModalModule } from 'ngx-bootstrap/modal';
 import { MatAutocompleteModule,
   MatBadgeModule,
   MatBottomSheetModule,
@@ -46,7 +47,7 @@ import { MatAutocompleteModule,
   MatTreeModule,
   MatFormFieldModule,} from '@angular/material';
 @NgModule({
-  imports: [ CommonModule,
+  imports: [ CommonModule,ModalModule.forRoot(),
     ReportesRoutingModule,FormsModule,NgxSpinnerModule,
     [
       MatAutocompleteModule,

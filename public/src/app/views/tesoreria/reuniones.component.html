@@ -53,35 +53,34 @@ type = "ball-clip-rotate-multiple">
                 <ng-container matColumnDef="opciones">
                     <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Opciones </th>
                     <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> 
-                      <button class="btn btn-warning btn-xs distancia_btn_opciones"
+                  
+                      <span class="fa fa-refresh btn-xs fa-2x distancia_btn_opciones" aria-hidden="true" style="color: rgb(252, 195, 9);cursor: pointer;"
                       matTooltip="Generar Lista"
                       matTooltipClass="tooltip-mensaje"
                       [matTooltipPosition]="positionOptions[3]"
-                      [disabled]="element.lista_reunion.data[0]==1"
-                      data-toggle="modal" (click)="Generar_Lista_Firmas(element.id_reunion)">
-                    <span class="fa fa-refresh"></span></button>
-                <button class="btn btn-success btn-xs distancia_btn_opciones"
-                    matTooltip="Imprimir Lista"
-                    matTooltipClass="tooltip-mensaje"
-                    [matTooltipPosition]="positionOptions[3]"
-                    [disabled]="element.lista_reunion.data[0]==0"
-                    data-toggle="modal" (click)="ImprimirListaFirmas(element)">
-                  <span class="fa fa-print"></span></button>
-               <button class="btn btn-info btn-xs distancia_btn_opciones"
-                  matTooltip="Registrar Asistencia"
-                  matTooltipClass="tooltip-mensaje"
-                  [matTooltipPosition]="positionOptions[3]"
-                  [disabled]="element.lista_reunion.data[0]==0"
-                  data-toggle="modal" (click)="Detalle_Lista_Reunion(element)">
-                <span class="fa fa-save"></span></button>
-                 <button class="btn btn-danger btn-xs distancia_btn_opciones"
+                      *ngIf="element.lista_reunion.data[0]==0"
+                      data-toggle="modal" (click)="Generar_Lista_Firmas(element.id_reunion)"></span>
+                      
+                      <span class="fa fa-print btn-xs fa-2x distancia_btn_opciones" aria-hidden="true" style="color: rgb(5, 153, 5);cursor: pointer;"
+                      matTooltip="Imprimir Lista"
+                      matTooltipClass="tooltip-mensaje"
+                      [matTooltipPosition]="positionOptions[3]"
+                      *ngIf="element.lista_reunion.data[0]==1"
+                      data-toggle="modal" (click)="ImprimirListaFirmas(element)"></span>
+                      
+                      <span class="fa fa-save btn-xs fa-2x distancia_btn_opciones" aria-hidden="true" style="color: rgb(12, 83, 236);cursor: pointer;"
+                      matTooltip="Registrar Asistencia"
+                      matTooltipClass="tooltip-mensaje"
+                      [matTooltipPosition]="positionOptions[3]"
+                      *ngIf="element.lista_reunion.data[0]==1"
+                      data-toggle="modal" (click)="Detalle_Lista_Reunion(element)"></span>
+                      
+                      <span class="fa fa-trash-o btn-xs fa-2x distancia_btn_opciones" aria-hidden="true" style="color: red;cursor: pointer;"
                       matTooltip="Eliminar"
                       matTooltipClass="tooltip-mensaje"
                       [matTooltipPosition]="positionOptions[3]"
                       (click)="btnEliminar_Reunion(element.id_reunion)"
-                      *ngIf="optAd=='AD'">
-                 <span class="fa fa-trash-o btn-xs"></span>
-                 </button>
+                      *ngIf="optAd=='AD'"></span>
                       
                     </td>
                   </ng-container>
@@ -272,7 +271,7 @@ type = "ball-clip-rotate-multiple">
                         <!-- <span class="badge badge-success" [ngStyle]="{'background-color':item.estado === 'ACTIVO' ? 'green' : 'red' }">{{item.estado}}</span> -->
                         <label class="switch switch-label switch-success" style="width: 50px !important">
                             <input checked="" [checked]="item.asistio_reunion.data==1" class="switch-input" type="checkbox" 
-                            (click)="Marcar_Asistencia(item,item.asistio_reunion.data)">
+                            (click)="Marcar_Asistencia(item,item.asistio_reunion.data)" [disabled]='Detalle.asistencia_reunion==1'>
                             <span class="switch-slider" data-checked="SI" data-unchecked="NO"></span>
                           </label>
                       </td>
@@ -282,6 +281,15 @@ type = "ball-clip-rotate-multiple">
               </div>
             </div>              
         </div>
+        <div class="card-footer" style="text-align: right;" *ngIf="Detalle.asistencia_reunion==0">
+          <button type="button" class="btn btn-pill btn-danger" style="margin: 0px 20px;"
+          (click)="frmReunion_hide('D')">
+              <span class="fa fa-times-circle"></span>
+          Cancelar</button>
+          <button class="btn btn-pill btn-success" type="submit">
+              <span class="fa fa-save"></span> Grabar</button>
+        
+      </div>
 </div>
  <!--FIN Detalle de Lista de Reunion-->
 </div>

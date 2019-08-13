@@ -56,31 +56,36 @@ type = "ball-clip-rotate-multiple">
                   <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Frecha </th>
                   <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.freg_compra | date:'dd/MM/yyyy h:mm a '}} </td>
                 </ng-container>
+
+                <ng-container matColumnDef="estado">
+                  <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap>Estado </th>
+                  <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap>
+                  <span class="badge badge-success" [ngStyle]="{'background-color':element.color_estado}">{{element.estado}}</span>  </td>
+              </ng-container>
                 
                 <ng-container matColumnDef="opciones">
                     <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Opciones </th>
-                    <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> 
-                      <button class="btn btn-info btn-xs distancia_btn_opciones"
-                      matTooltip="Detalle"
-                      matTooltipClass="tooltip-mensaje"
-                      [matTooltipPosition]="positionOptions[3]"
-                      data-toggle="modal" (click)="btnDetalle_Compra(element)">
-                    <span class="fa fa-address-card-o"></span></button>
-                    <button class="btn btn-warning btn-xs distancia_btn_opciones"
-                    matTooltip="Imprimir"
-                    matTooltipClass="tooltip-mensaje"
-                    [matTooltipPosition]="positionOptions[3]"
-                    data-toggle="modal" (click)="ImprimirPDF(element)">
-                  <span class="fa fa-print"></span></button>
-                 <button class="btn btn-danger btn-xs distancia_btn_opciones"
-                      matTooltip="Eliminar"
-                      matTooltipClass="tooltip-mensaje"
-                      [matTooltipPosition]="positionOptions[3]"
-                      (click)="btnEliminar_Egreso(element)"
-                      *ngIf="optAd=='AD'">
-                 <span class="fa fa-trash-o btn-xs"></span>
-                 </button>
+                    <td mat-cell *matCellDef="let element" nowrap> 
                       
+                 <span class="fa fa-address-card-o btn-xs fa-2x distancia_btn_opciones" aria-hidden="true" style="color: rgb(12, 83, 236);cursor: pointer;"
+                 matTooltip="Detalle"
+                 matTooltipClass="tooltip-mensaje"
+                 [matTooltipPosition]="positionOptions[3]"
+                 data-toggle="modal" (click)="btnDetalle_Compra(element)"></span>
+
+                 <span class="fa fa-print btn-xs fa-2x distancia_btn_opciones" aria-hidden="true" style="color: rgb(5, 153, 5);cursor: pointer;"
+                 matTooltip="Imprimir"
+                 matTooltipClass="tooltip-mensaje"
+                 [matTooltipPosition]="positionOptions[3]"
+                 data-toggle="modal" (click)="ImprimirPDF(element)"></span>
+                 
+                 <span class="fa fa-trash-o btn-xs fa-2x distancia_btn_opciones" aria-hidden="true" style="color: red;cursor: pointer;"
+                 matTooltip="Eliminar"
+                 matTooltipClass="tooltip-mensaje"
+                 [matTooltipPosition]="positionOptions[3]"
+                 (click)="btnEliminar_Egreso(element)"
+                 *ngIf="optAd=='AD' && element.estado=='VIGENTE'"></span>
+                   
                     </td>
                   </ng-container>
             <tr mat-header-row *matHeaderRowDef="displayedColumns" style="background-color: #b6b9d0 !important;"></tr>
@@ -475,7 +480,7 @@ type = "ball-clip-rotate-multiple">
   </div><!-- /.modal-dialog -->
 </div>
 <!-- /.Fin Modal Nuevo Pago-->
-<!--Modal Detalle Pago-->
+<!--Modal Detalle Compra-->
 <div bsModal #DetalleCompraModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}">
   <div class="modal-dialog modal-lg modal-success" role="document">
     <div class="modal-content" style="border-style: solid; border-width: 5px; border-radius: 2rem !important;">
@@ -546,7 +551,7 @@ type = "ball-clip-rotate-multiple">
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div>
-<!-- /.Fin Modal Detalle Pago-->
+<!-- /.Fin Modal Detalle Compra-->
  <!--Modal Registrar Nuevo Otro Egreso-->
  <div bsModal #NvoOtroEgresoModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}" >
   <div class="modal-dialog modal-md modal-success" role="document">

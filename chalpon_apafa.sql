@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 11-08-2019 a las 23:55:37
+-- Tiempo de generación: 13-08-2019 a las 00:29:24
 -- Versión del servidor: 5.7.14
 -- Versión de PHP: 5.6.25
 
@@ -390,19 +390,33 @@ AND de.estado_deuda='P'$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_egresos_xperiodo` (IN `cod_anhio` CHAR(4))  NO SQL
 SELECT id_compra,(CASE WHEN tipo_compra='F' THEN 'FACTURA'
-                          ELSE 'BOLETA' END) as tipo_compra,num_compra, razon_social_compra,ruc_compra, fecha_compra,freg_compra, doc_encargado_compra, encargado_compra, total_compra, estado_compra FROM compra
-WHERE estado_compra=1
-AND id_anhio=(SELECT idanhio FROM anhio_lectivo WHERE condicion_anhio='A' AND estado_anhio=1 AND anhio_lectivo=cod_anhio)
+                          ELSE 'BOLETA' END) as tipo_compra,num_compra, razon_social_compra,ruc_compra, fecha_compra,freg_compra, doc_encargado_compra, encargado_compra, total_compra, estado_compra,(CASE
+      WHEN estado_compra=1 THEN 'VIGENTE'
+      ELSE 'ELIMINADO'
+     END) as estado,
+      (CASE
+  WHEN  estado_compra=1 THEN '#2a7703'
+  ELSE '#e4040e'
+ END) as color_estado FROM compra
+WHERE id_anhio=(SELECT idanhio FROM anhio_lectivo WHERE condicion_anhio='A' AND estado_anhio=1 AND anhio_lectivo=cod_anhio)
 UNION ALL 
 SELECT id_movimiento AS id_compra,'OTROS' AS tipo_compra, 
 doc_encargado_movimiento AS num_compra, 
 datos_encargado_movimiento As razon_social_compra,
 descripcion_movimiento AS ruc_compra,freg_movimiento AS fecha_compra,freg_movimiento AS freg_compra,
 '' AS doc_encargado_compra,'' AS encargado_compra,
-monto_movimiento AS total_compra,estado_movimiento as estado_compra
+monto_movimiento AS total_compra,estado_movimiento as estado_compra,
+(CASE
+      WHEN estado_movimiento=1 THEN 'VIGENTE'
+      ELSE 'ELIMINADO'
+     END) as estado,
+      (CASE
+  WHEN  estado_movimiento=1 THEN '#2a7703'
+  ELSE '#e4040e'
+ END) as color_estado
 FROM otros_movimientos
 WHERE tipo_movimiento='E'
-AND estado_movimiento=1 AND id_anhio=(SELECT idanhio from
+AND id_anhio=(SELECT idanhio from
 anhio_lectivo WHERE condicion_anhio='A' 
 AND estado_anhio=1
 AND anhio_lectivo=cod_anhio)
@@ -456,10 +470,17 @@ SELECT m.id_matricula,g.descripcion_grado,s.nombre_seccion,a.anhio_lectivo, ap.i
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_ingresos_xperiodo` (IN `anhio` CHAR(4))  NO SQL
 SELECT r.id_recibo AS id_ingreso,'RECIBO' AS tipo,a.id_apoderado as id_apoderado,r.num_recibo AS doc_ingreso, 
 CONCAT(a.apellidos_apoderado,' ',a.nombres_apoderado) as descripcion_ingreso,r.mtotal_recibo AS monto_ingreso, 
-r.freg_recibo AS freg_ingreso
+r.freg_recibo AS freg_ingreso, (CASE
+      WHEN r.estado_recibo=1 THEN 'VIGENTE'
+      ELSE 'ELIMINADO'
+     END) as estado,
+      (CASE
+  WHEN  r.estado_recibo=1 THEN '#2a7703'
+  ELSE '#e4040e'
+ END) as color_estado
 FROM recibo r
 INNER JOIN apoderado a ON a.id_apoderado=r.id_apoderado
-WHERE r.estado_recibo =1 AND r.id_anhio=(SELECT idanhio from
+WHERE r.id_anhio=(SELECT idanhio from
 anhio_lectivo WHERE condicion_anhio='A' 
 AND estado_anhio=1
 AND anhio_lectivo=anhio)
@@ -467,10 +488,18 @@ UNION ALL
 SELECT id_movimiento AS id_ingreso,'OTROS' AS tipo,'' AS id_apoderdo, 
 doc_encargado_movimiento AS doc_ingreso, 
 descripcion_movimiento as descripcion_ingreso,
-monto_movimiento AS monto_ingreso, freg_movimiento AS freg_ingreso
+monto_movimiento AS monto_ingreso, freg_movimiento AS freg_ingreso,
+ (CASE
+      WHEN estado_movimiento=1 THEN 'VIGENTE'
+      ELSE 'ELIMINADO'
+     END) as estado,
+      (CASE
+  WHEN estado_movimiento=1 THEN '#2a7703'
+  ELSE '#e4040e'
+ END) as color_estado
 FROM otros_movimientos
 WHERE tipo_movimiento='I'
-AND estado_movimiento=1 AND id_anhio=(SELECT idanhio from
+AND id_anhio=(SELECT idanhio from
 anhio_lectivo WHERE condicion_anhio='A' 
 AND estado_anhio=1
 AND anhio_lectivo=anhio)
@@ -524,60 +553,6 @@ AND m.id_anhio=(SELECT idanhio FROM anhio_lectivo WHERE condicion_anhio='A' AND 
 AND m.estado_matricula=1
 ORDER BY a.apellidos_alumno,a.nombres_alumno,s.nombre_seccion ASC$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_movimientos_xanhio` (IN `tipo` CHAR(1), IN `anhio` TINYINT)  NO SQL
-IF tipo="I" THEN
-SELECT 'INGRESO' as tipo,CONCAT('PAGO APAFA:',' ',ap.apellidos_apoderado,ap.nombres_apoderado) as descripcion, r.freg_recibo as fecha,r.mtotal_recibo as monto,r.num_recibo as num_doc,
- (CASE
-      WHEN r.estado_recibo=1 THEN 'VIGENTE'
-      ELSE 'ELIMINADO'
-     END) as estado,
-      (CASE
-  WHEN  r.estado_recibo=1 THEN '#2a7703'
-  ELSE '#e4040e'
- END) as color_estado FROM recibo r
-INNER JOIN apoderado ap ON ap.id_apoderado=r.id_apoderado
-WHERE r.id_anhio=anhio
-UNION ALL
-SELECT 'INGRESO' as tipo,o.descripcion_movimiento as descripcion,o.freg_movimiento as fecha,o.monto_movimiento as monto,
-o.doc_encargado_movimiento as num_doc,
- (CASE
-      WHEN o.estado_movimiento=1 THEN 'VIGENTE'
-      ELSE 'ELIMINADO'
-     END) as estado,
-      (CASE
-  WHEN  o.estado_movimiento=1 THEN '#2a7703'
-  ELSE '#e4040e'
- END) as color_estado FROM otros_movimientos o
-WHERE o.id_anhio=anhio
-AND o.tipo_movimiento='I'
-ORDER BY fecha DESC;
-ELSE
-SELECT 'EGRESO' as tipo,o.descripcion_movimiento as descripcion,o.freg_movimiento as fecha,
-o.monto_movimiento as monto,o.doc_encargado_movimiento as num_doc,
-(CASE
-      WHEN o.estado_movimiento=1 THEN 'VIGENTE'
-      ELSE 'ELIMINADO'
-     END) as estado,
-      (CASE
-  WHEN  o.estado_movimiento=1 THEN '#2a7703'
-  ELSE '#e4040e'
- END) as color_estado FROM otros_movimientos o
-WHERE  o.id_anhio=anhio
-AND o.tipo_movimiento='E'
-UNION ALL 
-SELECT 'EGRESO' as tipo,'COMPRAS' as descripcion,c.freg_compra as fecha,c.total_compra as monto,c.num_compra as num_doc,
-(CASE
-      WHEN c.estado_compra=1 THEN 'VIGENTE'
-      ELSE 'ELIMINADO'
-     END) as estado,
-      (CASE
-  WHEN c.estado_compra=1 THEN '#2a7703'
-  ELSE '#e4040e'
- END) as color_estado FROM compra c
-WHERE c.id_anhio=anhio
-ORDER BY fecha DESC;
-END IF$$
-
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_otros_conceptos` (IN `dato_anhio` CHAR(4))  NO SQL
 SELECT * FROM concepto_apafa c 
 INNER JOIN anhio_lectivo a ON a.idanhio=c.id_anhio
@@ -590,7 +565,7 @@ SELECT * FROM perfil_usuario
 WHERE estado_perfil=1$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_listar_reuniones_xperiodo` (IN `dato_anhio` CHAR(4))  NO SQL
-SELECT r.id_reunion, r.motivo_reunion,CONCAT(r.fecha_reunion,' ',r.hora_reunion) AS fecha_reunion,r.lista_reunion,r.id_concepto,r.estado_reunion,c.descripcion_concepto,
+SELECT r.id_reunion, r.motivo_reunion,CONCAT(r.fecha_reunion,' ',r.hora_reunion) AS fecha_reunion,r.lista_reunion,r.asistencia_reunion,r.id_concepto,r.estado_reunion,c.descripcion_concepto,
 c.monto_concepto,a.anhio_lectivo
 FROM reunion r
 INNER JOIN concepto_apafa c ON c.id_concepto=r.id_concepto
@@ -641,16 +616,14 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_obtener_detalle_movimiento` (IN 
 SELECT descripcion_movimiento,monto_movimiento,freg_movimiento,
 doc_encargado_movimiento,datos_encargado_movimiento FROM otros_movimientos
 WHERE id_movimiento=id
-AND tipo_movimiento=tipo
-AND estado_movimiento=1$$
+AND tipo_movimiento=tipo$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_obtener_detalle_recibo` (IN `id` SMALLINT)  NO SQL
 SELECT c.descripcion_concepto,convert(dr.monto_detalle, decimal(10,2)) as monto_detalle FROM detalle_recibo dr 
 INNER JOIN detalle_deuda d ON dr.id_detalle_deuda=d.id_detalle_deuda
 INNER JOIN recibo r ON r.id_recibo=dr.id_recibo
 INNER JOIN concepto_apafa c ON c.id_concepto=d.id_concepto
-WHERE r.id_recibo=id
-AND r.estado_recibo=1$$
+WHERE r.id_recibo=id$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_obtener_usuario` (IN `id` INT)  NO SQL
 SELECT * FROM usuario u
@@ -1525,6 +1498,7 @@ CREATE TABLE `reunion` (
   `hora_reunion` time NOT NULL,
   `id_concepto` smallint(6) NOT NULL,
   `lista_reunion` bit(1) NOT NULL DEFAULT b'0',
+  `asistencia_reunion` bit(1) NOT NULL DEFAULT b'0',
   `estado_reunion` bit(1) NOT NULL DEFAULT b'1'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -1532,9 +1506,17 @@ CREATE TABLE `reunion` (
 -- Volcado de datos para la tabla `reunion`
 --
 
-INSERT INTO `reunion` (`id_reunion`, `motivo_reunion`, `fecha_reunion`, `hora_reunion`, `id_concepto`, `lista_reunion`, `estado_reunion`) VALUES
-(1, 'Asamblea General de padres', '2019-06-21', '14:30:00', 3, b'1', b'0'),
-(2, 'Reunion de padres de familia', '2019-07-21', '16:30:00', 12, b'1', b'0');
+INSERT INTO `reunion` (`id_reunion`, `motivo_reunion`, `fecha_reunion`, `hora_reunion`, `id_concepto`, `lista_reunion`, `asistencia_reunion`, `estado_reunion`) VALUES
+(1, 'Asamblea General de padres', '2019-06-21', '14:30:00', 3, b'1', b'0', b'0'),
+(2, 'Reunion de padres de familia', '2019-07-21', '16:30:00', 12, b'1', b'0', b'0'),
+(3, 'ASAMBLEA GENERAL ', '2019-08-31', '14:30:00', 10, b'1', b'0', b'1'),
+(4, 'tht', '2019-08-08', '02:03:00', 10, b'0', b'0', b'1'),
+(5, 'rfgregerg', '2019-08-16', '02:05:00', 11, b'0', b'0', b'1'),
+(6, 'dsgdsgdsg', '2019-08-10', '13:01:00', 12, b'0', b'0', b'1'),
+(7, 'fghgfh', '2019-08-13', '02:02:00', 12, b'0', b'0', b'1'),
+(8, 'gnfgngfn', '2019-08-16', '01:00:00', 11, b'0', b'0', b'1'),
+(9, 'sadsad', '2019-08-08', '13:01:00', 11, b'0', b'0', b'1'),
+(10, 'wqdwqdwqd', '2019-08-09', '03:00:00', 11, b'0', b'0', b'1');
 
 -- --------------------------------------------------------
 
@@ -1556,7 +1538,10 @@ INSERT INTO `reunion_apoderado` (`id_reunion`, `id_apoderado`, `asistio_reunion`
 (1, 2, b'0'),
 (1, 4, b'0'),
 (2, 55, b'0'),
-(2, 112, b'1');
+(2, 112, b'1'),
+(3, 15, b'0'),
+(3, 55, b'0'),
+(3, 112, b'0');
 
 -- --------------------------------------------------------
 
@@ -1858,7 +1843,7 @@ ALTER TABLE `recibo`
 -- AUTO_INCREMENT de la tabla `reunion`
 --
 ALTER TABLE `reunion`
-  MODIFY `id_reunion` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_reunion` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 --
 -- AUTO_INCREMENT de la tabla `secciones`
 --

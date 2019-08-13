@@ -43,7 +43,7 @@ export class EgresosComponent {
   @ViewChild('DetalleEgreso') public DetalleEgreso: ModalDirective;
   @ViewChild('MyCompra') myCompraForm: NgForm;
   @ViewChild('myForm') myEgresoForm: NgForm;
-  displayedColumns: string[] = ['tipo_compra', 'num_compra', 'razon_social_compra', 'fecha_compra', 'total_compra','opciones'];
+  displayedColumns: string[] = ['tipo_compra', 'num_compra', 'razon_social_compra', 'fecha_compra', 'total_compra','estado','opciones'];
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;

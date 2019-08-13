@@ -223,6 +223,7 @@ export class clsReunion
     descripcion_concepto ?: string;
     monto_concepto ?: string;
     lista_reunion ?: boolean;
+    asistencia_reunion ?: boolean;
     estado_reunion ?: boolean;
 }
 
