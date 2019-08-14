@@ -225,6 +225,7 @@ export class clsReunion
     lista_reunion ?: boolean;
     asistencia_reunion ?: boolean;
     estado_reunion ?: boolean;
+    asistentes ?: any;
 }
 
 export class clsConcepto

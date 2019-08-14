@@ -51,37 +51,36 @@
            <ng-container matColumnDef="opciones">
              <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Opciones </th>
              <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> 
-              <button class="btn btn-info btn-xs distancia_btn_opciones"
-              matTooltip="Detalle"
+              
+            <span class="fa fa-address-card-o btn-xs fa-2x distancia_btn_opciones" aria-hidden="true" style="color: rgb(12, 83, 236);cursor: pointer;"
+            matTooltip="Detalle"
               matTooltipClass="tooltip-mensaje"
               [matTooltipPosition]="positionOptions[3]"
-              data-toggle="modal" (click)="btnDetalle_Anhio(element)">
-            <span class="fa fa-address-card-o"></span></button>
-            <button class="btn btn-pinterest btn-xs distancia_btn_opciones"
-            matTooltip="Cerrar"
+              data-toggle="modal" (click)="btnDetalle_Anhio(element)"></span>
+            
+              <span class="fa fa-window-close-o btn-xs fa-2x distancia_btn_opciones" aria-hidden="true" style="color: rgb(245, 53, 28);cursor: pointer;"
+              matTooltip="Cerrar"
             matTooltipClass="tooltip-mensaje"
             [matTooltipPosition]="positionOptions[3]"
             data-toggle="modal" (click)="btnUpdate_Anhio_Xcriterio('cerrar',element.idanhio)"
-            [disabled]="element.condicion=='CERRADO'">
-          <span class="fa fa-window-close-o"></span></button>
-            <button class="btn btn-warning btn-xs distancia_btn_opciones"
+            *ngIf="element.condicion!='CERRADO'"></span>
+
+            <span class="fa fa-refresh btn-xs fa-2x distancia_btn_opciones" aria-hidden="true" style="color: rgb(252, 195, 9);cursor: pointer;"
             matTooltip="Reaperturar"
             matTooltipClass="tooltip-mensaje"
             [matTooltipPosition]="positionOptions[3]"
             data-toggle="modal" (click)="btnUpdate_Anhio_Xcriterio('reaperturar',element.idanhio)"
-            [disabled]="element.condicion=='APERTURADO'">
-          <span class="fa fa-folder-open-o"></span></button>
-         <button class="btn btn-danger btn-xs distancia_btn_opciones"
-              matTooltip="Eliminar"
-              matTooltipClass="tooltip-mensaje"
-              [matTooltipPosition]="positionOptions[3]"
-              (click)="btnUpdate_Anhio_Xcriterio('eliminar',element.idanhio)">
-         <span class="fa fa-trash-o btn-xs"></span>
-         </button>
-              
-             </td>
+            *ngIf="element.condicion!='APERTURADO'"></span>
+           
+            <span class="fa fa-trash-o btn-xs fa-2x distancia_btn_opciones" aria-hidden="true" style="color: red;cursor: pointer;"
+            matTooltip="Eliminar"
+            matTooltipClass="tooltip-mensaje"
+            [matTooltipPosition]="positionOptions[3]"
+            (click)="btnUpdate_Anhio_Xcriterio('eliminar',element.idanhio)"></span>
+
+         </td>
            </ng-container>
-         <tr mat-header-row *matHeaderRowDef="displayedColumns" style="background-color: #b6b9d0 !important;"></tr>
+         <tr mat-header-row *matHeaderRowDef="displayedColumns" style="background-color: #3f51b5 !important;"></tr>
          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
        </table>
      

@@ -1,5 +1,19 @@
 
 
+thead, tfoot{
+  background-color: #3f51b5 !important;
+
+}
+
+th{
+  font-size: 14px !important;
+  color: white !important;
+  font-weight: bold !important;
+  text-align: center !important;
+  border: 1px solid #ffffff !important;
+}
+
+
 #tabla {
     width: 100% !important;
   }
@@ -120,10 +134,10 @@ input[type="file"]#archivo {
 /*CSS estilos*/
 .txtcabezera-tabla{
   font-size: 14px !important;
-  color: black !important;
+  color: white !important;
   font-weight: bold !important;
   text-align: center !important;
-  border: 1px solid #606273 !important;
+  border: 1px solid #ffffff !important;
 }
 
 .example-button {
@@ -225,6 +239,5 @@ border: 1px solid #e2f10a;
   position: sticky;
   position: -webkit-sticky;
   top: 0;
-  background: white;
   z-index: 10;
 }

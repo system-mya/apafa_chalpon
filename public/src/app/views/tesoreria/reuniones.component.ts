@@ -311,8 +311,8 @@ searchString:string;
   public Detalle : clsReunion = {};
   public DataAsistentes : any = [];
   Detalle_Lista_Reunion(dato){
-    console.log(dato);
       this.Detalle.id_reunion=dato.id_reunion;
+      this.Detalle.id_concepto=dato.id_concepto;
       this.Detalle.motivo_reunion=dato.motivo_reunion;
       this.Detalle.fecha_reunion=formatDate(dato.fecha_reunion,'dd/MM/yyyy h:mm a','en-US');
       this.Detalle.descripcion_concepto=dato.descripcion_concepto;
@@ -416,6 +416,43 @@ searchString:string;
                   allowEscapeKey:false
               })
               this.ListarReunionesxPeriodo();
+              }else{
+                this.toastr.error(data.message, 'Aviso!');
+               }
+            } )
+            .catch(err => console.log(err))
+      }
+    })
+  }
+
+  GuardarAsistencias : clsReunion ={};
+  btnGuardar_Asistencias(){
+    swal({
+      title: '¿Esta seguro que desea registrar asistencias?',
+      type: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, Guardar!',
+      allowOutsideClick: false,
+      allowEscapeKey:false,
+    }).then((result) => {
+      //console.log(result.value);
+      if (result.value==true) {
+        this.GuardarAsistencias.id_concepto = this.Detalle.id_concepto;
+        this.GuardarAsistencias.id_reunion = this.Detalle.id_reunion;
+        this.GuardarAsistencias.monto_concepto = this.Detalle.monto_concepto;
+        this.GuardarAsistencias.asistentes = this.DataAsistentes;
+          //console.log(this.DatoBusqueda.idbusqueda);
+          //this.DetUsuarioModal.show(); 
+            this._ReunionesServicio.update_asistencia_reunion(this.GuardarAsistencias)
+            .then(data => {
+              if(data.status==1){
+              this.toastr.success(data.message, 'Aviso!');
+              this.ListarReunionesxPeriodo();
+              this.panel_tabla=true;
+              this.panel_detalle=false;
+              this.searchString='';
               }else{
                 this.toastr.error(data.message, 'Aviso!');
                }

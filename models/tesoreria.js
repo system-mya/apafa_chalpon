@@ -90,11 +90,34 @@ function hoyFecha(){
         }
              
     }
-    
-})
+  })
+}
 
-    
-  }
+function insertar_deuda_apoderado(apoderados,cantidad,con,id_concepto,monto_concepto) {
+    var buenas=0;
+    var malos=0;
+    return new Promise(function (resolve, reject) {
+    for(i=0;i<cantidad;i++){
+        if((apoderados.asistentes[i].asistio_reunion.data[0])==0){
+            var query = "CALL pa_insertar_deuda_apoderado("+ id_concepto +","+ apoderados.asistentes[i].id_apoderado 
+            +",'"+ monto_concepto + "','por multa')";
+            con.query(query ,function(err,result_insert) {
+                            if (err) { 
+                                malos=malos+1;
+                                return reject(malos);
+                            }else{
+                                 if (result_insert.affectedRows == 1) {
+                                      buenas= buenas + 1;
+                                       return resolve(buenas);                                                                                       
+                                  }
+                                      
+                               }
+                          });   
+        }
+             
+    }
+  })
+}
 
   function insertar_detalle_compra(compra,con,cantidad,id_compra) {
     var buenas=0;
@@ -947,6 +970,71 @@ class Tesoreria {
             });
             }
         });
+    };
+
+    update_asistencia_reunion(reunion, res) {
+
+        connection.acquire((err, con) => {
+            if(err){
+                res.send({status: 0, message: err.sqlMessage});
+            }else{    
+                con.beginTransaction(function(err) {
+                    if (err) {  
+                        con.rollback(function() {
+                            con.release();                                                                                                  
+                        });
+                        res.send({status: 0, message: err.sqlMessage}); 
+                    }else{
+                        var query = "CALL pa_update_asistencia_reunion("+[reunion.id_reunion] +")";
+                        con.query(query,(err, result) => {
+                        if (err) { 
+                            con.rollback(function() {
+                                con.release();                                                                                                  
+                            });
+                                res.send({status: 0, message: err.sqlMessage});
+                        }else{           
+                            if (result.affectedRows == 0) {
+                                con.rollback(function() {
+                                    con.release();
+                                    res.send({status: 2, message: 'NO SE REGISTRO ASISTENCIAS'});                                                                                                 
+                                });
+                                
+                            } else {
+                                var cantidad = [reunion.asistentes.length];
+                                var deuda_apoderado;
+                                deuda_apoderado = insertar_deuda_apoderado(reunion,cantidad,con,[reunion.id_concepto],[reunion.monto_concepto]);
+                                deuda_apoderado.then(function(value){
+                                                   if(value>0){
+                                                    console.log("nu hubo error");
+                                                    con.commit(function(err) {
+                                                     if (err) { 
+                                                       con.rollback(function() {
+                                                         res.send({status: 0, message: err.sqlMessage});
+                                                       });
+                                                     }else{
+                                                        res.send({status: 1, message: 'ASISTENCIAS REGISTRADAS'});
+                                                     }                                                      
+                                                   });
+                                                   }
+                                                }).catch(function(value){
+                                                    if(value>0){
+                                                        console.log("hubo error x aki");
+                                                        con.rollback(function() {
+                                                         con.release();
+                                                         res.send({status: 2, message: 'NO SE REGISTRO ASISTENCIAS'});                                                                                                  
+                                                     });
+                                                     }
+                                                    
+                                                })
+                                
+                            }
+                        }
+                      })
+                    }
+                })
+            }
+        })
+        
     };
 }
 module.exports = new Tesoreria();

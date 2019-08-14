@@ -1,4 +1,17 @@
 
+thead, tfoot{
+  background-color: #3f51b5 !important;
+
+}
+
+th{
+  font-size: 14px !important;
+  color: white !important;
+  font-weight: bold !important;
+  text-align: center !important;
+  border: 1px solid #ffffff !important;
+}
+
 #tabla {
     width: 100% !important;
   }
@@ -23,11 +36,12 @@
   
   .txtcabezera-tabla{
     font-size: 14px !important;
-    color: black !important;
+    color: white !important;
     font-weight: bold !important;
     text-align: center !important;
-    border: 1px solid #606273 !important;
+    border: 1px solid #ffffff !important;
   }
+  
   
   
   .tooltip-mensaje{
@@ -111,7 +125,6 @@
     position: sticky;
     position: -webkit-sticky;
     top: 0;
-    background: white;
     z-index: 10;
   }
 
@@ -124,7 +137,6 @@
     position: sticky;
     position: -webkit-sticky;
     top: 0;
-    background: white;
     z-index: 10;
   }
 
@@ -137,7 +149,6 @@
     position: sticky;
     position: -webkit-sticky;
     top: 0;
-    background: white;
     z-index: 10;
   }
 

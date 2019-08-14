@@ -60,10 +60,10 @@ type = "ball-clip-rotate-multiple">
           </div>
           <div class="card-body">
               <div id="customers" class="table-responsive" *ngIf="panel_tabla">
-                  <div class="form-group col-sm-6">
+                  <!-- <div class="form-group col-sm-6">
                           <label for="monto_concepto" style="font-weight: bold;">Buscar Apoderado:</label>
                         <input type="text" class="form-control" name="searchString" placeholder="Ingrese Datos Apoderado" [(ngModel)]="searchString">
-                      </div>
+                      </div> -->
                   <table id="tab_customers" class="table"> 
                       <thead>
                       <tr>
@@ -74,7 +74,7 @@ type = "ball-clip-rotate-multiple">
                         </tr>   
                       </thead>  
                       <tbody>
-                    <ng-container *ngFor="let data of body | filter : 'pname' : searchString;let indice=index;">    
+                    <ng-container *ngFor="let data of body">    
                         <tr>
                             <td [attr.rowspan]="data.numbers.length">{{data.pname}}<br><strong>Doc. Identidad: </strong>{{data.doc}}<br><strong>Num. Contacto: </strong>{{data.celular}}</td>
                             <td>{{data.numbers[0].apellidos_alumno}} {{data.numbers[0].nombres_alumno}}</td>

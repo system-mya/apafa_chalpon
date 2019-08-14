@@ -1,3 +1,16 @@
+thead, tfoot{
+     background-color: #3f51b5 !important;
+
+}
+
+th{
+  font-size: 14px !important;
+  color: white !important;
+  font-weight: bold !important;
+  text-align: center !important;
+  border: 1px solid #ffffff !important;
+}
+
 .tooltip-mensaje{
   background: #030000 !important;
 }
@@ -41,10 +54,10 @@
   
   .txtcabezera-tabla{
     font-size: 14px !important;
-    color: black !important;
-    font-weight: bold !important;
-    text-align: center !important;
-    border: 1px solid #606273 !important;
+  color: white !important;
+  font-weight: bold !important;
+  text-align: center !important;
+  border: 1px solid #ffffff !important;
   }
 /* 
   .secciones-balance {

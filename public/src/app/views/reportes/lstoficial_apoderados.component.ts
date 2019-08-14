@@ -82,7 +82,7 @@ export class ListaOficialApoderadosComponent implements OnInit {
                  celular:numero.celular_apoderado,
                  numbers: data_alumno.data
                 })
-                
+              this.body.sort();
                this.panel_tabla=true;
              }else{
                this.toastr.error(data.message, 'Aviso!');

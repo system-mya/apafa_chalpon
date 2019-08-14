@@ -42,6 +42,11 @@ export class ReunionesService {
     .map(data => data.json()).toPromise()
   }
 
+  public update_asistencia_reunion(reunion:clsReunion){
+    return this._http.post('/api/tesoreria/update_asistencia_reunion',reunion)
+    .map(data => data.json()).toPromise()
+  }
+
 
 
 }

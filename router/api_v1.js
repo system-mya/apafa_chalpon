@@ -352,6 +352,11 @@ app.post('/api/tesoreria/eliminar_reunion', (req, res) => {
     tesoreria.eliminar_reunion(req.body,res);
 });
 
+//LLAMADA ELIMINAR REUNION
+app.post('/api/tesoreria/update_asistencia_reunion', (req, res) => {
+    tesoreria.update_asistencia_reunion(req.body,res);
+});
+
 //LLAMADA LISTAR APODERADOS X AÑO
 app.post('/api/reportes/listar_apoderados_xanhio', (req, res) => {
     reportes.listar_apoderados_xanhio(req.body,res);

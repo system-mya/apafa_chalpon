@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 13-08-2019 a las 00:29:24
+-- Tiempo de generación: 14-08-2019 a las 00:56:47
 -- Versión del servidor: 5.7.14
 -- Versión de PHP: 5.6.25
 
@@ -693,6 +693,10 @@ celular_apoderado=cel_apod,
 direccion_apoderado=dir_apod,correo_apoderado=cor_apod
 WHERE id_apoderado=id_apo$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_asistencia_reunion` (IN `id_reu` SMALLINT)  NO SQL
+UPDATE reunion SET asistencia_reunion=1
+WHERE id_reunion=id_reu$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pa_update_clave` (IN `clave` VARCHAR(10), IN `id` SMALLINT)  NO SQL
 UPDATE usuario SET clave_usu=SHA(clave) 
 WHERE idusuario=id$$
@@ -1265,7 +1269,10 @@ INSERT INTO `detalle_deuda` (`id_detalle_deuda`, `id_concepto`, `id_apoderado`, 
 (27, 12, 112, 0, NULL, NULL, '2019-07-16', '2019-07-24 15:50:56', 'C'),
 (28, 9, 112, 0, NULL, NULL, '2019-07-17', '2019-07-18 15:55:06', 'C'),
 (30, 9, 55, 54.5, NULL, NULL, '2019-07-17', '2019-07-17 19:18:59', 'P'),
-(31, 9, 15, 54.5, NULL, NULL, '2019-07-19', '2019-07-19 16:04:02', 'P');
+(31, 9, 15, 54.5, NULL, NULL, '2019-07-19', '2019-07-19 16:04:02', 'P'),
+(32, 10, 112, 34.25, 'por multa', NULL, '2019-08-13', '2019-08-13 12:36:27', 'P'),
+(33, 10, 55, 34.25, 'por multa', NULL, '2019-08-13', '2019-08-13 12:36:27', 'P'),
+(34, 10, 15, 34.25, 'por multa', NULL, '2019-08-13', '2019-08-13 12:36:27', 'P');
 
 -- --------------------------------------------------------
 
@@ -1316,10 +1323,10 @@ CREATE TABLE `grados` (
 
 INSERT INTO `grados` (`id_grado`, `descripcion_grado`, `nivel_grado`, `estado_grado`) VALUES
 (1, 'PRIMER GRADO SECUNDARIA', 'S', b'1'),
-(2, 'SEGUNDO GRADO SECUNDARIA', 'S', b'0'),
-(3, 'TERCER GRADO SECUNDARIA', 'S', b'0'),
+(2, 'SEGUNDO GRADO SECUNDARIA', 'S', b'1'),
+(3, 'TERCER GRADO SECUNDARIA', 'S', b'1'),
 (4, 'CUARTO GRADO SECUNDARIA', 'S', b'1'),
-(5, 'QUINTO GRADO SECUNDARIA', 'S', b'0');
+(5, 'QUINTO GRADO SECUNDARIA', 'S', b'1');
 
 -- --------------------------------------------------------
 
@@ -1509,8 +1516,8 @@ CREATE TABLE `reunion` (
 INSERT INTO `reunion` (`id_reunion`, `motivo_reunion`, `fecha_reunion`, `hora_reunion`, `id_concepto`, `lista_reunion`, `asistencia_reunion`, `estado_reunion`) VALUES
 (1, 'Asamblea General de padres', '2019-06-21', '14:30:00', 3, b'1', b'0', b'0'),
 (2, 'Reunion de padres de familia', '2019-07-21', '16:30:00', 12, b'1', b'0', b'0'),
-(3, 'ASAMBLEA GENERAL ', '2019-08-31', '14:30:00', 10, b'1', b'0', b'1'),
-(4, 'tht', '2019-08-08', '02:03:00', 10, b'0', b'0', b'1'),
+(3, 'ASAMBLEA GENERAL ', '2019-08-31', '14:30:00', 10, b'1', b'1', b'1'),
+(4, 'tht', '2019-08-08', '02:03:00', 10, b'1', b'1', b'1'),
 (5, 'rfgregerg', '2019-08-16', '02:05:00', 11, b'0', b'0', b'1'),
 (6, 'dsgdsgdsg', '2019-08-10', '13:01:00', 12, b'0', b'0', b'1'),
 (7, 'fghgfh', '2019-08-13', '02:02:00', 12, b'0', b'0', b'1'),
@@ -1540,8 +1547,11 @@ INSERT INTO `reunion_apoderado` (`id_reunion`, `id_apoderado`, `asistio_reunion`
 (2, 55, b'0'),
 (2, 112, b'1'),
 (3, 15, b'0'),
-(3, 55, b'0'),
-(3, 112, b'0');
+(3, 55, b'1'),
+(3, 112, b'1'),
+(4, 15, b'0'),
+(4, 55, b'0'),
+(4, 112, b'0');
 
 -- --------------------------------------------------------
 
@@ -1808,7 +1818,7 @@ ALTER TABLE `detalle_compra`
 -- AUTO_INCREMENT de la tabla `detalle_deuda`
 --
 ALTER TABLE `detalle_deuda`
-  MODIFY `id_detalle_deuda` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id_detalle_deuda` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 --
 -- AUTO_INCREMENT de la tabla `grados`
 --

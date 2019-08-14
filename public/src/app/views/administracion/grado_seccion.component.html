@@ -74,13 +74,11 @@
                     {{item.turno}}
                   </td>
                   <td>
-                    <button class="btn btn-danger btn-xs distancia_btn_opciones"
-                          matTooltip="Eliminar"
-                          matTooltipClass="tooltip-mensaje"
-                          [matTooltipPosition]="positionOptions[3]"
-                          (click)="btnEliminar_seccion(item.id_seccion)">
-                    <span class="fa fa-trash-o btn-xs"></span>
-                    </button>
+                    <span class="fa fa-trash-o btn-xs fa-2x distancia_btn_opciones" aria-hidden="true" style="color: red;cursor: pointer;"
+                    matTooltip="Eliminar"
+                    matTooltipClass="tooltip-mensaje"
+                    [matTooltipPosition]="positionOptions[3]"
+                    (click)="btnEliminar_seccion(item.id_seccion)"></span>
                   </td>
               </tr>
             </tbody>
