@@ -34,6 +34,6 @@ app.use(express.static(__dirname + '/public/dist'));
 
 connection.init();
 routes.configure(app);
-let server = app.listen(process.env.PORT || 4200,() => {
+let server = app.listen(process.env.PORT || 3000,() => {
         console.log('Servidor ejecutando en el Puerto: ' + server.address().port);
 });
