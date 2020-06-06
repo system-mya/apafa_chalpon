@@ -1,7 +1,7 @@
 //https://github.com/robertoganiani/mysql-express-angular-node
 //https://www.nodehispano.com/2012/01/express-el-framework-web-para-nodejs/
 'use strict';
-
+var path = require('path');
 let express = require('express'),
 multiparty = require('connect-multiparty'),
     bodyParser = require('body-parser'),
@@ -30,10 +30,7 @@ app.use(function (req, res, next) {
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(multiparty());
 app.use(bodyParser.json());
-var options = {
-    index: 'index.html'
-  };
-  server.use('/', express.static('/home/site/wwwroot', options));
+app.use(express.static(path.resolve(__dirname + '/public/dist')));
 
 connection.init();
 routes.configure(app);
