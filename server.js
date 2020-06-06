@@ -30,7 +30,13 @@ app.use(function (req, res, next) {
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(multiparty());
 app.use(bodyParser.json());
-app.use(express.static(__dirname + '/home/public/dist'));
+var options = {
+
+    index: 'index.html'
+    
+    };
+    
+    server.use('/', express.static('/home/site/wwwroot', options));
 
 connection.init();
 routes.configure(app);
