@@ -38,7 +38,7 @@ var options = {
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(multiparty());
 app.use(bodyParser.json());
-app.use(express.static(path.resolve(__dirname + '/home/site/wwwroot/public/dist', options)));
+app.use(express.static(path.resolve(__dirname + '/home/site/wwwroot/public/src', options)));
 
 connection.init();
 routes.configure(app);
