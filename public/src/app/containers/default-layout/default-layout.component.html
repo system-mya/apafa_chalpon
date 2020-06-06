@@ -1,0 +1,68 @@
+
+<app-header
+  [navbarBrandRouterLink]="['/principal']"
+  [fixed]="true"
+  [navbarBrandFull]="{src: 'assets/img/brand/logo.png', width: 89, height: 25}"
+  [navbarBrandMinimized]="{src: 'assets/img/brand/sygnet.png', width: 30, height: 30}"
+  [sidebarToggler]="'lg'"
+  [asideMenuToggler]="'lg'">
+  <ul class="nav navbar-nav d-md-down-none">
+    <li class="nav-item px-3">
+      <i class="icon-calendar"></i><span class=""> Año Lectivo: {{anhio_lectivo}}</span>
+    </li>
+    <li class="nav-item px-3">
+      <i class="icon-folder-alt"></i><span class=""> Perfil: {{perfil}}</span>
+    </li>
+  </ul>
+  <ul class="nav navbar-nav ml-auto">
+    <li class="nav-item d-md-down-none">
+      <i class="icon-user"></i><span class=""> Bienvenido: {{username}} </span>
+     </li>
+     <li class="nav-item dropdown" dropdown placement="bottom right">
+       <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" dropdownToggle (click)="false">
+         <img src="assets/img/user-perfil.png" class="img-avatar"/>
+       </a>
+       <div class="dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">
+         <div class="dropdown-header text-center"><strong>Cuenta</strong></div>
+         <a class="dropdown-item" href="#/principal/cuenta"><i class="fa fa-user"></i> Perfil</a>
+        <div class="divider"></div>
+         <a class="dropdown-item" href="#" (click)="logout()"><i class="fa fa-lock"></i> Salir</a>
+       </div>
+     </li>
+  </ul>
+</app-header>
+<div class="app-body">
+  <app-sidebar [fixed]="true" [display]="'lg'">
+    <app-sidebar-nav [navItems]="navItems" [perfectScrollbar] [disabled]="sidebarMinimized"></app-sidebar-nav>
+    <app-sidebar-minimizer></app-sidebar-minimizer>
+  </app-sidebar>
+  <!-- Main content -->
+  <main class="main">
+    <!-- Breadcrumb -->
+    <!-- breaking change 'cui-breadcrumb' -->
+    <cui-breadcrumb>
+      <!-- Breadcrumb Menu-->
+      
+    </cui-breadcrumb>
+    <!-- deprecation warning for 'app-breadcrumb' -->
+    <!--<ol class="breadcrumb">-->
+      <!--<app-breadcrumb></app-breadcrumb>-->
+      <!--&lt;!&ndash; Breadcrumb Menu&ndash;&gt;-->
+      <!--<li class="breadcrumb-menu d-md-down-none">-->
+        <!--<div class="btn-group" role="group" aria-label="Button group with nested dropdown">-->
+          <!--<a class="btn" href="#"><i class="icon-speech"></i></a>-->
+          <!--<a class="btn" [routerLink]="['/dashboard']"><i class="icon-graph"></i> &nbsp;Dashboard</a>-->
+          <!--<a class="btn" href="#"><i class="icon-settings"></i> &nbsp;Settings</a>-->
+        <!--</div>-->
+      <!--</li>-->
+    <!--</ol>-->
+    <div style="margin-top: -25px;">
+      <router-outlet></router-outlet>
+    </div><!-- /.container-fluid -->
+  </main>
+  
+</div>
+<app-footer>
+  <span>APAFA &copy; {{anhio}}.</span>
+  <span class="ml-auto">APAFA CRUZ DE CHALPON </span>
+</app-footer>

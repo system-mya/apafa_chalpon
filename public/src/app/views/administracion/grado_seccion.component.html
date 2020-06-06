@@ -1,0 +1,147 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-sm-12 col-md-5">
+      <div class="card">
+        <div class="card-header">
+          <strong>
+            <h5><i class="fa fa-align-justify"></i>&nbsp;&nbsp; Grados</h5>
+          </strong>
+        </div>
+        <div class="card-body">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Nombre Grado</th>
+                <th>Activo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of DataGrado;let indice=index">
+                  <td>
+                    {{item.descripcion_grado}}
+                    <span class="badge badge-info badge-pill" 
+                    (click)="Listar_Secciones_xGrado(item.id_grado,item.descripcion_grado)" style="position: static;cursor: pointer;color: #ffffff !important;">{{item.total}}</span>
+                  </td>
+                  <td>
+                    <!-- <span class="badge badge-success" [ngStyle]="{'background-color':item.estado === 'ACTIVO' ? 'green' : 'red' }">{{item.estado}}</span> -->
+                    <label class="switch switch-label switch-success" style="width: 50px !important;">
+                        <input checked="" [checked]="item.estado_grado.data==1" class="switch-input" type="checkbox" 
+                        (click)="Cambiar_Estado(item.id_grado,item.estado_grado.data)">
+                        <span class="switch-slider" data-checked="SI" data-unchecked="NO"></span>
+                      </label>
+                  </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div><!--/.col-->
+    <div class="col-sm-12 col-md-7">
+      <div class="card">
+        <div class="card-header">
+          <h5><strong>
+            <i class="fa fa-align-justify"></i>&nbsp;&nbsp;Secciones
+          </strong>
+          <span class="float-right">
+            <button class="btn btn-success btn-xs" 
+            matTooltip="Agregar Sección"
+            matTooltipClass="tooltip-mensaje"
+            data-toggle="modal" (click)="btnNueva_Seccion(grado.id_grado,grado.descripcion_grado)"
+            *ngIf="btnregistrar">
+              <span class="fa fa-plus-square"></span>
+            </button>
+          </span></h5>
+        </div>
+        <div class="card-body secciones-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Nombre Sección</th>
+                <th>Grado</th>
+                <th>Turno</th>
+                <th>Opciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of DataSecciones;let indice=index">
+                  <td>
+                    {{item.nombre_seccion}}
+                  </td>
+                  <td>
+                    {{item.descripcion_grado}}
+                  </td>
+                  <td>
+                    {{item.turno}}
+                  </td>
+                  <td>
+                    <span class="fa fa-trash-o btn-xs fa-2x distancia_btn_opciones" aria-hidden="true" style="color: red;cursor: pointer;"
+                    matTooltip="Eliminar"
+                    matTooltipClass="tooltip-mensaje"
+                    [matTooltipPosition]="positionOptions[3]"
+                    (click)="btnEliminar_seccion(item.id_seccion)"></span>
+                  </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div><!--/.col-->
+  </div><!--/.row-->
+   <!--Modal Registrar Nueva Sección-->
+   <div bsModal #NvaSeccionModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}" >
+    <div class="modal-dialog modal-sm modal-success" role="document">
+      <div class="modal-content">
+        <form name="form" class="formulario" (ngSubmit)="myForm.form.valid && btnRegistrar_Seccion(seccion)" #myForm="ngForm" novalidate autocomplete="off">
+        <div class="modal-header">
+          <h4 class="modal-title">Nueva Sección</h4>
+          <button type="button" class="close" (click)="frmSeccion_hide()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+              <div class="form-group col-sm-12">
+                  <label for="nombre_seccion" style="font-weight: bold;">Nombre Sección <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                  <input type="text" class="form-control" id="nombre_seccion" name="nombre_seccion"
+                   placeholder="Nombre Sección" [(ngModel)]="seccion.nombre_seccion" #regnombre="ngModel" 
+                   onkeyup="verif(this)" maxlength="20" [ngClass]="{ 'is-invalid': myForm.submitted && regnombre.invalid }" 
+                   pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{0,20}[\s]*)+$" required>
+                   <div *ngIf="myForm.submitted && regnombre.invalid" class="invalid-feedback">
+                    <div *ngIf="regnombre.errors.required">Nombre Sección campo requerido</div>
+                    <div *ngIf="regnombre.errors.pattern">Formato de Nombre Sección incorrectos</div>
+                   </div>
+                </div>
+                <div class="form-group col-sm-12">
+                    <label for="nom_grado" style="font-weight: bold;">Grado <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                    <input type="text" class="form-control" id="nom_grado" name="nom_grado"
+                    [(ngModel)]="nom_grado"
+                    maxlength="40" readonly required>
+                </div>
+                <div class="form-group col-sm-12">
+                    <label for="id_turno" style="font-weight: bold;">Turno <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                    <select class="form-control" id="id_turno" name="id_turno"
+                    placeholder="Selecionar Perfil" [(ngModel)]="seccion.id_turno" #regturno="ngModel" required>
+                        <option value="" selected disabled>-----Seleccionar Turno------</option>
+                        <option value="M">MAÑANA</option>
+                        <option value="T">TARDE</option>
+                    </select>
+                    <div *ngIf="myForm.submitted && seccion.id_turno==''" style="
+                       width: 100%;
+                       margin-top: .25rem;
+                       font-size: 80%;
+                       color: #f86c6b;">
+                         Debe seleccionar una opción
+                        </div>
+                   </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" (click)="frmSeccion_hide()"><span class="fa fa-times-circle"></span> Close</button>
+          <button class="btn btn-primary" [disabled]="usu_invalido"><span class="fa fa-save"></span> Guardar</button>
+        </div>
+      </form>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div>
+  <!-- /.Fin Modal Nueva Sección-->
+</div>

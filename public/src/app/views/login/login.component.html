@@ -1,0 +1,51 @@
+<div class="app-body" id="login">
+  <main class="main d-flex align-items-center">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-8 col-md-6 col-lg-4 mx-auto">
+          <div class="logo">
+              Portal de<b> APAFA</b>
+              <small>Cruz de Chalpon</small>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-8 col-md-6 col-lg-4 mx-auto">
+          <div class="card-group">
+            <div class="card p-4">
+              <div class="card-body">
+                <form #loginForm="ngForm" (ngSubmit)="login(loginForm)" autocomplete="off">
+                  <p class="text-login">INICIAR SESIÓN</p>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="icon-user"></i></span>
+                    </div>
+                     <input class="form-control" name="username" placeholder="Usuario" [(ngModel)]="username" #name="ngModel" required>
+                     <div *ngIf="name.errors && (name.dirty || name.touched)" class="mensaje_error">
+                        Usuario <strong>requerido</strong>
+                      </div>
+                    </div>
+                  <div class="input-group mb-4">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="icon-lock"></i></span>
+                    </div>
+                    <input class="form-control" name="password" type="password"
+                    placeholder="Contraseña" [(ngModel)]="password" #clave="ngModel" required><br>
+                    <div *ngIf="clave.errors && (clave.dirty || clave.touched)" class="mensaje_error">
+                        Contraseña <strong>requerido</strong>
+                    </div>
+                  </div>
+                  <div class="row" style="margin-right:25px;margin-left:25px">
+                    <div class="col-12" >
+                      <button type="submit" class="btn btn-primary btn-block" [disabled]="btningresar">Ingresar</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

@@ -1,0 +1,188 @@
+<div class="animated fadeIn">
+ <div class="card">
+    <div class="card-header">
+     <h5><strong><i class="fa fa-align-justify"></i>&nbsp;&nbsp;Años Lectivos</strong>
+     <span class="float-right">
+       <button class="btn btn-success btn-xs" 
+       matTooltip="Agregar Año Lectivo"
+       matTooltipClass="tooltip-mensaje"
+       data-toggle="modal" (click)="btnNuevo_AnhioLectivo()">
+         <span class="fa fa-plus-square"></span>
+       </button>
+     </span>
+    </h5>
+   </div>
+   <div class="card-body">
+     
+     <div class="mat-elevation-z8 table-responsive">
+       <mat-form-field class="example-full-width" style="margin-left: 15px;">
+         <span matPrefix>Buscar Año: &nbsp;</span>
+         <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Ingrese Dato">
+       </mat-form-field>  
+       <table mat-table [dataSource]="dataSource" matSort id="tabla">
+       
+         <ng-container matColumnDef="anhio_lectivo">
+           <th mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" nowrap > Año </th>
+           <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.anhio_lectivo}}</td>
+         </ng-container>
+     
+     
+         <ng-container matColumnDef="f_inicio">
+           <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Fecha Inicio </th>
+           <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.finicio_anhio | date:'dd/MM/yyyy'}} </td>
+         </ng-container>
+     
+        
+         <ng-container matColumnDef="f_fin">
+           <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Fecha Fin </th>
+           <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.ffin_anhio | date:'dd/MM/yyyy'}} </td>
+         </ng-container>
+
+         <ng-container matColumnDef="descripcion">
+             <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Descripcion </th>
+             <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.descripcion}} .....</td>
+         </ng-container>
+
+         <ng-container matColumnDef="condicion">
+           <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Condicion </th>
+           <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap>
+              <h5><span class="badge badge-success" [ngStyle]="{'background-color':element.color_condicion}">{{element.condicion}}</span></h5></td>
+         </ng-container>
+           <ng-container matColumnDef="opciones">
+             <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Opciones </th>
+             <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> 
+              
+            <span class="fa fa-address-card-o btn-xs fa-2x distancia_btn_opciones" aria-hidden="true" style="color: rgb(12, 83, 236);cursor: pointer;"
+            matTooltip="Detalle"
+              matTooltipClass="tooltip-mensaje"
+              [matTooltipPosition]="positionOptions[3]"
+              data-toggle="modal" (click)="btnDetalle_Anhio(element)"></span>
+            
+              <span class="fa fa-window-close-o btn-xs fa-2x distancia_btn_opciones" aria-hidden="true" style="color: rgb(245, 53, 28);cursor: pointer;"
+              matTooltip="Cerrar"
+            matTooltipClass="tooltip-mensaje"
+            [matTooltipPosition]="positionOptions[3]"
+            data-toggle="modal" (click)="btnUpdate_Anhio_Xcriterio('cerrar',element.idanhio)"
+            *ngIf="element.condicion!='CERRADO'"></span>
+
+            <span class="fa fa-refresh btn-xs fa-2x distancia_btn_opciones" aria-hidden="true" style="color: rgb(252, 195, 9);cursor: pointer;"
+            matTooltip="Reaperturar"
+            matTooltipClass="tooltip-mensaje"
+            [matTooltipPosition]="positionOptions[3]"
+            data-toggle="modal" (click)="btnUpdate_Anhio_Xcriterio('reaperturar',element.idanhio)"
+            *ngIf="element.condicion!='APERTURADO'"></span>
+           
+            <span class="fa fa-trash-o btn-xs fa-2x distancia_btn_opciones" aria-hidden="true" style="color: red;cursor: pointer;"
+            matTooltip="Eliminar"
+            matTooltipClass="tooltip-mensaje"
+            [matTooltipPosition]="positionOptions[3]"
+            (click)="btnUpdate_Anhio_Xcriterio('eliminar',element.idanhio)"></span>
+
+         </td>
+           </ng-container>
+         <tr mat-header-row *matHeaderRowDef="displayedColumns" style="background-color: #3f51b5 !important;"></tr>
+         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+       </table>
+     
+       <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+     </div>
+   </div>
+ </div>
+
+  <!--Modal Registrar Nuevo Año Lectivo-->
+  <div bsModal #NvoAnhioModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}" >
+    <div class="modal-dialog modal-md modal-success" role="document">
+      <div class="modal-content">
+       <form name="form" class="formulario" (ngSubmit)="myForm.form.valid && btnRegistrar_AnhioLectivo(anhiolectivo)" #myForm="ngForm" novalidate autocomplete="off">
+        <div class="modal-header">
+          <h4 class="modal-title">Nuevo Año Lectivo</h4>
+          <button type="button" class="close" (click)="frmAnhio_hide('N')" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="form-group col-sm-6">
+              <label for="anhio" style="font-weight: bold;">Año Lectivo <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+              <select class="form-control" id="anhio" name="anhio"
+              placeholder="Selecionar Perfil" [(ngModel)]="anhiolectivo.anhio_lectivo" 
+              (ngModelChange)="obtener_fechas()" #reganhio="ngModel" required>
+                  <option value="0" selected disabled>-----Seleccionar Año------</option>
+                  <option *ngFor="let y of years" value="{{y.id}}">{{y.id}}</option>
+              </select>
+              <div *ngIf="myForm.submitted && anhiolectivo.anhio_lectivo==0" style="
+                 width: 100%;
+                 margin-top: .25rem;
+                 font-size: 80%;
+                 color: #f86c6b;">
+                   Debe seleccionar una opción
+                  </div>
+             </div>
+             <div class="form-group col-sm-6">
+              <label for="anhio" style="font-weight: bold;">Condición Año <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+              <input type="text" class="form-control" id="condicion_anhio" name="condicion_anhio"
+              value="A" [(ngModel)]="anhiolectivo.condicion_anhio" #regcondicion="ngModel"
+              maxlength="11" readonly required>
+             </div>
+             <div class="form-group col-sm-6">
+              <label for="finicio_anhio" style="font-weight: bold;">Fecha Inicio <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+              <input class="form-control" id="finicio_anhio" type='date' name="finicio_anhio" placeholder="date"
+              [(ngModel)]="anhiolectivo.finicio_anhio" #regfinicio="ngModel" readonly required>
+            </div>
+            <div class="form-group col-sm-6">
+              <label for="ffin_anhio" style="font-weight: bold;">Fecha Fin <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+              <input class="form-control" id="ffin_anhio" type='date' name="ffin_anhio" placeholder="date"
+              [(ngModel)]="anhiolectivo.ffin_anhio" #regffin="ngModel" readonly required>
+            </div>
+              <div class="form-group col-sm-12">
+                <label for="descripcion_anhio" style="font-weight: bold;">Descripcion:</label>
+                <textarea id="descripcion_anhio" name="descripcion_anhio" rows="3" [(ngModel)]="anhiolectivo.descripcion_anhio" #regobser="ngModel"
+                class="form-control" maxlength="150" placeholder="Ingrese Descripcion" onkeyup="verif(this)"></textarea>
+              </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" (click)="frmAnhio_hide('N')"><span class="fa fa-times-circle"></span> Close</button>
+          <button class="btn btn-primary" [disabled]="usu_invalido"><span class="fa fa-save"></span> Guardar</button>
+        </div>
+      </form>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div>
+  <!-- /.Fin Modal Nuevo Año Lectivo-->
+ <!--Modal Detalle Año Lectivo-->
+ <div bsModal #DetAnhioModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}">
+  <div class="modal-dialog modal-md modal-info" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Detalle Año Lectivo</h4>
+        <button type="button" class="close" (click)="frmAnhio_hide('D')" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="bd-example">
+          <dl class="row">
+            <dt class="col-sm-3">Año: </dt>
+            <dd class="col-sm-3 text-left" style="font-size: 16px;">{{DetAnhio.anhio}}</dd>
+            <dt class="col-sm-3">Condición: </dt>
+            <dd class="col-sm-3 text-left" style="font-size: 16px;">{{DetAnhio.condicion}}</dd>
+          </dl> 
+          <dl class="row">
+            <dt class="col-sm-3">Fecha Inicio: </dt>
+            <dd class="col-sm-3 text-left" style="font-size: 16px;">{{DetAnhio.finicio | date:'dd/MM/yyyy'}}</dd>
+            <dt class="col-sm-3">Fecha Fin: </dt>
+            <dd class="col-sm-3 text-left" style="font-size: 16px;">{{DetAnhio.ffin | date:'dd/MM/yyyy'}}</dd>
+          </dl>
+          <dl class="row">                
+            <dt class="col-sm-2">Descripción: </dt>
+            <dd class="col-sm-10">{{DetAnhio.descripcion}}</dd>
+          </dl>
+        </div>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
+<!-- /.Fin Modal Detalle Año Lectivo-->
+ 
+</div>

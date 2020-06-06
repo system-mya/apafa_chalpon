@@ -1,0 +1,581 @@
+
+<div class="animated fadeIn">
+  <div class="card">
+     <div class="card-header">
+    <h5><strong><i class="fa fa-align-justify"></i>&nbsp;&nbsp;Usuarios Del Sistema</strong>
+      <span class="float-right">
+        <button class="btn btn-success btn-xs"
+            matTooltip="Agregar Usuario"
+            matTooltipClass="tooltip-mensaje"
+            data-toggle="modal" (click)="btnNuevo_Usuairo()">
+          <span class="fa fa-plus-square"></span>
+        </button>
+      </span></h5>
+    </div>
+    <div class="card-body">
+      <!-- <mat-form-field>
+        <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Buscar">
+      </mat-form-field> 
+      <div class="table-responsive">
+        <table mat-table
+             [dataSource]="dataSource" multiTemplateDataRows
+             class="mat-elevation-z8 ">
+        <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay">
+          <th mat-header-cell *matHeaderCellDef> {{column}} </th>
+          <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
+        </ng-container>
+      
+       <ng-container matColumnDef="expandedDetail">
+          <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
+            <div class="example-element-detail"
+                 [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+              <div class="example-element-diagram">
+                <div class="example-element-position"> {{element.idusuario}} </div>
+                <div class="example-element-symbol"> {{element.nom_usu}} </div>
+                <div class="example-element-name"> {{element.nombres_usu}} </div>
+                <div class="example-element-weight"> {{element.apellidos_usu}} </div>
+              </div>
+              <div class="example-element-description">
+                {{element.apellidos_usu}}
+                <span class="example-element-description-attribution"> Wikipedia </span>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+      
+        <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+        <tr mat-row *matRowDef="let element; columns: columnsToDisplay;"
+            class="example-element-row"
+            [class.example-expanded-row]="expandedElement === element"
+            (click)="toggleRow(element)">
+        </tr>
+        <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+        
+      </table>
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+      </div> -->      
+      <div class="mat-elevation-z8 table-responsive">
+        <mat-form-field class="example-full-width" style="margin-left: 15px;">
+          <span matPrefix>Buscar Usuario: &nbsp;</span>
+          <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Ingrese Dato">
+        </mat-form-field>  
+        <table mat-table [dataSource]="dataSource" matSort id="tabla">        
+          <ng-container matColumnDef="apellidos_usu">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" nowrap > Apellidos y Nombres </th>
+            <td mat-cell *matCellDef="let element" nowrap> {{element.apellidos_usu}} {{element.nombres_usu}} </td>
+          </ng-container>
+      
+      
+          <ng-container matColumnDef="nom_usu">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" nowrap> Nombre Usuario </th>
+            <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.nom_usu}} </td>
+          </ng-container>
+      
+         
+          <ng-container matColumnDef="contacto_usu">
+            <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Num. Contacto </th>
+            <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.celular_usu}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="perfil_usu">
+              <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Perfil </th>
+              <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.nombre_perfil}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="estado_usu">
+            <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Estado </th>
+            <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap>
+                <h5><span class="badge badge-success" [ngStyle]="{'background-color':element.color_estado}">{{element.estado_usu}}</span></h5></td>
+          </ng-container>
+            <ng-container matColumnDef="opciones_usu">
+              <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Opciones </th>
+              <td mat-cell *matCellDef="let element" nowrap> 
+                <!-- <div class="row align-items-center" style="margin-left: 25px !important;">
+                  <div class="col-xs-3 col-sm-3 col-md-3 text-center">
+                    <button type="button" class="btn btn-primary btn-success"
+                        matTooltip="Editar"
+                        matTooltipClass="tooltip-success">
+                        <i class="fa fa-edit"></i>
+                    </button>
+                  </div>
+                  <div class="col-xs-3 col-sm-3 col-md-3 text-center">
+                    <button type="button" class="btn btn-primary btn-warning"
+                        matTooltip="Resetear"
+                        matTooltipClass="tooltip-warning">
+                        <i class="fa fa-retweet"></i>
+                    </button>
+                  </div>
+                  <div class="col-xs-3 col-sm-3 col-md-3 text-center">
+                    <button type="button" class="btn btn-primary btn-danger"
+                        matTooltip="Eliminar"
+                        matTooltipClass="tooltip-danger">
+                        <i class="fa fa-trash-o"></i>
+                    </button>
+                  </div>
+                  <div class="col-xs-3 col-sm-3 col-md-3 text-center">
+                    <button type="button" class="btn btn-block btn-outline-dark active"
+                        matTooltip="Eliminar"
+                        matTooltipClass="tooltip-default">
+                        <i class="fa fa-vcard-o"></i>
+                    </button>
+                  </div>
+                </div> -->
+                    <span class="fa fa-address-card-o btn-xs fa-2x distancia_btn_opciones" aria-hidden="true" style="color: rgb(12, 83, 236);cursor: pointer;"
+                    matTooltip="Detalle"
+                    matTooltipClass="tooltip-mensaje"
+                    [matTooltipPosition]="positionOptions[3]"
+                    data-toggle="modal" (click)="btnDetalle_Usuario(element.idusuario)"></span>
+
+                    <span class="fa fa-edit btn-xs fa-2x distancia_btn_opciones" aria-hidden="true" style="color: rgb(5, 153, 5);cursor: pointer;"
+                    matTooltip="Editar"
+                    matTooltipClass="tooltip-mensaje"
+                    [matTooltipPosition]="positionOptions[3]"
+                    data-toggle="modal" (click)="btnEdit_Usuario(element.idusuario)"
+                    *ngIf="element.estado_usu!='INACTIVO'"></span>
+
+                    <span class="fa fa-refresh btn-xs fa-2x distancia_btn_opciones" aria-hidden="true" style="color: rgb(252, 195, 9);cursor: pointer;"
+                    matTooltip="Resetear"
+                  matTooltipClass="tooltip-mensaje"
+                  [matTooltipPosition]="positionOptions[3]"
+                  (click)="btnReset_Usuario(element.idusuario)"></span>
+
+                  <span class="fa fa-trash-o btn-xs fa-2x distancia_btn_opciones" aria-hidden="true" style="color: red;cursor: pointer;"
+                  matTooltip="Eliminar"
+                  matTooltipClass="tooltip-mensaje"
+                  [matTooltipPosition]="positionOptions[3]"
+                  (click)="btnEliminar_Usuario(element.idusuario)"></span>
+
+              </td>
+            </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns" style="background-color: #3f51b5 !important;"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      
+        <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+      </div>
+    </div>
+  </div>
+  <!--Modal Registrar Nuevo Usuario-->
+  <div bsModal #NvoUsuarioModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}" >
+    <div class="modal-dialog modal-lg modal-success" role="document">
+      <div class="modal-content">
+          <form name="form" class="formulario" (ngSubmit)="myForm.form.valid && onSubmit(myForm)" #myForm="ngForm" novalidate autocomplete="off">
+        <div class="modal-header">
+          <h4 class="modal-title">Nuevo Usuario</h4>
+          <button type="button" class="close" (click)="frmUsu_hide('N')" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+           <div class="row">
+              <div class="form-group col-sm-6">
+                <label for="nombres_usu" style="font-weight: bold;">Nombres Completos <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                <input type="text" class="form-control" id="nombres_usu" name="nombres_usu"
+                 placeholder="Nombres Completos" [(ngModel)]="usuario.nombres_usu" #regnombres="ngModel" 
+                 onkeyup="verif(this)" maxlength="50" [ngClass]="{ 'is-invalid': myForm.submitted && regnombres.invalid }" 
+                 pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,50}[\s]*)+$" required>
+                 <!-- [A-ZÁÉÍÓÚ]{1} = obliga a que inicie con mayuscula
+                  [a-zñáéíóú]{1,24} = obliga que siga con una miniscula almenos 1 ves asta 24 .
+                  [\s]* = permite espacios enblanco tabulaciones etc muchas o ninguna vez -->
+                 <div *ngIf="myForm.submitted && regnombres.invalid" class="invalid-feedback">
+                  <div *ngIf="regnombres.errors.required">Nombres Completos campo requerido</div>
+                  <div *ngIf="regnombres.errors.pattern">Formato de Nombres Completos incorrectos</div>
+                 </div>
+              </div>
+              <div class="form-group col-sm-6">
+                  <label for="apellidos_usu" style="font-weight: bold;">Apellidos Completos <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                  <input type="text" class="form-control" id="apellidos_usu" name="apellidos_usu" 
+                  placeholder="Apellidos Completos" [(ngModel)]="usuario.apellidos_usu" #regapellidos="ngModel" 
+                  onkeyup="verif(this)" maxlength="60" [ngClass]="{ 'is-invalid': myForm.submitted && regapellidos.invalid }" 
+                  pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,60}[\s]*)+$" required>
+                  <div *ngIf="myForm.submitted && regapellidos.invalid" class="invalid-feedback">
+                    <div *ngIf="regapellidos.errors.required">Apellidos Completos campo requerido</div>
+                    <div *ngIf="regapellidos.errors.pattern">Formato de Apellidos Completos incorrectos</div>
+                  </div>
+              </div>
+            </div><!--/.row-->
+            <div class="row">
+              <div class="form-group col-sm-4">
+                <label for="doc_identidad" style="font-weight: bold;">Doc. Identidad <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                <input type="text" class="form-control" id="doc_identidad" name="dni_usu"
+                placeholder="Doc Identidad"  [(ngModel)]="usuario.dni_usu" #regdni="ngModel"
+                pattern="[0-9]{8}" [ngClass]="{ 'is-invalid': myForm.submitted && regdni.invalid }" required onkeyup="verif(this)" onkeypress="return Num(event);" maxlength="8">
+                <div *ngIf="myForm.submitted && regdni.invalid" class="invalid-feedback">
+                    <div *ngIf="regdni.errors.required">Doc. Identidad campo requerido</div>
+                    <div *ngIf="regdni.errors.pattern">Debe Ingresar 8 Números</div>
+                </div>
+              </div>
+              <div class="form-group col-sm-4">
+                <label for="postal-code" style="font-weight: bold;">Sexo <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                <div class="radio" style="display: block !important;max-width: none !important;">
+                    <div class="form-check form-check-inline mr-1" id="inline-radios">
+                        <input class="form-check-input" type="radio" name="sexo_usu" id="inlineRadio1" [(ngModel)]="usuario.sexo_usu" value="M" #regsexo="ngModel" required >
+                        <label class="form-check-label" for="inlineRadio1">Masculino</label>
+                      </div>
+                      <div class="form-check form-check-inline mr-1">
+                        <input class="form-check-input" type="radio" name="sexo_usu" id="inlineRadio2" [(ngModel)]="usuario.sexo_usu" value="F" #regsexo="ngModel" required>
+                        <label class="form-check-label" for="inlineRadio2">Femenino</label>
+                      </div>
+                     
+                    </div>
+                    <div *ngIf="myForm.submitted && regsexo.errors?.required" style="
+                     width: 100%;
+                     margin-top: .25rem;
+                     font-size: 80%;
+                     color: #f86c6b;">
+                       Debe seleccionar una opción
+                      </div>
+              </div>
+              <div class="form-group col-sm-4">
+                <label for="celular_usu" style="font-weight: bold;">Celular <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                <input type="text" class="form-control" id="celular_usu" name="celular_usu"
+                placeholder="#########"  [(ngModel)]="usuario.celular_usu" #regcelular="ngModel"
+                pattern="[0-9]{9}" [ngClass]="{ 'is-invalid': myForm.submitted && regcelular.invalid }" required onkeyup="verif(this)" onkeypress="return Num(event);" maxlength="9">
+                <div *ngIf="myForm.submitted && regcelular.invalid" class="invalid-feedback">
+                    <div *ngIf="regcelular.errors.required">Num. Celular campo requerido</div>
+                    <div *ngIf="regcelular.errors.pattern">Debe Ingresar 9 Números</div>
+                </div>
+              </div>
+            </div><!--/.row-->
+            <div class="row">
+              <div class="form-group col-sm-6">
+                <label for="direccion_usu" style="font-weight: bold;">Dirección <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                <input type="text" class="form-control" id="direccion_usu" name="direccion_usu"
+                placeholder="Dirección" [(ngModel)]="usuario.direccion_usu" #regdireccion="ngModel" 
+                onkeyup="verif(this)" maxlength="80" [ngClass]="{ 'is-invalid': myForm.submitted && regdireccion.invalid }" 
+                pattern="^([A-Za-z0-9#]{1,80}[\s]*)+$" required>
+                <div *ngIf="myForm.submitted && regdireccion.invalid" class="invalid-feedback">
+                    <div *ngIf="regdireccion.errors.required">Dirección campo requerido</div>
+                    <div *ngIf="regdireccion.errors.pattern">Formato de Dirección incorrectos</div>
+                  </div>
+              </div>
+              <div class="form-group col-sm-6">
+                <label for="correo_usu" style="font-weight: bold;">Correo Electronico:</label>
+                <input type="text" class="form-control" id="correo_usu" name="correo_usu"
+                placeholder="Correo Electronico" [(ngModel)]="usuario.correo_usu" #regcorreo="ngModel" 
+                onkeyup="verif(this)" maxlength="80" [ngClass]="{ 'is-invalid': myForm.submitted && regcorreo.invalid }" email>
+                <div *ngIf="myForm.submitted && regcorreo.invalid" class="invalid-feedback">
+                    <div *ngIf="regcorreo.errors.email">Formato de correo incorrecto</div>
+                </div>
+              </div>
+            </div><!--/.row-->
+            <div class="row">
+              <div class="form-group col-sm-4">
+                <label for="nom_usu" style="font-weight: bold;">Nombre Usuario <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                <input type="text" class="form-control" id="nom_usu" name="nom_usu"
+                placeholder="Nombre Usuario" [(ngModel)]="usuario.nom_usu" #regnom="ngModel" (ngModelChange)="changeNomUsu('I',usuario.nom_usu)"
+                onkeyup="verif(this)" maxlength="20" pattern="^([a-z]+[0-9]{0,2}){8,20}$" [ngClass]="{ 'is-invalid': myForm.submitted && regnom.invalid}" required>
+                <div *ngIf="myForm.submitted && regnom.invalid" class="invalid-feedback">
+                  <div *ngIf="regnom.errors.required">Nombre Usuario campo requerido</div>
+                  <div *ngIf="regnom.errors.pattern">minimo 8 caracteres,minusculas,numeros</div>
+                </div>
+                <div *ngIf="usu_valid && !regnom.invalid" class="valid-usu">
+                  <div *ngIf="usu_valid"><span class="fa fa-check"></span> Este será tu nombre de usuario</div>
+                </div>
+                <div *ngIf="usu_invalido" class="invalid-usu">
+                  <div *ngIf="usu_invalido"><span class="fa fa-times"></span> Este nombre de usuario ya está tomado</div>
+                </div>
+              </div>
+              <!-- <div class="form-group col-sm-4">
+                <label for="clave_usu" style="font-weight: bold;">Password <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                <input type="password" class="form-control" id="clave_usu" name="clave_usu"
+                placeholder="Contraseña Usuario" [(ngModel)]="usuario.clave_usu" #clave_usu="ngModel" 
+                onkeyup="verif(this)" maxlength="15" [ngClass]="{ 'is-invalid': myForm.submitted && clave_usu.invalid }" required>
+                <div *ngIf="myForm.submitted && clave_usu.invalid" class="invalid-feedback">
+                  <div *ngIf="clave_usu.errors.required">Clave Usuario campo requerido</div>
+                </div>
+              </div> -->
+              <div class="form-group col-sm-4">
+                  <label for="perfil_usu" style="font-weight: bold;">Perfil <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                  <select class="form-control" id="perfil_usu" name="perfil_usu"
+                  placeholder="Selecionar Perfil" [(ngModel)]="usuario.perfil_usu" #regperfil="ngModel" ng-required="usuario.perfil_usu!=0">
+                  <option value='0' selected disabled>-----Seleccionar Perfil------</option>
+                      <option *ngFor="let p of DataPerfiles" value="{{p.idperfil_usuario}}">{{p.nombre_perfil}}</option>
+                  </select>
+                  <div *ngIf="myForm.submitted && usuario.perfil_usu==0" style="
+                     width: 100%;
+                     margin-top: .25rem;
+                     font-size: 80%;
+                     color: #f86c6b;">
+                       Debe seleccionar una opción
+                      </div>
+                      
+                </div>
+              <div class="form-group col-sm-4">
+                <label for="fecha_usu" style="font-weight: bold;">Fecha Alta <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                <input class="form-control" id="fecha_usu" type='date' name="fecha_usu" placeholder="date"
+                [(ngModel)]="usuario.fecha_usu" #regfecha="ngModel"  readonly required>
+                <!-- <input matInput  [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" id="fecha_usu" name="fecha_usu" 
+                placeholder="Fecha de Vencimiento"  class="form-control" [min]='min'
+                [(ngModel)]="usuario.fecha_usu" #fecha_usu="ngModel" readonly disabled required>
+                <owl-date-time [pickerMode]="'dialog'" [pickerType]="'calendar'" #dt1></owl-date-time>
+                <div *ngIf="myForm.submitted && fecha_usu.errors?.required" style="
+                     width: 100%;
+                     margin-top: .25rem;
+                     font-size: 80%;
+                     color: #f86c6b;">
+                       Fecha de Vencimiento campo requerido
+                </div> --><!-- 
+                <div *ngIf="myForm.submitted && fecha_usu.invalid" class="invalid-feedback">
+                  <div *ngIf="fecha_usu.errors.required">Nombre Usuario campo requerido</div>
+                </div> -->
+              </div>
+            </div><!--/.row-->
+            <div class="row">
+              <div class="form-group col-sm-12">
+                <label for="obser_usu" style="font-weight: bold;">Observaciones:</label>
+                <textarea id="obser_usu" name="obser_usu" rows="3" [(ngModel)]="usuario.obser_usu" #regobser="ngModel"
+                class="form-control" maxlength="200" placeholder="Ingrese observaciones" onkeyup="verif(this)"></textarea>
+              </div>
+            </div><!--/.row-->
+          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" (click)="frmUsu_hide('N')"><span class="fa fa-times-circle"></span> Cerrar</button>
+          <button class="btn btn-primary" [disabled]="usu_invalido"><span class="fa fa-save"></span> Guardar</button>
+        </div>
+      </form>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div>
+  <!-- /.Fin Modal Nuevo Usuario-->
+  <!--Modal Detalle Usuario-->
+  <div bsModal #DetUsuarioModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}">
+    <div class="modal-dialog modal-lg modal-info" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Detalle Usuario</h4>
+          <button type="button" class="close" (click)="frmUsu_hide('D')" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="bd-example">
+            <dl class="row">
+              <dt class="col-sm-3">Apellidos Completos: </dt>
+              <dd class="col-sm-3 text-left"><em style="font-size: 16px;">{{DataUsuario.apellidos_usu}}</em></dd>
+              <dt class="col-sm-3">Nombres Completos: </dt>
+              <dd class="col-sm-3 text-left"><em style="font-size: 16px;">{{DataUsuario.nombres_usu}}</em></dd>
+            </dl>
+            <dl class="row">
+              <dt class="col-sm-2">Doc. Identidad: </dt>
+              <dd class="col-sm-2">{{DataUsuario.dni_usu}}</dd>
+              <dt class="col-sm-1">Sexo: </dt>
+              <dd class="col-sm-2 text-left">{{DataUsuario.sexo_usu}}</dd>
+              <dt class="col-sm-2">N° Celular: </dt>
+              <dd class="col-sm-2">{{DataUsuario.celular_usu}}</dd>
+            </dl>
+            <dl class="row">
+              <dt class="col-sm-2">Dirección: </dt>
+              <dd class="col-sm-3">{{DataUsuario.direccion_usu}}</dd>
+              <dt class="col-sm-3">Corro Electronico: </dt>
+              <dd class="col-sm-4 text-left">{{DataUsuario.correo_usu}}</dd>
+            </dl>
+            <dl class="row">
+              <dt class="col-sm-2">Nom Usuario: </dt>
+              <dd class="col-sm-2">{{DataUsuario.nom_usu}}</dd>
+              <dt class="col-sm-2">Tipo Perfil: </dt>
+              <dd class="col-sm-2">{{DataUsuario.nombre_perfil}}</dd>
+            </dl>
+            <dl class="row">
+              <dt class="col-sm-2">Fecha de Alta: </dt>
+              <dd class="col-sm-2">{{DataUsuario.fcreacion_usu | date:'dd/MM/yyyy'}}</dd>
+              <dt class="col-sm-2">Fecha de Baja: </dt>
+              <dd class="col-sm-2">{{DataUsuario.fbaja_usu | date:'dd/MM/yyyy'}}</dd>
+            </dl>
+            <dl class="row">
+              <dd class="col-sm-12">
+                <dl class="row">
+                  <dt class="col-sm-2">Observaciones: </dt>
+                  <dd class="col-sm-10">{{DataUsuario.obser_usu}}</dd>
+                </dl>
+              </dd>
+            </dl>
+          </div>
+          
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div>
+  <!-- /.Fin Modal Detalle Usuario-->
+
+  <!--Modal Editar Usuario-->
+  <div bsModal #EditUsuarioModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}">
+    <div class="modal-dialog modal-lg modal-success" role="document">
+      <div class="modal-content">
+          <form name="form" class="formulario" (ngSubmit)="FormEdit.form.valid && updateUsuario(FormEdit)" #FormEdit="ngForm" novalidate autocomplete="off">
+        <div class="modal-header">
+          <h4 class="modal-title">Editar Usuario</h4>
+          <button type="button" class="close" (click)="frmUsu_hide('E')" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+           <div class="row">
+              <div class="form-group col-sm-6">
+                <label for="nombres_usu" style="font-weight: bold;">Nombres Completos <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                <input class="form-control" id="idusuario" type='hidden' name="idusuario"
+                [(ngModel)]="Editusuario.idusuario">
+                <input type="text" class="form-control" id="nombres_usu" name="nombres_usu"
+                 placeholder="Nombres Completos" [(ngModel)]="Editusuario.nombres_usu" #editnombres="ngModel" 
+                 onkeyup="verif(this)" maxlength="50" [ngClass]="{ 'is-invalid': FormEdit.submitted && editnombres.invalid }" 
+                 pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,50}[\s]*)+$" required>
+                 <div *ngIf="FormEdit.submitted && editnombres.invalid" class="invalid-feedback">
+                  <div *ngIf="editnombres.errors.required">Nombres Completos campo requerido</div>
+                  <div *ngIf="editnombres.errors.pattern">Formato de Nombres Completos incorrectos</div>
+                 </div>
+                 <!-- pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]{2,48}"
+                 tbn pattern de combres compuestos -->
+              </div>
+              <div class="form-group col-sm-6">
+                  <label for="apellidos_usu" style="font-weight: bold;">Apellidos Completos <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                  <input type="text" class="form-control" name="apellidos_usu" placeholder="Apellidos Completos" 
+                  [(ngModel)]="Editusuario.apellidos_usu" #editapellidos="ngModel" 
+                  onkeyup="verif(this)" maxlength="60" [ngClass]="{ 'is-invalid': FormEdit.submitted && editapellidos.invalid }" 
+                  pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,60}[\s]*)+$" required>
+                  <div *ngIf="FormEdit.submitted && editapellidos.invalid" class="invalid-feedback">
+                    <div *ngIf="editapellidos.errors.required">Apellidos Completos campo requerido</div>
+                    <div *ngIf="editapellidos.errors.pattern">Formato de Apellidos Completos incorrectos</div>
+                  </div>
+              </div>
+            </div><!--/.row-->
+            <div class="row">
+              <div class="form-group col-sm-4">
+                <label for="dni_usu" style="font-weight: bold;">Doc. Identidad <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                <input type="text" class="form-control" id="dni_usu" name="dni_usu"
+                placeholder="Doc Identidad"  [(ngModel)]="Editusuario.dni_usu" #editdni="ngModel" required readonly maxlength="8">
+              </div>
+              <div class="form-group col-sm-4">
+                <label for="sexo_usu" style="font-weight: bold;">Sexo <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                <div class="radio" style="display: block !important;max-width: none !important;">
+                    <div class="form-check form-check-inline mr-1" id="inline-radios">
+                        <input class="form-check-input" type="radio" name="sexo_usu" id="masculino" [(ngModel)]="Editusuario.sexo_usu" value="M" #editsexo="ngModel" required >
+                        <label class="form-check-label" for="masculino">Masculino</label>
+                      </div>
+                      <div class="form-check form-check-inline mr-1">
+                        <input class="form-check-input" type="radio" name="sexo_usu" id="femenino" [(ngModel)]="Editusuario.sexo_usu" value="F" #editsexo="ngModel" required>
+                        <label class="form-check-label" for="femenino">Femenino</label>
+                      </div>
+                     
+                    </div>
+                    <div *ngIf="FormEdit.submitted && editsexo.errors?.required" style="
+                     width: 100%;
+                     margin-top: .25rem;
+                     font-size: 80%;
+                     color: #f86c6b;">
+                       Debe seleccionar una opción
+                      </div>
+              </div>
+              <div class="form-group col-sm-4">
+                <label for="celular_usu" style="font-weight: bold;">Celular <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                <input type="text" class="form-control" id="celular_usu" name="celular_usu"
+                placeholder="#########"  [(ngModel)]="Editusuario.celular_usu" #editcelular="ngModel"
+                pattern="[0-9]{9}" [ngClass]="{ 'is-invalid': FormEdit.submitted && editcelular.invalid }" required onkeyup="verif(this)" onkeypress="return Num(event);" maxlength="9">
+                <div *ngIf="FormEdit.submitted && editcelular.invalid" class="invalid-feedback">
+                    <div *ngIf="editcelular.errors.required">Num. Celular campo requerido</div>
+                    <div *ngIf="editcelular.errors.pattern">Debe Ingresar 9 Números</div>
+                </div>
+              </div>
+            </div><!--/.row-->
+            <div class="row">
+              <div class="form-group col-sm-6">
+                <label for="direccion_usu" style="font-weight: bold;">Dirección <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                <input type="text" class="form-control" id="direccion_usu" name="direccion_usu"
+                placeholder="Dirección" [(ngModel)]="Editusuario.direccion_usu" #editdireccion="ngModel" 
+                onkeyup="verif(this)" maxlength="80" [ngClass]="{ 'is-invalid': FormEdit.submitted && editdireccion.invalid }" 
+                pattern="^([A-Za-z0-9#]{1,80}[\s]*)+$" required>
+                <div *ngIf="FormEdit.submitted && editdireccion.invalid" class="invalid-feedback">
+                    <div *ngIf="editdireccion.errors.required">Dirección campo requerido</div>
+                    <div *ngIf="editdireccion.errors.pattern">Formato de Dirección incorrectos</div>
+                  </div>
+              </div>
+              <div class="form-group col-sm-6">
+                <label for="correo_usu" style="font-weight: bold;">Correo Electronico:</label>
+                <input type="text" class="form-control" id="correo_usu" name="correo_usu"
+                placeholder="Correo Electronico" [(ngModel)]="Editusuario.correo_usu" #editcorreo="ngModel" 
+                onkeyup="verif(this)" maxlength="80" [ngClass]="{ 'is-invalid': FormEdit.submitted && editcorreo.invalid }" email>
+                <div *ngIf="FormEdit.submitted && editcorreo.invalid" class="invalid-feedback">
+                    <div *ngIf="editcorreo.errors.email">Formato de correo incorrecto</div>
+                </div>
+              </div>
+            </div><!--/.row-->
+            <div class="row">
+              <div class="form-group col-sm-4">
+                <label for="nom_usu" style="font-weight: bold;">Nombre Usuario <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                <input type="text" class="form-control" id="nom_usu" name="nom_usu"
+                placeholder="Nombre Usuario" [(ngModel)]="Editusuario.nom_usu" #editnom="ngModel" (ngModelChange)="changeNomUsu('E',Editusuario.nom_usu)"
+                onkeyup="verif(this)" maxlength="20" pattern="^([a-z]+[0-9]{0,2}){8,20}$" [ngClass]="{ 'is-invalid': FormEdit.submitted && editnom.invalid }" required>
+                <div *ngIf="FormEdit.submitted && editnom.invalid" class="invalid-feedback">
+                  <div *ngIf="editnom.errors.required">Nombre Usuario campo requerido</div>
+                  <div *ngIf="editnom.errors.pattern">minimo 8 caracteres,minusculas,numeros</div>
+                </div>
+                <div *ngIf="usu_valid && !editnom.invalid" class="valid-usu">
+                  <div *ngIf="usu_valid"><span class="fa fa-check"></span> Este será tu nombre de usuario</div>
+                </div>
+                <div *ngIf="usu_invalido" class="invalid-usu">
+                  <div *ngIf="usu_invalido"><span class="fa fa-times"></span> Este nombre de usuario ya está tomado</div>
+                </div>
+              </div>
+              <!-- <input type="password" id="psw" name="psw" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" 
+              title="Must contain at least one number and one uppercase and lowercase letter, and at 
+              least 8 or more characters" required> -->
+              <!-- Usuario: Vamos a solicitar para el usuario de acceso al servicio una cadena de 
+              letras minúsculas, con un número opcionalmente de hasta dos dígitos al final. 
+              La cadena completa tendrá entre 5 y 20 caracteres. -->
+              <!-- <div class="form-group col-sm-4">
+                <label for="clave_usu" style="font-weight: bold;">Password <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                <input type="password" class="form-control" id="clave_usu" name="clave_usu"
+                placeholder="Contraseña Usuario" [(ngModel)]="usuario.clave_usu" #clave_usu="ngModel" 
+                onkeyup="verif(this)" maxlength="15" [ngClass]="{ 'is-invalid': myForm.submitted && clave_usu.invalid }" required>
+                <div *ngIf="myForm.submitted && clave_usu.invalid" class="invalid-feedback">
+                  <div *ngIf="clave_usu.errors.required">Clave Usuario campo requerido</div>
+                </div>
+              </div> -->
+              <div class="form-group col-sm-4">
+                  <label for="perfil_usu" style="font-weight: bold;">Perfil <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                  <select class="form-control" id="perfil_usu" name="perfil_usu"
+                  placeholder="Selecionar Perfil" [(ngModel)]="Editusuario.perfil_usu" #editperfil="ngModel" required>
+                  <option value="0" selected disabled>-----Seleccionar Perfil------</option>
+                      <option *ngFor="let p of DataPerfiles" value="{{p.idperfil_usuario}}">{{p.nombre_perfil}}</option>
+                  </select>
+                  <div *ngIf="FormEdit.submitted && Editusuario.perfil_usu==0" style="
+                     width: 100%;
+                     margin-top: .25rem;
+                     font-size: 80%;
+                     color: #f86c6b;">
+                       Debe seleccionar una opción
+                      </div>
+                      
+                </div>
+                <div class="form-group col-sm-4">
+                  <label for="baja_usu" style="font-weight: bold;">Dar de Baja :</label>
+                  <div class="radio" style="display: block !important;max-width: none !important;">
+                      <div class="form-check form-check-inline mr-1" id="inline-radios">
+                          <input class="form-check-input" type="radio" name="baja_usu" id="si" [(ngModel)]="Editusuario.baja_usu" value="SI" #editbaja="ngModel" (ngModelChange)="FechaBajaUsu(Editusuario.baja_usu)" >
+                          <label class="form-check-label" for="si">SI &nbsp;&nbsp; {{Editusuario.fecha_usu}}</label>&nbsp;&nbsp;&nbsp;
+                         
+                        </div>
+                        <input class="form-control" id="fecha_usu" type='hidden' name="fecha_usu"
+                        [(ngModel)]="Editusuario.fecha_usu" #editfecha="ngModel" >
+                      </div>
+                </div>
+            </div><!--/.row-->
+            <div class="row">
+              <div class="form-group col-sm-12">
+                <label for="obser_usu" style="font-weight: bold;">Observaciones:</label>
+                <textarea id="obser_usu" name="obser_usu" rows="3" [(ngModel)]="Editusuario.obser_usu" #editobser="ngModel"
+                class="form-control" maxlength="200" placeholder="Ingrese observaciones" onkeyup="verif(this)"></textarea>
+              </div>
+            </div><!--/.row-->
+          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" (click)="frmUsu_hide('E')"><span class="fa fa-times-circle"></span> Close</button>
+          <button class="btn btn-primary" [disabled]="usu_invalido"><span class="fa fa-save"></span> Guardar</button>
+        </div>
+      </form>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div>
+  <!-- /.Fin Modal Editar Usuario-->
+</div>

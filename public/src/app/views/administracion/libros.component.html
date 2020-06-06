@@ -1,0 +1,225 @@
+<div class="animated fadeIn">
+ <div class="card">
+    <div class="card-header">
+      <h5><strong>
+        <i class="fa fa-align-justify"></i>&nbsp;&nbsp;Lista de Libros
+      </strong>
+      <span class="float-right">
+        <button class="btn btn-success btn-xs" 
+        matTooltip="Agregar Libro"
+        matTooltipClass="tooltip-mensaje"
+        data-toggle="modal" (click)="btnNuveo_Libro()">
+          <span class="fa fa-plus-square"></span>
+        </button>
+      </span></h5>
+   </div>
+   <div class="card-body">
+     
+     <div class="mat-elevation-z8 table-responsive">
+       <mat-form-field class="example-full-width" style="margin-left: 15px;">
+         <span matPrefix>Buscar Libro: &nbsp;</span>
+         <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Ingrese Dato">
+       </mat-form-field>  
+       <table mat-table [dataSource]="dataSource" matSort id="tabla">          
+       
+         <ng-container matColumnDef="descripcion_grado">
+           <th width="25%" mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" nowrap > Grado </th>
+           <td mat-cell *matCellDef="let element"> {{element.descripcion_grado}}</td>
+         </ng-container>
+     
+     
+         <ng-container matColumnDef="titulo_libro">
+           <th width="25%" mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" style="text-align: center !important" nowrap> Título </th>
+           <td mat-cell *matCellDef="let element"> {{element.titulo_libro}} </td>
+         </ng-container>
+     
+         <ng-container matColumnDef="edicion_libro">
+          <th width="10%" mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" nowrap> Edición </th>
+          <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.edicion_libro}} </td>
+        </ng-container>
+
+         <ng-container matColumnDef="editorial_libro">
+           <th width="20%" mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" nowrap> Editorial </th>
+           <td mat-cell *matCellDef="let element" style="text-align: center !important"> {{element.editorial_libro}} </td>
+         </ng-container>
+
+           <ng-container matColumnDef="opciones">
+             <th width="20%" mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Opciones </th>
+             <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> 
+              <span class="fa fa-edit btn-xs fa-2x distancia_btn_opciones" aria-hidden="true" style="color: rgb(5, 153, 5);cursor: pointer;"
+              matTooltip="Editar"
+              matTooltipClass="tooltip-mensaje"
+              [matTooltipPosition]="positionOptions[3]"
+              data-toggle="modal" (click)="btnEditar_Libro(element)"></span>
+              <span class="fa fa-trash-o btn-xs fa-2x distancia_btn_opciones" aria-hidden="true" style="color: red;cursor: pointer;"
+              matTooltip="Eliminar"
+              matTooltip="Eliminar"
+              matTooltipClass="tooltip-mensaje"
+              [matTooltipPosition]="positionOptions[3]"
+              (click)="btnEliminar_Libro(element.id_libro)"></span>
+              
+             </td>
+           </ng-container>
+         <tr mat-header-row *matHeaderRowDef="displayedColumns" style="background-color: #3f51b5 !important;"></tr>
+         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+       </table>
+     
+       <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+     </div>
+   </div>
+ </div>
+
+  <!--Modal Registrar Nuevo Libro-->
+  <div bsModal #NvoLibroModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}" >
+    <div class="modal-dialog modal-sm modal-success" role="document">
+      <div class="modal-content">
+       <form name="form" class="formulario" (ngSubmit)="myForm.form.valid && onSubmit(libro)" #myForm="ngForm" novalidate autocomplete="off">
+        <div class="modal-header">
+          <h4 class="modal-title">Nuevo Libro</h4>
+          <button type="button" class="close" (click)="frmLibro_hide('N')" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="form-group col-sm-12">
+              <label for="id_grado" style="font-weight: bold;">Grado <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+              <select class="form-control" id="id_grado" name="id_grado"
+              placeholder="Selecionar Perfil" [(ngModel)]="libro.id_grado" #reggrado="ngModel" required>
+                  <option value="0" selected disabled>-----Seleccionar Grado------</option>
+                  <option *ngFor="let g of DataGrado" value="{{g.id_grado}}">{{g.descripcion_grado}}</option>
+              </select>
+              <div *ngIf="myForm.submitted && libro.id_grado==0" style="
+                 width: 100%;
+                 margin-top: .25rem;
+                 font-size: 80%;
+                 color: #f86c6b;">
+                   Debe seleccionar una opción
+                  </div>
+             </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-sm-12">
+              <label for="titulo_libro" style="font-weight: bold;">Título Libro <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                    <input type="text" class="form-control" id="titulo_libro" name="titulo_libro"
+                     placeholder="Título Libro" [(ngModel)]="libro.titulo_libro" #regtitulo="ngModel" 
+                     onkeyup="verif(this);mayus(this);" maxlength="80" [ngClass]="{ 'is-invalid': myForm.submitted && regtitulo.invalid }" 
+                     pattern="^([A-ZÁÉÍÓÚÑa-zñáéíóú0-9]{1,80}[\s]*)+$" required>
+                     <div *ngIf="myForm.submitted && regtitulo.invalid" class="invalid-feedback">
+                      <div *ngIf="regtitulo.errors.required">Campo Requerido</div>
+                      <div *ngIf="regtitulo.errors.pattern">Formato Incorrectos</div>
+                     </div>
+             </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-sm-7">
+            <label for="editorial_libro" style="font-weight: bold;">Editorial <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                    <input type="text" class="form-control" id="editorial_libro" name="editorial_libro"
+                     placeholder="Editorial Libro" [(ngModel)]="libro.editorial_libro" #regeditorial="ngModel" 
+                     onkeyup="verif(this);mayus(this);" maxlength="20" [ngClass]="{ 'is-invalid': myForm.submitted && regeditorial.invalid }" 
+                     pattern="^([A-ZÁÉÍÓÚÑa-zñáéíóú0-9]{1,20}[\s]*)+$" required>
+                     <div *ngIf="myForm.submitted && regeditorial.invalid" class="invalid-feedback">
+                      <div *ngIf="regeditorial.errors.required">Campo Requerido</div>
+                      <div *ngIf="regeditorial.errors.pattern">Formato Incorrectos</div>
+                     </div>
+             </div>
+             <div class="form-group col-sm-5">
+              <label for="edicion_libro" style="font-weight: bold;">Edición <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                      <input type="text" class="form-control" id="edicion_libro" name="edicion_libro"
+                       placeholder="Año" [(ngModel)]="libro.edicion_libro" #regedicion="ngModel" 
+                       onkeyup="verif(this);" onkeypress="return Num(event);" maxlength="4" [ngClass]="{ 'is-invalid': myForm.submitted && regedicion.invalid }" 
+                       pattern="[0-9]{4}" required>
+                       <div *ngIf="myForm.submitted && regedicion.invalid" class="invalid-feedback">
+                        <div *ngIf="regedicion.errors.required">Campo Requerido</div>
+                        <div *ngIf="regedicion.errors.pattern">Formato Incorrectos</div>
+                       </div>
+               </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" (click)="frmLibro_hide('N')"><span class="fa fa-times-circle"></span> Close</button>
+          <button class="btn btn-primary" [disabled]="usu_invalido"><span class="fa fa-save"></span> Guardar</button>
+        </div>
+      </form>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div>
+  <!-- /.Fin Modal Nuevo Libro-->
+  <!--Modal Modificar Libro-->
+  <div bsModal #EditLibroModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}" >
+    <div class="modal-dialog modal-sm modal-success" role="document">
+      <div class="modal-content">
+       <form name="form" class="formulario" (ngSubmit)="myFormEdit.form.valid && Actualizar_Libro(libro)" #myFormEdit="ngForm" novalidate autocomplete="off">
+        <div class="modal-header">
+          <h4 class="modal-title">Editar Libro</h4>
+          <button type="button" class="close" (click)="frmLibro_hide('E')" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="form-group col-sm-12">
+              <label for="id_grado" style="font-weight: bold;">Grado <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+              <select class="form-control" id="id_grado" name="id_grado"
+              placeholder="Selecionar Perfil" [(ngModel)]="libro.id_grado" #editgrado="ngModel" disabled required>
+                  <option value="0" selected disabled>-----Seleccionar Grado------</option>
+                  <option *ngFor="let g of DataGrado" value="{{g.id_grado}}">{{g.descripcion_grado}}</option>
+              </select>
+              <div *ngIf="myFormEdit.submitted && libro.id_grado==0" style="
+                 width: 100%;
+                 margin-top: .25rem;
+                 font-size: 80%;
+                 color: #f86c6b;">
+                   Debe seleccionar una opción
+                  </div>
+             </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-sm-12">
+              <label for="titulo_libro" style="font-weight: bold;">Título Libro <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                    <input type="text" class="form-control" id="titulo_libro" name="titulo_libro"
+                     placeholder="Título Libro" [(ngModel)]="libro.titulo_libro" #edittitulo="ngModel" 
+                     onkeyup="verif(this);mayus(this);" maxlength="80" [ngClass]="{ 'is-invalid': myFormEdit.submitted && edittitulo.invalid }" 
+                     pattern="^([A-ZÁÉÍÓÚÑa-zñáéíóú0-9]{1,80}[\s]*)+$" required>
+                     <div *ngIf="myFormEdit.submitted && edittitulo.invalid" class="invalid-feedback">
+                      <div *ngIf="edittitulo.errors.required">Campo Requerido</div>
+                      <div *ngIf="edittitulo.errors.pattern">Formato Incorrectos</div>
+                     </div>
+             </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-sm-7">
+            <label for="editorial_libro" style="font-weight: bold;">Editorial <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                    <input type="text" class="form-control" id="editorial_libro" name="editorial_libro"
+                     placeholder="Editorial Libro" [(ngModel)]="libro.editorial_libro" #editeditorial="ngModel" 
+                     onkeyup="verif(this);mayus(this);" maxlength="20" [ngClass]="{ 'is-invalid': myFormEdit.submitted && editeditorial.invalid }" 
+                     pattern="^([A-ZÁÉÍÓÚÑa-zñáéíóú0-9]{1,20}[\s]*)+$" required>
+                     <div *ngIf="myFormEdit.submitted && editeditorial.invalid" class="invalid-feedback">
+                      <div *ngIf="editeditorial.errors.required">Campo Requerido</div>
+                      <div *ngIf="editeditorial.errors.pattern">Formato Incorrectos</div>
+                     </div>
+             </div>
+             <div class="form-group col-sm-5">
+              <label for="edicion_libro" style="font-weight: bold;">Edición <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                      <input type="text" class="form-control" id="edicion_libro" name="edicion_libro"
+                       placeholder="Año" [(ngModel)]="libro.edicion_libro" #editedicion="ngModel" 
+                       onkeyup="verif(this);" onkeypress="return Num(event);" maxlength="4" [ngClass]="{ 'is-invalid': myFormEdit.submitted && editedicion.invalid }" 
+                       pattern="[0-9]{4}" required>
+                       <div *ngIf="myFormEdit.submitted && editedicion.invalid" class="invalid-feedback">
+                        <div *ngIf="editedicion.errors.required">Campo Requerido</div>
+                        <div *ngIf="editedicion.errors.pattern">Formato Incorrectos</div>
+                       </div>
+               </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" (click)="frmLibro_hide('E')"><span class="fa fa-times-circle"></span> Close</button>
+          <button class="btn btn-primary"><span class="fa fa-save"></span> Guardar</button>
+        </div>
+      </form>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div>
+  <!-- /.Fin Modal Modificar-->
+ 
+</div>
