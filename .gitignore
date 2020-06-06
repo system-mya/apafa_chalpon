@@ -1,5 +1,7 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
-
+# Erro de push cuando subimos a repositorios 
+# git push **-u** origin master
+# git push -f origin master
 # dependencies
 /node_modules
