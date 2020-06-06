@@ -5,10 +5,10 @@ class Connection {
     }
     init() {
         this.pool = mysql.createPool({
-            host: 'localhost',
-            user: 'root',
-            password: '',
-            database: 'bd_apafa',
+            host: 'db4free.net',
+            user: 'jjulcav',
+            password: '03071593',
+            database: 'bdapafa',
             debug: false,
         });
     }; 
