@@ -27,18 +27,10 @@ app.use(function (req, res, next) {
     // Pass to next layer of middleware
     next();
 });
-
-var options = {
-
-    index: 'index.html'
-    
-    };
-    
-    
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(multiparty());
 app.use(bodyParser.json());
-app.use(express.static(path.resolve(__dirname + '/home/site/wwwroot/public/src', options)));
+app.use(express.static(path.resolve(__dirname + '/public/dist')));
 
 connection.init();
 routes.configure(app);
