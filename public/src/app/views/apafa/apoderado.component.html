@@ -344,11 +344,11 @@
                         <label for="sexo_apoderado" style="font-weight: bold;">Sexo <i class="fa fa-certificate" style="color:red !important"></i> :</label>
                         <div class="radio" style="display: block !important;max-width: none !important;">
                             <div class="form-check form-check-inline mr-1" id="inline-radios">
-                                <input class="form-check-input" type="radio" name="sexo_apoderado" id="inlineRadio1" [(ngModel)]="Editapoderado.sexo_apoderado" value="M" #editsexo="ngModel" required >
+                                <input class="form-check-input" type="radio" name="editsexo_apoderado" id="inlineRadio1" [(ngModel)]="Editapoderado.sexo_apoderado" value="M" #editsexo="ngModel" required >
                                 <label class="form-check-label" for="inlineRadio1">Masculino</label>
                               </div>
                               <div class="form-check form-check-inline mr-1">
-                                <input class="form-check-input" type="radio" name="sexo_apoderado" id="inlineRadio2" [(ngModel)]="Editapoderado.sexo_apoderado" value="F" #editsexo="ngModel" required>
+                                <input class="form-check-input" type="radio" name="editsexo_apoderado" id="inlineRadio2" [(ngModel)]="Editapoderado.sexo_apoderado" value="F" #editsexo="ngModel" required>
                                 <label class="form-check-label" for="inlineRadio2">Femenino</label>
                               </div>
                              
@@ -387,7 +387,7 @@
               </div>
               <div class="form-group col-sm-12 col-md-4">
                   <label for="celular_apoderado" style="font-weight: bold;">Celular <i class="fa fa-certificate" style="color:red !important"></i> :</label>
-                  <input type="text" class="form-control" id="celular_apoderado" name="celular_apoderado"
+                  <input type="text" class="form-control" id="editcelular_apoderado" name="celular_apoderado"
                   placeholder="#########"  [(ngModel)]="Editapoderado.celular_apoderado" #editcelular="ngModel"
                   pattern="[0-9]{9}" [ngClass]="{ 'is-invalid': FormEdit.submitted && editcelular.invalid }" required onkeyup="verif(this)" onkeypress="return Num(event);" maxlength="9">
                   <div *ngIf="FormEdit.submitted && editcelular.invalid" class="invalid-feedback">
@@ -399,7 +399,7 @@
             <div class="row">
               <div class="form-group col-sm-12 col-md-6">
                 <label for="direccion_apoderado" style="font-weight: bold;">Dirección <i class="fa fa-certificate" style="color:red !important"></i> :</label>
-                <input type="text" class="form-control" id="direccion_apoderado" name="direccion_apoderado"
+                <input type="text" class="form-control" id="editdireccion_apoderado" name="direccion_apoderado"
                 placeholder="Dirección" [(ngModel)]="Editapoderado.direccion_apoderado" #editdireccion="ngModel" 
                 onkeyup="verif(this)" maxlength="80" [ngClass]="{ 'is-invalid': FormEdit.submitted && editdireccion.invalid }" 
                 pattern="^([A-Za-z0-9#/ñ]{1,80}[\s]*)+$" required>
@@ -410,7 +410,7 @@
               </div>
               <div class="form-group col-sm-12 col-md-6">
                 <label for="correo_apoderado" style="font-weight: bold;">Correo Electronico:</label>
-                <input type="text" class="form-control" id="correo_apoderado" name="correo_apoderado"
+                <input type="text" class="form-control" id="editcorreo_apoderado" name="correo_apoderado"
                 placeholder="Correo Electronico" [(ngModel)]="Editapoderado.correo_apoderado" #editcorreo="ngModel" 
                 onkeyup="verif(this)" maxlength="80" [ngClass]="{ 'is-invalid': FormEdit.submitted && editcorreo.invalid }" email>
                 <div *ngIf="FormEdit.submitted && editcorreo.invalid" class="invalid-feedback">
