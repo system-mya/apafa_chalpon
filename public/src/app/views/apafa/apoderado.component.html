@@ -306,7 +306,7 @@
             <div class="row">
                 <div class="form-group col-sm-12 col-md-4">
                   <label for="tdoc_apoderado" style="font-weight: bold;">Tipo Doc. <i class="fa fa-certificate" style="color:red !important"></i> :</label>
-                  <select class="form-control" id="tdoc_apoderado" name="tdoc_apoderado"
+                  <select class="form-control" id="edittdoc_apoderado" name="tdoc_apoderado"
                     placeholder="Selecionar Perfil" [(ngModel)]="Editapoderado.tdoc_apoderado" #edittdoc="ngModel" disabled required>
                       <option value="" selected disabled>-----Tipo Documento------</option>
                       <option value="DNI">DNI</option>
@@ -344,11 +344,11 @@
                         <label for="sexo_apoderado" style="font-weight: bold;">Sexo <i class="fa fa-certificate" style="color:red !important"></i> :</label>
                         <div class="radio" style="display: block !important;max-width: none !important;">
                             <div class="form-check form-check-inline mr-1" id="editinline-radios">
-                                <input class="form-check-input" type="radio" name="editsexo_apoderado" id="inlineRadio1" [(ngModel)]="Editapoderado.sexo_apoderado" value="M" #editsexo="ngModel" required >
+                                <input class="form-check-input" type="radio" name="editsexo_apoderado" id="editinlineRadio1" [(ngModel)]="Editapoderado.sexo_apoderado" value="M" #editsexo="ngModel" required >
                                 <label class="form-check-label" for="inlineRadio1">Masculino</label>
                               </div>
                               <div class="form-check form-check-inline mr-1">
-                                <input class="form-check-input" type="radio" name="editsexo_apoderado" id="inlineRadio2" [(ngModel)]="Editapoderado.sexo_apoderado" value="F" #editsexo="ngModel" required>
+                                <input class="form-check-input" type="radio" name="editsexo_apoderado" id="editinlineRadio2" [(ngModel)]="Editapoderado.sexo_apoderado" value="F" #editsexo="ngModel" required>
                                 <label class="form-check-label" for="inlineRadio2">Femenino</label>
                               </div>
                              
@@ -376,7 +376,7 @@
               </div>
               <div class="form-group col-sm-12 col-md-4">
                   <label for="nombres_apoderado" style="font-weight: bold;">Nombres Completos <i class="fa fa-certificate" style="color:red !important"></i> :</label>
-                  <input type="text" class="form-control" id="nombres_apoderado" name="nombres_apoderado" 
+                  <input type="text" class="form-control" id="editnombres_apoderado" name="nombres_apoderado" 
                   placeholder="Apellidos Completos" [(ngModel)]="Editapoderado.nombres_apoderado" #editnombres="ngModel" 
                   onkeyup="verif(this)" maxlength="50" [ngClass]="{ 'is-invalid': FormEdit.submitted && editnombres.invalid }" 
                   pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,50}[\s]*)+$" required>
