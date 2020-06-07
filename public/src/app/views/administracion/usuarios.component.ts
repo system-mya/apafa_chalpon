@@ -205,7 +205,7 @@ export class UsuariosComponent implements OnInit {
       if(data.status==1){
         this.DataPerfiles = data.data;
       }else{
-        this.toastr.error("Consulta Sin Exito", 'Aviso!',{
+        this.toastr.error(data.message, 'Aviso!',{
           positionClass: 'toast-top-right'
         });
       }
