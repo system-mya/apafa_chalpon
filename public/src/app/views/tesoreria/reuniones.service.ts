@@ -47,6 +47,11 @@ export class ReunionesService {
     .map(data => data.json()).toPromise()
   }
 
+  public EnviarNotificaciones(){
+    return this._http.get('/api/tesoreria/notificaciones')
+     .map(res => res.json())
+  }
+
 
 
 }

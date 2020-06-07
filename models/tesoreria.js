@@ -741,7 +741,7 @@ class Tesoreria {
                             }else{
                                 if (result.affectedRows == 1) {
                                     res.send({status: 1, message: 'Reunión Registrada'});
-                                    this.notificaciones(res);
+                                    
                                 } else {
                                     res.send({status: 2, message: 'Reunión No Registrada'});
                                 }
@@ -1132,7 +1132,7 @@ class Tesoreria {
                             });
                         }
                         
-                        res.send({dato:'notificaciones enviadas'});
+                        res.send({status: 1, message: 'Mensaje Enviados'});
                     }
                 }
             });

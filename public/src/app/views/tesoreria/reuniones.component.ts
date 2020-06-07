@@ -137,6 +137,19 @@ searchString:string;
      
  }
 
+ EnviarNotificaciones(){
+  this._ReunionesServicio.EnviarNotificaciones().subscribe(
+    data => {
+      if(data.status==1){   
+        this.toastr.success(data.message, 'Aviso!');
+      }else{
+        this.toastr.error(data.message, 'Aviso!');
+        
+      }
+    }
+  )
+}
+
 
   onSubmit(form:clsReunion){
     this.loadingBar.start();    
@@ -159,7 +172,8 @@ searchString:string;
             this.loadingBar.complete();
             this.document.documentElement.scrollTop = 0;
             this.mytemplateForm.resetForm();
-            this.ListarReunionesxPeriodo();            
+            this.ListarReunionesxPeriodo();
+            this.EnviarNotificaciones();            
           } else {
             this.toastr.error(data.message, 'Aviso!');
           }
