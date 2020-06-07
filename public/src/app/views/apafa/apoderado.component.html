@@ -213,7 +213,7 @@
   </div><!-- /.modal-dialog -->
 </div>
 <!-- /.Fin Modal Nuevo Apoderado-->
-  <!--Modal Detalle Alumno-->
+  <!--Modal Detalle Apoderado-->
   <div bsModal #DetApoderadoModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}">
       <div class="modal-dialog modal-lg modal-info" role="document">
         <div class="modal-content">
@@ -291,7 +291,7 @@
       </div><!-- /.modal-dialog -->
   </div>
 <!-- /.Fin Modal Detalle Alumno-->
-<!--Modal Registrar Nuevo Apoderado-->
+<!--Modal Editar Nuevo Apoderado-->
 <div bsModal #EditApoderadoModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}" >
     <div class="modal-dialog modal-lg modal-success" role="document">
       <div class="modal-content">
@@ -364,8 +364,8 @@
               </div><!--/.row-->
            <div class="row">
               <div class="form-group col-sm-12 col-md-4">
-                <label for="apellidos_apoderado" style="font-weight: bold;">Apellidos Completos <i class="fa fa-certificate" style="color:red !important"></i> :</label>
-                <input type="text" class="form-control" id="apellidos_apoderado" name="apellidos_apoderado"
+                <label for="editapellidos_apoderado" style="font-weight: bold;">Apellidos Completos <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                <input type="text" class="form-control" id="editapellidos_apoderado" name="apellidos_apoderado"
                  placeholder="Nombres Completos" [(ngModel)]="Editapoderado.apellidos_apoderado" #editapellidos="ngModel" 
                  onkeyup="verif(this)" maxlength="60" [ngClass]="{ 'is-invalid': FormEdit.submitted && editapellidos.invalid }" 
                  pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,60}[\s]*)+$" required>
@@ -427,7 +427,7 @@
       </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
   </div>
-  <!-- /.Fin Modal Nuevo Apoderado-->
+  <!-- /.Fin Modal Editar Apoderado-->
   <!--Modal Insertar Concepto Apoderado-->
 <div bsModal #NvoConceptoModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}" >
     <div class="modal-dialog modal-md modal-success" role="document">
