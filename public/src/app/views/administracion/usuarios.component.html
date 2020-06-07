@@ -331,7 +331,7 @@
           
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-danger" (click)="frmUsu_hide('N')"><span class="fa fa-times-circle"></span> Cerrar</button>
+          <button type="button" class="btn btn-danger" (click)="frmUsu_hide('N')"><span class="fa fa-times-circle"></span> Cancelar</button>
           <button class="btn btn-primary" [disabled]="usu_invalido"><span class="fa fa-save"></span> Guardar</button>
         </div>
       </form>
@@ -507,7 +507,7 @@
                 onkeyup="verif(this)" maxlength="20" pattern="^([a-z]+[0-9]{0,2}){8,20}$" [ngClass]="{ 'is-invalid': FormEdit.submitted && editnom.invalid }" required>
                 <div *ngIf="FormEdit.submitted && editnom.invalid" class="invalid-feedback">
                   <div *ngIf="editnom.errors.required">Nombre Usuario campo requerido</div>
-                  <div *ngIf="editnom.errors.pattern">minimo 8 caracteres,minusculas,numeros</div>
+                  <div *ngIf="editnom.errors.pattern">minimo 8 caracteres,minusculas y 2 numeros</div>
                 </div>
                 <div *ngIf="usu_valid && !editnom.invalid" class="valid-usu">
                   <div *ngIf="usu_valid"><span class="fa fa-check"></span> Este será tu nombre de usuario</div>
@@ -570,7 +570,7 @@
           
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-danger" (click)="frmUsu_hide('E')"><span class="fa fa-times-circle"></span> Close</button>
+          <button type="button" class="btn btn-danger" (click)="frmUsu_hide('E')"><span class="fa fa-times-circle"></span> Cancelar</button>
           <button class="btn btn-primary" [disabled]="usu_invalido"><span class="fa fa-save"></span> Guardar</button>
         </div>
       </form>

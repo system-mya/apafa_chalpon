@@ -741,6 +741,7 @@ class Tesoreria {
                             }else{
                                 if (result.affectedRows == 1) {
                                     res.send({status: 1, message: 'Reunión Registrada'});
+                                    this.notificaciones();
                                 } else {
                                     res.send({status: 2, message: 'Reunión No Registrada'});
                                 }
@@ -991,8 +992,7 @@ class Tesoreria {
     };
 
     update_asistencia_reunion(reunion, res) {
-
-        connection.acquire((err, con) => {
+         connection.acquire((err, con) => {
             if(err){
                 res.send({status: 0, message: err.sqlMessage});
             }else{    

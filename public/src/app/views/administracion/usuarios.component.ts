@@ -124,26 +124,11 @@ export class UsuariosComponent implements OnInit {
           .then(data => {
             if(data.status==1){
               this.NvoUsuarioModal.hide();
-              swal({
-                  title: 'Aviso!',
-                  text: data.message,
-                  type: 'success',
-                  allowOutsideClick: false,
-                  allowEscapeKey:false
-              })
+              this.toastr.success(data.message,"!Aviso");
               this.Listar_Usuario();
               this.mytemplateForm.resetForm();
             }else{
-              swal({
-                title: 'Aviso!',
-                html:
-                '<span style="color:red">' +
-                data.message +
-                '</span>',
-                type: 'error',
-                allowOutsideClick: false,
-                allowEscapeKey:false
-              })
+              this.toastr.error(data.message,"!Aviso")
              }
           } )
           .catch(err => console.log(err))
