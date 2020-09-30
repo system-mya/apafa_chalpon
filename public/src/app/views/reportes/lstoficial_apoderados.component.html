@@ -1,0 +1,98 @@
+<ngx-spinner
+bdColor = "rgba(62,58,58,0.49)"
+size = "medium"
+color = "#e80606"
+type = "ball-clip-rotate-multiple">
+<p style="color: #e80606" > Espere Cargando....... </p>
+</ngx-spinner>
+<div class="animated fadeIn">
+  <div class="card card-default">
+    <div class="card-header">
+      <h5><strong>
+        <i class="fa fa-align-justify"></i>&nbsp;&nbsp;Lista Oficial de Padrón de Matriculados
+      </strong></h5>
+    </div>
+    <div class="card-body">
+      <div class="card-header estilo-cabecera">CRITERIOS DE BUSQUEDA</div>
+          <div class="card-body">
+              <div class="row">
+                  <div class="col-sm-12 col-md-5 col-lg-3">
+                      <div class="form-group">
+                          <select class="form-control" id="anhio_lectivo" name="anhio_lectivo"
+                          [(ngModel)]="anhio_lectivo" #reganhio_lectivo="ngModel" (change)="MostarFechaIniFin(anhio_lectivo)">
+                          <option value="0" selected disabled>---Seleccionar Año Lectivo---</option>
+                          <option *ngFor="let a of DataAnhios" value="{{a.idanhio}}">AÑO LECTIVO {{a.anhio_lectivo}}</option>
+                        </select>
+                    </div>
+                  </div>
+                  <div class="col-sm-12 col-md-5 col-lg-3">
+                      <div class="form-group">
+                          <input type="text" class="form-control" id="finicio_anhio" name="finicio_anhio" 
+                          placeholder="Fecha Inicio" [(ngModel)]="finicio_anhio" 
+                          maxlength="60" readonly required style="background-color: #ffffff;
+                          opacity: 1;
+                          color: #080808;">
+                    </div>
+                  </div>
+                  <div class="col-sm-12 col-md-5 col-lg-3">
+                      <div class="form-group">
+                          <input type="text" class="form-control" id="ffin_anhio" name="ffin_anhio" 
+                          placeholder="Fecha Fin" [(ngModel)]="ffin_anhio" 
+                          maxlength="60" readonly required style="background-color: #ffffff;
+                          opacity: 1;
+                          color: #080808;">
+                    </div>
+                  </div>
+                  <div class="col-sm-12 col-md-5 col-lg-1">
+                      <div class="form-group">
+                      <button class="btn btn-success" (click)="BuscarListaApoderados(anhio_lectivo)">
+                          <span class="fa fa-search"></span>
+                      </button>
+                    </div>
+                    </div>
+              </div>
+          </div>
+          <div class="card-header estilo-cabecera">APODERADOS Y ALUMNOS MATRICULADOS
+              <div class="card-header-actions">
+                 <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true" style="color: red;cursor: pointer;"
+                 (click)="VerPDF()" *ngIf="panel_tabla"></i>
+              </div>
+          </div>
+          <div class="card-body">
+              <div id="customers" class="table-responsive" *ngIf="panel_tabla">
+                  <!-- <div class="form-group col-sm-6">
+                          <label for="monto_concepto" style="font-weight: bold;">Buscar Apoderado:</label>
+                        <input type="text" class="form-control" name="searchString" placeholder="Ingrese Datos Apoderado" [(ngModel)]="searchString">
+                      </div> -->
+                  <table id="tab_customers" class="table"> 
+                      <thead>
+                      <tr>
+                          <th width="30%">Apoderados</th>
+                          <th width="30%">Alumnos Matriculados</th>
+                          <th width="25%">Grado</th>
+                          <th width="15%">Sección</th>
+                        </tr>   
+                      </thead>  
+                      <tbody>
+                    <ng-container *ngFor="let data of body">    
+                        <tr>
+                            <td [attr.rowspan]="data.numbers.length">{{data.pname}}<br><strong>Doc. Identidad: </strong>{{data.doc}}<br><strong>Num. Contacto: </strong>{{data.celular}}</td>
+                            <td>{{data.numbers[0].apellidos_alumno}} {{data.numbers[0].nombres_alumno}}</td>
+                            <td>{{data.numbers[0].descripcion_grado}}</td>
+                            <td>{{data.numbers[0].nombre_seccion}}</td>
+                        </tr>
+                        <ng-container *ngFor="let number of data.numbers; let i= index;">
+                            <tr *ngIf="i!=0">
+                                <td>{{number.apellidos_alumno}} {{number.nombres_alumno}}</td>
+                                <td>{{number.descripcion_grado}}</td>
+                                <td>{{number.nombre_seccion}}</td>
+                            </tr>
+                        </ng-container>
+                    </ng-container>
+                  </tbody>  
+                </table>
+              </div>
+          </div>
+      </div>
+    </div>
+</div>

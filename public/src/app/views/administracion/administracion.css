@@ -1,0 +1,243 @@
+
+
+thead, tfoot{
+  background-color: #3f51b5 !important;
+
+}
+
+th{
+  font-size: 14px !important;
+  color: white !important;
+  font-weight: bold !important;
+  text-align: center !important;
+  border: 1px solid #ffffff !important;
+}
+
+
+#tabla {
+    width: 100% !important;
+  }
+
+
+/* #tabla td {
+    border: 1px solid black !important;
+  }
+ */
+td.mat-cell, td.mat-footer-cell, th.mat-header-cell {
+    padding: 7px !important;
+    border-bottom-width: 5px !important; 
+    border-bottom-style: solid !important;
+}
+th.mat-header-cell {
+    padding: 10px !important;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+}
+
+  
+  .mat-raised-button{
+    min-width: 60px !important;
+  }
+
+  .wrn-button{
+    background-color: #f71100 !important;
+    height: 40px !important;
+    margin-top: 5px !important;
+  }
+
+ .card-remitente{
+  margin-left: -45px !important;
+ }
+
+ .box-card{
+  box-shadow:0 3px 1px -2px rgba(255, 255, 255, 0.2), 
+  0 2px 2px 0 rgba(255, 255, 255, 0.2),
+   0 1px 5px 0 rgba(255, 255, 255, 0.2) !important
+ }
+
+ .card-picture {
+  width: 100% !important;
+  margin-bottom: 2%;
+}
+
+@media only screen and (max-width: 768px) {
+ .btn-eliminar{
+   width: 20% !important;
+   margin-top: -15px !important;
+   margin-left: 15px !important;
+ }
+}
+
+.label-file{
+  color: rgb(0, 0, 0) !important;
+  font-size: 16px  !important;
+  font-weight: bold !important;
+  margin-right: 15px !important;
+}
+
+
+
+input[type="file"]#archivo {
+ width: 0.1px;
+ height: 0.1px;
+ opacity: 0;
+ overflow: hidden;
+ position: absolute;
+ z-index: -1;
+ }
+
+ label[for="archivo"] {
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  background-color: #106BA0;
+  transition: all .5s;
+  cursor: pointer;
+  padding: 15px 30px !important;
+  width: fit-content;
+  text-align: center;
+  margin-bottom: 20px !important;
+  }
+
+  .example-section{
+    display: flex !important;
+    align-content: center !important;
+    align-items: center !important;
+    height: 10px !important;
+}
+
+.action-delete-file{
+  cursor: pointer !important;
+  outline: none !important;
+}
+
+.fa-required{
+  display: inline !important;
+  color: red !important;
+  font-size: 10px !important;
+}
+
+.mat-card{
+  margin-top: -15px !important;
+}
+
+.btn-primary.disabled, .btn-primary:disabled{
+  cursor: no-drop !important;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-outline-start{
+  border-right-style: groove !important;
+  border-right-color: #ffffff !important;
+  border-right-width: thick !important;
+}
+
+/*CSS estilos*/
+.txtcabezera-tabla{
+  font-size: 14px !important;
+  color: white !important;
+  font-weight: bold !important;
+  text-align: center !important;
+  border: 1px solid #ffffff !important;
+}
+
+.example-button {
+  margin-top: 16px !important;
+}
+
+.tooltip-mensaje{
+  background: #030000 !important;
+}
+
+
+.distancia_btn_opciones{
+  margin-left: 10px !important;
+  margin-right: 5px !important;
+}
+
+
+.formulario .radio label,
+.formulario .checkbox label {
+    display: inline-block;
+    cursor: pointer;
+    color: #FF4136;
+    position: relative;
+    padding: 5px 1px 5px 35px;
+    font-size: 1em;
+    border-radius: 5px;
+    -webkit-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    transition: all 0.3s ease; }
+
+    .formulario .radio label:hover,
+    .formulario .checkbox label:hover {
+      background: rgba(255, 65, 54, 0.1); }
+    .formulario .radio label:before,
+    .formulario .checkbox label:before {
+      content: "";
+      display: inline-block;
+      width: 17px;
+      height: 17px;
+      position: absolute;
+      left: 15px;
+      border-radius: 50%;
+      background: none;
+      border: 3px solid #FF4136; }
+  .formulario input[type="radio"] {
+    display: none; }
+    .formulario input[type="radio"]:checked + label:before {
+      display: none; }
+    .formulario input[type="radio"]:checked + label {
+      padding: 5px 15px;
+      background: #FF4136;
+      border-radius: 2px;
+      color: #fff; }
+  .formulario .checkbox label:before {
+    border-radius: 3px; }
+  .formulario .checkbox input[type="checkbox"] {
+    display: none; }
+    .formulario .checkbox input[type="checkbox"]:checked + label:before {
+      display: none; }
+    .formulario .checkbox input[type="checkbox"]:checked + label {
+      background: #FF4136;
+      color: #fff;
+      padding: 5px 15px; }
+
+
+.valid-usu{
+  width: 100%;
+  margin-top: .25rem;
+  font-size: 80%;
+  color: #28a745;
+}
+
+.invalid-usu{
+  width: 100%;
+  margin-top: .25rem;
+  font-size: 80%;
+  color: #a30d0d;
+}
+
+.switch-success .switch-input:checked + .switch-slider::before{
+margin-left: 1px !important;
+}
+
+.switch-success .switch-input:not(:checked) + .switch-slider{
+background-color: #a30d0d !important;
+border: 1px solid #e2f10a;
+}
+ 
+.switch-label .switch-slider::after{
+  width: 70% !important;
+}
+
+.secciones-container {
+  height: 420px !important;
+  overflow: auto;
+}
+
+.secciones-container th {
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+  z-index: 10;
+}

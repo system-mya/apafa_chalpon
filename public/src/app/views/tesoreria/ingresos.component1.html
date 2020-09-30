@@ -1,0 +1,467 @@
+<ngx-spinner
+bdColor = "rgba(62,58,58,0.49)"
+size = "medium"
+color = "#e80606"
+type = "ball-clip-rotate-multiple">
+<p style="color: #e80606" > Espere Cargando....... </p>
+</ngx-spinner>
+<div class="animated fadeIn">
+  <div class="card">
+    <div class="card-header">
+        <h5><strong>
+            <i class="fa fa-align-justify"></i>&nbsp;&nbsp;Lista de Ingresos
+          </strong>       
+          <div class="card-header-actions">
+              <i class="fa fa-plus-square fa-2x btn btn-primary btn-xs" aria-hidden="true"
+              matTooltip="Agregar Nuevo Recibo"
+              matTooltipClass="tooltip-mensaje" style="cursor: pointer;"
+              data-toggle="modal" (click)="btnNuevo_Recibo()"> PAGO APAFA</i>
+              <i class="fa fa-plus-square fa-2x btn btn-success btn-xs" aria-hidden="true"
+              matTooltip="Agregar Nuevo Ingreso"
+              matTooltipClass="tooltip-mensaje" style="cursor: pointer;"
+              data-toggle="modal" (click)="btnNuevo_OtroIngreso()"> OTROS INGRESOS</i>
+         </div></h5>
+   </div>
+   <div class="card-body">
+      <div class="mat-elevation-z8 table-responsive">
+          <mat-form-field class="example-full-width" style="margin-left: 15px;">
+            <span matPrefix>Buscar: &nbsp;</span>
+            <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Ingrese Dato">
+          </mat-form-field>  
+          <table mat-table [dataSource]="dataSource" matSort id="tabla">
+             
+            <ng-container matColumnDef="tipo">
+              <th width="10%" mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" > Tipo </th>
+              <td mat-cell *matCellDef="let element" style="text-align: center !important" > {{element.tipo}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="doc_ingreso">
+              <th width="20%" mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap > Documento </th>
+              <td mat-cell *matCellDef="let element" style="text-align: center !important"> {{element.doc_ingreso}} </td>
+            </ng-container>
+        
+        
+            <ng-container matColumnDef="descripcion_ingreso">
+              <th width="30%" mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" nowrap> Descripcion </th>
+              <td mat-cell *matCellDef="let element"> {{element.	descripcion_ingreso}}</td>
+            </ng-container>
+            
+            <ng-container matColumnDef="monto_ingreso">
+                <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Monto </th>
+                <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.monto_ingreso | number : '.2-2'}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="freg_ingreso">
+                  <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Frecha Registro </th>
+                  <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.freg_ingreso | date:'dd/MM/yyyy h:mm a '}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="estado">
+                  <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap>Estado </th>
+                  <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap>
+                  <span class="badge badge-success" [ngStyle]="{'background-color':element.color_estado}">{{element.estado}}</span>  </td>
+              </ng-container>
+
+                <ng-container matColumnDef="opciones_ingreso">
+                    <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Opciones </th>
+                    <td mat-cell *matCellDef="let element" nowrap> 
+                     
+                    <span class="fa fa-address-card-o btn-xs fa-2x distancia_btn_opciones" aria-hidden="true" style="color: rgb(12, 83, 236);cursor: pointer;"
+                    matTooltip="Detalle"
+                    matTooltipClass="tooltip-mensaje"
+                    [matTooltipPosition]="positionOptions[3]"
+                    data-toggle="modal" (click)="btnDetalle_Ingreso(element)"></span>
+
+                    <span class="fa fa-print btn-xs fa-2x distancia_btn_opciones" aria-hidden="true" style="color: rgb(5, 153, 5);cursor: pointer;"
+                    matTooltip="Imprimir"
+                    matTooltipClass="tooltip-mensaje"
+                    [matTooltipPosition]="positionOptions[3]"
+                    data-toggle="modal" (click)="ImprimirPDF(element)"></span>
+                    
+                    <span class="fa fa-trash-o btn-xs fa-2x distancia_btn_opciones" aria-hidden="true" style="color: red;cursor: pointer;"
+                    matTooltip="Eliminar"
+                    matTooltipClass="tooltip-mensaje"
+                    [matTooltipPosition]="positionOptions[3]"
+                    (click)="btnEliminar_Ingreso(element)"
+                    *ngIf="optAd=='AD' && element.estado=='VIGENTE'"></span>
+                      
+                    </td>
+                  </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns" style="background-color: #3f51b5 !important;"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        
+          <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+          
+        </div>
+
+   </div>
+ </div>
+ <!--Modal Registrar Nuevo Otro Ingreso-->
+ <div bsModal #NvoOtroIngresoModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}" >
+  <div class="modal-dialog modal-md modal-success" role="document">
+    <div class="modal-content">
+        <form name="form" class="formulario" (ngSubmit)="myForm.form.valid && onSubmit(otro)" #myForm="ngForm" novalidate autocomplete="off">
+      <div class="modal-header">
+        <h4 class="modal-title">Nuevo Ingreso</h4>
+        <button type="button" class="close" (click)="frmIngresos_hide('RO')" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <div class="row">
+              <div class="form-group col-sm-12 col-md-5">
+                  <label for="doc_encargado_ingreso" style="font-weight: bold;">Doc. Ident. <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                  <input type="text" class="form-control" id="doc_encargado_ingreso" name="doc_encargado_ingreso"
+                  placeholder="Doc Identidad"  [(ngModel)]="otro.doc_encargado_movimiento" #regdoc="ngModel"
+                  pattern="[0-9a-zA-Z]{8,15}" [ngClass]="{ 'is-invalid': myForm.submitted && regdoc.invalid }" required onkeyup="verif(this);mayus(this);" maxlength="15">
+                  <div *ngIf="myForm.submitted && regdoc.invalid" class="invalid-feedback">
+                      <div *ngIf="regdoc.errors.required">Doc. Identidad campo requerido</div>
+                      <div *ngIf="regdoc.errors.pattern">Debe Ingresar al menos 8 Carácteres</div>
+                  </div>
+                </div>
+                <div class="form-group col-sm-12 col-md-7">
+                  <label for="datos_encargado_ingreso" style="font-weight: bold;">Datos Encargado <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                  <input type="text" class="form-control" id="datos_encargado_ingreso" name="datos_encargado_ingreso"
+                   placeholder="Nombres Completos" [(ngModel)]="otro.datos_encargado_movimiento" #regdatos="ngModel" 
+                   onkeyup="verif(this)" maxlength="100" [ngClass]="{ 'is-invalid': myForm.submitted && regdatos.invalid }" 
+                   pattern="^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]{1,100}[\s]*)+$" required>
+                   <div *ngIf="myForm.submitted && regdatos.invalid" class="invalid-feedback">
+                    <div *ngIf="regdatos.errors.required">Datos Encargado campo requerido</div>
+                    <div *ngIf="regdatos.errors.pattern">Formato de Encargado incorrectos</div>
+                   </div>
+                </div>
+            </div><!--/.row--> 
+            <div class="row">
+              <div class="form-group col-sm-12 col-md-8">
+                  <label for="descripcion_ingreso" style="font-weight: bold;">Descripción <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                  <input type="text" class="form-control" id="descripcion_ingreso" name="descripcion_ingreso"
+                  placeholder="Descripción Ingreso"  [(ngModel)]="otro.descripcion_movimiento" #regdesc="ngModel"
+                  pattern="^([A-ZÁÉÍÓÚÑa-zñáéíóú0-9]{1,100}[\s]*)+$" [ngClass]="{ 'is-invalid': myForm.submitted && regdesc.invalid }" required onkeyup="verif(this);mayus(this);" maxlength="100">
+                  <div *ngIf="myForm.submitted && regdesc.invalid" class="invalid-feedback">
+                      <div *ngIf="regdesc.errors.required">Descripción campo requerido</div>
+                      <div *ngIf="regdesc.errors.pattern">Formato Descripción Incorrectos</div>
+                  </div>
+                </div>
+                <div class="form-group col-sm-12 col-md-4">
+                  <label for="monto_ingreso" style="font-weight: bold;">Monto <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+                  <input type="text" class="form-control" id="monto_ingreso" name="monto_ingreso"
+                   placeholder="Monto" [(ngModel)]="otro.monto_movimiento" #regmonto="ngModel" 
+                   onkeyup="verif(this)" maxlength="100" [ngClass]="{ 'is-invalid': myForm.submitted && regmonto.invalid }" 
+                   pattern="^(?!\.?$)\d{1,8}(\.\d{1,2})?$" onkeypress="return Num_Decimal(event);" required>
+                   <div *ngIf="myForm.submitted && regmonto.invalid" class="invalid-feedback">
+                    <div *ngIf="regmonto.errors.required">Monto campo requerido</div>
+                    <div *ngIf="regmonto.errors.pattern">Formato Monto Incorrecto</div>
+                   </div>
+                </div>
+            </div><!--/.row-->       
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="frmIngresos_hide('RO')"><span class="fa fa-times-circle"></span> Close</button>
+        <button type="submit" class="btn btn-primary" ><span class="fa fa-save"></span> Guardar</button>
+      </div>
+    </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
+<!-- /.Fin Modal Nuevo Otro Ingreso-->
+<!--Modal Registrar Nuevo Pago-->
+    <div bsModal #NvoPagoModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}" >
+      <div class="modal-dialog modal-lg modal-success" role="document">
+        <div class="modal-content">
+            <form name="form" class="formulario" (ngSubmit)="myRecibo.form.valid && RegRecibo(recibo)" #myRecibo="ngForm" novalidate autocomplete="off">
+          <div class="modal-header">
+            <h4 class="modal-title">Nuevo Pago</h4>
+            <button type="button" class="close" (click)="frmIngresos_hide('R')" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" style="padding-bottom: 1px !important;">
+              <div class="car-body">
+                  <div class="card-header estilo-cabecera">DATOS DEL APODERADO</div>
+                  <div class="card-body" style="padding: 0.8rem !important">
+                      <div class="row">
+                          <div class="form-group frm-matricula col-sm-12 col-md-6 col-lg-4">
+                              <div class="form-group frm-matricula row">
+                                  <div class="col-md-12">
+                                    <div class="input-group">
+                                        <input type="text" id="doc_apoderado" name="doc_apoderado" class="form-control"
+                                        placeholder="Doc Identidad"  [(ngModel)]="recibo.doc_apoderado" #regdocapoderado="ngModel"
+                                        pattern="[0-9a-zA-Z ]{8,15}" onkeyup="verif(this);mayus(this);" maxlength="15">
+                                      <span class="input-group-append">
+                                        <button type="button" class="btn btn-primary" 
+                                          (click)="btnBuscar_xDoc(recibo.doc_apoderado)">
+                                            <span class="fa fa-search"></span>
+                                        </button>
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="form-group frm-matricula col-sm-12 col-md-6 col-lg-4">
+                                  <div class="form-group frm-matricula row">
+                                      <div class="col-md-12">
+                                       <div class="input-group">
+                                          <input type="text" class="form-control" id="datos_apoderado" name="datos_apoderado" 
+                                            placeholder="Datos Apoderado" [(ngModel)]="recibo.datos_apoderado" #regdatos_apoderado="ngModel" 
+                                            maxlength="60" [ngClass]="{'is-invalid': myRecibo.submitted && regdatos_apoderado.invalid }" readonly required>
+                                            <div *ngIf="myRecibo.submitted && regdatos_apoderado.invalid" class="invalid-feedback">
+                                                <div *ngIf="regdatos_apoderado.errors.required">Datos Apoderado campo requerido</div>
+                                          </div>
+                                      </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="form-group frm-matricula col-sm-12 col-md-6 col-lg-4">
+                                <div class="form-group frm-matricula row">
+                                    <div class="col-md-12">
+                                     <div class="input-group">
+                                        <input type="text" class="form-control" id="celular_apoderado" name="celular_apoderado" 
+                                          placeholder="Celular Contacto" [(ngModel)]="recibo.celular_apoderado" #regcelular_apoderado="ngModel" 
+                                          maxlength="60" [ngClass]="{'is-invalid': myRecibo.submitted && regcelular_apoderado.invalid }" readonly required>
+                                          <div *ngIf="myRecibo.submitted && regcelular_apoderado.invalid" class="invalid-feedback">
+                                              <div *ngIf="regcelular_apoderado.errors.required">Celular Contacto campo requerido</div>
+                                        </div>
+                                    </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group frm-matricula col-sm-12 col-md-6 col-lg-7">
+                              <div class="form-group frm-matricula row">
+                                  <div class="col-md-12">
+                                     <div class="input-group">
+                                      <input type="text" class="form-control" id="direccion_apoderado" name="direccion_apoderado" 
+                                        placeholder="Dirección Apoderado" [(ngModel)]="recibo.direccion_apoderado" #regdireccion_apoderado="ngModel" 
+                                        maxlength="60" [ngClass]="{'is-invalid': myRecibo.submitted && regdireccion_apoderado.invalid }" readonly required>
+                                        <div *ngIf="myRecibo.submitted && regdireccion_apoderado.invalid" class="invalid-feedback">
+                                            <div *ngIf="regdireccion_apoderado.errors.required">Dirección Apoderado campo requerido</div>
+                                      </div>
+                                  </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-group frm-matricula col-sm-12 col-md-6 col-lg-5">
+                              <div class="form-group frm-matricula row">
+                                  <div class="col-md-12">
+                                     <div class="input-group">
+                                      <input type="text" class="form-control" id="correo_apoderado" name="correo_apoderado" 
+                                        placeholder="Correo Apoderado" [(ngModel)]="recibo.correo_apoderado" #regcorreo_apoderado="ngModel" 
+                                        maxlength="60" [ngClass]="{'is-invalid': myRecibo.submitted && regcorreo_apoderado.invalid }" readonly>
+                                        
+                                  </div>
+                              </div>
+                            </div>
+                          </div>
+                      </div><!--/.row-->
+                  </div>
+              </div>
+              <div class="car-body">
+                  <div class="card-header estilo-cabecera">DETALLE DE CONCEPTOS</div>
+                  <div class="card-body" style="padding: 0.8rem !important">
+                      <div class="row" style="
+                      border-bottom: #0000008c;
+                      border-bottom-style: solid;
+                      margin-bottom: 10px;
+                  ">
+                          <div class="secciones-deuda table-responsive" *ngIf="tabla_deuda">
+                              <table class="table ">
+                                <thead>
+                                  <tr>
+                                    <th nowrap>Descripción Concepto</th>
+                                    <th nowrap>Saldo Deuda</th>
+                                    <th nowrap>Estado</th>
+                                    <th>Tipo</th>
+                                    <th nowrap>Monto</th>
+                                    <!-- <th nowrap>Opciones</th> -->
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr *ngFor="let item of DataDeuda;index as i">
+                                      <td width="35%">
+                                        {{item.descripcion_concepto}}
+                                      </td>
+                                      <td nowrap>
+                                        {{item.saldo_deuda | number : '.2-2'}}
+                                      </td>
+                                      <td nowrap>
+                                        {{item.estado_deuda}}
+                                      </td>
+                                      <td style="width:130px" nowrap>
+                                        <select class="form-control" id="tipo_pago" name="tipo_pago" 
+                                          placeholder="Selecionar Perfil" [(ngModel)]="DataDeuda[i].tipo_pago" #tipo_pago="ngModel"
+                                          (change)="select_tipo_pago(DataDeuda[i].tipo_pago,i)">
+                                            <option value="" selected disabled>--Tipo--</option>
+                                            <option value="T">TOTAL</option>
+                                            <option value="P">PARCIAL</option>
+                                        </select>
+                                      </td>
+                                      <td style="width: 110px;" nowrap>
+                                          <input type="text" class="form-control" id="monto" name="{{i}}"
+                                          placeholder="Monto" [(ngModel)]="DataDeuda[i].monto" #regmonto="ngModel" 
+                                          onkeyup="verif(this)" maxlength="100" [ngClass]="{ 'is-invalid': DataDeuda[i].tipo_pago!='' && regmonto.invalid }" 
+                                          pattern="^(?!\.?$)\d{1,8}(\.\d{1,2})?$" onkeypress="return Num_Decimal(event);" 
+                                          [disabled]="DataDeuda[i].tipo_pago=='T'" (ngModelChange)="monto_parcial(i,this)" required>
+                                          <div *ngIf="DataDeuda[i].tipo_pago!='' && regmonto.invalid" class="invalid-feedback">
+                                              <div *ngIf="regmonto.errors.required">Campo requerido</div>
+                                              <div *ngIf="regmonto.errors.pattern">Formato Incorrecto</div>
+                                          </div>
+                                          <div *ngIf="DataDeuda[i].tipo_pago=='P' && !regmonto.invalid && DataDeuda[i].monto!=0" class="monto_invalid">
+                                            <div *ngIf="DataDeuda[i].monto_invalid"><span class="fa fa-times"></span>Monto debe ser menor</div>
+                                          </div>
+                                          <div *ngIf="DataDeuda[i].tipo_pago=='P' && DataDeuda[i].monto==0 && !regmonto.invalid" class="monto_invalid">
+                                            <div *ngIf="DataDeuda[i].tipo_pago=='P'"><span class="fa fa-times"></span>Monto debe ser Mayor a 0</div>
+                                          </div>
+                                      </td>
+                                      
+                                      <!-- <td nowrap>
+                                        <button class="btn btn-danger btn-xs distancia_btn_opciones"
+                                              matTooltip="Eliminar"
+                                              matTooltipClass="tooltip-mensaje"
+                                              [matTooltipPosition]="positionOptions[3]"
+                                              (click)="btnEliminar_Usuario(element.idusuario)">
+                                        <span class="fa fa-trash-o btn-xs"></span>
+                                        </button>
+                                      </td> -->
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                      </div><!--/.row-->
+                      <div class="row" *ngIf="tabla_deuda">
+                        <div class="col-lg-7"></div>
+                        <div class="col lg-5">
+                            <div class="form-horizontal">
+                                <div class="row">
+                                    <label class="col-md-5 col-form-label" for="text-input" style="text-align: right !important;
+                                    padding-right: 0px !important;"><b>Total Pagar : </b></label>
+                                    <div class="col-md-5">
+                                      <label class="col-md-5 col-form-label" for="text-input" style="text-align: right !important;
+                                    padding-right: 0px !important;"><b>{{recibo.mtotal_recibo | number : '.2-2'}}</b></label>
+                                    </div>
+                                  </div>
+                            </div>
+                        </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div class="modal-footer">
+                <button type="button" class="btn btn-danger" (click)="frmIngresos_hide('R')"><span class="fa fa-times-circle"></span> Close</button>
+                <button type="submit" class="btn btn-primary" [disabled]="!myRecibo.form.valid || monto_invalid || monto_cero || !tabla_deuda || !seleccion_deuda"><span class="fa fa-save"></span> Guardar</button>
+          </div>
+        </form>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+<!-- /.Fin Modal Nuevo Pago-->
+<!--Modal Detalle Pago-->
+<div bsModal #DetallePago="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}">
+    <div class="modal-dialog modal-lg modal-success" role="document">
+      <div class="modal-content" style="border-style: solid; border-width: 5px; border-radius: 2rem !important;">
+          <div class="modal-header"  style="color: #020202 !important;background-color: #ffffff !important;border-top-left-radius: 2rem !important;
+          border-top-right-radius: 2rem !important;">
+            <h4 class="modal-title">Detalle Pago</h4>
+            <button type="button" class="close" (click)="frmIngresos_hide('D')" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        <div class="modal-body">
+           <div class="row">
+            <div class="col-sm-4 col-lg-4">
+              <p style="margin-bottom: 1px !important;"><strong>Num. Recibo: </strong></p><h6>{{DetApoderado.doc_ingreso}}</h6>
+              <p style="margin-bottom: 1px !important;"><strong>Fecha Registro: </strong></p><h6>{{DetApoderado.fecha_registro | date:'dd/MM/yyyy HH:mm:ss'}}</h6>
+              <p style="margin-bottom: 1px !important;"><strong>Sr(a) Apoderado: </strong></p><h6>{{DetApoderado.apellidos_apoderado}} {{DetApoderado.nombres_apoderado}}</h6>
+              <p style="margin-bottom: 1px !important;"><strong>Tipo Doc.: </strong></p><h6>{{DetApoderado.tdoc_apoderado}}</h6>
+              <p style="margin-bottom: 1px !important;"><strong>Doc. Identidad: </strong></p><h6>{{DetApoderado.doc_apoderado}}</h6>
+              <p style="margin-bottom: 1px !important;"><strong>Num. Contacto: </strong></p><h6>{{DetApoderado.celular_apoderado}}</h6>
+              <p style="margin-bottom: 1px !important;"><strong>Dirección: </strong></p><h6>{{DetApoderado.direccion_apoderado}}</h6>
+          </div><br>
+          <div class="col-sm-8 col-lg-8">
+            <p style="margin-bottom: 1px !important;"><strong>DETALLE DE RECIBO</strong></p><br>
+            <!-- <div class="progress progress-xs"><div aria-valuemax="100" aria-valuemin="0" aria-valuenow="95" class="progress-bar bg-danger" role="progressbar" style="width: 100%"></div></div><br> -->
+            <div class="secciones-detalle-recibo table-responsive">
+              <table class="table ">
+                <thead>
+                  <tr>
+                      <th nowrap>Descripción Concepto</th>
+                      <th nowrap>Monto</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of detalle_recibo;index as i">
+                      <td width="80%">
+                          {{item.descripcion_concepto}}
+                        </td>
+                        <td nowrap>
+                          {{item.monto_detalle | number : '.2-2'}}
+                        </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <dl class="row" style="margin-bottom: -10px !important;">
+              <dd class="col-sm-6"></dd>
+              <dd class="col-sm-6">
+                  <dl class="row">
+                    <dt class="col-sm-12">Total Pagado: {{monto_pagado | number : '.2-2'}}</dt>
+                 </dl>
+             </dd>
+            </dl>
+          </div> 
+           </div>  
+          
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div>
+<!-- /.Fin Modal Detalle Pago-->
+<!--Modal Detalle Ingreso-->
+<div bsModal #DetalleIngreso="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}">
+  <div class="modal-dialog modal-lg modal-success" role="document">
+    <div class="modal-content" style="border-style: solid; border-width: 5px; border-radius: 2rem !important;">
+        <div class="modal-header"  style="color: #020202 !important;background-color: #ffffff !important;border-top-left-radius: 2rem !important;
+        border-top-right-radius: 2rem !important;">
+          <h4 class="modal-title">Detalle Movimiento</h4>
+          <button type="button" class="close" (click)="frmIngresos_hide('DI')" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      <div class="modal-body">
+         <div class="row">
+          <div class="col-sm-4 col-lg-4">
+            <p style="margin-bottom: 1px !important;"><strong>Doc. Responsable: </strong></p><h6>{{DetIngreso.doc_encargado_movimiento}}</h6>
+            <p style="margin-bottom: 1px !important;"><strong>Responsable Ingreso: </strong></p><h6>{{DetIngreso.datos_encargado_movimiento}}</h6>
+            <p style="margin-bottom: 1px !important;"><strong>Fecha Registro: </strong></p><h6>{{DetIngreso.freg_movimiento | date:'dd/MM/yyyy HH:mm:ss'}} </h6>
+        </div><br>
+        <div class="col-sm-8 col-lg-8">
+          <p style="margin-bottom: 1px !important;"><strong>DETALLE DE INGRESO</strong></p><br>
+          <!-- <div class="progress progress-xs"><div aria-valuemax="100" aria-valuemin="0" aria-valuenow="95" class="progress-bar bg-danger" role="progressbar" style="width: 100%"></div></div><br> -->
+          <div class="table-responsive">
+            <table class="table ">
+              <thead>
+                <tr>
+                    <th nowrap>Descripción Ingreso</th>
+                    <th nowrap>Monto</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                      <td width="80%">
+                        {{DetIngreso.descripcion_movimiento}}
+                      </td>
+                      <td nowrap>
+                        {{DetIngreso.monto_movimiento | number : '.2-2'}}
+                      </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div> 
+         </div>  
+        
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
+<!-- /.Fin Modal Detalle Ingreso-->
+</div>

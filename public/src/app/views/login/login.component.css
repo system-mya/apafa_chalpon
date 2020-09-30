@@ -1,0 +1,43 @@
+#login{
+    background-color: #20a8d8;
+    font-family: 'Roboto', Arial, Tahoma, sans-serif;
+    font-size: 14px;
+}
+
+@media (max-width: 991.98px){
+.app-body {
+    margin-top: 0px !important;
+}
+
+}
+
+#login .logo{
+    margin-bottom: 20px;
+    font-size: 36px;
+    display: block;
+    width: 100%;
+    text-align: center;
+    color: #fff;
+}
+
+#login .logo small {
+    font-size: 16px;
+    display: block;
+    width: 100%;
+    text-align: center;
+    color: #fff;
+    margin-top: -5px;
+}
+
+#login .text-login{
+    color: #73818f;
+    text-align: center;
+    margin-bottom: 30px;
+    margin-top: -30px;
+}
+
+#login .bg-pink {
+    background-color: #E91E63 !important;
+    color: #fff;
+}
+

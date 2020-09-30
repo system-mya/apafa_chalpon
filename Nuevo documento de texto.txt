@@ -1,0 +1,52 @@
+con.beginTransaction(function(err) {
+            if (err) { throw err; }
+            var query_dni = "CALL pa_buscar_dni_usuario('"+ [user.dni_usu] +"')";
+            con.query(query_dni, function(err, result) {
+              if (err) { 
+                con.rollback(function() {
+                  throw err;
+                });
+              }
+          
+              var query = "CALL pa_insertar_usuario('"+ [user.nom_usu] +"','"+ [user.dni_usu] 
+                    +"','"+ [user.dni_usu] + "','"+ [user.nombres_usu] + "','"+ [user.apellidos_usu]
+                    + "','"+ [user.sexo_usu] + "','"+ [user.celular_usu] + "',"+ correo_usu
+                    + ",'"+ [user.direccion_usu] + "','"+ hoyFecha() + "','"+ [user.fecha_usu].toString().slice(0,10)
+                    + "',"+ obser_usu +","+ [user.perfil_usu] +")";
+          
+              con.query(query, function(err, result) {
+                if (err) { 
+                  con.rollback(function() {
+                    throw err;
+                  });
+                }else{
+                    console.log('success1111!');
+                    var query_2 = "CALL pa_insertar_usuario('"+ [user.nom_usu] +"','"+ [user.dni_usu] 
+                    +"','"+ [user.dni_usu] + "','"+ [user.nombres_usu] + "','"+ [user.apellidos_usu]
+                    + "','"+ [user.sexo_usu] + "','"+ [user.celular_usu] + "',"+ correo_usu
+                    + ",'"+ [user.direccion_usu] + "','"+ hoyFecha() + "','"+ [user.fecha_usu].toString().slice(0,10)
+                    + "',"+ obser_usu +","+ [user.perfil_usu] +")";
+          
+              con.query(query_2, function(err, result) {
+                if (err) { 
+                  con.rollback(function() {
+                    throw err;
+                  });
+                }
+                con.commit(function(err) {
+                    if (err) { 
+                      con.rollback(function() {
+                        throw err;
+                      });
+                    }
+                    console.log('success!');
+                    
+                  });
+            });
+                   
+                }
+
+                
+              });
+            });
+          });

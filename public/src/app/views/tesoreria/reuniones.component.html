@@ -1,0 +1,309 @@
+<ngx-spinner 
+bdColor = "rgba(0, 0, 0, 0.8)" 
+size = "mediu" color = "#fff" 
+type = "timer" 
+[fullScreen] = "true">
+<br>
+<p style="color: white" > Espere {{spinner_mensaje}} </p>
+</ngx-spinner>
+<div class="animated fadeIn">
+  <div class="card" *ngIf="panel_tabla">
+    <div class="card-header">
+        <h5><strong>
+            <i class="fa fa-align-justify"></i>&nbsp;&nbsp;Listado de Reuniones
+          </strong>     
+          <span class="float-right">
+            <button class="btn btn-primary btn-xs" style="margin: 0px 20px;"
+            matTooltip="Agregar Nueva Reunión"
+            matTooltipClass="tooltip-mensaje"
+            data-toggle="modal" (click)="btnNueva_Reunion()">
+              <span class="fa fa-plus-square"></span>
+            </button>
+          </span></h5>
+   </div>
+   <div class="card-body">
+      <div class="mat-elevation-z8 table-responsive">
+          <mat-form-field class="example-full-width" style="margin-left: 15px;">
+            <span matPrefix>Buscar: &nbsp;</span>
+            <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Ingrese Dato">
+          </mat-form-field>  
+          <table mat-table [dataSource]="dataSource" matSort id="tabla">
+             
+          
+            <ng-container matColumnDef="motivo_reunion">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" nowrap > Motivo Reunión </th>
+              <td mat-cell *matCellDef="let element" nowrap> {{element.motivo_reunion}} </td>
+            </ng-container>
+        
+        
+            <ng-container matColumnDef="fecha_reunion">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" nowrap>Fecha Reunión </th>
+              <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.fecha_reunion | date:'dd/MM/yyyy h:mm a '}}</td>
+            </ng-container>          
+            
+            <ng-container matColumnDef="concepto">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" nowrap> Bajo Concepto </th>
+                <td mat-cell *matCellDef="let element" nowrap> {{element.descripcion_concepto}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="monto_concepto">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header class="txtcabezera-tabla" nowrap> Monto Multa </th>
+                  <td mat-cell *matCellDef="let element" style="text-align: center !important" nowrap> {{element.monto_concepto | number : '.2-2'}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="opciones">
+                    <th mat-header-cell *matHeaderCellDef class="txtcabezera-tabla" nowrap> Opciones </th>
+                    <td mat-cell *matCellDef="let element" nowrap> 
+                  
+                      <span class="fa fa-refresh btn-xs fa-2x distancia_btn_opciones" aria-hidden="true" style="color: rgb(252, 195, 9);cursor: pointer;"
+                      matTooltip="Generar Lista"
+                      matTooltipClass="tooltip-mensaje"
+                      [matTooltipPosition]="positionOptions[3]"
+                      *ngIf="element.lista_reunion.data[0]==0"
+                      data-toggle="modal" (click)="Generar_Lista_Firmas(element.id_reunion)"></span>
+                      
+                      <span class="fa fa-print btn-xs fa-2x distancia_btn_opciones" aria-hidden="true" style="color: rgb(5, 153, 5);cursor: pointer;"
+                      matTooltip="Imprimir Lista"
+                      matTooltipClass="tooltip-mensaje"
+                      [matTooltipPosition]="positionOptions[3]"
+                      *ngIf="element.lista_reunion.data[0]==1"
+                      data-toggle="modal" (click)="ImprimirListaFirmas(element)"></span>
+                      
+                      <span class="fa fa-save btn-xs fa-2x distancia_btn_opciones" aria-hidden="true" style="color: rgb(12, 83, 236);cursor: pointer;"
+                      matTooltip="Registrar Asistencia"
+                      matTooltipClass="tooltip-mensaje"
+                      [matTooltipPosition]="positionOptions[3]"
+                      *ngIf="element.lista_reunion.data[0]==1"
+                      data-toggle="modal" (click)="Detalle_Lista_Reunion(element)"></span>
+
+                      <span class="fa fa-bell btn-xs fa-2x distancia_btn_opciones" aria-hidden="true" style="color: rgb(84, 169, 216);cursor: pointer;"
+                      matTooltip="Enviar Notificaciones"
+                      matTooltipClass="tooltip-mensaje"
+                      [matTooltipPosition]="positionOptions[3]"
+                      *ngIf="element.lista_reunion.data[0]==1"
+                      data-toggle="modal" (click)="btnEnviar_Notificaciones(element.id_reunion)"></span>
+                      
+                      <span class="fa fa-trash-o btn-xs fa-2x distancia_btn_opciones" aria-hidden="true" style="color: red;cursor: pointer;"
+                      matTooltip="Eliminar"
+                      matTooltipClass="tooltip-mensaje"
+                      [matTooltipPosition]="positionOptions[3]"
+                      (click)="btnEliminar_Reunion(element.id_reunion)"
+                      *ngIf="optAd=='AD'"></span>
+                      
+                    </td>
+                  </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns" style="background-color: #3f51b5 !important;"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+          <div style="text-align: center;
+          font-size: 14px;"
+          [style.display]="numdata == 0 ? '' : 'none'">
+           <span><b>No se encontraron datos que coincidan con el filtro.</b></span>
+         </div>
+          <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+          
+        </div>
+
+   </div>
+ </div>
+ <!--Modal Registrar Nuevo Año Lectivo-->
+ <div bsModal #NvaReunionModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" #staticModal="bs-modal" [config]="{backdrop: 'static',keyboard : false}" >
+  <div class="modal-dialog modal-md modal-success" role="document">
+    <div class="modal-content">
+     <form name="form" class="formulario" (ngSubmit)="myForm.form.valid && btnRegistrar_Reunion(reunion)" #myForm="ngForm" novalidate autocomplete="off">
+      <div class="modal-header">
+        <h4 class="modal-title">Nueva Reunión</h4>
+        <button type="button" class="close" (click)="frmReunion_hide('N')" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="form-group col-sm-12 col-md-12">
+            <label for="motivo_reunion" style="font-weight: bold;">Motivo Reunión <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+            <input type="text" class="form-control" id="motivo_reunion" name="motivo_reunion"
+             placeholder="Motivo Reunión" [(ngModel)]="reunion.motivo_reunion" #regmotivo="ngModel" 
+             onkeyup="verif(this)" maxlength="100" [ngClass]="{ 'is-invalid': myForm.submitted && regmotivo.invalid }" 
+             pattern="^([A-ZÁÉÍÓÚa-zñáéíóú0-9]{1,100}[\s]*)+$" required>
+             <div *ngIf="myForm.submitted && regmotivo.invalid" class="invalid-feedback">
+              <div *ngIf="regmotivo.errors.required">Motivo campo requerido</div>
+              <div *ngIf="regmotivo.errors.pattern">Formato Motivo incorrecto</div>
+             </div>
+          </div>
+          
+        </div>
+        <div class="row">
+          <div class="form-group col-sm-12 col-md-5">
+            <label for="fecha_reunion" style="font-weight: bold;">Fecha Reunión <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+               <input class="form-control" id="fecha_reunion" type='date' name="fecha_reunion" placeholder="date"
+                 [(ngModel)]="reunion.fecha_reunion" #regfecha_reunion="ngModel" required>
+               <div *ngIf="myForm.submitted && regfecha_reunion.errors?.required" style="
+                   width: 100%;
+                   margin-top: .25rem;
+                   font-size: 80%;
+                   color: #f86c6b;">
+                   Debe ingresar una fecha válida
+               </div>
+          </div>
+          <div class="form-group col-sm-12 col-md-5">
+             <label for="hora_reunion" style="font-weight: bold;">Hora Reunión <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+             <input type="time" class="form-control" name="hora_reunion"
+             [(ngModel)]="reunion.hora_reunion" #reghora_reunion="ngModel" required>
+                <div *ngIf="myForm.submitted && reghora_reunion.errors?.required" style="
+                    width: 100%;
+                    margin-top: .25rem;
+                    font-size: 80%;
+                    color: #f86c6b;">
+                    Debe ingresar una hora válida
+                </div>
+           </div>
+        </div>
+        <div class="row">
+          <div class="form-group col-sm-12 col-md-8">
+            <label for="id_concepto" style="font-weight: bold;">Bajo Concepto <i class="fa fa-certificate" style="color:red !important"></i> :</label>
+            <select class="form-control" id="id_concepto" name="id_concepto" 
+            placeholder="Selecionar Perfil" 
+            (change)="obtener_monto(reunion.id_concepto)"
+            [(ngModel)]="reunion.id_concepto" #id_concepto="ngModel">
+            <option value="0" selected disabled>-----Seleccionar Concepto------</option>
+            <option *ngFor="let c of DataConcepto" value="{{c.id_concepto}}">{{c.descripcion_concepto}}</option>
+           </select>
+           <div *ngIf="myForm.submitted && reunion.id_concepto==''" style="
+               width: 100%;
+               margin-top: .25rem;
+               font-size: 80%;
+               color: #f86c6b;">
+                 Debe seleccionar una opción
+                </div>
+          </div>
+          <div class="form-group col-sm-12 col-md-4">
+             <label for="monto_concepto" style="font-weight: bold;">Monto Multa<i class="fa fa-certificate" style="color:red !important"></i> :</label>
+             <input type="text" class="form-control" id="monto_concepto" name="monto_concepto"
+             placeholder="Monto Multa" [(ngModel)]="reunion.monto_concepto" #regmonto_concepto="ngModel" 
+              maxlength="100" required readonly>
+           </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="frmReunion_hide('N')"><span class="fa fa-times-circle"></span> Cerrar</button>
+        <button class="btn btn-primary" [disabled]="usu_invalido"><span class="fa fa-save"></span> Guardar</button>
+      </div>
+    </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
+<!-- /.Fin Modal Nuevo Año Lectivo-->
+ <!-- Detalle de Lista de Reunion-->
+ <div class="card" *ngIf="panel_detalle" id="card-edit">
+  <div class="card-header">
+        <h5><strong>
+          <i class="fa fa-list-alt"></i>&nbsp;&nbsp;DETALLE DE LA REUNIÓN
+        </strong>
+        <span class="float-right">
+          <button type="button" class="btn btn-danger" style="margin: 0px 20px;"
+                  (click)="frmReunion_hide('D')">
+                      <span class="fa fa-reply-all"></span>
+                  Regresar</button>
+        </span></h5>
+        </div>
+        <div class="car-body">
+            <div class="card-header estilo-cabecera">DATOS DE LA REUNION</div>
+            <div class="card-body">
+              <div class="row">
+                  <div class="col-xs-12 col-md-6 col-lg-6" style="border:0px;">
+                     <div class="row">
+                        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <label for="motivo_reunion" style="font-weight: bold;">Motivo Reunión:</label>
+                            <input type="text" class="form-control" id="doc_alumno" name="doc_alumno"
+                            placeholder="Motivo Reunión" [(ngModel)]="Detalle.motivo_reunion" 
+                            readonly maxlength="100">
+                           </div>
+                     </div>
+                      <div class="row">
+                          <div class="form-group col-sm-6">
+                              <label for="fecha_reunion" style="font-weight: bold;">Fecha y Hora:</label>
+                              <input type="text" class="form-control" id="fecha_reunion" name="fecha_reunion" 
+                              placeholder="Apellidos Completos" [(ngModel)]="Detalle.fecha_reunion"  
+                              maxlength="60" readonly>
+                          </div>
+                      </div>
+                    </div>
+      <div class="col-xs-12 col-md-6 col-lg-6" style="border:0px;">
+                    <div class="row">
+                        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <label for="descripcion_concepto" style="font-weight: bold;">Bajo Concepto :</label>
+                            <input type="text" class="form-control" id="descripcion_concepto" name="descripcion_concepto"
+                            placeholder="Bajo Concepto"  [(ngModel)]="Detalle.descripcion_concepto" maxlength="50" readonly>
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="form-group col-sm-6">
+                              <label for="monto_concepto" style="font-weight: bold;">Monto Multa:</label>
+                              <input type="text" class="form-control" id="monto_concepto" name="monto_concepto"
+                            placeholder="Monto Multa"  [(ngModel)]="Detalle.monto_concepto" maxlength="10" readonly>
+                          </div>
+                      </div>
+                    </div>
+              </div>
+            </div>
+            <div class="card-header estilo-cabecera">LISTA DE APODERADOS</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="form-group col-sm-6">
+                        <label for="monto_concepto" style="font-weight: bold;">Buscar Apoderado:</label>
+                      <input type="text" class="form-control" name="searchString" placeholder="Ingrese Datos Apoderado" [(ngModel)]="searchString">
+                    </div>
+                </div>
+                <div class="table-responsive">  
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th width="10%">N°</th>
+                    <th width="15%">Doc. Apdoerado</th>
+                    <th width="25%">Apoderado</th>
+                    <th width="40%">Alumnos Matriculados</th>
+                    <th width="10%">Asistio</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of DataAsistentes | filter : 'apoderado' : searchString;let indice=index;">
+                      <td>
+                        {{indice + 1}}                        
+                      </td>
+                      <td>
+                        {{item.doc_apoderado}}                        
+                      </td>
+                      <td>
+                        {{item.apoderado}}                        
+                      </td>
+                      <td>
+                        {{item.matriculados}}                        
+                      </td>
+                      <td>
+                        <!-- <span class="badge badge-success" [ngStyle]="{'background-color':item.estado === 'ACTIVO' ? 'green' : 'red' }">{{item.estado}}</span> -->
+                        <label class="switch switch-label switch-success" style="width: 50px !important">
+                            <input checked="" [checked]="item.asistio_reunion.data==1" class="switch-input" type="checkbox" 
+                            (click)="Marcar_Asistencia(item,item.asistio_reunion.data)" [disabled]='Detalle.asistencia_reunion==1'>
+                            <span class="switch-slider" data-checked="SI" data-unchecked="NO"></span>
+                          </label>
+                      </td>
+                  </tr>
+                </tbody>
+              </table>
+              </div>
+            </div>              
+        </div>
+        <div class="card-footer" style="text-align: right;" *ngIf="Detalle.asistencia_reunion==0">
+          <button type="button" class="btn btn-pill btn-danger" style="margin: 0px 20px;"
+          (click)="frmReunion_hide('D')">
+              <span class="fa fa-times-circle"></span>
+          Cancelar</button>
+          <button class="btn btn-pill btn-success" type="button" (click)="btnGuardar_Asistencias()">
+              <span class="fa fa-save"></span> Grabar</button>
+        
+      </div>
+</div>
+ <!--FIN Detalle de Lista de Reunion-->
+</div>
+
+
